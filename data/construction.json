@@ -1,0 +1,66 @@
+{
+  "objects": [
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 25
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 24
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 12,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 13,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 24
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 25
+    }
+  ],
+  "base": {
+    "x": 12,
+    "y": 24
+  },
+  "playerSpawnPoint": {
+    "x": 8,
+    "y": 24
+  },
+  "enemySpawnPoints": [
+    {
+      "x": 12,
+      "y": 0
+    },
+    {
+      "x": 24,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 0
+    }
+  ]
+}

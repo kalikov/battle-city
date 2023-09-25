@@ -1,0 +1,706 @@
+{
+  "objects": [
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 0
+    },
+    {
+      "type": "Water",
+      "x": 16,
+      "y": 0
+    },
+    {
+      "type": "Water",
+      "x": 0,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 2,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 10,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 12,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 14,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 16,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 20,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 22,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 24,
+      "y": 2
+    },
+    {
+      "type": "Trees",
+      "x": 0,
+      "y": 4
+    },
+    {
+      "type": "Trees",
+      "x": 2,
+      "y": 4
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 5
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 5
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 4
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 4
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 5
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 5
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 4
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 4
+    },
+    {
+      "type": "Water",
+      "x": 16,
+      "y": 4
+    },
+    {
+      "type": "Water",
+      "x": 20,
+      "y": 4
+    },
+    {
+      "type": "Trees",
+      "x": 22,
+      "y": 4
+    },
+    {
+      "type": "Water",
+      "x": 24,
+      "y": 4
+    },
+    {
+      "type": "Trees",
+      "x": 0,
+      "y": 6
+    },
+    {
+      "type": "Water",
+      "x": 2,
+      "y": 6
+    },
+    {
+      "type": "Water",
+      "x": 4,
+      "y": 6
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 6
+    },
+    {
+      "type": "Water",
+      "x": 8,
+      "y": 6
+    },
+    {
+      "type": "SteelWall",
+      "x": 13,
+      "y": 7
+    },
+    {
+      "type": "SteelWall",
+      "x": 12,
+      "y": 7
+    },
+    {
+      "type": "SteelWall",
+      "x": 13,
+      "y": 6
+    },
+    {
+      "type": "SteelWall",
+      "x": 12,
+      "y": 6
+    },
+    {
+      "type": "BrickWall",
+      "x": 19,
+      "y": 7
+    },
+    {
+      "type": "BrickWall",
+      "x": 18,
+      "y": 7
+    },
+    {
+      "type": "BrickWall",
+      "x": 19,
+      "y": 6
+    },
+    {
+      "type": "BrickWall",
+      "x": 18,
+      "y": 6
+    },
+    {
+      "type": "Trees",
+      "x": 20,
+      "y": 6
+    },
+    {
+      "type": "Trees",
+      "x": 22,
+      "y": 6
+    },
+    {
+      "type": "Trees",
+      "x": 24,
+      "y": 6
+    },
+    {
+      "type": "Trees",
+      "x": 0,
+      "y": 8
+    },
+    {
+      "type": "Trees",
+      "x": 2,
+      "y": 8
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 8
+    },
+    {
+      "type": "Water",
+      "x": 12,
+      "y": 8
+    },
+    {
+      "type": "Water",
+      "x": 16,
+      "y": 8
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 8
+    },
+    {
+      "type": "Water",
+      "x": 20,
+      "y": 8
+    },
+    {
+      "type": "Water",
+      "x": 22,
+      "y": 8
+    },
+    {
+      "type": "Trees",
+      "x": 24,
+      "y": 8
+    },
+    {
+      "type": "Water",
+      "x": 0,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 2,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 10,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 12,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 10
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 13
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 13
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 12
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 12
+    },
+    {
+      "type": "Trees",
+      "x": 6,
+      "y": 12
+    },
+    {
+      "type": "BrickWall",
+      "x": 9,
+      "y": 13
+    },
+    {
+      "type": "BrickWall",
+      "x": 8,
+      "y": 13
+    },
+    {
+      "type": "BrickWall",
+      "x": 9,
+      "y": 12
+    },
+    {
+      "type": "BrickWall",
+      "x": 8,
+      "y": 12
+    },
+    {
+      "type": "BrickWall",
+      "x": 13,
+      "y": 13
+    },
+    {
+      "type": "BrickWall",
+      "x": 12,
+      "y": 13
+    },
+    {
+      "type": "BrickWall",
+      "x": 13,
+      "y": 12
+    },
+    {
+      "type": "BrickWall",
+      "x": 12,
+      "y": 12
+    },
+    {
+      "type": "Trees",
+      "x": 14,
+      "y": 12
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 12
+    },
+    {
+      "type": "Water",
+      "x": 24,
+      "y": 12
+    },
+    {
+      "type": "Water",
+      "x": 2,
+      "y": 14
+    },
+    {
+      "type": "Water",
+      "x": 4,
+      "y": 14
+    },
+    {
+      "type": "Trees",
+      "x": 6,
+      "y": 14
+    },
+    {
+      "type": "Water",
+      "x": 8,
+      "y": 14
+    },
+    {
+      "type": "Water",
+      "x": 10,
+      "y": 14
+    },
+    {
+      "type": "Water",
+      "x": 12,
+      "y": 14
+    },
+    {
+      "type": "Water",
+      "x": 14,
+      "y": 14
+    },
+    {
+      "type": "Trees",
+      "x": 18,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 21,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 20,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 21,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 20,
+      "y": 14
+    },
+    {
+      "type": "Water",
+      "x": 24,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 1,
+      "y": 17
+    },
+    {
+      "type": "BrickWall",
+      "x": 0,
+      "y": 17
+    },
+    {
+      "type": "BrickWall",
+      "x": 1,
+      "y": 16
+    },
+    {
+      "type": "BrickWall",
+      "x": 0,
+      "y": 16
+    },
+    {
+      "type": "BrickWall",
+      "x": 7,
+      "y": 17
+    },
+    {
+      "type": "BrickWall",
+      "x": 6,
+      "y": 17
+    },
+    {
+      "type": "BrickWall",
+      "x": 7,
+      "y": 16
+    },
+    {
+      "type": "BrickWall",
+      "x": 6,
+      "y": 16
+    },
+    {
+      "type": "Water",
+      "x": 12,
+      "y": 16
+    },
+    {
+      "type": "Trees",
+      "x": 16,
+      "y": 16
+    },
+    {
+      "type": "Trees",
+      "x": 18,
+      "y": 16
+    },
+    {
+      "type": "Water",
+      "x": 20,
+      "y": 16
+    },
+    {
+      "type": "Water",
+      "x": 24,
+      "y": 16
+    },
+    {
+      "type": "Water",
+      "x": 0,
+      "y": 18
+    },
+    {
+      "type": "Water",
+      "x": 2,
+      "y": 18
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 18
+    },
+    {
+      "type": "Water",
+      "x": 8,
+      "y": 18
+    },
+    {
+      "type": "Water",
+      "x": 12,
+      "y": 18
+    },
+    {
+      "type": "BrickWall",
+      "x": 15,
+      "y": 19
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 19
+    },
+    {
+      "type": "BrickWall",
+      "x": 15,
+      "y": 18
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 18
+    },
+    {
+      "type": "Water",
+      "x": 16,
+      "y": 18
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 18
+    },
+    {
+      "type": "Water",
+      "x": 20,
+      "y": 18
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 21
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 21
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 20
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 20
+    },
+    {
+      "type": "Trees",
+      "x": 8,
+      "y": 20
+    },
+    {
+      "type": "Trees",
+      "x": 10,
+      "y": 20
+    },
+    {
+      "type": "Trees",
+      "x": 16,
+      "y": 20
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 20
+    },
+    {
+      "type": "Water",
+      "x": 24,
+      "y": 20
+    },
+    {
+      "type": "Water",
+      "x": 2,
+      "y": 22
+    },
+    {
+      "type": "Water",
+      "x": 4,
+      "y": 22
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 22
+    },
+    {
+      "type": "Trees",
+      "x": 8,
+      "y": 22
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 13,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 12,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 23
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 22
+    },
+    {
+      "type": "Water",
+      "x": 22,
+      "y": 22
+    },
+    {
+      "type": "Water",
+      "x": 24,
+      "y": 22
+    },
+    {
+      "type": "Water",
+      "x": 2,
+      "y": 24
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 25
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 24
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 25
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 24
+    }
+  ],
+  "base": {
+    "x": 12,
+    "y": 24
+  },
+  "playerSpawnPoint": {
+    "x": 8,
+    "y": 24
+  },
+  "enemySpawnPoints": [
+    {
+      "x": 12,
+      "y": 0
+    },
+    {
+      "x": 24,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 0
+    }
+  ]
+}

@@ -1,0 +1,916 @@
+{
+  "objects": [
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 0
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 1
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 1
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 0
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 0
+    },
+    {
+      "type": "BrickWall",
+      "x": 17,
+      "y": 1
+    },
+    {
+      "type": "BrickWall",
+      "x": 16,
+      "y": 1
+    },
+    {
+      "type": "BrickWall",
+      "x": 17,
+      "y": 0
+    },
+    {
+      "type": "BrickWall",
+      "x": 16,
+      "y": 0
+    },
+    {
+      "type": "BrickWall",
+      "x": 21,
+      "y": 1
+    },
+    {
+      "type": "BrickWall",
+      "x": 20,
+      "y": 1
+    },
+    {
+      "type": "BrickWall",
+      "x": 21,
+      "y": 0
+    },
+    {
+      "type": "BrickWall",
+      "x": 20,
+      "y": 0
+    },
+    {
+      "type": "BrickWall",
+      "x": 17,
+      "y": 3
+    },
+    {
+      "type": "BrickWall",
+      "x": 16,
+      "y": 3
+    },
+    {
+      "type": "BrickWall",
+      "x": 17,
+      "y": 2
+    },
+    {
+      "type": "BrickWall",
+      "x": 16,
+      "y": 2
+    },
+    {
+      "type": "SteelWall",
+      "x": 21,
+      "y": 3
+    },
+    {
+      "type": "SteelWall",
+      "x": 20,
+      "y": 3
+    },
+    {
+      "type": "SteelWall",
+      "x": 21,
+      "y": 2
+    },
+    {
+      "type": "SteelWall",
+      "x": 20,
+      "y": 2
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 4
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 5
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 13,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 12,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 13,
+      "y": 4
+    },
+    {
+      "type": "SteelWall",
+      "x": 12,
+      "y": 4
+    },
+    {
+      "type": "BrickWall",
+      "x": 17,
+      "y": 5
+    },
+    {
+      "type": "BrickWall",
+      "x": 16,
+      "y": 5
+    },
+    {
+      "type": "BrickWall",
+      "x": 17,
+      "y": 4
+    },
+    {
+      "type": "BrickWall",
+      "x": 16,
+      "y": 4
+    },
+    {
+      "type": "BrickWall",
+      "x": 21,
+      "y": 5
+    },
+    {
+      "type": "BrickWall",
+      "x": 20,
+      "y": 5
+    },
+    {
+      "type": "BrickWall",
+      "x": 21,
+      "y": 4
+    },
+    {
+      "type": "BrickWall",
+      "x": 20,
+      "y": 4
+    },
+    {
+      "type": "SteelWall",
+      "x": 1,
+      "y": 6
+    },
+    {
+      "type": "SteelWall",
+      "x": 0,
+      "y": 6
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 7
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 7
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 6
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 6
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 6
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 7
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 7
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 6
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 6
+    },
+    {
+      "type": "BrickWall",
+      "x": 15,
+      "y": 7
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 7
+    },
+    {
+      "type": "BrickWall",
+      "x": 17,
+      "y": 6
+    },
+    {
+      "type": "BrickWall",
+      "x": 16,
+      "y": 6
+    },
+    {
+      "type": "BrickWall",
+      "x": 21,
+      "y": 7
+    },
+    {
+      "type": "BrickWall",
+      "x": 20,
+      "y": 7
+    },
+    {
+      "type": "BrickWall",
+      "x": 21,
+      "y": 6
+    },
+    {
+      "type": "BrickWall",
+      "x": 20,
+      "y": 6
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 9
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 9
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 8
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 8
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 8
+    },
+    {
+      "type": "BrickWall",
+      "x": 15,
+      "y": 9
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 9
+    },
+    {
+      "type": "BrickWall",
+      "x": 15,
+      "y": 8
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 8
+    },
+    {
+      "type": "BrickWall",
+      "x": 1,
+      "y": 11
+    },
+    {
+      "type": "BrickWall",
+      "x": 0,
+      "y": 11
+    },
+    {
+      "type": "BrickWall",
+      "x": 1,
+      "y": 10
+    },
+    {
+      "type": "BrickWall",
+      "x": 0,
+      "y": 10
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 11
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 11
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 10
+    },
+    {
+      "type": "BrickWall",
+      "x": 4,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 6,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 8,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 12,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 14,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 16,
+      "y": 10
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 10
+    },
+    {
+      "type": "BrickWall",
+      "x": 25,
+      "y": 11
+    },
+    {
+      "type": "BrickWall",
+      "x": 24,
+      "y": 11
+    },
+    {
+      "type": "BrickWall",
+      "x": 25,
+      "y": 10
+    },
+    {
+      "type": "BrickWall",
+      "x": 24,
+      "y": 10
+    },
+    {
+      "type": "BrickWall",
+      "x": 7,
+      "y": 13
+    },
+    {
+      "type": "BrickWall",
+      "x": 6,
+      "y": 13
+    },
+    {
+      "type": "Trees",
+      "x": 14,
+      "y": 12
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 12
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 12
+    },
+    {
+      "type": "SteelWall",
+      "x": 22,
+      "y": 12
+    },
+    {
+      "type": "SteelWall",
+      "x": 25,
+      "y": 12
+    },
+    {
+      "type": "SteelWall",
+      "x": 24,
+      "y": 12
+    },
+    {
+      "type": "BrickWall",
+      "x": 1,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 0,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 1,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 0,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 3,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 2,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 3,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 2,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 7,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 6,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 7,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 6,
+      "y": 14
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 15
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 15
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 14
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 14
+    },
+    {
+      "type": "Trees",
+      "x": 12,
+      "y": 14
+    },
+    {
+      "type": "Trees",
+      "x": 14,
+      "y": 14
+    },
+    {
+      "type": "Trees",
+      "x": 16,
+      "y": 14
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 14
+    },
+    {
+      "type": "BrickWall",
+      "x": 23,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 22,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 25,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 24,
+      "y": 15
+    },
+    {
+      "type": "BrickWall",
+      "x": 1,
+      "y": 16
+    },
+    {
+      "type": "BrickWall",
+      "x": 0,
+      "y": 16
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 17
+    },
+    {
+      "type": "BrickWall",
+      "x": 5,
+      "y": 16
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 17
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 17
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 16
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 16
+    },
+    {
+      "type": "Trees",
+      "x": 12,
+      "y": 16
+    },
+    {
+      "type": "Trees",
+      "x": 14,
+      "y": 16
+    },
+    {
+      "type": "Trees",
+      "x": 16,
+      "y": 16
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 16
+    },
+    {
+      "type": "BrickWall",
+      "x": 23,
+      "y": 17
+    },
+    {
+      "type": "BrickWall",
+      "x": 22,
+      "y": 17
+    },
+    {
+      "type": "BrickWall",
+      "x": 23,
+      "y": 16
+    },
+    {
+      "type": "BrickWall",
+      "x": 22,
+      "y": 16
+    },
+    {
+      "type": "SteelWall",
+      "x": 3,
+      "y": 19
+    },
+    {
+      "type": "SteelWall",
+      "x": 2,
+      "y": 19
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 19
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 19
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 18
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 18
+    },
+    {
+      "type": "Trees",
+      "x": 14,
+      "y": 18
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 18
+    },
+    {
+      "type": "Trees",
+      "x": 22,
+      "y": 18
+    },
+    {
+      "type": "BrickWall",
+      "x": 3,
+      "y": 21
+    },
+    {
+      "type": "BrickWall",
+      "x": 2,
+      "y": 21
+    },
+    {
+      "type": "BrickWall",
+      "x": 3,
+      "y": 20
+    },
+    {
+      "type": "BrickWall",
+      "x": 2,
+      "y": 20
+    },
+    {
+      "type": "SteelWall",
+      "x": 7,
+      "y": 21
+    },
+    {
+      "type": "SteelWall",
+      "x": 6,
+      "y": 21
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 20
+    },
+    {
+      "type": "BrickWall",
+      "x": 10,
+      "y": 20
+    },
+    {
+      "type": "BrickWall",
+      "x": 13,
+      "y": 20
+    },
+    {
+      "type": "BrickWall",
+      "x": 12,
+      "y": 20
+    },
+    {
+      "type": "BrickWall",
+      "x": 15,
+      "y": 20
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 20
+    },
+    {
+      "type": "Trees",
+      "x": 20,
+      "y": 20
+    },
+    {
+      "type": "Trees",
+      "x": 22,
+      "y": 20
+    },
+    {
+      "type": "Trees",
+      "x": 24,
+      "y": 20
+    },
+    {
+      "type": "BrickWall",
+      "x": 3,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 2,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 3,
+      "y": 22
+    },
+    {
+      "type": "BrickWall",
+      "x": 2,
+      "y": 22
+    },
+    {
+      "type": "BrickWall",
+      "x": 7,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 6,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 7,
+      "y": 22
+    },
+    {
+      "type": "BrickWall",
+      "x": 6,
+      "y": 22
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 13,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 12,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 23
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 22
+    },
+    {
+      "type": "Trees",
+      "x": 20,
+      "y": 22
+    },
+    {
+      "type": "Trees",
+      "x": 22,
+      "y": 22
+    },
+    {
+      "type": "Trees",
+      "x": 24,
+      "y": 22
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 25
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 24
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 25
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 24
+    },
+    {
+      "type": "Water",
+      "x": 18,
+      "y": 24
+    },
+    {
+      "type": "Trees",
+      "x": 22,
+      "y": 24
+    }
+  ],
+  "base": {
+    "x": 12,
+    "y": 24
+  },
+  "playerSpawnPoint": {
+    "x": 8,
+    "y": 24
+  },
+  "enemySpawnPoints": [
+    {
+      "x": 12,
+      "y": 0
+    },
+    {
+      "x": 24,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 0
+    }
+  ]
+}

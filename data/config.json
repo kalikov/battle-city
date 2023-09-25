@@ -1,0 +1,84 @@
+{
+  "name": "Battle City",
+  "resolution": {
+    "width": 800,
+    "height": 600
+  },
+  "fpsLimit": 125,
+  "fonts": {
+    "prstart": {
+      "path": "fonts/prstart.ttf",
+      "size": 8
+    },
+    "prstart-32": {
+      "path": "fonts/prstart.ttf",
+      "size": 32
+    }
+  },
+  "sounds": {
+    "stage_start": "sounds/stage_start.au",
+    "game_over": "sounds/game_over.au",
+    "bullet_shot": "sounds/bullet_shot.au",
+    "bullet_hit_1": "sounds/bullet_hit_1.au",
+    "bullet_hit_2": "sounds/bullet_hit_2.au",
+    "explosion_1": "sounds/explosion_1.au",
+    "explosion_2": "sounds/explosion_2.au",
+    "pause": "sounds/pause.au",
+    "powerup_appear": "sounds/powerup_appear.au",
+    "powerup_pick": "sounds/powerup_pick.au",
+    "statistics_1": "sounds/statistics_1.au"
+  },
+  "images": {
+    "tank_player": "images/tank_player.png",
+    "tank_enemy": "images/tank_enemy.png",
+    "appear": "images/appear.png",
+    "big_explosion": "images/big_explosion.png",
+    "shield": "images/shield.png",
+    "bullet": "images/bullet.png",
+    "bullet_explosion": "images/bullet_explosion.png",
+    "wall_brick": "images/wall_brick.png",
+    "wall_steel": "images/wall_steel.png",
+    "ice": "images/ice.png",
+    "trees": "images/trees.png",
+    "water": "images/water.png",
+    "base": "images/base.png",
+    "enemy": "images/enemy.png",
+    "lives": "images/lives.png",
+    "flag": "images/flag.png",
+    "roman_one": "images/roman_one.png",
+    "points": "images/points.png",
+    "powerup": "images/powerup.png",
+    "namco": "images/namco.png",
+    "copyright": "images/copyright.png",
+    "arrows": "images/arrows.png"
+  },
+  "construction": "data/construction.json",
+  "stages": [
+    {
+      "map": "data/stage1.json",
+      "enemies": [
+        {
+          "type": "ARMOR",
+          "count": 18
+        },
+        {
+          "type": "FAST",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "map": "data/stage2.json",
+      "enemies": [
+        {
+          "type": "ARMOR",
+          "count": 18
+        },
+        {
+          "type": "FAST",
+          "count": 2
+        }
+      ]
+    }
+  ]
+}

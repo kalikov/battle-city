@@ -1,0 +1,312 @@
+package com.kalikov.game
+
+import java.time.Clock
+
+class Tank(
+    private val eventManager: EventManager,
+    private val pauseManager: PauseManager,
+    private val imageManager: ImageManager,
+    val clock: Clock,
+    x: Int,
+    y: Int
+) : Sprite(
+    eventManager,
+    x,
+    y,
+    Globals.UNIT_SIZE,
+    Globals.UNIT_SIZE
+), AITankHandle, PlayerTankHandle, EventSubscriber {
+    companion object {
+        const val COOLDOWN_INTERVAL = 200
+
+        private val subscriptions = setOf(
+            Bullet.Destroyed::class,
+            TankStateAppearing.End::class,
+            TankStateInvincible.End::class
+        )
+    }
+
+    override var isIdle = true
+
+    val canMove get() = state.canMove
+    val canBeDestroyed get() = state.canBeDestroyed
+
+    val isCollidable get() = state.isCollidable
+
+    var moveFrequency = 6
+        set(value) {
+            field = value
+            moveCountDown = CountDown(value, ::moved)
+        }
+
+    override var direction = Direction.RIGHT
+        set(value) {
+            if (value == field) {
+                return
+            }
+            smoothTurn(value)
+            field = value
+        }
+
+    var collisionResolvingMoveLimit = Globals.TILE_SIZE / 2
+
+    var enemyType: EnemyType? = null
+    var state: TankState = TankStateNormal(imageManager, this)
+    var value = 0
+    var isFlashing = false
+        set(value) {
+            if (hit != 0) {
+                throw IllegalStateException("Hit tank can not be flashing")
+            }
+            field = value
+        }
+    var upgradeLevel = 0
+        private set
+    var color = TankColor(clock)
+
+    var hitLimit = 1
+    private var hit = 0
+
+    val isHit get() = hit > 0
+
+    var bulletSpeed = Bullet.Speed.NORMAL
+    var bulletsLimit = 1
+    private var bullets = 0
+
+    var bulletType = Bullet.Type.REGULAR
+
+    private var shooting = false
+    private val cooldownTimer = PauseAwareTimer(eventManager, clock, COOLDOWN_INTERVAL, ::resetCooldown)
+
+    private val turnRoundTo = Globals.TILE_SIZE
+
+    var moveCountDown = CountDown(moveFrequency, ::moved)
+        private set
+
+    var moveDistance = 0
+        private set
+
+    init {
+        LeaksDetector.add(this)
+
+        z = 1
+
+        eventManager.addSubscriber(this, subscriptions)
+    }
+
+    enum class EnemyType(val score: Int, val index: Int) {
+        BASIC(100, 0),
+        FAST(200, 1),
+        POWER(300, 2),
+        ARMOR(400, 3)
+    }
+
+    data class Shoot(val tank: Tank) : Event()
+    data class Destroyed(val tank: Tank) : Event()
+    data class PlayerDestroyed(val tank: Tank) : Event()
+    data class EnemyDestroyed(val tank: Tank) : Event()
+    data class FlashingTankHit(val tank: Tank) : Event()
+
+    fun isPlayer(): Boolean {
+        return enemyType == null
+    }
+
+    fun isEnemy(): Boolean {
+        return enemyType != null
+    }
+
+    private fun moved() {
+        moveDistance++
+    }
+
+    fun createBullet(): Bullet {
+        val bullet = Bullet(eventManager, imageManager, this, bulletSpeed)
+        bullet.setPosition(getBulletPosition(bullet))
+        bullet.direction = direction
+        bullet.type = bulletType
+        return bullet
+    }
+
+    private fun getBulletPosition(bullet: Bullet): Point {
+        val x: Int
+        val y: Int
+        when (bullet.tank.direction) {
+            Direction.RIGHT -> {
+                x = bullet.tank.right + 1
+                y = bullet.tank.top + bullet.tank.height / 2 - bullet.height / 2
+            }
+
+            Direction.LEFT -> {
+                x = bullet.tank.left - bullet.width
+                y = bullet.tank.top + bullet.tank.height / 2 - bullet.height / 2
+            }
+
+            Direction.UP -> {
+                x = bullet.tank.left + bullet.tank.width / 2 - bullet.width / 2
+                y = bullet.tank.top - bullet.height
+            }
+
+            Direction.DOWN -> {
+                x = bullet.tank.left + bullet.tank.width / 2 - bullet.width / 2
+                y = bullet.tank.bottom + 1
+            }
+        }
+        return Point(x, y)
+    }
+
+    override fun shoot() {
+        if (isDestroyed || pauseManager.isPaused) {
+            return
+        }
+        if (!state.canShoot) {
+            return
+        }
+        if (bullets >= bulletsLimit) {
+            return
+        }
+        if (cooldownTimer.isStopped) {
+            bullets++
+            eventManager.fireEvent(Shoot(this))
+            cooldownTimer.restart()
+        }
+    }
+
+    private fun resetCooldown() {
+        cooldownTimer.stop()
+    }
+
+    override fun updateHook() {
+        state.update()
+        cooldownTimer.update()
+        if (shooting) {
+            shoot()
+        }
+    }
+
+    fun outOfBounds(bounds: Rect) {
+        var x = this.x
+        var y = this.y
+        if (x < bounds.left) {
+            x = bounds.left
+        } else if (x + width - 1 > bounds.right) {
+            x = bounds.right - width + 1
+        }
+        if (y < bounds.top) {
+            y = bounds.top
+        } else if (y + height - 1 > bounds.bottom) {
+            y = bounds.bottom - height + 1
+        }
+        setPosition(x, y)
+    }
+
+    fun updateColor() {
+        if (isFlashing) {
+            return
+        }
+        color.update()
+    }
+
+    override fun notify(event: Event) {
+        if (event is Bullet.Destroyed && event.bullet.tank == this) {
+            bullets--
+        } else if (event is TankStateAppearing.End && event.tank === this) {
+            stateAppearingEnd()
+        } else if (event is TankStateInvincible.End && event.tank === this) {
+            state = TankStateNormal(imageManager, this)
+        }
+    }
+
+    private fun stateAppearingEnd() {
+        if (enemyType == null) {
+            state = TankStateInvincible(eventManager, imageManager, this)
+            direction = Direction.UP
+        } else {
+            state = TankStateNormal(imageManager, this)
+            direction = Direction.DOWN
+        }
+    }
+
+    fun hit() {
+        if (isDestroyed) {
+            return
+        }
+        if (isFlashing) {
+            eventManager.fireEvent(FlashingTankHit(this))
+            isFlashing = false
+        }
+        hit++
+        color.hit()
+        if (hit >= hitLimit) {
+            destroy()
+        }
+    }
+
+    override fun destroyHook() {
+        eventManager.fireEvent(Destroyed(this))
+
+        if (enemyType == null) {
+            eventManager.fireEvent(PlayerDestroyed(this))
+        } else {
+            eventManager.fireEvent(EnemyDestroyed(this))
+        }
+    }
+
+    override fun dispose() {
+        cooldownTimer.dispose()
+
+        eventManager.removeSubscriber(this, subscriptions)
+
+        LeaksDetector.remove(this)
+    }
+
+    override fun startShooting() {
+        shooting = true
+        shoot()
+    }
+
+    override fun stopShooting() {
+        shooting = false
+    }
+
+    private fun smoothTurn(newDirection: Direction) {
+        val prevDirection = direction
+        if (newDirection == Direction.UP || newDirection == Direction.DOWN) {
+            if (prevDirection == Direction.RIGHT || prevDirection == Direction.LEFT) {
+                val v = x % turnRoundTo
+                if (v > 0) {
+                    if (v < turnRoundTo / 2 || v == turnRoundTo / 2 && prevDirection == Direction.LEFT) {
+                        setPosition(x - v, y)
+                    } else {
+                        setPosition(x - v + turnRoundTo, y)
+                    }
+                }
+            }
+        } else if (prevDirection == Direction.DOWN || prevDirection == Direction.UP) {
+            val v = y % turnRoundTo
+            if (v > 0) {
+                if (v <= turnRoundTo / 2) {
+                    setPosition(x, y - v)
+                } else {
+                    setPosition(x, y - v + turnRoundTo)
+                }
+            }
+        }
+    }
+
+    override fun draw(surface: ScreenSurface) {
+        state.draw(surface)
+    }
+
+    fun upgrade() {
+        if (upgradeLevel == 3) {
+            return
+        }
+        upgradeLevel++
+
+        when (upgradeLevel) {
+            1 -> bulletSpeed = Bullet.Speed.FAST
+            2 -> bulletsLimit = 2
+            3 -> bulletType = Bullet.Type.ENHANCED
+        }
+    }
+}

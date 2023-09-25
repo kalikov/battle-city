@@ -1,0 +1,801 @@
+{
+  "objects": [
+    {
+      "type": "SteelWall",
+      "x": 9,
+      "y": 1
+    },
+    {
+      "type": "SteelWall",
+      "x": 8,
+      "y": 1
+    },
+    {
+      "type": "SteelWall",
+      "x": 9,
+      "y": 0
+    },
+    {
+      "type": "SteelWall",
+      "x": 8,
+      "y": 0
+    },
+    {
+      "type": "SteelWall",
+      "x": 19,
+      "y": 1
+    },
+    {
+      "type": "SteelWall",
+      "x": 18,
+      "y": 1
+    },
+    {
+      "type": "SteelWall",
+      "x": 19,
+      "y": 0
+    },
+    {
+      "type": "SteelWall",
+      "x": 18,
+      "y": 0
+    },
+    {
+      "type": "SteelWall",
+      "x": 3,
+      "y": 3
+    },
+    {
+      "type": "SteelWall",
+      "x": 2,
+      "y": 3
+    },
+    {
+      "type": "SteelWall",
+      "x": 3,
+      "y": 2
+    },
+    {
+      "type": "SteelWall",
+      "x": 2,
+      "y": 2
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 3
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 3
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 2
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 2
+    },
+    {
+      "type": "SteelWall",
+      "x": 17,
+      "y": 3
+    },
+    {
+      "type": "SteelWall",
+      "x": 16,
+      "y": 3
+    },
+    {
+      "type": "SteelWall",
+      "x": 17,
+      "y": 2
+    },
+    {
+      "type": "SteelWall",
+      "x": 16,
+      "y": 2
+    },
+    {
+      "type": "Trees",
+      "x": 18,
+      "y": 2
+    },
+    {
+      "type": "Trees",
+      "x": 20,
+      "y": 2
+    },
+    {
+      "type": "SteelWall",
+      "x": 5,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 4,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 5,
+      "y": 4
+    },
+    {
+      "type": "SteelWall",
+      "x": 4,
+      "y": 4
+    },
+    {
+      "type": "SteelWall",
+      "x": 15,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 14,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 15,
+      "y": 4
+    },
+    {
+      "type": "SteelWall",
+      "x": 14,
+      "y": 4
+    },
+    {
+      "type": "Trees",
+      "x": 16,
+      "y": 4
+    },
+    {
+      "type": "SteelWall",
+      "x": 19,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 18,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 20,
+      "y": 5
+    },
+    {
+      "type": "SteelWall",
+      "x": 20,
+      "y": 4
+    },
+    {
+      "type": "SteelWall",
+      "x": 7,
+      "y": 7
+    },
+    {
+      "type": "SteelWall",
+      "x": 6,
+      "y": 7
+    },
+    {
+      "type": "SteelWall",
+      "x": 7,
+      "y": 6
+    },
+    {
+      "type": "SteelWall",
+      "x": 6,
+      "y": 6
+    },
+    {
+      "type": "Trees",
+      "x": 10,
+      "y": 6
+    },
+    {
+      "type": "Trees",
+      "x": 12,
+      "y": 6
+    },
+    {
+      "type": "Trees",
+      "x": 14,
+      "y": 6
+    },
+    {
+      "type": "Trees",
+      "x": 16,
+      "y": 6
+    },
+    {
+      "type": "Trees",
+      "x": 18,
+      "y": 6
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 7
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 6
+    },
+    {
+      "type": "SteelWall",
+      "x": 2,
+      "y": 9
+    },
+    {
+      "type": "SteelWall",
+      "x": 2,
+      "y": 8
+    },
+    {
+      "type": "SteelWall",
+      "x": 9,
+      "y": 9
+    },
+    {
+      "type": "SteelWall",
+      "x": 8,
+      "y": 9
+    },
+    {
+      "type": "SteelWall",
+      "x": 9,
+      "y": 8
+    },
+    {
+      "type": "SteelWall",
+      "x": 8,
+      "y": 8
+    },
+    {
+      "type": "Trees",
+      "x": 10,
+      "y": 8
+    },
+    {
+      "type": "Trees",
+      "x": 12,
+      "y": 8
+    },
+    {
+      "type": "SteelWall",
+      "x": 15,
+      "y": 9
+    },
+    {
+      "type": "SteelWall",
+      "x": 14,
+      "y": 9
+    },
+    {
+      "type": "SteelWall",
+      "x": 15,
+      "y": 8
+    },
+    {
+      "type": "SteelWall",
+      "x": 14,
+      "y": 8
+    },
+    {
+      "type": "Trees",
+      "x": 16,
+      "y": 8
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 9
+    },
+    {
+      "type": "SteelWall",
+      "x": 22,
+      "y": 9
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 8
+    },
+    {
+      "type": "SteelWall",
+      "x": 22,
+      "y": 8
+    },
+    {
+      "type": "SteelWall",
+      "x": 3,
+      "y": 10
+    },
+    {
+      "type": "SteelWall",
+      "x": 2,
+      "y": 10
+    },
+    {
+      "type": "SteelWall",
+      "x": 4,
+      "y": 11
+    },
+    {
+      "type": "SteelWall",
+      "x": 4,
+      "y": 10
+    },
+    {
+      "type": "Trees",
+      "x": 6,
+      "y": 10
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 11
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 11
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 10
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 10
+    },
+    {
+      "type": "Trees",
+      "x": 12,
+      "y": 10
+    },
+    {
+      "type": "Trees",
+      "x": 14,
+      "y": 10
+    },
+    {
+      "type": "SteelWall",
+      "x": 17,
+      "y": 11
+    },
+    {
+      "type": "SteelWall",
+      "x": 16,
+      "y": 11
+    },
+    {
+      "type": "SteelWall",
+      "x": 17,
+      "y": 10
+    },
+    {
+      "type": "SteelWall",
+      "x": 16,
+      "y": 10
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 11
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 10
+    },
+    {
+      "type": "Trees",
+      "x": 4,
+      "y": 12
+    },
+    {
+      "type": "Trees",
+      "x": 6,
+      "y": 12
+    },
+    {
+      "type": "Trees",
+      "x": 8,
+      "y": 12
+    },
+    {
+      "type": "Trees",
+      "x": 10,
+      "y": 12
+    },
+    {
+      "type": "Trees",
+      "x": 12,
+      "y": 12
+    },
+    {
+      "type": "SteelWall",
+      "x": 19,
+      "y": 13
+    },
+    {
+      "type": "SteelWall",
+      "x": 18,
+      "y": 13
+    },
+    {
+      "type": "SteelWall",
+      "x": 19,
+      "y": 12
+    },
+    {
+      "type": "SteelWall",
+      "x": 18,
+      "y": 12
+    },
+    {
+      "type": "SteelWall",
+      "x": 3,
+      "y": 15
+    },
+    {
+      "type": "SteelWall",
+      "x": 2,
+      "y": 15
+    },
+    {
+      "type": "SteelWall",
+      "x": 4,
+      "y": 15
+    },
+    {
+      "type": "SteelWall",
+      "x": 4,
+      "y": 14
+    },
+    {
+      "type": "Trees",
+      "x": 6,
+      "y": 14
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 15
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 15
+    },
+    {
+      "type": "SteelWall",
+      "x": 11,
+      "y": 14
+    },
+    {
+      "type": "SteelWall",
+      "x": 10,
+      "y": 14
+    },
+    {
+      "type": "Trees",
+      "x": 12,
+      "y": 14
+    },
+    {
+      "type": "SteelWall",
+      "x": 21,
+      "y": 15
+    },
+    {
+      "type": "SteelWall",
+      "x": 20,
+      "y": 15
+    },
+    {
+      "type": "SteelWall",
+      "x": 21,
+      "y": 14
+    },
+    {
+      "type": "SteelWall",
+      "x": 20,
+      "y": 14
+    },
+    {
+      "type": "Trees",
+      "x": 2,
+      "y": 16
+    },
+    {
+      "type": "Trees",
+      "x": 4,
+      "y": 16
+    },
+    {
+      "type": "Trees",
+      "x": 6,
+      "y": 16
+    },
+    {
+      "type": "SteelWall",
+      "x": 9,
+      "y": 17
+    },
+    {
+      "type": "SteelWall",
+      "x": 8,
+      "y": 17
+    },
+    {
+      "type": "SteelWall",
+      "x": 9,
+      "y": 16
+    },
+    {
+      "type": "SteelWall",
+      "x": 8,
+      "y": 16
+    },
+    {
+      "type": "SteelWall",
+      "x": 13,
+      "y": 17
+    },
+    {
+      "type": "SteelWall",
+      "x": 12,
+      "y": 17
+    },
+    {
+      "type": "SteelWall",
+      "x": 13,
+      "y": 16
+    },
+    {
+      "type": "SteelWall",
+      "x": 12,
+      "y": 16
+    },
+    {
+      "type": "SteelWall",
+      "x": 17,
+      "y": 17
+    },
+    {
+      "type": "SteelWall",
+      "x": 16,
+      "y": 17
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 17
+    },
+    {
+      "type": "SteelWall",
+      "x": 22,
+      "y": 17
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 16
+    },
+    {
+      "type": "SteelWall",
+      "x": 22,
+      "y": 16
+    },
+    {
+      "type": "Trees",
+      "x": 0,
+      "y": 18
+    },
+    {
+      "type": "Trees",
+      "x": 2,
+      "y": 18
+    },
+    {
+      "type": "Trees",
+      "x": 4,
+      "y": 18
+    },
+    {
+      "type": "SteelWall",
+      "x": 7,
+      "y": 19
+    },
+    {
+      "type": "SteelWall",
+      "x": 6,
+      "y": 19
+    },
+    {
+      "type": "SteelWall",
+      "x": 7,
+      "y": 18
+    },
+    {
+      "type": "SteelWall",
+      "x": 6,
+      "y": 18
+    },
+    {
+      "type": "SteelWall",
+      "x": 17,
+      "y": 19
+    },
+    {
+      "type": "SteelWall",
+      "x": 17,
+      "y": 18
+    },
+    {
+      "type": "SteelWall",
+      "x": 5,
+      "y": 21
+    },
+    {
+      "type": "SteelWall",
+      "x": 4,
+      "y": 21
+    },
+    {
+      "type": "SteelWall",
+      "x": 5,
+      "y": 20
+    },
+    {
+      "type": "SteelWall",
+      "x": 4,
+      "y": 20
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 21
+    },
+    {
+      "type": "SteelWall",
+      "x": 23,
+      "y": 20
+    },
+    {
+      "type": "SteelWall",
+      "x": 25,
+      "y": 21
+    },
+    {
+      "type": "SteelWall",
+      "x": 24,
+      "y": 21
+    },
+    {
+      "type": "SteelWall",
+      "x": 25,
+      "y": 20
+    },
+    {
+      "type": "SteelWall",
+      "x": 24,
+      "y": 20
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 13,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 12,
+      "y": 23
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 23
+    },
+    {
+      "type": "SteelWall",
+      "x": 19,
+      "y": 23
+    },
+    {
+      "type": "SteelWall",
+      "x": 18,
+      "y": 23
+    },
+    {
+      "type": "SteelWall",
+      "x": 20,
+      "y": 23
+    },
+    {
+      "type": "SteelWall",
+      "x": 20,
+      "y": 22
+    },
+    {
+      "type": "SteelWall",
+      "x": 0,
+      "y": 25
+    },
+    {
+      "type": "SteelWall",
+      "x": 0,
+      "y": 24
+    },
+    {
+      "type": "SteelWall",
+      "x": 5,
+      "y": 25
+    },
+    {
+      "type": "SteelWall",
+      "x": 4,
+      "y": 25
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 25
+    },
+    {
+      "type": "BrickWall",
+      "x": 11,
+      "y": 24
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 25
+    },
+    {
+      "type": "BrickWall",
+      "x": 14,
+      "y": 24
+    }
+  ],
+  "base": {
+    "x": 12,
+    "y": 24
+  },
+  "playerSpawnPoint": {
+    "x": 8,
+    "y": 24
+  },
+  "enemySpawnPoints": [
+    {
+      "x": 12,
+      "y": 0
+    },
+    {
+      "x": 24,
+      "y": 0
+    },
+    {
+      "x": 0,
+      "y": 0
+    }
+  ]
+}
