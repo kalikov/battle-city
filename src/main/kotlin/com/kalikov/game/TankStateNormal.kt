@@ -2,9 +2,12 @@ package com.kalikov.game
 
 open class TankStateNormal(
     imageManager: ImageManager,
-    private val tank: Tank,
-    flashDuration: Int = 200
+    private val tank: Tank
 ) : TankState {
+    companion object {
+        const val FLASH_INTERVAL = 128
+    }
+
     var isBright = true
         private set
 
@@ -16,21 +19,20 @@ open class TankStateNormal(
 
     private val trackFrames = arrayOf(1, 2)
 
-    private val flashTimer = BasicTimer(tank.clock, flashDuration, ::flashed)
-    private val image = imageManager.getImage(if (tank.isPlayer()) "tank_player" else "tank_enemy")
-
-    init {
-        flashTimer.restart()
-    }
+    private val flashTimer = BasicTimer(tank.clock, FLASH_INTERVAL, ::flashed)
+    private val image = imageManager.getImage(if (tank.isPlayer) "tank_player" else "tank_enemy")
 
     override fun update() {
+        if (flashTimer.isStopped) {
+            flashTimer.restart()
+        }
         flashTimer.update()
         tank.updateColor()
     }
 
     override fun draw(surface: ScreenSurface) {
         val column = 2 * tank.direction.index + getTrackFrame() - 1
-        val row = if (tank.isPlayer()) {
+        val row = if (tank.isPlayer) {
             tank.upgradeLevel
         } else {
             val typeOffset = 2 * (tank.enemyType?.index ?: 0)

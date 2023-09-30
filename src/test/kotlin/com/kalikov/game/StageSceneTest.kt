@@ -38,6 +38,7 @@ class StageSceneTest {
         }
         val stage = Stage(
             map,
+            1,
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 19))
         )
         whenever(stageManager.stage).thenReturn(stage)
@@ -68,7 +69,7 @@ class StageSceneTest {
         whenever(stageManager.player).thenReturn(player)
 
         val map = StageMapConfig(emptyList(), Point(12, 24), Point(8, 24), emptyList())
-        val stage = Stage(map, emptyList())
+        val stage = Stage(map, 1, emptyList())
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.stageNumber).thenReturn(1)
 
@@ -79,9 +80,12 @@ class StageSceneTest {
             scene.update()
         }
         eventManager.fireEvent(BaseExplosion.Destroyed(BaseExplosion(eventManager, imageManager, clock)))
-        scene.update()
-        clock.tick(3000)
-        scene.update()
+        scene.update() // start initial delay
+        clock.tick(1000)
+        scene.update() // complete initial delay
+        scene.update() // start game over message
+        clock.tick(2000)
+        scene.update() // update game over message
 
         val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
         scene.draw(AwtScreenSurface(fonts, image))

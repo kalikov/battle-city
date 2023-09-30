@@ -8,11 +8,13 @@ class BaseExplosion(
     clock: Clock
 ) : Explosion(
     eventManager,
-    Animation.pauseAware(eventManager, frameSequenceOf(1, 2, 3, 4, 5, 3), clock, ANIMATION_INTERVAL),
+    Animation.pauseAware(eventManager, frameSequenceOf(*animationFrames), clock, ANIMATION_INTERVAL),
     Globals.UNIT_SIZE * 2
 ) {
     companion object {
-        const val ANIMATION_INTERVAL = 64
+        private val animationFrames = intArrayOf(1, 2, 3, 4, 5, 3)
+
+        const val ANIMATION_INTERVAL = 96
     }
 
     data class Destroyed(val explosion: BaseExplosion) : Event()

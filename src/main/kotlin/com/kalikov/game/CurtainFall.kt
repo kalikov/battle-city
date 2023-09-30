@@ -8,7 +8,7 @@ class CurtainFall(
     private val script: ScriptCallback,
     clock: Clock
 ) : ScriptNode {
-    private val timer = BasicTimer(clock, max(1, 32 / Globals.TILE_SIZE), this::fall)
+    private val timer = BasicTimer(clock, max(1, 32 / Globals.UNIT_SIZE), this::fall)
 
     override val isDisposable get() = false
 

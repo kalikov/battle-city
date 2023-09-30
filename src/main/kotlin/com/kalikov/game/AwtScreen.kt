@@ -109,6 +109,10 @@ class AwtScreen(private val frame: JFrame, private val fonts: AwtFonts) : Screen
         }
     }
 
+    override fun createSurface(): AwtScreenSurface {
+        return AwtScreenSurface(fonts, surface.width, surface.height)
+    }
+
     override fun createSurface(width: Int, height: Int): AwtScreenSurface {
         return AwtScreenSurface(fonts, width, height)
     }

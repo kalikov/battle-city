@@ -23,8 +23,15 @@ class PlayerTankFactory(
 
     init {
         eventManager.addSubscriber(this, subscriptions)
+    }
 
-        playerTank = create()
+    fun init(upgradeLevel: Int) {
+        check(playerTank == null)
+        val tank = create()
+        for (i in 1..upgradeLevel) {
+            tank.upgrade()
+        }
+        playerTank = tank
     }
 
     override fun notify(event: Event) {
@@ -43,7 +50,7 @@ class PlayerTankFactory(
     private fun create(): Tank {
         val tank = Tank(eventManager, pauseManager, imageManager, clock, appearPosition.x, appearPosition.y)
         spriteContainer.addSprite(tank)
-        tank.state = TankStateAppearing(eventManager, imageManager, tank)
+        tank.state = TankStateAppearing(eventManager, imageManager, tank, 48)
         eventManager.fireEvent(PlayerTankCreated(tank))
         return tank
     }
@@ -53,7 +60,7 @@ class PlayerTankFactory(
             return false
         }
         val tank = event.explosion.tank
-        return tank.isPlayer()
+        return tank.isPlayer
     }
 
     fun dispose() {

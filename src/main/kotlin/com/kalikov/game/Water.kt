@@ -11,6 +11,8 @@ class Water(
 ) : Sprite(eventManager, x, y, Globals.UNIT_SIZE, Globals.UNIT_SIZE), Entity {
     companion object {
         const val CLASS_NAME = "Water"
+
+        private val animationFrames = intArrayOf(1, 2)
     }
 
     private val image = imageManager.getImage("water")
@@ -23,7 +25,7 @@ class Water(
         z = -1
     }
 
-    private val animation = Animation.pauseAware(eventManager, frameLoopOf(1, 2), clock, 1000)
+    private val animation = Animation.pauseAware(eventManager, frameLoopOf(*animationFrames), clock, 500)
 
     override fun toStageObject(): StageObject {
         return StageObject(CLASS_NAME, x / Globals.TILE_SIZE, y / Globals.TILE_SIZE)

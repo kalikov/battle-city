@@ -5,7 +5,7 @@ import java.time.Clock
 class StageScorePointsView(
     private val eventManager: EventManager,
     private val value: Int,
-    private val count: Int,
+    count: Int,
     private val listener: Script,
     clock: Clock
 ) : ScriptNode {
@@ -14,20 +14,24 @@ class StageScorePointsView(
     private val script = Script()
 
     init {
-        script.enqueue(Delay(script, 640, clock))
+        if (count > 0) {
+            script.enqueue(Execute {
+                eventManager.fireEvent(SoundManager.Play("statistics_1"))
+            })
+            script.enqueue(Delay(script, 160, clock))
+        }
         for (i in 1 until count) {
             script.enqueue(Execute {
                 counter++
                 eventManager.fireEvent(SoundManager.Play("statistics_1"))
             })
-            script.enqueue(Delay(script, 320, clock))
+            script.enqueue(Delay(script, 160, clock))
         }
-        script.enqueue(Delay(script, 480, clock))
+        script.enqueue(Delay(script, 640, clock))
         script.enqueue(Execute { listener.actionCompleted() })
     }
 
-    override val isDisposable: Boolean
-        get() = false
+    override val isDisposable get() = false
 
     override fun update() {
         script.update()

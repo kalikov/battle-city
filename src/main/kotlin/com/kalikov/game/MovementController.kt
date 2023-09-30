@@ -97,7 +97,7 @@ class MovementController(
 
     private fun bulletCollidable(bullet: Bullet, tank: Tank): Boolean {
         val bulletTank = bullet.tank
-        return bulletTank !== tank && (!tank.isEnemy() || !bulletTank.isEnemy()) && tank.isCollidable
+        return bulletTank !== tank && (!tank.isEnemy || !bulletTank.isEnemy) && tank.isCollidable
     }
 
     private fun bulletIntersects(bullet1: Bullet, bullet2: Bullet): Boolean {
@@ -105,7 +105,7 @@ class MovementController(
     }
 
     private fun bulletCollidable(bullet1: Bullet, bullet2: Bullet): Boolean {
-        return !(bullet1.tank.isEnemy() && bullet2.tank.isEnemy())
+        return !(bullet1.tank.isEnemy && bullet2.tank.isEnemy)
     }
 
     private fun moveTanks() {
@@ -121,15 +121,18 @@ class MovementController(
             return
         }
         if (!tank.isIdle) {
-            tank.moveCountDown.update()
-            if (tank.moveCountDown.stopped) {
-                tank.moveCountDown.restart()
-                when (tank.direction) {
-                    Direction.RIGHT -> tank.setPosition(tank.x + 1, tank.y)
-                    Direction.LEFT -> tank.setPosition(tank.x - 1, tank.y)
-                    Direction.UP -> tank.setPosition(tank.x, tank.y - 1)
-                    Direction.DOWN -> tank.setPosition(tank.x, tank.y + 1)
-                }
+//            tank.moveCountDown.update()
+//            if (tank.moveCountDown.stopped) {
+//                tank.moveCountDown.restart()
+//                when (tank.direction) {
+//                    Direction.RIGHT -> tank.setPosition(tank.x + 1, tank.y)
+//                    Direction.LEFT -> tank.setPosition(tank.x - 1, tank.y)
+//                    Direction.UP -> tank.setPosition(tank.x, tank.y - 1)
+//                    Direction.DOWN -> tank.setPosition(tank.x, tank.y + 1)
+//                }
+//                detectCollisionsForTank(tank)
+//            }
+            if (tank.move()) {
                 detectCollisionsForTank(tank)
             }
         }
@@ -145,7 +148,7 @@ class MovementController(
                 if (tank.bounds.intersects(sprite.bounds)) {
                     if (wallCollision(sprite) || tankCollision(sprite) || baseCollision(sprite) || waterCollision(sprite)) {
                         resolveCollisionWithSprite(tank, sprite)
-                    } else if (tank.isPlayer() && sprite is PowerUp) {
+                    } else if (tank.isPlayer && sprite is PowerUp) {
                         sprite.pick(tank)
                     } else if (sprite is Bullet && bulletCollision(sprite, tank)) {
                         if (tank.canBeDestroyed) {
@@ -191,14 +194,14 @@ class MovementController(
 
     private fun bulletCollision(bullet: Bullet, tank: Tank): Boolean {
         val bulletTank = bullet.tank
-        return bulletTank !== tank && (!tank.isEnemy() || !bulletTank.isEnemy()) && tank.isCollidable
+        return bulletTank !== tank && (!tank.isEnemy || !bulletTank.isEnemy) && tank.isCollidable
     }
 
     private fun detectCollisionsForPowerUp(powerUp: PowerUp) {
         val sprites = spriteContainer.sprites
         for (sprite in sprites) {
             if (powerUp !== sprite) {
-                if (sprite is Tank && sprite.isPlayer() && powerUp.bounds.intersects(sprite.bounds)) {
+                if (sprite is Tank && sprite.isPlayer && powerUp.bounds.intersects(sprite.bounds)) {
                     powerUp.pick(sprite)
                     break
                 }

@@ -40,6 +40,7 @@ class StageScoreSceneTest {
                 Point(8, 24),
                 listOf(Point(12, 0), Point(24, 0), Point(0, 0))
             ),
+            1,
             emptyList()
         )
 

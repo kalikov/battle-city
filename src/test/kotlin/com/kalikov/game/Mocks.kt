@@ -77,6 +77,14 @@ fun mockTankExplosion(
     return TankExplosion(eventManager, imageManager, tank)
 }
 
+fun mockBaseExplosion(
+    eventManager: EventManager = mock(),
+    imageManager: ImageManager = mock(),
+    clock: Clock = mock()
+): BaseExplosion {
+    return BaseExplosion(eventManager, imageManager, clock)
+}
+
 fun mockPoints(
     eventManager: EventManager = mock(),
     imageManager: ImageManager = mock(),
@@ -84,7 +92,7 @@ fun mockPoints(
     x: Int = 0,
     y: Int = 0
 ): Points {
-    return Points(eventManager, imageManager, clock, x, y)
+    return Points(eventManager, imageManager, clock, x, y, 200)
 }
 
 fun mockPowerUp(

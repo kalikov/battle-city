@@ -58,7 +58,7 @@
       "map": "data/stage1.json",
       "enemies": [
         {
-          "type": "ARMOR",
+          "type": "BASIC",
           "count": 18
         },
         {
@@ -72,11 +72,1294 @@
       "enemies": [
         {
           "type": "ARMOR",
-          "count": 18
+          "count": 2
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "BASIC",
+          "count": 14
+        }
+      ]
+    },
+    {
+      "map": "data/stage3.json",
+      "enemies": [
+        {
+          "type": "BASIC",
+          "count": 14
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "ARMOR",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "map": "data/stage4.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 10
+        },
+        {
+          "type": "FAST",
+          "count": 5
+        },
+        {
+          "type": "BASIC",
+          "count": 2
+        },
+        {
+          "type": "ARMOR",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "map": "data/stage5.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 5
+        },
+        {
+          "type": "ARMOR",
+          "count": 2
+        },
+        {
+          "type": "BASIC",
+          "count": 8
+        },
+        {
+          "type": "FAST",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "map": "data/stage6.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 7
         },
         {
           "type": "FAST",
           "count": 2
+        },
+        {
+          "type": "BASIC",
+          "count": 9
+        },
+        {
+          "type": "ARMOR",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "map": "data/stage7.json",
+      "enemies": [
+        {
+          "type": "BASIC",
+          "count": 3
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "POWER",
+          "count": 6
+        },
+        {
+          "type": "BASIC",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "map": "data/stage8.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 7
+        },
+        {
+          "type": "ARMOR",
+          "count": 2
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "BASIC",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "map": "data/stage9.json",
+      "enemies": [
+        {
+          "type": "BASIC",
+          "count": 6
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "POWER",
+          "count": 7
+        },
+        {
+          "type": "ARMOR",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "map": "data/stage10.json",
+      "enemies": [
+        {
+          "type": "BASIC",
+          "count": 12
+        },
+        {
+          "type": "FAST",
+          "count": 2
+        },
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "ARMOR",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "map": "data/stage11.json",
+      "enemies": [
+        {
+          "type": "FAST",
+          "count": 5
+        },
+        {
+          "type": "ARMOR",
+          "count": 6
+        },
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "map": "data/stage12.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 8
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "map": "data/stage13.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 8
+        },
+        {
+          "type": "FAST",
+          "count": 8
+        },
+        {
+          "type": "ARMOR",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "map": "data/stage14.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 10
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "ARMOR",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "map": "data/stage15.json",
+      "enemies": [
+        {
+          "type": "BASIC",
+          "count": 2
+        },
+        {
+          "type": "FAST",
+          "count": 10
+        },
+        {
+          "type": "ARMOR",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "map": "data/stage16.json",
+      "enemies": [
+        {
+          "type": "BASIC",
+          "count": 16
+        },
+        {
+          "type": "FAST",
+          "count": 2
+        },
+        {
+          "type": "ARMOR",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "map": "data/stage17.json",
+      "enemies": [
+        {
+          "type": "ARMOR",
+          "count": 2
+        },
+        {
+          "type": "FAST",
+          "count": 2
+        },
+        {
+          "type": "ARMOR",
+          "count": 8
+        },
+        {
+          "type": "BASIC",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "map": "data/stage18.json",
+      "enemies": [
+        {
+          "type": "ARMOR",
+          "count": 4
+        },
+        {
+          "type": "BASIC",
+          "count": 2
+        },
+        {
+          "type": "POWER",
+          "count": 6
+        },
+        {
+          "type": "FAST",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "map": "data/stage19.json",
+      "enemies": [
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "ARMOR",
+          "count": 8
+        },
+        {
+          "type": "BASIC",
+          "count": 4
+        },
+        {
+          "type": "POWER",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "map": "data/stage20.json",
+      "enemies": [
+        {
+          "type": "FAST",
+          "count": 8
+        },
+        {
+          "type": "BASIC",
+          "count": 2
+        },
+        {
+          "type": "POWER",
+          "count": 2
+        },
+        {
+          "type": "ARMOR",
+          "count": 8
+        }
+      ]
+    },
+    {
+      "map": "data/stage21.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 8
+        },
+        {
+          "type": "FAST",
+          "count": 2
+        },
+        {
+          "type": "BASIC",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "map": "data/stage22.json",
+      "enemies": [
+        {
+          "type": "FAST",
+          "count": 8
+        },
+        {
+          "type": "BASIC",
+          "count": 6
+        },
+        {
+          "type": "POWER",
+          "count": 2
+        },
+        {
+          "type": "ARMOR",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "map": "data/stage23.json",
+      "enemies": [
+        {
+          "type": "ARMOR",
+          "count": 6
+        },
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage24.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "ARMOR",
+          "count": 2
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "BASIC",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage25.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 2
+        },
+        {
+          "type": "FAST",
+          "count": 8
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage26.json",
+      "enemies": [
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 6
+        },
+        {
+          "type": "BASIC",
+          "count": 4
+        },
+        {
+          "type": "POWER",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "map": "data/stage27.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 2
+        },
+        {
+          "type": "ARMOR",
+          "count": 8
+        },
+        {
+          "type": "FAST",
+          "count": 8
+        },
+        {
+          "type": "BASIC",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "map": "data/stage28.json",
+      "enemies": [
+        {
+          "type": "FAST",
+          "count": 2
+        },
+        {
+          "type": "ARMOR",
+          "count": 1
+        },
+        {
+          "type": "BASIC",
+          "count": 15
+        },
+        {
+          "type": "POWER",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "map": "data/stage29.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 10
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "ARMOR",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "map": "data/stage30.json",
+      "enemies": [
+        {
+          "type": "BASIC",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 8
+        },
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "ARMOR",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "map": "data/stage31.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 3
+        },
+        {
+          "type": "FAST",
+          "count": 8
+        },
+        {
+          "type": "ARMOR",
+          "count": 6
+        },
+        {
+          "type": "POWER",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "map": "data/stage32.json",
+      "enemies": [
+        {
+          "type": "ARMOR",
+          "count": 8
+        },
+        {
+          "type": "BASIC",
+          "count": 6
+        },
+        {
+          "type": "POWER",
+          "count": 2
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "map": "data/stage33.json",
+      "enemies": [
+        {
+          "type": "FAST",
+          "count": 4
+        },
+        {
+          "type": "ARMOR",
+          "count": 8
+        },
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "map": "data/stage34.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 10
+        },
+        {
+          "type": "ARMOR",
+          "count": 6
+        }
+      ]
+    },
+    {
+      "map": "data/stage35.json",
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage1.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage2.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage3.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage4.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage5.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage6.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage7.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage8.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage9.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage10.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage11.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage12.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage13.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage14.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage15.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage16.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage17.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage18.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage19.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage20.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage21.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage22.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage23.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage24.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage25.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage26.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage27.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage28.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage29.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage30.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage31.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage32.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage33.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage34.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "map": "data/stage35.json",
+      "enemySpawnDelay": 1000,
+      "enemies": [
+        {
+          "type": "POWER",
+          "count": 4
+        },
+        {
+          "type": "FAST",
+          "count": 6
+        },
+        {
+          "type": "ARMOR",
+          "count": 10
         }
       ]
     }

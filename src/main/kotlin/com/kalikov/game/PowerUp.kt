@@ -29,7 +29,7 @@ class PowerUp(
     var type = Type.GRENADE
     var value = 500
 
-    private val blinkTimer = BlinkTimer(clock, 200)
+    private val blinkTimer = BlinkTimer(clock, 128)
     private val image = imageManager.getImage("powerup")
 
     init {

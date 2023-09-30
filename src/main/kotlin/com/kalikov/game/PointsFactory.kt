@@ -22,17 +22,23 @@ class PointsFactory(
         if (event is TankExplosion.Destroyed && enemyTankExplosionEnd(event)) {
             val explosion = event.explosion
             val tank = explosion.tank
-            spriteContainer.addSprite(create(explosion.center, tank.value, Points.Type.TANK))
+            spriteContainer.addSprite(create(explosion.center, tank.value, Points.Type.TANK, 200))
         } else if (event is PowerUp.Pick) {
             val powerUp = event.powerUp
-            spriteContainer.addSprite(create(powerUp.center, powerUp.value, Points.Type.POWERUP))
+            spriteContainer.addSprite(create(powerUp.center, powerUp.value, Points.Type.POWERUP, 800))
         }
     }
 
-    private fun create(center: Point, value: Int, type: Points.Type): Points {
-        val points = Points(eventManager, imageManager, clock)
+    private fun create(center: Point, value: Int, type: Points.Type, duration: Int): Points {
+        val points = Points(
+            eventManager,
+            imageManager,
+            clock,
+            center.x - Points.SIZE / 2,
+            center.y - Points.SIZE / 2,
+            duration
+        )
         points.value = value
-        points.setPosition(center.translate(-points.width / 2, -points.height / 2))
         points.type = type
         eventManager.fireEvent(PointsCreated(points))
         return points
@@ -40,7 +46,7 @@ class PointsFactory(
 
     private fun enemyTankExplosionEnd(event: TankExplosion.Destroyed): Boolean {
         val tank = event.explosion.tank
-        if (!tank.isEnemy()) {
+        if (!tank.isEnemy) {
             return false
         }
         if (tank.value <= 0) {

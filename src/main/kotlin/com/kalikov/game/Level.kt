@@ -9,7 +9,7 @@ class Level(
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
     private val clock: Clock
-) : ScriptNode, EventSubscriber {
+) : EventSubscriber {
     private companion object {
         private val subscriptions = setOf(
             Base.Hit::class,
@@ -64,7 +64,8 @@ class Level(
 
     private val movementController: MovementController
 
-    private var gameOver = false
+    var gameOver = false
+        private set
 
     init {
         LeaksDetector.add(this)
@@ -120,7 +121,8 @@ class Level(
                 it.multiply(Globals.TILE_SIZE).translate(gameField.bounds.x, gameField.bounds.y)
             },
             clock,
-            stage.enemies
+            stage.enemies,
+            stage.enemySpawnDelay
         )
 
         enemyFactoryView = EnemyFactoryView(
@@ -167,23 +169,24 @@ class Level(
 
         gameOverScript = Script()
         gameOverScript.isActive = false
+        gameOverScript.enqueue(Delay(gameOverScript, 640, clock))
         gameOverScript.enqueue(
             MoveFn(
                 MoveVert(gameOverMessage),
                 Globals.CANVAS_HEIGHT / 2 - Globals.TILE_SIZE + 1,
-                3000,
+                2000,
                 gameOverScript,
                 clock
             )
         )
-        gameOverScript.enqueue(Delay(gameOverScript, 1500, clock))
+        gameOverScript.enqueue(Delay(gameOverScript, 2000, clock))
         gameOverScript.enqueue(Execute {
             startStageScoreScene()
         })
 
         nextStageScript = Script()
         nextStageScript.isActive = false
-        nextStageScript.enqueue(Delay(nextStageScript, 3000, clock))
+        nextStageScript.enqueue(Delay(nextStageScript, 2500, clock))
         nextStageScript.enqueue(Execute {
             val playerTank = playerTankFactory.playerTank
             if (playerTank == null || gameOver) {
@@ -198,10 +201,7 @@ class Level(
                     }
                 }
 
-//                pause.hide()
-//                gameOverMessage.hide()
-
-                val image = screen.createSurface(screen.surface.width, screen.surface.height)
+                val image = screen.createSurface()
                 draw(image)
 
                 stageManager.curtainBackground = image
@@ -213,9 +213,7 @@ class Level(
         gameField.load(stageManager.stage.map)
     }
 
-    override val isDisposable get() = false
-
-    override fun update() {
+    fun update() {
         gameField.update()
         movementController.update()
         enemyFactory.update()
@@ -243,6 +241,10 @@ class Level(
 
     fun show() {
         visible = true
+    }
+
+    fun start() {
+        playerTankFactory.init(stageManager.player.upgradeLevel)
         pauseListener.isActive = true
     }
 
@@ -268,6 +270,7 @@ class Level(
     private fun runNextStageScript() {
         if (!gameOverScript.isActive) {
             nextStageScript.isActive = true
+            pauseListener.isActive = false
         }
     }
 

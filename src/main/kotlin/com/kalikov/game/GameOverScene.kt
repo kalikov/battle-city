@@ -17,7 +17,7 @@ class GameOverScene(
     init {
         script.enqueue(Delay(script, 320, clock))
         script.enqueue(Execute { eventManager.fireEvent(SoundManager.Play("game_over")) })
-        script.enqueue(Delay(script, 3000, clock))
+        script.enqueue(Delay(script, 1800, clock))
         script.enqueue(Execute {
             eventManager.fireEvent(Scene.Start {
                 MainMenuScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)

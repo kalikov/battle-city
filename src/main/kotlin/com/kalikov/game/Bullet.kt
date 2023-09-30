@@ -56,7 +56,7 @@ class Bullet(
     }
 
     fun outOfBounds() {
-        if (tank.isPlayer()) {
+        if (tank.isPlayer) {
             eventManager.fireEvent(SoundManager.Play("bullet_hit_1"))
         }
         destroy()

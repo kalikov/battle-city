@@ -29,7 +29,7 @@ class PowerUpHandler(
             handle(event.powerUp, event.tank)
         } else if (event is EnemyFactory.EnemyCreated) {
             enemies.add(event.enemy)
-        } else if (event is Tank.Destroyed && event.tank.isEnemy()) {
+        } else if (event is Tank.Destroyed && event.tank.isEnemy) {
             enemies.remove(event.tank)
         }
     }

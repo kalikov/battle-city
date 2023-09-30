@@ -5,8 +5,7 @@ import java.time.Clock
 class Delay(private val script: ScriptCallback, interval: Int, clock: Clock) : ScriptNode {
     private val timer = BasicTimer(clock, interval, ::complete)
 
-    override val isDisposable: Boolean
-        get() = false
+    override val isDisposable get() = false
 
     override fun update() {
         if (timer.isStopped) {

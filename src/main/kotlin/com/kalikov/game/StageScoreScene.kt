@@ -8,14 +8,13 @@ class StageScoreScene(
     private val imageManager: ImageManager,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
-//    private val score: Int,
     private val score: StageScore,
-    private val gameOver: Boolean,
+    val gameOver: Boolean,
     clock: Clock
 ) : Scene {
-    val isComplete: Boolean get() = script.isEmpty
+    val isComplete get() = script.isEmpty
 
-    private val script: Script = Script()
+    private val script = Script()
 
     private val basicTankPoints =
         StageScorePointsView(eventManager, 100, score.getTanks(Tank.EnemyType.BASIC), script, clock)
@@ -75,7 +74,6 @@ class StageScoreScene(
         surface.draw(26, 56, imageManager.getImage("roman_one")) { dst, src, _, _ ->
             src.and(ARGB.rgb(0xe44437)).over(dst)
         }
-
         surface.fillText("-PLAYER", 33, 63, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
 
         val playerScore = "${stageManager.player.score}".padStart(7, ' ')
@@ -103,6 +101,7 @@ class StageScoreScene(
 
         surface.fillText("TOTAL", 49, 191, ARGB.WHITE, Globals.FONT_REGULAR)
         surface.fillRect(96, 181, 64, 2, ARGB.WHITE)
+
         if (drawTotal) {
             surface.fillText("${score.tanksCount}".padStart(2, ' '), 97, 191, ARGB.WHITE, Globals.FONT_REGULAR)
         }

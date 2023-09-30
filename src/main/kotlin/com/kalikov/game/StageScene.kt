@@ -32,22 +32,26 @@ class StageScene(
             stageManager.curtainBackground = null
         })
         if (!isFirstStage) {
-            script.enqueue(Delay(script, 1500, clock))
+            script.enqueue(Delay(script, 1300, clock))
         }
         script.enqueue(Execute {
             val level = Level(screen, eventManager, imageManager, stageManager, entityFactory, clock)
             this.level = level
-            script.enqueue(level)
+            script.enqueue(Execute { level.start() })
             stageMessage.visible = false
             level.show()
         })
         script.enqueue(CurtainRise(curtain, script, clock))
     }
 
-    val isReady get() = script.size <= 1
+    val isReady get() = script.isEmpty
 
     override fun update() {
-        script.update()
+        if (script.isEmpty) {
+            level?.update()
+        } else {
+            script.update()
+        }
     }
 
     override fun draw(surface: ScreenSurface) {

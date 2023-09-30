@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.clearInvocations
+import org.mockito.kotlin.isA
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
@@ -17,18 +19,20 @@ import kotlin.test.assertTrue
 class EnemyFactoryTest {
     private lateinit var clock: TestClock
     private lateinit var eventManager: EventManager
+    private lateinit var pauseManager: PauseManager
     private lateinit var spriteContainer: SpriteContainer
 
     @BeforeEach
     fun beforeEach() {
         clock = TestClock()
         eventManager = mock()
+        pauseManager = mock()
         spriteContainer = mock()
     }
 
     @Test
     fun `should subscribe`() {
-        val factory = EnemyFactory(eventManager, mock(), mock(), mock(), emptyList(), mock(), emptyList())
+        val factory = createFactory(emptyList(), emptyList())
         verify(eventManager).addSubscriber(factory, setOf(Points.Destroyed::class, TankExplosion.Destroyed::class))
     }
 
@@ -37,13 +41,8 @@ class EnemyFactoryTest {
         val position1 = Point(0, 0)
         val position2 = Point(10, 20)
         val position3 = Point(40, 100)
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             listOf(position1, position2, position3),
-            clock,
             emptyList()
         )
         assertEquals(position1, factory.position)
@@ -60,13 +59,8 @@ class EnemyFactoryTest {
         val group1 = EnemyGroupConfig(Tank.EnemyType.BASIC, 1)
         val group2 = EnemyGroupConfig(Tank.EnemyType.FAST, 2)
         val group3 = EnemyGroupConfig(Tank.EnemyType.BASIC, 1)
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             emptyList(),
-            clock,
             listOf(group1, group2, group3)
         )
         assertEquals(group1.type, factory.enemy)
@@ -80,13 +74,8 @@ class EnemyFactoryTest {
 
     @Test
     fun `should spawn no more than limit respecting interval`() {
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             listOf(Point()),
-            clock,
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 4)),
             4,
         )
@@ -139,16 +128,10 @@ class EnemyFactoryTest {
 
     @Test
     fun `should not spawn when paused`() {
-        val pauseManager: PauseManager = mock()
         whenever(pauseManager.isPaused).thenReturn(true)
 
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            pauseManager,
-            mock(),
+        val factory = createFactory(
             listOf(Point()),
-            clock,
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 4)),
             1
         )
@@ -171,13 +154,8 @@ class EnemyFactoryTest {
         val group1 = EnemyGroupConfig(Tank.EnemyType.BASIC, 1)
         val group2 = EnemyGroupConfig(Tank.EnemyType.FAST, 2)
         val group3 = EnemyGroupConfig(Tank.EnemyType.BASIC, 1)
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            spriteContainer,
+        val factory = createFactory(
             positions,
-            clock,
             listOf(group1, group2, group3),
             1
         )
@@ -210,13 +188,8 @@ class EnemyFactoryTest {
     @Test
     fun `should create enemy`() {
         val position = Point(1, 2)
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             listOf(position),
-            clock,
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 4))
         )
 
@@ -231,13 +204,8 @@ class EnemyFactoryTest {
     @Test
     fun `should create flashing enemies in order`() {
         val position = Point()
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             listOf(position),
-            clock,
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 7)),
             1
         )
@@ -280,13 +248,8 @@ class EnemyFactoryTest {
 
     @Test
     fun `should track destroyed enemies`() {
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             listOf(Point(1, 2)),
-            clock,
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 1))
         )
 
@@ -303,13 +266,8 @@ class EnemyFactoryTest {
 
     @Test
     fun `should notify when last enemy is destroyed`() {
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             listOf(Point()),
-            clock,
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 1))
         )
 
@@ -325,13 +283,8 @@ class EnemyFactoryTest {
 
     @Test
     fun `should not notify when destroyed enemy is not the last due to more to create`() {
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             listOf(Point()),
-            clock,
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 2))
         )
 
@@ -346,13 +299,8 @@ class EnemyFactoryTest {
 
     @Test
     fun `should not notify when destroyed enemy is not the last due to left on the field`() {
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             listOf(Point()),
-            clock,
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 2)),
             1
         )
@@ -373,13 +321,8 @@ class EnemyFactoryTest {
 
     @Test
     fun `should return enemiesToCreateCount correctly`() {
-        val factory = EnemyFactory(
-            eventManager,
-            mock(),
-            mock(),
-            mock(),
+        val factory = createFactory(
             listOf(Point()),
-            mock(),
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 3)),
             1
         )
@@ -398,6 +341,33 @@ class EnemyFactoryTest {
         assertEquals(0, factory.enemiesToCreateCount)
     }
 
+    @Test
+    fun `should spawn new tank immediately after tank is destroyed`() {
+        val factory = createFactory(
+            listOf(Point()),
+            listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 3)),
+            10000
+        )
+        factory.enemyCountLimit = 1
+
+        factory.update()
+        val tank = verifyEnemyCreated()
+        clearInvocations(eventManager)
+
+        clock.tick(10000)
+        factory.update()
+        verify(eventManager, never()).fireEvent(isA<EnemyFactory.EnemyCreated>())
+
+        clock.tick(5000)
+        factory.update()
+
+        val explosion = mockTankExplosion(eventManager, tank = tank)
+        factory.notify(TankExplosion.Destroyed(explosion))
+
+        factory.update()
+        verifyEnemyCreated()
+    }
+
     private fun verifyEnemyCreated(
         type: Tank.EnemyType,
         position: Point,
@@ -407,7 +377,7 @@ class EnemyFactoryTest {
         assertEquals(type, tank.enemyType)
         assertEquals(position, tank.position)
         assertIs<TankStateAppearing>(tank.state)
-        assertFalse(tank.isPlayer())
+        assertFalse(tank.isPlayer)
         assertEquals(flashing, tank.isFlashing)
         return tank
     }
@@ -417,5 +387,22 @@ class EnemyFactoryTest {
         verify(eventManager).fireEvent(captor.capture())
 
         return captor.firstValue.enemy
+    }
+
+    private fun createFactory(
+        positions: List<Point>,
+        enemies: List<EnemyGroupConfig>,
+        interval: Int = 3000
+    ): EnemyFactory {
+        return EnemyFactory(
+            eventManager,
+            mock(),
+            pauseManager,
+            spriteContainer,
+            positions,
+            clock,
+            enemies,
+            interval
+        )
     }
 }

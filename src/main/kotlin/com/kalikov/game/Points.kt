@@ -6,10 +6,14 @@ class Points(
     private val eventManager: EventManager,
     imageManager: ImageManager,
     clock: Clock,
-    x: Int = 0,
-    y: Int = 0,
-    duration: Int = 20
-) : Sprite(eventManager, x, y, Globals.UNIT_SIZE, Globals.UNIT_SIZE) {
+    x: Int,
+    y: Int,
+    duration: Int
+) : Sprite(eventManager, x, y, SIZE, SIZE) {
+    companion object {
+        const val SIZE = Globals.UNIT_SIZE
+    }
+
     enum class Type {
         TANK,
         POWERUP

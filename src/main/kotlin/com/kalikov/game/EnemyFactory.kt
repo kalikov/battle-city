@@ -9,8 +9,8 @@ class EnemyFactory(
     private val spriteContainer: SpriteContainer,
     private val positions: List<Point>,
     private val clock: Clock,
-    enemies: Collection<EnemyGroupConfig>,
-    interval: Int = 3000
+    enemies: List<EnemyGroupConfig>,
+    interval: Int
 ) : EventSubscriber {
     data class EnemyCreated(val enemy: Tank) : Event()
 
@@ -62,7 +62,6 @@ class EnemyFactory(
         }
 
         if (timer.isStopped) {
-            timer.restart()
             create()
         } else {
             timer.update()
@@ -78,6 +77,7 @@ class EnemyFactory(
 
     private fun create() {
         if (enemiesToCreateCount <= 0 || enemyCountLimitReached) {
+            timer.stop()
             return
         }
         timer.restart()
@@ -134,10 +134,10 @@ class EnemyFactory(
 
     override fun notify(event: Event) {
         if (event is TankExplosion.Destroyed) {
-            if (event.explosion.tank.isEnemy()) {
+            if (event.explosion.tank.isEnemy) {
                 enemyCount--
             }
-            if (event.explosion.tank.isEnemy() && enemyCount <= 0 && enemiesToCreateCount == 0) {
+            if (event.explosion.tank.isEnemy && enemyCount <= 0 && enemiesToCreateCount == 0) {
                 eventManager.fireEvent(LastEnemyDestroyed)
             }
         }

@@ -26,6 +26,19 @@ class Tank(
         )
     }
 
+    enum class EnemyType(val score: Int, val index: Int) {
+        BASIC(100, 0),
+        FAST(200, 1),
+        POWER(300, 2),
+        ARMOR(400, 3)
+    }
+
+    data class Shoot(val tank: Tank) : Event()
+    data class Destroyed(val tank: Tank) : Event()
+    data class PlayerDestroyed(val tank: Tank) : Event()
+    data class EnemyDestroyed(val tank: Tank) : Event()
+    data class FlashingTankHit(val tank: Tank) : Event()
+
     override var isIdle = true
 
     val canMove get() = state.canMove
@@ -67,6 +80,9 @@ class Tank(
     var hitLimit = 1
     private var hit = 0
 
+    val isPlayer get() = enemyType == null
+    val isEnemy get() = enemyType != null
+
     val isHit get() = hit > 0
 
     var bulletSpeed = Bullet.Speed.NORMAL
@@ -80,8 +96,7 @@ class Tank(
 
     private val turnRoundTo = Globals.TILE_SIZE
 
-    var moveCountDown = CountDown(moveFrequency, ::moved)
-        private set
+    private var moveCountDown = CountDown(moveFrequency, ::moved)
 
     var moveDistance = 0
         private set
@@ -94,29 +109,23 @@ class Tank(
         eventManager.addSubscriber(this, subscriptions)
     }
 
-    enum class EnemyType(val score: Int, val index: Int) {
-        BASIC(100, 0),
-        FAST(200, 1),
-        POWER(300, 2),
-        ARMOR(400, 3)
-    }
-
-    data class Shoot(val tank: Tank) : Event()
-    data class Destroyed(val tank: Tank) : Event()
-    data class PlayerDestroyed(val tank: Tank) : Event()
-    data class EnemyDestroyed(val tank: Tank) : Event()
-    data class FlashingTankHit(val tank: Tank) : Event()
-
-    fun isPlayer(): Boolean {
-        return enemyType == null
-    }
-
-    fun isEnemy(): Boolean {
-        return enemyType != null
-    }
-
     private fun moved() {
         moveDistance++
+    }
+
+    fun move(): Boolean {
+        moveCountDown.update()
+        if (moveCountDown.stopped) {
+            moveCountDown.restart()
+            when (direction) {
+                Direction.RIGHT -> setPosition(x + 1, y)
+                Direction.LEFT -> setPosition(x - 1, y)
+                Direction.UP -> setPosition(x, y - 1)
+                Direction.DOWN -> setPosition(x, y + 1)
+            }
+            return true
+        }
+        return false
     }
 
     fun createBullet(): Bullet {
@@ -207,7 +216,7 @@ class Tank(
     }
 
     override fun notify(event: Event) {
-        if (event is Bullet.Destroyed && event.bullet.tank == this) {
+        if (event is Bullet.Destroyed && event.bullet.tank === this) {
             bullets--
         } else if (event is TankStateAppearing.End && event.tank === this) {
             stateAppearingEnd()

@@ -31,27 +31,27 @@ class TankStateNormalTest {
         tank.update()
         assertTrue(state.isBright)
 
-        clock.tick(100)
+        clock.tick(TankStateNormal.FLASH_INTERVAL / 2)
         tank.update()
         assertTrue(state.isBright)
 
-        clock.tick(50)
+        clock.tick(TankStateNormal.FLASH_INTERVAL / 4)
         tank.update()
         assertTrue(state.isBright)
 
-        clock.tick(50)
+        clock.tick(TankStateNormal.FLASH_INTERVAL / 4)
         tank.update()
         assertFalse(state.isBright)
 
-        clock.tick(100)
+        clock.tick(TankStateNormal.FLASH_INTERVAL / 2)
         tank.update()
         assertFalse(state.isBright)
 
-        clock.tick(50)
+        clock.tick(TankStateNormal.FLASH_INTERVAL / 4)
         tank.update()
         assertFalse(state.isBright)
 
-        clock.tick(50)
+        clock.tick(TankStateNormal.FLASH_INTERVAL / 4)
         tank.update()
         assertTrue(state.isBright)
     }
@@ -70,11 +70,11 @@ class TankStateNormalTest {
 
         eventManager.fireEvent(PauseManager.Start)
 
-        clock.tick(200)
+        clock.tick(TankStateNormal.FLASH_INTERVAL)
         tank.update()
         assertFalse(state.isBright)
 
-        clock.tick(200)
+        clock.tick(TankStateNormal.FLASH_INTERVAL)
         tank.update()
         assertTrue(state.isBright)
     }

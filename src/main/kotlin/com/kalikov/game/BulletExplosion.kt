@@ -8,10 +8,12 @@ class BulletExplosion(
     clock: Clock
 ) : Explosion(
     eventManager,
-    Animation.pauseAware(eventManager, frameSequenceOf(1, 2, 3), clock, ANIMATION_INTERVAL),
+    Animation.pauseAware(eventManager, frameSequenceOf(*animationFrames), clock, ANIMATION_INTERVAL),
     Globals.UNIT_SIZE
 ) {
     companion object {
+        private val animationFrames = intArrayOf(1, 2, 3)
+
         const val ANIMATION_INTERVAL = 32
     }
 

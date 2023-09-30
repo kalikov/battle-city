@@ -15,8 +15,7 @@ class MoveFn(
     private var isActive = true
     private var elapsed = 0L
 
-    override val isDisposable: Boolean
-        get() = false
+    override val isDisposable get() = false
 
     override fun update() {
         if (!isActive) {

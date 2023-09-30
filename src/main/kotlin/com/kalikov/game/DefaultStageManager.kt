@@ -19,8 +19,8 @@ class DefaultStageManager(
         get() = currentConstructionMap
         set(value) {
             currentConstructionMap = value
-            val stage = stages[index].enemies
-            constructionStage = Stage(value, stage)
+            val stage = stages[index]
+            constructionStage = Stage(value, stage.enemySpawnDelay, stage.enemies)
         }
 
     override var curtainBackground: ScreenSurface? = null
@@ -30,7 +30,7 @@ class DefaultStageManager(
         this.stages = stages
         this.defaultConstructionMap = defaultConstructionMap
         player = Player(eventManager)
-        constructionStage = Stage(defaultConstructionMap, stages[0].enemies)
+        constructionStage = Stage(defaultConstructionMap, stages[0].enemySpawnDelay, stages[0].enemies)
         constructionMap = defaultConstructionMap
     }
 
@@ -48,7 +48,7 @@ class DefaultStageManager(
     override fun reset() {
         index = 0
         constructionMap = defaultConstructionMap
-        constructionStage = Stage(defaultConstructionMap, stages[0].enemies)
+        constructionStage = Stage(defaultConstructionMap, stages[0].enemySpawnDelay, stages[0].enemies)
         player.dispose()
         player = Player(eventManager)
     }

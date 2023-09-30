@@ -33,7 +33,14 @@ class PlayerTankFactoryTest {
     }
 
     @Test
+    fun `should unsubscribe`() {
+        factory.dispose()
+        verify(eventManager).removeSubscriber(factory, setOf(TankExplosion.Destroyed::class, Player.OutOfLives::class))
+    }
+
+    @Test
     fun `should create tank right away`() {
+        factory.init(0)
         val tank = factory.playerTank
         assertNotNull(tank)
         assertEquals(10, tank.x)
@@ -44,6 +51,7 @@ class PlayerTankFactoryTest {
 
     @Test
     fun `should create new tank after explosion`() {
+        factory.init(0)
         reset(eventManager)
 
         val explosion = mockTankExplosion(eventManager, tank = factory.playerTank!!)
@@ -54,6 +62,7 @@ class PlayerTankFactoryTest {
 
     @Test
     fun `should add tank to the sprite container`() {
+        factory.init(0)
         reset(eventManager)
         val firstTank = factory.playerTank
         assertNotNull(firstTank)
@@ -75,6 +84,7 @@ class PlayerTankFactoryTest {
 
     @Test
     fun `should not create new tank when player is out of lives`() {
+        factory.init(0)
         reset(eventManager)
 
         factory.notify(Player.OutOfLives)
@@ -83,5 +93,37 @@ class PlayerTankFactoryTest {
 
         verify(eventManager, never()).fireEvent(isA<PlayerTankFactory.PlayerTankCreated>())
         assertNull(factory.playerTank)
+    }
+
+    @Test
+    fun `should upgrade tank once`() {
+        factory.init(1)
+        val tank = factory.playerTank
+        assertNotNull(tank)
+        assertEquals(1, tank.upgradeLevel)
+        assertEquals(Bullet.Speed.FAST, tank.bulletSpeed)
+        assertEquals(1, tank.bulletsLimit)
+    }
+
+    @Test
+    fun `should upgrade tank twice`() {
+        factory.init(2)
+        val tank = factory.playerTank
+        assertNotNull(tank)
+        assertEquals(2, tank.upgradeLevel)
+        assertEquals(Bullet.Speed.FAST, tank.bulletSpeed)
+        assertEquals(Bullet.Type.REGULAR, tank.bulletType)
+        assertEquals(2, tank.bulletsLimit)
+    }
+
+    @Test
+    fun `should upgrade tank three times`() {
+        factory.init(3)
+        val tank = factory.playerTank
+        assertNotNull(tank)
+        assertEquals(3, tank.upgradeLevel)
+        assertEquals(Bullet.Speed.FAST, tank.bulletSpeed)
+        assertEquals(Bullet.Type.ENHANCED, tank.bulletType)
+        assertEquals(2, tank.bulletsLimit)
     }
 }

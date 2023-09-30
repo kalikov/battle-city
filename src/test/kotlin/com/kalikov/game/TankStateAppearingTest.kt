@@ -28,7 +28,7 @@ class TankStateAppearingTest {
     fun `should fire event on animation end`() {
         tank.update()
 
-        clock.tick(TankStateAppearing.ANIMATION_DURATION - 1)
+        clock.tick(TankStateAppearing.DEFAULT_ANIMATION_DURATION - 1)
         tank.update()
         verify(eventManager, never()).fireEvent(TankStateAppearing.End(tank))
 
@@ -50,7 +50,7 @@ class TankStateAppearingTest {
         val appearingEndSubscriber: EventSubscriber = mock()
         eventManager.addSubscriber(appearingEndSubscriber, setOf(TankStateAppearing.End::class))
 
-        clock.tick(TankStateAppearing.ANIMATION_DURATION - 1)
+        clock.tick(TankStateAppearing.DEFAULT_ANIMATION_DURATION - 1)
         tank.update()
         verify(appearingEndSubscriber, never()).notify(TankStateAppearing.End(tank))
 

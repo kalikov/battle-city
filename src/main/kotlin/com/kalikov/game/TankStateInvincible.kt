@@ -6,11 +6,15 @@ class TankStateInvincible(
     private val tank: Tank,
     shieldDuration: Int = 3000
 ) : TankStateNormal(imageManager, tank) {
+    private companion object {
+        private val animationFrames = intArrayOf(1, 2)
+    }
+
     data class End(val tank: Tank) : Event()
 
     override val canBeDestroyed get() = false
 
-    private val shieldAnimation = Animation.pauseAware(eventManager, frameLoopOf(1, 2), tank.clock, 32)
+    private val shieldAnimation = Animation.pauseAware(eventManager, frameLoopOf(*animationFrames), tank.clock, 32)
 
     private val shieldTimer = PauseAwareTimer(eventManager, tank.clock, shieldDuration, ::end)
 

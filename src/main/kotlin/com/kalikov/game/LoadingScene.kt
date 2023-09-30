@@ -119,7 +119,7 @@ class LoadingScene(
             val map: StageMapConfig = FileInputStream(File(stageConfig.map)).use {
                 json.decodeFromStream(it)
             }
-            stages[index] = Stage(map, stageConfig.enemies)
+            stages[index] = Stage(map, stageConfig.enemySpawnDelay ?: 3000, stageConfig.enemies)
             remainingJobs.decrementAndGet()
         }
     }

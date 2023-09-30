@@ -21,6 +21,7 @@ class OnePlayerMenuItemTest {
                     Point(8, 24),
                     emptyList()
                 ),
+                1,
                 emptyList()
             )
         )

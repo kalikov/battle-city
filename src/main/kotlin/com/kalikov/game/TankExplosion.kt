@@ -6,9 +6,12 @@ class TankExplosion(
     val tank: Tank
 ) : Explosion(
     eventManager,
-    Animation.pauseAware(eventManager, frameSequenceOf(1, 2, 3, 4, 5, 3), tank.clock, 64),
+    Animation.pauseAware(eventManager, frameSequenceOf(*animationFrames), tank.clock, 96),
     Globals.UNIT_SIZE * 2
 ) {
+    private companion object {
+        private val animationFrames = intArrayOf(1, 2, 3, 4, 5, 3)
+    }
     data class Destroyed(val explosion: TankExplosion) : Event()
 
     init {
