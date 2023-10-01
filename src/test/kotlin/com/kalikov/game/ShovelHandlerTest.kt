@@ -46,11 +46,11 @@ class ShovelHandlerTest {
         handler.notify(PowerUpHandler.ShovelStart)
         reset(baseWallBuilder)
 
-        clock.tick(ShovelHandler.SHOVEL_DURATION / 2)
+        clock.tick(ShovelHandler.SOLID_DURATION / 2)
         handler.update()
         verify(baseWallBuilder, never()).buildWall(isA<BrickWallFactory>())
 
-        clock.tick(ShovelHandler.SHOVEL_DURATION / 2)
+        clock.tick(ShovelHandler.SOLID_DURATION / 2)
         handler.update()
         verify(baseWallBuilder).buildWall(isA<BrickWallFactory>())
     }
@@ -64,13 +64,13 @@ class ShovelHandlerTest {
 
         eventManager.fireEvent(PauseManager.Start)
 
-        clock.tick(10 * ShovelHandler.SHOVEL_DURATION)
+        clock.tick(10 * ShovelHandler.SOLID_DURATION)
         handler.update()
         verify(baseWallBuilder, never()).buildWall(isA<BrickWallFactory>())
 
         eventManager.fireEvent(PauseManager.End)
 
-        clock.tick(ShovelHandler.SHOVEL_DURATION)
+        clock.tick(ShovelHandler.SOLID_DURATION)
         handler.update()
         verify(baseWallBuilder).buildWall(isA<BrickWallFactory>())
     }

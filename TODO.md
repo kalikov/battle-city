@@ -1,6 +1,5 @@
-1. Flashing shovel
-2. Ice support
-3. Hi-score
-4. Replace au sounds with wav
-5. Two players
-6. Demo screen
+1. Ice support
+2. Hi-score
+3. Replace au sounds with wav
+4. Two players
+5. Demo screen
