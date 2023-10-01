@@ -153,7 +153,12 @@ class Level(
 
         shovelHandler = ShovelHandler(eventManager, imageManager, baseWallBuilder, clock)
 
-        pauseMessageView = PauseMessageView(eventManager, clock)
+        pauseMessageView = PauseMessageView(
+            eventManager,
+            gameField.bounds.x + gameField.bounds.width / 2,
+            gameField.bounds.y + gameField.bounds.height / 2,
+            clock
+        )
 
         livesView = LivesView(
             imageManager,

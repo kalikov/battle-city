@@ -4,10 +4,15 @@ import java.time.Clock
 
 class PauseMessageView(
     private val eventManager: EventManager,
+    private val x: Int,
+    private val y: Int,
     clock: Clock
 ) : EventSubscriber {
     private companion object {
         private val subscriptions = setOf(PauseManager.Start::class, PauseManager.End::class)
+
+        private val message = "PAUSE"
+        private val dx = -(Globals.TILE_SIZE * message.length) / 2 + 1
     }
 
     private val blinkTimer = BlinkTimer(clock, 300)
@@ -32,7 +37,7 @@ class PauseMessageView(
         if (blinkTimer.isStopped || !blinkTimer.isOpaque) {
             return
         }
-        surface.fillText("PAUSE", 202, 240, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
+        surface.fillText(message, x + dx, y + Globals.TILE_SIZE, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
     }
 
     fun dispose() {

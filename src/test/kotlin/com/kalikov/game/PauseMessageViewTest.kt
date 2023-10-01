@@ -12,7 +12,7 @@ class PauseMessageViewTest {
     @BeforeEach
     fun beforeEach() {
         eventManager = mock()
-        pauseMessageView = PauseMessageView(eventManager, mock())
+        pauseMessageView = PauseMessageView(eventManager, 0, 0, mock())
     }
 
     @Test
@@ -23,6 +23,9 @@ class PauseMessageViewTest {
     @Test
     fun `should dispose`() {
         pauseMessageView.dispose()
-        verify(eventManager).removeSubscriber(pauseMessageView, setOf(PauseManager.Start::class, PauseManager.End::class))
+        verify(eventManager).removeSubscriber(
+            pauseMessageView,
+            setOf(PauseManager.Start::class, PauseManager.End::class)
+        )
     }
 }

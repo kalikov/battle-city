@@ -16,7 +16,7 @@ class PowerUp(
         HELMET("helmet", 0),
         SHOVEL("shovel", 2),
         STAR("star", 3),
-        TANK("tank", 4),
+        TANK("tank", 5),
         TIMER("timer", 1)
     }
 
