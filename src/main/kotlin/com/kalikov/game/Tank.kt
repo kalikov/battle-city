@@ -13,11 +13,12 @@ class Tank(
     eventManager,
     x,
     y,
-    Globals.UNIT_SIZE,
-    Globals.UNIT_SIZE
+    SIZE,
+    SIZE
 ), AITankHandle, PlayerTankHandle, EventSubscriber {
     companion object {
         const val COOLDOWN_INTERVAL = 200
+        const val SIZE = Globals.UNIT_SIZE
 
         private val subscriptions = setOf(
             Bullet.Destroyed::class,
@@ -60,8 +61,6 @@ class Tank(
             smoothTurn(value)
             field = value
         }
-
-    var collisionResolvingMoveLimit = Globals.TILE_SIZE / 2
 
     var enemyType: EnemyType? = null
     var state: TankState = TankStateNormal(imageManager, this)
@@ -113,17 +112,19 @@ class Tank(
         moveDistance++
     }
 
-    fun move(): Boolean {
+    fun move(movePrecondition: () -> Boolean): Boolean {
         moveCountDown.update()
         if (moveCountDown.stopped) {
             moveCountDown.restart()
-            when (direction) {
-                Direction.RIGHT -> setPosition(x + 1, y)
-                Direction.LEFT -> setPosition(x - 1, y)
-                Direction.UP -> setPosition(x, y - 1)
-                Direction.DOWN -> setPosition(x, y + 1)
+            if (movePrecondition()) {
+                when (direction) {
+                    Direction.RIGHT -> setPosition(x + 1, y)
+                    Direction.LEFT -> setPosition(x - 1, y)
+                    Direction.UP -> setPosition(x, y - 1)
+                    Direction.DOWN -> setPosition(x, y + 1)
+                }
+                return true
             }
-            return true
         }
         return false
     }
@@ -190,22 +191,6 @@ class Tank(
         if (shooting) {
             shoot()
         }
-    }
-
-    fun outOfBounds(bounds: Rect) {
-        var x = this.x
-        var y = this.y
-        if (x < bounds.left) {
-            x = bounds.left
-        } else if (x + width - 1 > bounds.right) {
-            x = bounds.right - width + 1
-        }
-        if (y < bounds.top) {
-            y = bounds.top
-        } else if (y + height - 1 > bounds.bottom) {
-            y = bounds.bottom - height + 1
-        }
-        setPosition(x, y)
     }
 
     fun updateColor() {

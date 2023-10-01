@@ -122,8 +122,8 @@ class EnemyFactory(
             tank.isFlashing = true
         }
 
-        eventManager.fireEvent(EnemyCreated(tank))
         enemyCount++
+        eventManager.fireEvent(EnemyCreated(tank))
 
         return tank
     }

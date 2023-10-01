@@ -35,9 +35,11 @@ abstract class Sprite(
     }
 
     fun setPosition(x: Int, y: Int) {
-        this.x = x
-        this.y = y
-        updateBounds()
+        if (x != this.x || y != this.y) {
+            this.x = x
+            this.y = y
+            updateBounds()
+        }
     }
 
     abstract fun draw(surface: ScreenSurface)

@@ -9,10 +9,12 @@ class PowerUpFactory(
     private val clock: Clock
 ) : EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(Tank.FlashingTankHit::class)
+        private val subscriptions = setOf(Tank.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
     }
 
     private var positions: Array<Point>
+
+    private var powerUp: PowerUp? = null
 
     init {
         eventManager.addSubscriber(this, subscriptions)
@@ -52,7 +54,14 @@ class PowerUpFactory(
 
     override fun notify(event: Event) {
         if (event is Tank.FlashingTankHit) {
-            spriteContainer.addSprite(create())
+            powerUp?.destroy()
+            val newPowerUp = create()
+            spriteContainer.addSprite(newPowerUp)
+            powerUp = newPowerUp
+        } else if (event is EnemyFactory.EnemyCreated) {
+            if (event.enemy.isFlashing) {
+                powerUp?.destroy()
+            }
         }
     }
 

@@ -3,17 +3,11 @@ package com.kalikov.game
 import java.time.Clock
 
 class PowerUp(
-    private val eventManager: EventManager,
+    private val eventRouter: EventRouter,
     imageManager: ImageManager,
     position: Point,
     clock: Clock
-) : Sprite(eventManager, position.x, position.y, Globals.UNIT_SIZE, Globals.UNIT_SIZE), EventSubscriber {
-    private companion object {
-        private val subscriptions = setOf(
-            EnemyFactory.EnemyCreated::class
-        )
-    }
-
+) : Sprite(eventRouter, position.x, position.y, Globals.UNIT_SIZE, Globals.UNIT_SIZE) {
     data class Destroyed(val powerUp: PowerUp) : Event()
     data class Pick(val powerUp: PowerUp, val tank: Tank) : Event()
 
@@ -36,8 +30,6 @@ class PowerUp(
         LeaksDetector.add(this)
 
         z = 500
-
-        eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun draw(surface: ScreenSurface) {
@@ -55,26 +47,16 @@ class PowerUp(
 
     fun pick(tank: Tank) {
         if (!isDestroyed) {
-            eventManager.fireEvent(Pick(this, tank))
+            eventRouter.fireEvent(Pick(this, tank))
             destroy()
         }
     }
 
-    override fun notify(event: Event) {
-        if (event is EnemyFactory.EnemyCreated) {
-            if (event.enemy.isFlashing) {
-                destroy()
-            }
-        }
-    }
-
     override fun destroyHook() {
-        eventManager.fireEvent(Destroyed(this))
+        eventRouter.fireEvent(Destroyed(this))
     }
 
     override fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
-
         LeaksDetector.remove(this)
     }
 }

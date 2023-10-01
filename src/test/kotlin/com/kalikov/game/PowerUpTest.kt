@@ -17,33 +17,6 @@ class PowerUpTest {
     }
 
     @Test
-    fun `should subscribe`() {
-        verify(eventManager).addSubscriber(
-            powerUp,
-            setOf(EnemyFactory.EnemyCreated::class)
-        )
-    }
-
-    @Test
-    fun `should unsubscribe`() {
-        powerUp.dispose()
-        verify(eventManager).removeSubscriber(
-            powerUp,
-            setOf(EnemyFactory.EnemyCreated::class)
-        )
-    }
-
-    @Test
-    fun `should destroy power up when new flashing type appears`() {
-        val enemy = mockTank(eventManager)
-        enemy.enemyType = Tank.EnemyType.BASIC
-        enemy.isFlashing = true
-
-        powerUp.notify(EnemyFactory.EnemyCreated(enemy))
-        assertTrue(powerUp.isDestroyed)
-    }
-
-    @Test
     fun `should fire event on destroy`() {
         powerUp.destroy()
         powerUp.update()

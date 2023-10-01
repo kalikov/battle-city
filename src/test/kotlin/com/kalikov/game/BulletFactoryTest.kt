@@ -101,7 +101,7 @@ class BulletFactoryTest {
         shouldCreateBulletWithCorrectDirection(
             Point(0, 0),
             Direction.RIGHT,
-            Point(Globals.UNIT_SIZE, Globals.UNIT_SIZE / 2 - Bullet.BULLET_SIZE / 2)
+            Point(Globals.UNIT_SIZE, Globals.UNIT_SIZE / 2 - Bullet.SIZE / 2)
         )
     }
 
@@ -110,7 +110,7 @@ class BulletFactoryTest {
         shouldCreateBulletWithCorrectDirection(
             Point(Globals.UNIT_SIZE, 0),
             Direction.LEFT,
-            Point(Globals.UNIT_SIZE - Bullet.BULLET_SIZE, Globals.UNIT_SIZE / 2 - Bullet.BULLET_SIZE / 2)
+            Point(Globals.UNIT_SIZE - Bullet.SIZE, Globals.UNIT_SIZE / 2 - Bullet.SIZE / 2)
         )
     }
 
@@ -119,7 +119,7 @@ class BulletFactoryTest {
         shouldCreateBulletWithCorrectDirection(
             Point(0, Globals.UNIT_SIZE),
             Direction.UP,
-            Point(Globals.UNIT_SIZE / 2 - Bullet.BULLET_SIZE / 2, Globals.UNIT_SIZE - Bullet.BULLET_SIZE)
+            Point(Globals.UNIT_SIZE / 2 - Bullet.SIZE / 2, Globals.UNIT_SIZE - Bullet.SIZE)
         )
     }
 
@@ -128,7 +128,7 @@ class BulletFactoryTest {
         shouldCreateBulletWithCorrectDirection(
             Point(0, 0),
             Direction.DOWN,
-            Point(Globals.UNIT_SIZE / 2 - Bullet.BULLET_SIZE / 2, Globals.UNIT_SIZE)
+            Point(Globals.UNIT_SIZE / 2 - Bullet.SIZE / 2, Globals.UNIT_SIZE)
         )
     }
 

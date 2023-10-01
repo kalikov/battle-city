@@ -48,7 +48,7 @@ class PowerUpHandler(
     }
 
     private fun handleGrenade() {
-        enemies.forEach { tank ->
+        enemies.filter { it.canBeDestroyed }.filterNot { it.isDestroyed }.forEach { tank ->
             tank.value = 0
             tank.destroy()
         }

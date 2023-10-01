@@ -5,9 +5,9 @@ class Bullet(
     imageManager: ImageManager,
     val tank: Tank,
     val speed: Speed
-) : Sprite(eventManager, 0, 0, BULLET_SIZE, BULLET_SIZE) {
+) : Sprite(eventManager, 0, 0, SIZE, SIZE) {
     internal companion object {
-        internal const val BULLET_SIZE = Globals.TILE_SIZE / 2
+        internal const val SIZE = Globals.TILE_SIZE / 2
     }
 
     data class Destroyed(val bullet: Bullet) : Event()
@@ -42,6 +42,21 @@ class Bullet(
     fun hit(shouldExplode: Boolean) {
         this.shouldExplode = shouldExplode
         destroy()
+    }
+
+    fun move(): Boolean {
+        moveCountDown.update()
+        if (moveCountDown.stopped) {
+            moveCountDown.restart()
+            when (direction) {
+                Direction.RIGHT -> setPosition(x + 1, y)
+                Direction.LEFT -> setPosition(x - 1, y)
+                Direction.UP -> setPosition(x, y - 1)
+                Direction.DOWN -> setPosition(x, y + 1)
+            }
+            return true
+        }
+        return false
     }
 
     override fun destroyHook() {

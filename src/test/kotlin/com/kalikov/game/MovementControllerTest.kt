@@ -208,7 +208,7 @@ class MovementControllerTest {
 
         val bullet = tank.createBullet()
 
-        val otherTank = mockTank(eventManager, x = Globals.UNIT_SIZE + Bullet.BULLET_SIZE, y = 0)
+        val otherTank = mockTank(eventManager, x = Globals.UNIT_SIZE + Bullet.SIZE, y = 0)
         otherTank.direction = Direction.LEFT
         otherTank.enemyType = Tank.EnemyType.BASIC
 
@@ -296,7 +296,7 @@ class MovementControllerTest {
         clock.tick(updateInterval)
         movementController.update()
 
-        assertEquals(Point(Globals.TILE_SIZE, 0), Point(tank.x, tank.y))
+        assertEquals(Point(Globals.TILE_SIZE - 2, 0), Point(tank.x, tank.y))
     }
 
     @Test
@@ -328,7 +328,7 @@ class MovementControllerTest {
         clock.tick(updateInterval)
         movementController.update()
 
-        assertEquals(Point(0, 0), tank1.position)
+        assertEquals(Point(0, -8), tank1.position)
         assertEquals(Point(0, 0), tank2.position)
     }
 }

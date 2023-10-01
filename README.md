@@ -1,0 +1,1 @@
+**Battle City** is a multi-directional shooter where the player controls a tank to destroy the enemies and protect the base. The game was produced and published in 1985 by Namco.

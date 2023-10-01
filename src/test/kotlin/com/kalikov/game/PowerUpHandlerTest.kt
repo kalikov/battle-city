@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
@@ -60,6 +61,21 @@ class PowerUpHandlerTest {
 
         assertEquals(0, enemy.value)
         assertTrue(enemy.isDestroyed)
+    }
+
+    @Test
+    fun `should not explode appearing enemies with grenade`() {
+        val enemy = mockTank(eventManager)
+        enemy.enemyType = Tank.EnemyType.BASIC
+        enemy.value = 100
+        enemy.state = TankStateAppearing(eventManager, mock(), enemy)
+        handler.notify(EnemyFactory.EnemyCreated(enemy))
+
+        powerUp.type = PowerUp.Type.GRENADE
+        handler.notify(PowerUp.Pick(powerUp, tank))
+
+        assertEquals(100, enemy.value)
+        assertFalse(enemy.isDestroyed)
     }
 
     @Test
