@@ -108,7 +108,8 @@ class ConstructionScene(
 
     private fun getConstructionMap(): StageMapConfig {
         return StageMapConfig(
-            spriteContainer.sprites.filterIsInstance(Entity::class.java).map { it.toStageObject() },
+            spriteContainer.sprites.filterIsInstance(Entity::class.java)
+                .map { it.toStageObject(gameField.bounds.x, gameField.bounds.y) },
             basePosition,
             playerPosition,
             enemyPositions

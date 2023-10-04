@@ -11,12 +11,29 @@ class PlayerTankController(
             Keyboard.KeyPressed::class,
             Keyboard.KeyReleased::class
         )
+
+        private const val FLAG_LEFT = 1
+        private const val FLAG_RIGHT = 2
+        private const val FLAG_UP = 1
+        private const val FLAG_DOWN = 2
+        private const val FLAG_BOTH = 3
     }
 
-    private var active = true
+    private var isActive = true
+
+    private var horzPressed: Int = 0
+    private var vertPressed: Int = 0
+
+    private var targetDirection: Direction? = null
 
     init {
         eventManager.addSubscriber(this, subscriptions)
+    }
+
+    fun update() {
+        targetDirection?.let {
+            setDirection(it)
+        }
     }
 
     override fun notify(event: Event) {
@@ -32,7 +49,8 @@ class PlayerTankController(
             is BaseExplosion.Destroyed -> {
                 tank.isIdle = true
                 tank.stopShooting()
-                active = false
+                targetDirection = null
+                isActive = false
             }
 
             else -> Unit
@@ -40,28 +58,48 @@ class PlayerTankController(
     }
 
     private fun keyPressed(key: Keyboard.Key) {
-        if (!active || pauseManager.isPaused) {
+        if (!isActive || pauseManager.isPaused) {
             return
         }
         when (key) {
             Keyboard.Key.LEFT -> {
-                tank.direction = Direction.LEFT
-                tank.isIdle = false
+                horzPressed = horzPressed or FLAG_LEFT
+                if (horzPressed == FLAG_BOTH) {
+                    updateStateOnVert()
+                } else {
+                    setDirection(Direction.LEFT)
+                    tank.isIdle = false
+                }
             }
 
             Keyboard.Key.RIGHT -> {
-                tank.direction = Direction.RIGHT
-                tank.isIdle = false
+                horzPressed = horzPressed or FLAG_RIGHT
+                if (horzPressed == FLAG_BOTH) {
+                    updateStateOnVert()
+                } else {
+                    setDirection(Direction.RIGHT)
+                    tank.isIdle = false
+                }
             }
 
             Keyboard.Key.UP -> {
-                tank.direction = Direction.UP
-                tank.isIdle = false
+                vertPressed = vertPressed or FLAG_UP
+                if (vertPressed == FLAG_BOTH) {
+                    updateStateOnHorz()
+                } else {
+                    setDirection(Direction.UP)
+                    tank.isIdle = false
+                }
             }
 
             Keyboard.Key.DOWN -> {
-                tank.direction = Direction.DOWN
-                tank.isIdle = false
+                vertPressed = vertPressed or FLAG_DOWN
+                if (vertPressed == FLAG_BOTH) {
+                    updateStateOnHorz()
+                } else {
+                    setDirection(Direction.DOWN)
+                    tank.isIdle = false
+                }
             }
 
             Keyboard.Key.SPACE -> {
@@ -73,13 +111,67 @@ class PlayerTankController(
         }
     }
 
-    private fun keyReleased(key: Keyboard.Key) {
-        if (tank.direction == Direction.LEFT && key == Keyboard.Key.LEFT ||
-            tank.direction == Direction.RIGHT && key == Keyboard.Key.RIGHT ||
-            tank.direction == Direction.UP && key == Keyboard.Key.UP ||
-            tank.direction == Direction.DOWN && key == Keyboard.Key.DOWN
-        ) {
+    private fun updateStateOnHorz() {
+        if (horzPressed != 0 && horzPressed != FLAG_BOTH) {
+            setDirection(if (horzPressed == FLAG_LEFT) Direction.LEFT else Direction.RIGHT)
+            tank.isIdle = false
+        } else {
             tank.isIdle = true
+            targetDirection = null
+        }
+    }
+
+    private fun updateStateOnVert() {
+        if (vertPressed != 0 && vertPressed != FLAG_BOTH) {
+            setDirection(if (vertPressed == FLAG_UP) Direction.UP else Direction.DOWN)
+            tank.isIdle = false
+        } else {
+            tank.isIdle = true
+            targetDirection = null
+        }
+    }
+
+    private fun setDirection(direction: Direction) {
+        tank.direction = direction
+        targetDirection = if (tank.direction == direction) {
+            null
+        } else {
+            direction
+        }
+    }
+
+    private fun keyReleased(key: Keyboard.Key) {
+        if (key == Keyboard.Key.LEFT) {
+            horzPressed = horzPressed and FLAG_LEFT.inv()
+            if (horzPressed == 0) {
+                updateStateOnVert()
+            } else {
+                updateStateOnHorz()
+            }
+        }
+        if (key == Keyboard.Key.RIGHT) {
+            horzPressed = horzPressed and FLAG_RIGHT.inv()
+            if (horzPressed == 0) {
+                updateStateOnVert()
+            } else {
+                updateStateOnHorz()
+            }
+        }
+        if (key == Keyboard.Key.UP) {
+            vertPressed = vertPressed and FLAG_UP.inv()
+            if (vertPressed == 0) {
+                updateStateOnHorz()
+            } else {
+                updateStateOnVert()
+            }
+        }
+        if (key == Keyboard.Key.DOWN) {
+            vertPressed = vertPressed and FLAG_DOWN.inv()
+            if (vertPressed == 0) {
+                updateStateOnHorz()
+            } else {
+                updateStateOnVert()
+            }
         }
         if (key == Keyboard.Key.SPACE) {
             tank.stopShooting()

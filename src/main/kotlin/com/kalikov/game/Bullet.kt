@@ -46,7 +46,7 @@ class Bullet(
 
     fun move(): Boolean {
         moveCountDown.update()
-        if (moveCountDown.stopped) {
+        if (moveCountDown.isStopped) {
             moveCountDown.restart()
             when (direction) {
                 Direction.RIGHT -> setPosition(x + 1, y)

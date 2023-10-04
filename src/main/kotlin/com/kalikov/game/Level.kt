@@ -221,6 +221,7 @@ class Level(
     fun update() {
         gameField.update()
         movementController.update()
+        playerTankControllerFactory.update()
         enemyFactory.update()
         aiControllersContainer.update()
         freezeHandler.update()

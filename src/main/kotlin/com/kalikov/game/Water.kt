@@ -27,8 +27,8 @@ class Water(
 
     private val animation = Animation.pauseAware(eventManager, frameLoopOf(*animationFrames), clock, 500)
 
-    override fun toStageObject(): StageObject {
-        return StageObject(CLASS_NAME, x / Globals.TILE_SIZE, y / Globals.TILE_SIZE)
+    override fun toStageObject(stageX: Int, stageY: Int): StageObject {
+        return StageObject(CLASS_NAME, (x - stageX) / Globals.TILE_SIZE, (y - stageY) / Globals.TILE_SIZE)
     }
 
     override fun updateHook() {

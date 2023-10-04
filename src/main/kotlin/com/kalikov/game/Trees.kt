@@ -18,8 +18,8 @@ class Trees(
         z = 100
     }
 
-    override fun toStageObject(): StageObject {
-        return StageObject(CLASS_NAME, x / Globals.TILE_SIZE, y / Globals.TILE_SIZE)
+    override fun toStageObject(stageX: Int, stageY: Int): StageObject {
+        return StageObject(CLASS_NAME, (x - stageX) / Globals.TILE_SIZE, (y - stageY) / Globals.TILE_SIZE)
     }
 
     override fun draw(surface: ScreenSurface) {

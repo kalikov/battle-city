@@ -29,6 +29,10 @@ class PlayerTankControllerFactory(
         return PlayerTankController(eventManager, pauseManager, tank)
     }
 
+    fun update() {
+        controller?.update()
+    }
+
     fun dispose() {
         controller?.dispose()
         controller = null

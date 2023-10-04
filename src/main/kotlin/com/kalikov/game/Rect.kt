@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import kotlin.math.max
+import kotlin.math.min
+
 data class Rect(
     val x: Int = 0,
     val y: Int = 0,
@@ -17,6 +20,8 @@ data class Rect(
     val top get() = y
     val bottom get() = y + height - 1
 
+    val area get() = width * height
+
     fun contains(other: Rect): Boolean {
         return other.left >= left
                 && other.right <= right
@@ -25,10 +30,18 @@ data class Rect(
     }
 
     fun intersects(other: Rect): Boolean {
-        return !(left > other.right ||
-                right < other.left ||
-                top > other.bottom ||
-                bottom < other.top)
+        return left <= other.right && right >= other.left && top <= other.bottom && bottom >= other.top
+    }
+
+    fun intersection(other: Rect): Rect? {
+        if (intersects(other)) {
+            val l = max(left, other.left)
+            val r = min(right, other.right)
+            val t = max(top, other.top)
+            val b = min(bottom, other.bottom)
+            return Rect(l, t, r - l + 1, b - t + 1)
+        }
+        return null
     }
 
     fun move(x: Int, y: Int) = Rect(x, y, width, height)

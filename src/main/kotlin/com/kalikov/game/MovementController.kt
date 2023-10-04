@@ -109,7 +109,8 @@ class MovementController(
         if (!tank.canMove) {
             return
         }
-        if (!tank.isIdle) {
+        val isSlippingMove = tank.isSlipping
+        if (!tank.isIdle || isSlippingMove) {
             if (tank.isEnemy) {
                 if (tank.move { !hasCollisionForEnemyTank(tank) }) {
                     detectBulletCollisionForTank(tank)
@@ -118,6 +119,13 @@ class MovementController(
                 if (tank.move { !hasCollisionForPlayerTank(tank) }) {
                     detectPowerUpCollisionForTank(tank)
                     detectBulletCollisionForTank(tank)
+                    if (isTankOnIce(tank)) {
+                        if (!isSlippingMove) {
+                            tank.startSlipping()
+                        }
+                    } else {
+                        tank.stopSlipping()
+                    }
                 }
             }
         }
@@ -217,6 +225,17 @@ class MovementController(
         return false
     }
 
+    private fun isTankOnIce(tank: Tank): Boolean {
+        val area = tank.bounds.area
+        var firmArea = area
+        spriteContainer.sprites.forEach { sprite ->
+            if (tank !== sprite && !sprite.isDestroyed && sprite is Ice) {
+                firmArea -= sprite.bounds.intersection(tank.bounds)?.area ?: 0
+            }
+        }
+        return firmArea <= area / 2
+    }
+
     private fun isCollisionForEnemyTank(enemy: Tank, sprite: Sprite, dx: Int, dy: Int): Boolean {
         val isStaticCollision = isWallCollision(sprite) || isBaseCollision(sprite) || isWaterCollision(sprite)
         return isStaticCollision && intersects(enemy, sprite, dx, dy)
@@ -281,7 +300,12 @@ class MovementController(
             is SpriteContainer.Added -> {
                 when (event.sprite) {
                     is Bullet -> detectCollisionsForBullet(event.sprite)
-                    is Tank -> detectBulletCollisionForTank(event.sprite)
+                    is Tank -> {
+                        if (event.sprite.isPlayer) {
+                            detectPowerUpCollisionForTank(event.sprite)
+                        }
+                        detectBulletCollisionForTank(event.sprite)
+                    }
                     is PowerUp -> detectCollisionsForPowerUp(event.sprite)
                 }
             }

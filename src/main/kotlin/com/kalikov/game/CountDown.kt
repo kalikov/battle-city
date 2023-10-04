@@ -3,8 +3,7 @@ package com.kalikov.game
 open class CountDown(val value: Int, private val callback: Runnable? = null) {
     private var tick = 0
 
-    val stopped: Boolean
-        get() = tick == 0
+    val isStopped get() = tick == 0
 
     fun restart() {
         tick = value

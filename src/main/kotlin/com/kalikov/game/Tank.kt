@@ -42,6 +42,8 @@ class Tank(
 
     override var isIdle = true
 
+    val isSlipping get() = !slipCountDown.isStopped
+
     val canMove get() = state.canMove
     val canBeDestroyed get() = state.canBeDestroyed
 
@@ -53,9 +55,18 @@ class Tank(
             moveCountDown = CountDown(value, ::moved)
         }
 
+    var slipDuration = 28
+        set(value) {
+            field = value
+            slipCountDown = CountDown(value, ::slipped)
+        }
+
     override var direction = Direction.RIGHT
         set(value) {
             if (value == field) {
+                return
+            }
+            if (!slipCountDown.isStopped && isSmoothTurnRequired(value)) {
                 return
             }
             smoothTurn(value)
@@ -96,6 +107,7 @@ class Tank(
     private val turnRoundTo = Globals.TILE_SIZE
 
     private var moveCountDown = CountDown(moveFrequency, ::moved)
+    private var slipCountDown = CountDown(slipDuration, ::slipped)
 
     var moveDistance = 0
         private set
@@ -108,15 +120,30 @@ class Tank(
         eventManager.addSubscriber(this, subscriptions)
     }
 
+    private fun slipped() {
+
+    }
+
     private fun moved() {
         moveDistance++
     }
 
+    fun startSlipping() {
+        if (slipCountDown.isStopped) {
+            slipCountDown.restart()
+        }
+    }
+
+    fun stopSlipping() {
+        slipCountDown.stop()
+    }
+
     fun move(movePrecondition: () -> Boolean): Boolean {
         moveCountDown.update()
-        if (moveCountDown.stopped) {
+        if (moveCountDown.isStopped) {
             moveCountDown.restart()
             if (movePrecondition()) {
+                slipCountDown.update()
                 when (direction) {
                     Direction.RIGHT -> setPosition(x + 1, y)
                     Direction.LEFT -> setPosition(x - 1, y)
@@ -125,6 +152,7 @@ class Tank(
                 }
                 return true
             }
+            slipCountDown.stop()
         }
         return false
     }
@@ -262,10 +290,19 @@ class Tank(
         shooting = false
     }
 
+    private fun isSmoothTurnRequired(newDirection: Direction): Boolean {
+        val prevDirection = direction
+        return if (newDirection.isVertical) {
+            prevDirection.isHorizontal && (x % turnRoundTo) > 0
+        } else {
+            prevDirection.isVertical && (y % turnRoundTo) > 0
+        }
+    }
+
     private fun smoothTurn(newDirection: Direction) {
         val prevDirection = direction
-        if (newDirection == Direction.UP || newDirection == Direction.DOWN) {
-            if (prevDirection == Direction.RIGHT || prevDirection == Direction.LEFT) {
+        if (newDirection.isVertical) {
+            if (prevDirection.isHorizontal) {
                 val v = x % turnRoundTo
                 if (v > 0) {
                     if (v < turnRoundTo / 2 || v == turnRoundTo / 2 && prevDirection == Direction.LEFT) {
@@ -275,10 +312,10 @@ class Tank(
                     }
                 }
             }
-        } else if (prevDirection == Direction.DOWN || prevDirection == Direction.UP) {
+        } else if (prevDirection.isVertical) {
             val v = y % turnRoundTo
             if (v > 0) {
-                if (v <= turnRoundTo / 2) {
+                if (v < turnRoundTo / 2 || v == turnRoundTo / 2 && prevDirection == Direction.UP) {
                     setPosition(x, y - v)
                 } else {
                     setPosition(x, y - v + turnRoundTo)
