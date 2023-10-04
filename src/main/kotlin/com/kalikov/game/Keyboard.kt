@@ -2,12 +2,11 @@ package com.kalikov.game
 
 object Keyboard {
     enum class Key {
-        SPACE,
+        ACTION,
         LEFT,
         UP,
         RIGHT,
         DOWN,
-        S,
         SELECT,
         START,
     }

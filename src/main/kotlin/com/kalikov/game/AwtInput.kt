@@ -6,10 +6,13 @@ import java.util.Queue
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.swing.JFrame
 
-class AwtInput(private val frame: JFrame) : KeyAdapter(), Input {
+class AwtInput(private val frame: JFrame, private val config: KeyboardConfig) : KeyAdapter(), Input {
     private val eventQueue: Queue<Event> = ConcurrentLinkedQueue()
 
     private val pressed = HashSet<Int>()
+
+    override var lastKeyPressed: Int = 0
+        private set
 
     init {
         frame.addKeyListener(this)
@@ -17,6 +20,7 @@ class AwtInput(private val frame: JFrame) : KeyAdapter(), Input {
 
     override fun keyPressed(e: KeyEvent) {
         if (e.keyCode != KeyEvent.VK_UNDEFINED && pressed.add(e.keyCode)) {
+            lastKeyPressed = e.keyCode
             createKeyboardEvent(e) { Keyboard.KeyPressed(it) }?.let { pushEvent(it) }
         }
     }
@@ -30,15 +34,13 @@ class AwtInput(private val frame: JFrame) : KeyAdapter(), Input {
 
     private fun createKeyboardEvent(e: KeyEvent, constructor: (key: Keyboard.Key) -> Event): Event? {
         return when (e.keyCode) {
-            KeyEvent.VK_UP -> Keyboard.Key.UP
-            KeyEvent.VK_DOWN -> Keyboard.Key.DOWN
-            KeyEvent.VK_LEFT -> Keyboard.Key.LEFT
-            KeyEvent.VK_RIGHT -> Keyboard.Key.RIGHT
-            KeyEvent.VK_ENTER -> Keyboard.Key.START
-            KeyEvent.VK_BACK_SPACE -> Keyboard.Key.SELECT
-            KeyEvent.VK_TAB -> Keyboard.Key.SELECT
-            KeyEvent.VK_SPACE -> Keyboard.Key.SPACE
-            KeyEvent.VK_S -> Keyboard.Key.S
+            config.up -> Keyboard.Key.UP
+            config.down -> Keyboard.Key.DOWN
+            config.left -> Keyboard.Key.LEFT
+            config.right -> Keyboard.Key.RIGHT
+            config.start -> Keyboard.Key.START
+            config.select -> Keyboard.Key.SELECT
+            config.action -> Keyboard.Key.ACTION
             else -> null
         }?.let(constructor)
     }

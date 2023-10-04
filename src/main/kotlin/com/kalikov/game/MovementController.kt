@@ -77,6 +77,7 @@ class MovementController(
                         }
                     }
                 } else if (sprite is Bullet && bulletIntersects(bullet, sprite)) {
+                    sprite.hit(false)
                     explode = explode == true
                 }
             }
@@ -132,9 +133,22 @@ class MovementController(
     }
 
     private fun detectPowerUpCollisionForTank(tank: Tank) {
+        // reduced rectangle is used
+        val reduction = Bullet.SIZE
+        var left = tank.left
+        var right = tank.right
+        var top = tank.top
+        var bottom = tank.bottom
+        when (tank.direction) {
+            Direction.UP -> top += reduction
+            Direction.LEFT -> left += reduction
+            Direction.DOWN -> bottom -= reduction
+            Direction.RIGHT -> right -= reduction
+        }
         for (sprite in spriteContainer.sprites) {
             if (sprite is PowerUp) {
-                if (tank.bounds.intersects(sprite.bounds)) {
+                val rect = sprite.bounds
+                if (left <= rect.right && right >= rect.left && top <= rect.bottom && bottom >= rect.top) {
                     sprite.pick(tank)
                 }
                 break
@@ -306,6 +320,7 @@ class MovementController(
                         }
                         detectBulletCollisionForTank(event.sprite)
                     }
+
                     is PowerUp -> detectCollisionsForPowerUp(event.sprite)
                 }
             }

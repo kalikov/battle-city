@@ -5,6 +5,16 @@
     "height": 600
   },
   "fpsLimit": 125,
+  "debug": false,
+  "keyboard": {
+    "up": 38,
+    "down": 40,
+    "left": 37,
+    "right": 39,
+    "start": 10,
+    "select": 9,
+    "action": 32
+  },
   "fonts": {
     "prstart": {
       "path": "fonts/prstart.ttf",

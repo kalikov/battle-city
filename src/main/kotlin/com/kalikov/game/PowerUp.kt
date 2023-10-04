@@ -7,17 +7,21 @@ class PowerUp(
     imageManager: ImageManager,
     position: Point,
     clock: Clock
-) : Sprite(eventRouter, position.x, position.y, Globals.UNIT_SIZE, Globals.UNIT_SIZE) {
+) : Sprite(eventRouter, position.x, position.y, SIZE, SIZE) {
+    companion object {
+        const val SIZE = Globals.UNIT_SIZE
+    }
+
     data class Destroyed(val powerUp: PowerUp) : Event()
     data class Pick(val powerUp: PowerUp, val tank: Tank) : Event()
 
     enum class Type(val key: String, val index: Int) {
-        GRENADE("grenade", 4),
         HELMET("helmet", 0),
+        TIMER("timer", 1),
         SHOVEL("shovel", 2),
         STAR("star", 3),
-        TANK("tank", 5),
-        TIMER("timer", 1)
+        GRENADE("grenade", 4),
+        TANK("tank", 5)
     }
 
     var type = Type.GRENADE

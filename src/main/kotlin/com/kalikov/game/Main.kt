@@ -45,7 +45,7 @@ class Main {
             val fontManager = ConcurrentAwtFontManager()
 
             val screen = AwtScreen(frame, fontManager)
-            val input = AwtInput(frame)
+            val input = AwtInput(frame, config.keyboard)
             val audio = JavaAudio()
             val game = Game(config, screen, input, audio)
 

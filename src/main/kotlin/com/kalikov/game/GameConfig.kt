@@ -5,6 +5,8 @@ data class GameConfig(
     val name: String = "Battle City",
     val resolution: Size = Size(800, 600),
     val fpsLimit: Int = 125,
+    val debug: Boolean = false,
+    val keyboard: KeyboardConfig = KeyboardConfig(),
     val fonts: Map<String, FontConfig> = emptyMap(),
     val sounds: Map<String, String> = emptyMap(),
     val images: Map<String, String> = emptyMap(),

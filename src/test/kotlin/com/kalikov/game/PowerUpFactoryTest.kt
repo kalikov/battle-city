@@ -19,7 +19,7 @@ class PowerUpFactoryTest {
     fun beforeEach() {
         eventManager = mock()
         spriteContainer = mock()
-        factory = PowerUpFactory(eventManager, mock(), spriteContainer, mock())
+        factory = PowerUpFactory(eventManager, mock(), spriteContainer, mock(), Rect(), mock())
     }
 
     @Test

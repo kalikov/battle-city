@@ -6,7 +6,7 @@ import kotlin.math.max
 
 
 class Game(
-    config: GameConfig,
+    private val config: GameConfig,
     private val screen: Screen,
     private val input: Input,
     audio: Audio
@@ -60,21 +60,32 @@ class Game(
             // do nothing
         }
 
-//        if (next) {
         sceneManager.update()
-//            next = false
-//        }
 
         screen.clear()
         sceneManager.draw(screen.surface)
 
-        screen.surface.fillText(
-            "${duration / 1000000}." + "${duration % 1000000 / 1000}ms".padStart(3, '0'),
-            0,
-            Globals.UNIT_SIZE,
-            ARGB.WHITE,
-            "${Font.MONOSPACED}-${Globals.UNIT_SIZE}"
-        )
+        if (config.debug) {
+            screen.surface.fillText(
+                "${duration / 1000000}." + "${duration % 1000000 / 1000}ms".padStart(3, '0'),
+                0,
+                Globals.UNIT_SIZE,
+                ARGB.WHITE,
+                "${Font.MONOSPACED}-${Globals.UNIT_SIZE}"
+            )
+
+            val lastKeyPressed = input.lastKeyPressed
+            if (lastKeyPressed != 0) {
+                screen.surface.fillText(
+                    "$lastKeyPressed".padStart(3, ' '),
+                    screen.surface.width - 3 * Globals.UNIT_SIZE,
+                    Globals.UNIT_SIZE,
+                    ARGB.WHITE,
+                    "${Font.MONOSPACED}-${Globals.UNIT_SIZE}"
+                )
+            }
+        }
+
         if (screen.flip()) {
             duration = System.nanoTime() - start
         }
@@ -95,8 +106,6 @@ class Game(
     override fun notify(event: Event) {
         if (event is Quit) {
             quit()
-        } else if (event is Keyboard.KeyPressed && event.key == Keyboard.Key.S) {
-            next = true
         }
     }
 }

@@ -99,8 +99,7 @@ class Level(
         )
 
         bulletFactory = BulletFactory(eventManager, spriteContainer)
-        bulletExplosionFactory =
-            BulletExplosionFactory(eventManager, imageManager, spriteContainer, clock)
+        bulletExplosionFactory = BulletExplosionFactory(eventManager, imageManager, spriteContainer, clock)
         tankExplosionFactory = TankExplosionFactory(eventManager, imageManager, pauseListener, spriteContainer)
         baseExplosionFactory = BaseExplosionFactory(eventManager, imageManager, spriteContainer, clock)
         pointsFactory = PointsFactory(eventManager, imageManager, spriteContainer, clock)
@@ -132,7 +131,7 @@ class Level(
             gameField.bounds.y + Globals.TILE_SIZE
         )
 
-        powerUpFactory = PowerUpFactory(eventManager, imageManager, spriteContainer, clock)
+        powerUpFactory = PowerUpFactory(eventManager, imageManager, spriteContainer, clock, gameField.bounds)
 
         baseWallBuilder = BaseWallBuilder(
             eventManager,

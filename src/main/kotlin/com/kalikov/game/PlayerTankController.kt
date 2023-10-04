@@ -102,7 +102,7 @@ class PlayerTankController(
                 }
             }
 
-            Keyboard.Key.SPACE -> {
+            Keyboard.Key.ACTION -> {
                 tank.startShooting()
             }
 
@@ -173,7 +173,7 @@ class PlayerTankController(
                 updateStateOnVert()
             }
         }
-        if (key == Keyboard.Key.SPACE) {
+        if (key == Keyboard.Key.ACTION) {
             tank.stopShooting()
         }
     }

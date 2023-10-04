@@ -13,7 +13,7 @@ This is a recreation of the classic game implemented using the Kotlin programmin
 * A variety of enemy tanks with different behaviors and abilities.
 * Power-ups and obstacles to enhance gameplay.
 * ~~Sound and visual effects faithful to the original game.~~
-* ~~Customizable controls for an improved gaming experience.~~
+* Customizable controls for an improved gaming experience.
 
 ## Credits
 ### Original Game

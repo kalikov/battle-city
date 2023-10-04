@@ -216,12 +216,41 @@ class MovementControllerTest {
 
         whenever(spriteContainer.sprites).thenReturn(listOf(tank, otherTank, bullet, otherBullet))
 
+        movementController.notify(SpriteContainer.Added(bullet))
+
         movementController.update()
         clock.tick(updateInterval)
         movementController.update()
 
         assertFalse(bullet.isDestroyed)
         assertFalse(otherBullet.isDestroyed)
+    }
+
+    @Test
+    fun `player bullet should hit enemy bullet`() {
+        val player = mockTank(eventManager)
+        player.direction = Direction.RIGHT
+
+        val playerBullet = player.createBullet()
+
+        val tank = mockTank(eventManager, x = Globals.UNIT_SIZE + Bullet.SIZE, y = 0)
+        tank.direction = Direction.LEFT
+        tank.enemyType = Tank.EnemyType.BASIC
+
+        val bullet = tank.createBullet()
+
+        whenever(spriteContainer.sprites).thenReturn(listOf(player, tank, playerBullet, bullet))
+
+        movementController.notify(SpriteContainer.Added(bullet))
+
+        movementController.update()
+        clock.tick(updateInterval)
+        movementController.update()
+
+        assertTrue(playerBullet.isDestroyed)
+        assertTrue(bullet.isDestroyed)
+        assertFalse(player.isDestroyed)
+        assertFalse(tank.isDestroyed)
     }
 
     @Test

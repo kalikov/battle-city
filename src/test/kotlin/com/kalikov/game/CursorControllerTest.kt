@@ -6,8 +6,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
 
 class CursorControllerTest {
     @Test
@@ -29,14 +27,14 @@ class CursorControllerTest {
 
         val cursorController = CursorController(eventManager, cursor, Rect(), mock())
 
-        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.SPACE))
+        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.ACTION))
         verify(eventManager).fireEvent(isA<Builder.StructureCreated>())
         reset(eventManager)
 
-        cursorController.notify(Keyboard.KeyReleased(Keyboard.Key.SPACE))
+        cursorController.notify(Keyboard.KeyReleased(Keyboard.Key.ACTION))
         verify(eventManager, never()).fireEvent(isA<Builder.StructureCreated>())
 
-        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.SPACE))
+        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.ACTION))
         verify(eventManager).fireEvent(isA<Builder.StructureCreated>())
         reset(eventManager)
 
@@ -44,7 +42,7 @@ class CursorControllerTest {
         verify(eventManager).fireEvent(isA<Builder.StructureCreated>())
         reset(eventManager)
 
-        cursorController.notify(Keyboard.KeyReleased(Keyboard.Key.SPACE))
+        cursorController.notify(Keyboard.KeyReleased(Keyboard.Key.ACTION))
         cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.RIGHT))
         verify(eventManager, never()).fireEvent(isA<Builder.StructureCreated>())
     }

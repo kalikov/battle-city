@@ -24,9 +24,9 @@ class Bullet(
 
     var type = Type.REGULAR
 
-    val moveCountDown = CountDown(speed.frequency)
-
     var direction = Direction.RIGHT
+
+    private val moveCountDown = CountDown(speed.frequency)
 
     var shouldExplode = true
         private set

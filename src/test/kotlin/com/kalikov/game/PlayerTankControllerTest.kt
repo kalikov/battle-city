@@ -20,7 +20,7 @@ class PlayerTankControllerTest {
 
     @Test
     fun `should shoot when space key is pressed`() {
-        controller.notify(Keyboard.KeyPressed(Keyboard.Key.SPACE))
+        controller.notify(Keyboard.KeyPressed(Keyboard.Key.ACTION))
 
         verify(tank).startShooting()
     }

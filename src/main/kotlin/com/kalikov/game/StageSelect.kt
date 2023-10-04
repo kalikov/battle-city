@@ -30,7 +30,7 @@ class StageSelect(
             eventManager.removeSubscriber(this, subscriptions)
             subscribed = false
             scriptCallback.actionCompleted()
-        } else if (key == Keyboard.Key.UP || key == Keyboard.Key.RIGHT || key == Keyboard.Key.SPACE) {
+        } else if (key == Keyboard.Key.UP || key == Keyboard.Key.RIGHT || key == Keyboard.Key.ACTION) {
             stageManager.next(false)
         } else if (key == Keyboard.Key.DOWN || key == Keyboard.Key.LEFT) {
             stageManager.prev(false)

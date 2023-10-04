@@ -66,7 +66,7 @@ class CursorController(
                 move()
             }
 
-            Keyboard.Key.SPACE -> {
+            Keyboard.Key.ACTION -> {
                 val position = Point(cursor.x, cursor.y)
                 if (prevBuildStart == null) {
                     cursor.build()
@@ -91,7 +91,7 @@ class CursorController(
         ) {
             stop()
         }
-        if (key == Keyboard.Key.SPACE) {
+        if (key == Keyboard.Key.ACTION) {
             prevBuildStart = currBuildStart
             currBuildStart = null
         }
