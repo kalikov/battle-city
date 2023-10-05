@@ -38,16 +38,17 @@ class Water(
         animation.update()
     }
 
-    override fun dispose() {
-        LeaksDetector.remove(this)
-    }
-
     override fun draw(surface: ScreenSurface) {
-        val index = if (static) 0 else animation.frame
+        val index = if (isStatic) 0 else animation.frame
         val srcX = tileWidth * index
         surface.draw(x, y, image, srcX, 0, tileWidth, tileHeight)
         surface.draw(x + tileWidth, y, image, srcX, 0, tileWidth, tileHeight)
         surface.draw(x, y + tileHeight, image, srcX, 0, tileWidth, tileHeight)
         surface.draw(x + tileWidth, y + tileHeight, image, srcX, 0, tileWidth, tileHeight)
+    }
+
+    override fun dispose() {
+        animation.dispose()
+        LeaksDetector.remove(this)
     }
 }

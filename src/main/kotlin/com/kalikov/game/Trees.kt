@@ -23,20 +23,10 @@ class Trees(
     }
 
     override fun draw(surface: ScreenSurface) {
-
         surface.draw(x, y, image)
         surface.draw(x + Globals.TILE_SIZE, y, image)
         surface.draw(x, y + Globals.TILE_SIZE, image)
         surface.draw(x + Globals.TILE_SIZE, y + Globals.TILE_SIZE, image)
-    }
-
-    override fun updateHook() {
-    }
-
-    override fun destroyHook() {
-    }
-
-    override fun boundsHook() {
     }
 
     override fun dispose() {

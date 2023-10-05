@@ -100,15 +100,17 @@ class Level(
 
         bulletFactory = BulletFactory(eventManager, spriteContainer)
         bulletExplosionFactory = BulletExplosionFactory(eventManager, imageManager, spriteContainer, clock)
-        tankExplosionFactory = TankExplosionFactory(eventManager, imageManager, pauseListener, spriteContainer)
+        tankExplosionFactory = TankExplosionFactory(eventManager, imageManager, spriteContainer)
         baseExplosionFactory = BaseExplosionFactory(eventManager, imageManager, spriteContainer, clock)
         pointsFactory = PointsFactory(eventManager, imageManager, spriteContainer, clock)
         freezeHandler = FreezeHandler(eventManager, clock)
 
+        val basePosition = stage.map.base.multiply(Globals.TILE_SIZE).translate(gameField.bounds.x, gameField.bounds.y)
+
         aiControllersContainer = AITankControllerContainer(
             eventManager,
             pauseListener,
-            stage.map.base.multiply(Globals.TILE_SIZE),
+            basePosition
         )
 
         enemyFactory = EnemyFactory(
@@ -136,16 +138,8 @@ class Level(
         baseWallBuilder = BaseWallBuilder(
             eventManager,
             spriteContainer,
-            setOf(
-                Point(gameField.bounds.x + 11 * Globals.TILE_SIZE, gameField.bounds.y + 25 * Globals.TILE_SIZE),
-                Point(gameField.bounds.x + 11 * Globals.TILE_SIZE, gameField.bounds.y + 24 * Globals.TILE_SIZE),
-                Point(gameField.bounds.x + 11 * Globals.TILE_SIZE, gameField.bounds.y + 23 * Globals.TILE_SIZE),
-                Point(gameField.bounds.x + 12 * Globals.TILE_SIZE, gameField.bounds.y + 23 * Globals.TILE_SIZE),
-                Point(gameField.bounds.x + 13 * Globals.TILE_SIZE, gameField.bounds.y + 23 * Globals.TILE_SIZE),
-                Point(gameField.bounds.x + 14 * Globals.TILE_SIZE, gameField.bounds.y + 23 * Globals.TILE_SIZE),
-                Point(gameField.bounds.x + 14 * Globals.TILE_SIZE, gameField.bounds.y + 24 * Globals.TILE_SIZE),
-                Point(gameField.bounds.x + 14 * Globals.TILE_SIZE, gameField.bounds.y + 25 * Globals.TILE_SIZE),
-            )
+            gameField.bounds,
+            basePosition
         )
 
         powerUpHandler = PowerUpHandler(eventManager, imageManager)
@@ -199,7 +193,7 @@ class Level(
                 playerTank.destroy()
 
                 for (sprite in spriteContainer.sprites) {
-                    sprite.static = true
+                    sprite.isStatic = true
                     if (sprite is Tank) {
                         sprite.destroy()
                     }
@@ -332,7 +326,7 @@ class Level(
         playerTankControllerFactory.dispose()
 
         movementController.dispose()
-        gameField.dispose()
+
         spriteContainer.dispose()
 
         pauseListener.dispose()

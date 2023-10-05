@@ -98,7 +98,7 @@ class Builder(
 
     private fun buildWater(cursor: Cursor): List<Sprite> {
         val water = Water(eventManager, imageManager, clock, cursor.x, cursor.y)
-        water.static = true
+        water.isStatic = true
         return listOf(water)
     }
 

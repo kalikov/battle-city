@@ -24,4 +24,8 @@ abstract class Explosion(
     override fun draw(surface: ScreenSurface) {
         surface.draw(x, y, image, (animation.frame - 1) * width, 0, width, height)
     }
+
+    override fun dispose() {
+        animation.dispose()
+    }
 }

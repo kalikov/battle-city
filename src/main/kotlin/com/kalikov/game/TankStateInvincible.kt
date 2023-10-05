@@ -44,6 +44,12 @@ class TankStateInvincible(
         )
     }
 
+    override fun dispose() {
+        shieldAnimation.dispose()
+        shieldTimer.dispose()
+        super.dispose()
+    }
+
     private fun end() {
         shieldTimer.stop()
         eventManager.fireEvent(End(tank))

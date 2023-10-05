@@ -24,7 +24,4 @@ class BaseExplosion(
     override fun destroyHook() {
         eventManager.fireEvent(Destroyed(this))
     }
-
-    override fun dispose() {
-    }
 }

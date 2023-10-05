@@ -20,7 +20,7 @@ class CursorController(
     private var prevBuildStart: Point? = null
     private var currBuildStart: Point? = null
 
-    private var direction: Direction = Direction.RIGHT
+    private var direction = Direction.RIGHT
 
     private val speed = Globals.UNIT_SIZE
 
@@ -154,6 +154,8 @@ class CursorController(
     }
 
     fun dispose() {
+        moveTimer.dispose()
+
         eventManager.removeSubscriber(this, subscriptions)
     }
 }

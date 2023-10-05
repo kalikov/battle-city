@@ -12,19 +12,12 @@ class TankExplosion(
     private companion object {
         private val animationFrames = intArrayOf(1, 2, 3, 4, 5, 3)
     }
-    data class Destroyed(val explosion: TankExplosion) : Event()
 
-    init {
-        LeaksDetector.add(this)
-    }
+    data class Destroyed(val explosion: TankExplosion) : Event()
 
     override val image = imageManager.getImage("big_explosion")
 
     override fun destroyHook() {
         eventManager.fireEvent(Destroyed(this))
-    }
-
-    override fun dispose() {
-        LeaksDetector.remove(this)
     }
 }

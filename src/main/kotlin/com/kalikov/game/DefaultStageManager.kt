@@ -25,15 +25,6 @@ class DefaultStageManager(
 
     override var curtainBackground: ScreenSurface? = null
 
-    override fun init(stages: List<Stage>, defaultConstructionMap: StageMapConfig) {
-        require(stages.isNotEmpty())
-        this.stages = stages
-        this.defaultConstructionMap = defaultConstructionMap
-        player = Player(eventManager)
-        constructionStage = Stage(defaultConstructionMap, stages[0].enemySpawnDelay, stages[0].enemies)
-        constructionMap = defaultConstructionMap
-    }
-
     override val stage: Stage
         get() {
             if (constructionMap !== defaultConstructionMap) {
@@ -42,8 +33,16 @@ class DefaultStageManager(
             return stages[index]
         }
 
-    override val stageNumber: Int
-        get() = index + 1
+    override val stageNumber get() = index + 1
+
+    override fun init(stages: List<Stage>, defaultConstructionMap: StageMapConfig) {
+        require(stages.isNotEmpty())
+        this.stages = stages
+        this.defaultConstructionMap = defaultConstructionMap
+        player = Player(eventManager)
+        constructionStage = Stage(defaultConstructionMap, stages[0].enemySpawnDelay, stages[0].enemies)
+        constructionMap = defaultConstructionMap
+    }
 
     override fun reset() {
         index = 0

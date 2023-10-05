@@ -5,7 +5,11 @@ class Base(
     imageManager: ImageManager,
     x: Int,
     y: Int
-) : Sprite(eventRouter, x, y, Globals.UNIT_SIZE, Globals.UNIT_SIZE) {
+) : Sprite(eventRouter, x, y, SIZE, SIZE) {
+    companion object {
+        const val SIZE = Globals.UNIT_SIZE
+    }
+
     data class Hit(val base: Base) : Event()
 
     var isHit = false

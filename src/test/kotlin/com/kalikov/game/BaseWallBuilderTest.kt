@@ -21,7 +21,7 @@ class BaseWallBuilderTest {
     @Test
     fun `should subscribe`() {
         eventManager = mock()
-        val builder = BaseWallBuilder(eventManager, spriteContainer, emptySet())
+        val builder = BaseWallBuilder(eventManager, spriteContainer, Rect(), Point())
 
         verify(eventManager).addSubscriber(
             builder,
@@ -32,7 +32,7 @@ class BaseWallBuilderTest {
     @Test
     fun `should unsubscribe`() {
         eventManager = mock()
-        val builder = BaseWallBuilder(eventManager, spriteContainer, emptySet())
+        val builder = BaseWallBuilder(eventManager, spriteContainer, Rect(), Point())
         builder.dispose()
 
         verify(eventManager).removeSubscriber(
@@ -43,21 +43,43 @@ class BaseWallBuilderTest {
 
     @Test
     fun `should build base wall`() {
-        val builder = BaseWallBuilder(eventManager, spriteContainer, setOf(Point(1, 2), Point(10, 20)))
+        val builder = BaseWallBuilder(
+            eventManager,
+            spriteContainer,
+            Rect(0, 0, 13 * Globals.UNIT_SIZE, 13 * Globals.UNIT_SIZE),
+            Point(6 * Globals.UNIT_SIZE, 12 * Globals.UNIT_SIZE)
+        )
         builder.buildWall(BrickWallFactory(eventManager, mock()))
 
         val sprites = spriteContainer.sprites
-        assertEquals(2, sprites.size)
+        assertEquals(8, sprites.size)
 
         val positions = sprites.map { Point(it.x, it.y) }.toSet()
-        assertEquals(setOf(Point(1, 2), Point(10, 20)), positions)
+        assertEquals(
+            setOf(
+                Point(11 * Globals.TILE_SIZE, 25 * Globals.TILE_SIZE),
+                Point(11 * Globals.TILE_SIZE, 24 * Globals.TILE_SIZE),
+                Point(11 * Globals.TILE_SIZE, 23 * Globals.TILE_SIZE),
+                Point(12 * Globals.TILE_SIZE, 23 * Globals.TILE_SIZE),
+                Point(13 * Globals.TILE_SIZE, 23 * Globals.TILE_SIZE),
+                Point(14 * Globals.TILE_SIZE, 23 * Globals.TILE_SIZE),
+                Point(14 * Globals.TILE_SIZE, 24 * Globals.TILE_SIZE),
+                Point(14 * Globals.TILE_SIZE, 25 * Globals.TILE_SIZE),
+            ),
+            positions
+        )
     }
 
     @Test
     fun `should destroy base wall`() {
-        val builder = BaseWallBuilder(eventManager, spriteContainer, setOf(Point(0, 0)))
+        val builder = BaseWallBuilder(
+            eventManager,
+            spriteContainer,
+            Rect(0, 0, 13 * Globals.UNIT_SIZE, 13 * Globals.UNIT_SIZE),
+            Point(6 * Globals.UNIT_SIZE, 12 * Globals.UNIT_SIZE)
+        )
 
-        val brickWall = mockBrickWall(eventManager)
+        val brickWall = mockBrickWall(eventManager, x = 11 * Globals.TILE_SIZE, y = 25 * Globals.TILE_SIZE)
         spriteContainer.addSprite(brickWall)
 
         builder.destroyWall()
@@ -67,7 +89,12 @@ class BaseWallBuilderTest {
 
     @Test
     fun `should not destroy non-base wall`() {
-        val builder = BaseWallBuilder(eventManager, spriteContainer, setOf(Point(10, 0)))
+        val builder = BaseWallBuilder(
+            eventManager,
+            spriteContainer,
+            Rect(0, 0, 13 * Globals.UNIT_SIZE, 13 * Globals.UNIT_SIZE),
+            Point()
+        )
 
         val brickWall = mockBrickWall(eventManager)
         spriteContainer.addSprite(brickWall)

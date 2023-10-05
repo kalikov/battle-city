@@ -19,9 +19,9 @@ class ConstructionScene(
 
     val spriteContainer: SpriteContainer
 
-    private val gameField: GameField
-
     val cursor: Cursor
+
+    private val gameField: GameField
     private val cursorController: CursorController
 
     private val basePosition: Point
@@ -58,7 +58,7 @@ class ConstructionScene(
                 gameField.bounds.x + item.x * Globals.TILE_SIZE,
                 gameField.bounds.y + item.y * Globals.TILE_SIZE,
             )
-            sprite.static = true
+            sprite.isStatic = true
             spriteContainer.addSprite(sprite)
             if (sprite.bounds.intersects(base.bounds)) {
                 base.destroy()
@@ -132,7 +132,6 @@ class ConstructionScene(
 
         eventManager.removeSubscriber(this, subscriptions)
 
-        gameField.dispose()
         spriteContainer.dispose()
     }
 }

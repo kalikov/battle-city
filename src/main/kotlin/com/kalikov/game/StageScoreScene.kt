@@ -9,7 +9,7 @@ class StageScoreScene(
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
     private val score: StageScore,
-    val gameOver: Boolean,
+    private val gameOver: Boolean,
     clock: Clock
 ) : Scene {
     val isComplete get() = script.isEmpty

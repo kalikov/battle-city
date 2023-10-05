@@ -8,4 +8,6 @@ interface Sound {
     fun loop()
 
     fun stop()
+
+    fun dispose()
 }

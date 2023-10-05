@@ -33,4 +33,8 @@ class MainMenuCursorView(
             Globals.UNIT_SIZE
         )
     }
+
+    fun dispose() {
+        trackAnimation.dispose()
+    }
 }

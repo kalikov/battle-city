@@ -81,4 +81,9 @@ class AITankController(
         updateShoot()
         updateDirection()
     }
+
+    fun dispose() {
+        shootTimer.dispose()
+        directionTimer.dispose()
+    }
 }

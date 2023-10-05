@@ -73,6 +73,8 @@ class ShovelHandler(
     }
 
     fun dispose() {
+        solidTimer.dispose()
+        blinkTimer.dispose()
         eventManager.removeSubscriber(this, subscriptions)
     }
 }

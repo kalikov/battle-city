@@ -38,7 +38,7 @@ class Tank(
     data class Destroyed(val tank: Tank) : Event()
     data class PlayerDestroyed(val tank: Tank) : Event()
     data class EnemyDestroyed(val tank: Tank) : Event()
-    data class FlashingTankHit(val tank: Tank) : Event()
+    data object FlashingTankHit : Event()
 
     override var isIdle = true
 
@@ -58,7 +58,7 @@ class Tank(
     var slipDuration = 28
         set(value) {
             field = value
-            slipCountDown = CountDown(value, ::slipped)
+            slipCountDown = CountDown(value)
         }
 
     override var direction = Direction.RIGHT
@@ -74,7 +74,13 @@ class Tank(
         }
 
     var enemyType: EnemyType? = null
+
     var state: TankState = TankStateNormal(imageManager, this)
+        set(value) {
+            field.dispose()
+            field = value
+        }
+
     var value = 0
     var isFlashing = false
         set(value) {
@@ -107,7 +113,7 @@ class Tank(
     private val turnRoundTo = Globals.TILE_SIZE
 
     private var moveCountDown = CountDown(moveFrequency, ::moved)
-    private var slipCountDown = CountDown(slipDuration, ::slipped)
+    private var slipCountDown = CountDown(slipDuration)
 
     var moveDistance = 0
         private set
@@ -118,10 +124,6 @@ class Tank(
         z = 1
 
         eventManager.addSubscriber(this, subscriptions)
-    }
-
-    private fun slipped() {
-
     }
 
     private fun moved() {
@@ -253,7 +255,7 @@ class Tank(
             return
         }
         if (isFlashing) {
-            eventManager.fireEvent(FlashingTankHit(this))
+            eventManager.fireEvent(FlashingTankHit)
             isFlashing = false
         }
         hit++
@@ -275,6 +277,8 @@ class Tank(
 
     override fun dispose() {
         cooldownTimer.dispose()
+
+        state.dispose()
 
         eventManager.removeSubscriber(this, subscriptions)
 

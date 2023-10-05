@@ -30,7 +30,4 @@ class SteelWall(
     override fun draw(surface: ScreenSurface) {
         surface.draw(x, y, image)
     }
-
-    override fun boundsHook() {
-    }
 }

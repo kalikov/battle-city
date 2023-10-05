@@ -17,9 +17,11 @@ class PowerUpTest {
     }
 
     @Test
-    fun `should fire event on destroy`() {
-        powerUp.destroy()
-        powerUp.update()
-        verify(eventManager).fireEvent(PowerUp.Destroyed(powerUp))
+    fun `should destroy on pick`() {
+        val tank = mockTank(eventManager)
+        powerUp.pick(tank)
+
+        assertTrue(powerUp.isDestroyed)
+        verify(eventManager).fireEvent(PowerUp.Pick(powerUp, tank))
     }
 }

@@ -45,6 +45,10 @@ open class TankStateNormal(
         surface.draw(tank.x, tank.y, image, column * tank.width, row * tank.height, tank.width, tank.height)
     }
 
+    override fun dispose() {
+        flashTimer.dispose()
+    }
+
     private fun getTrackFrame(): Int {
         val index = tank.moveDistance % trackFrames.size
         return trackFrames[index]

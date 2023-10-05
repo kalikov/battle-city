@@ -47,7 +47,6 @@ class PointsFactoryTest {
         assertEquals(explosion.center.x, points.x + points.width / 2)
         assertEquals(explosion.center.y, points.y + points.height / 2)
         assertEquals(tank.value, points.value)
-        assertEquals(Points.Type.TANK, points.type)
     }
 
     @Test
@@ -95,6 +94,5 @@ class PointsFactoryTest {
         assertEquals(powerUp.center.x, points.x + points.width / 2)
         assertEquals(powerUp.center.y, points.y + points.height / 2)
         assertEquals(powerUp.value, points.value)
-        assertEquals(Points.Type.POWERUP, points.type)
     }
 }

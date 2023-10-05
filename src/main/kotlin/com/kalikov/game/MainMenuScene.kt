@@ -129,6 +129,7 @@ class MainMenuScene(
 
     override fun destroy() {
         mainMenuController.dispose()
+        cursorView.dispose()
 
         eventManager.removeSubscriber(this, subscriptions)
 

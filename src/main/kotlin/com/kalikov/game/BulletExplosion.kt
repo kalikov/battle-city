@@ -18,7 +18,4 @@ class BulletExplosion(
     }
 
     override val image = imageManager.getImage("bullet_explosion")
-
-    override fun dispose() {
-    }
 }

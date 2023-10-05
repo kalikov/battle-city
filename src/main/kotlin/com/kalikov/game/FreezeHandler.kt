@@ -19,8 +19,7 @@ class FreezeHandler(
         eventManager.addSubscriber(this, subscriptions)
     }
 
-    val isActive: Boolean
-        get() = !timer.isStopped
+    val isActive get() = !timer.isStopped
 
     override fun notify(event: Event) {
         if (event is PowerUpHandler.Freeze) {

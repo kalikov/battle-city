@@ -49,7 +49,7 @@ class PauseAwareTimer private constructor(
         }
     }
 
-    fun dispose() {
+    override fun dispose() {
         timer.stop()
         eventManager.removeSubscriber(this, setOf(PauseManager.Start::class, PauseManager.End::class))
     }

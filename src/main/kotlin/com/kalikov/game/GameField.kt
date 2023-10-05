@@ -1,7 +1,7 @@
 package com.kalikov.game
 
 class GameField(
-    private val eventManager: EventManager,
+    private val eventRouter: EventRouter,
     private val imageManager: ImageManager,
     private val entityFactory: EntityFactory,
     private val spriteContainer: SpriteContainer,
@@ -36,7 +36,7 @@ class GameField(
         }
         spriteContainer.addSprite(
             Base(
-                eventManager,
+                eventRouter,
                 imageManager,
                 bounds.x + map.base.x * Globals.TILE_SIZE,
                 bounds.y + map.base.y * Globals.TILE_SIZE
@@ -54,8 +54,5 @@ class GameField(
 
         val sprites = spriteContainer.sprites
         sprites.filterNot { it.isDestroyed }.forEach { it.draw(surface) }
-    }
-
-    fun dispose() {
     }
 }

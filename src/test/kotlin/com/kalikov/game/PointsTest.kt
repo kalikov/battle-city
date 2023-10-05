@@ -3,7 +3,6 @@ package com.kalikov.game
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -92,14 +91,6 @@ class PointsTest {
         clock.tick(1)
         points.update()
         assertFalse(points.isDestroyed)
-    }
-
-    @Test
-    fun `should fire event on destroy`() {
-        val points = Points(eventManager, mock(), clock, 0, 0, 10)
-        points.destroy()
-        points.update()
-        verify(eventManager).fireEvent(Points.Destroyed(points))
     }
 
     private fun createPoints(duration: Int): Points {

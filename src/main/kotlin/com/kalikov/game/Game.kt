@@ -4,7 +4,6 @@ import java.awt.Font
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.max
 
-
 class Game(
     private val config: GameConfig,
     private val screen: Screen,

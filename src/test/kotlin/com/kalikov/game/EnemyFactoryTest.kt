@@ -33,7 +33,7 @@ class EnemyFactoryTest {
     @Test
     fun `should subscribe`() {
         val factory = createFactory(emptyList(), emptyList())
-        verify(eventManager).addSubscriber(factory, setOf(Points.Destroyed::class, TankExplosion.Destroyed::class))
+        verify(eventManager).addSubscriber(factory, setOf(TankExplosion.Destroyed::class))
     }
 
     @Test

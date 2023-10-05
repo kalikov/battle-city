@@ -63,4 +63,8 @@ class BasicTimer(
             }
         }
     }
+
+    override fun dispose() {
+        stop()
+    }
 }

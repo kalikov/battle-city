@@ -6,4 +6,6 @@ interface Timer {
     fun restart()
 
     fun update()
+
+    fun dispose()
 }

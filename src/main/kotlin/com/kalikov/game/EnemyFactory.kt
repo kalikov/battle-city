@@ -17,7 +17,7 @@ class EnemyFactory(
     data object LastEnemyDestroyed : Event()
 
     private companion object {
-        private val subscriptions = setOf(Points.Destroyed::class, TankExplosion.Destroyed::class)
+        private val subscriptions = setOf(TankExplosion.Destroyed::class)
     }
 
     init {
@@ -144,6 +144,8 @@ class EnemyFactory(
     }
 
     fun dispose() {
+        timer.dispose()
+
         eventManager.removeSubscriber(this, subscriptions)
     }
 }

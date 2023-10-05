@@ -29,6 +29,10 @@ data class Rect(
                 && other.top >= top
     }
 
+    fun contains(x: Int, y: Int): Boolean {
+        return x in left..right && y in top..bottom
+    }
+
     fun intersects(other: Rect): Boolean {
         return left <= other.right && right >= other.left && top <= other.bottom && bottom >= other.top
     }

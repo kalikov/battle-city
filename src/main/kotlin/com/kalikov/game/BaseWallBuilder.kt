@@ -3,16 +3,33 @@ package com.kalikov.game
 class BaseWallBuilder(
     private val eventManager: EventManager,
     private val spriteContainer: SpriteContainer,
-    private val positions: Set<Point>
+    private val bounds: Rect,
+    base: Point
 ) : EventSubscriber, ShovelWallBuilder {
     private companion object {
         private val subscriptions = setOf(SpriteContainer.Added::class, SpriteContainer.Removed::class)
     }
 
     private val walls = HashSet<Wall>()
+    private val positions = HashSet<Point>()
 
     init {
         eventManager.addSubscriber(this, subscriptions)
+
+        for (dx in -Globals.TILE_SIZE..Base.SIZE step Globals.TILE_SIZE) {
+            addPosition(base.x + dx, base.y - Globals.TILE_SIZE)
+            addPosition(base.x + dx, base.y + Base.SIZE)
+        }
+        for (dy in 0 until Base.SIZE step Globals.TILE_SIZE) {
+            addPosition(base.x - Globals.TILE_SIZE, base.y + dy)
+            addPosition(base.x + Base.SIZE, base.y + dy)
+        }
+    }
+
+    private fun addPosition(x: Int, y: Int) {
+        if (bounds.contains(x, y)) {
+            positions.add(Point(x, y))
+        }
     }
 
     override fun buildWall(wallFactory: WallFactory) {

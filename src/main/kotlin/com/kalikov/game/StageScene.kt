@@ -16,13 +16,15 @@ class StageScene(
 
     private var level: Level? = null
 
+    val isReady get() = script.isEmpty
+
     init {
         LeaksDetector.add(this)
 
         val isFirstStage = stageManager.player.score == 0
         script.enqueue(CurtainFall(curtain, script, clock))
         script.enqueue(Execute {
-            stageMessage.visible = true
+            stageMessage.isVisible = true
         })
         if (isFirstStage) {
             script.enqueue(StageSelect(eventManager, stageManager, script))
@@ -38,13 +40,11 @@ class StageScene(
             val level = Level(screen, eventManager, imageManager, stageManager, entityFactory, clock)
             this.level = level
             script.enqueue(Execute { level.start() })
-            stageMessage.visible = false
+            stageMessage.isVisible = false
             level.show()
         })
         script.enqueue(CurtainRise(curtain, script, clock))
     }
-
-    val isReady get() = script.isEmpty
 
     override fun update() {
         if (script.isEmpty) {

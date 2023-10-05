@@ -11,8 +11,6 @@ class PowerUp(
     companion object {
         const val SIZE = Globals.UNIT_SIZE
     }
-
-    data class Destroyed(val powerUp: PowerUp) : Event()
     data class Pick(val powerUp: PowerUp, val tank: Tank) : Event()
 
     enum class Type(val key: String, val index: Int) {
@@ -54,10 +52,6 @@ class PowerUp(
             eventRouter.fireEvent(Pick(this, tank))
             destroy()
         }
-    }
-
-    override fun destroyHook() {
-        eventRouter.fireEvent(Destroyed(this))
     }
 
     override fun dispose() {

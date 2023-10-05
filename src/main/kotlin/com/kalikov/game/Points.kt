@@ -3,7 +3,7 @@ package com.kalikov.game
 import java.time.Clock
 
 class Points(
-    private val eventManager: EventManager,
+    eventManager: EventManager,
     imageManager: ImageManager,
     clock: Clock,
     x: Int,
@@ -14,18 +14,10 @@ class Points(
         const val SIZE = Globals.UNIT_SIZE
     }
 
-    enum class Type {
-        TANK,
-        POWERUP
-    }
-
     var value = 0
-    var type = Type.TANK
 
     private val timer = PauseAwareTimer(eventManager, clock, duration, ::destroy)
     private val image = imageManager.getImage("points")
-
-    data class Destroyed(val points: Points) : Event()
 
     init {
         LeaksDetector.add(this)
@@ -50,8 +42,6 @@ class Points(
 
     override fun destroyHook() {
         timer.stop()
-
-        eventManager.fireEvent(Destroyed(this))
     }
 
     override fun dispose() {

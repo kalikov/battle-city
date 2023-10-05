@@ -15,8 +15,8 @@ class AwtScreen(private val frame: JFrame, private val fonts: AwtFonts) : Screen
 
     override val surface: AwtScreenSurface
 
-    private var scaleX = 1.0
-    private var scaleY = 1.0
+    private var scaleX = 0.0
+    private var scaleY = 0.0
 
     private var topBlackBand = 0
     private var leftBlackBand = 0
@@ -32,37 +32,42 @@ class AwtScreen(private val frame: JFrame, private val fonts: AwtFonts) : Screen
     }
 
     fun resize(): Boolean {
-        updateScale(surface.width, surface.height)
-        return true
+        return updateScale(surface.width, surface.height)
     }
 
-    private fun updateScale(baseWidth: Int, baseHeight: Int) {
+    private fun updateScale(baseWidth: Int, baseHeight: Int): Boolean {
         val insets = frame.insets
         val width = frame.width - insets.right - insets.left
         val height = frame.height - insets.bottom - insets.top
 
-        scaleX = width / baseWidth.toDouble()
-        scaleY = height / baseHeight.toDouble()
-        if (scaleX > scaleY) {
-            scaleX = scaleY
-            val targetWidth = floor(scaleY * baseWidth.toDouble()).toInt()
-            bottomBlackBand = height
-            topBlackBand = 0
-            leftBlackBand = max(0, (width - targetWidth) / 2)
-            rightBlackBand = leftBlackBand + targetWidth
-        } else if (scaleY > scaleX) {
-            scaleY = scaleX
-            val targetHeight = floor(scaleX * baseHeight.toDouble()).toInt()
-            rightBlackBand = width
-            leftBlackBand = 0
-            topBlackBand = max(0, (height - targetHeight) / 2)
-            bottomBlackBand = topBlackBand + targetHeight
-        } else {
-            rightBlackBand = 0
-            leftBlackBand = 0
-            bottomBlackBand = 0
-            topBlackBand = 0
+        val newScaleX = width / baseWidth.toDouble()
+        val newScaleY = height / baseHeight.toDouble()
+        if (scaleX != newScaleX || scaleY != newScaleY) {
+            scaleX = newScaleX
+            scaleY = newScaleY
+            if (scaleX > scaleY) {
+                scaleX = scaleY
+                val targetWidth = floor(scaleY * baseWidth.toDouble()).toInt()
+                bottomBlackBand = height
+                topBlackBand = 0
+                leftBlackBand = max(0, (width - targetWidth) / 2)
+                rightBlackBand = leftBlackBand + targetWidth
+            } else if (scaleY > scaleX) {
+                scaleY = scaleX
+                val targetHeight = floor(scaleX * baseHeight.toDouble()).toInt()
+                rightBlackBand = width
+                leftBlackBand = 0
+                topBlackBand = max(0, (height - targetHeight) / 2)
+                bottomBlackBand = topBlackBand + targetHeight
+            } else {
+                rightBlackBand = 0
+                leftBlackBand = 0
+                bottomBlackBand = 0
+                topBlackBand = 0
+            }
+            return true
         }
+        return false
     }
 
     fun destroy() {

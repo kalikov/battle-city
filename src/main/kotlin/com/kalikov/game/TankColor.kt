@@ -13,12 +13,12 @@ class TankColor(clock: Clock) {
     private val timer = BasicTimer(clock, FLASHING_INTERVAL, ::change)
     private var hit = 0
 
-    var alternative = false
+    var isAlternative = false
         private set
 
     fun getColor(): Int {
         val pair = colors[hit]
-        return if (alternative) pair.second else pair.first
+        return if (isAlternative) pair.second else pair.first
     }
 
     fun update() {
@@ -30,7 +30,7 @@ class TankColor(clock: Clock) {
 
     private fun change(count: Int) {
         if (count % 2 != 0) {
-            alternative = !alternative
+            isAlternative = !isAlternative
         }
     }
 

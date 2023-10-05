@@ -43,4 +43,8 @@ class TankStateAppearing(
     override fun draw(surface: ScreenSurface) {
         surface.draw(tank.x, tank.y, image, tank.width * (animation.frame - 1), 0, tank.width, tank.height)
     }
+
+    override fun dispose() {
+        animation.dispose()
+    }
 }

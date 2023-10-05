@@ -10,4 +10,6 @@ interface TankState {
     fun update()
 
     fun draw(surface: ScreenSurface)
+
+    fun dispose()
 }

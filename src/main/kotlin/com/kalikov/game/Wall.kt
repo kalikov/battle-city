@@ -9,12 +9,6 @@ abstract class Wall(
 
     abstract fun hit(bullet: Bullet)
 
-    override fun updateHook() {
-    }
-
-    override fun destroyHook() {
-    }
-
     override fun dispose() {
     }
 }

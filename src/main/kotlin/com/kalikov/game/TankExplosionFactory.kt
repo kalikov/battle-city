@@ -3,7 +3,6 @@ package com.kalikov.game
 class TankExplosionFactory(
     private val eventManager: EventManager,
     private val imageManager: ImageManager,
-    private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer
 ) : EventSubscriber {
     init {

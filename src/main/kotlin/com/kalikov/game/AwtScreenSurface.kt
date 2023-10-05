@@ -293,8 +293,8 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
         }
     }
 
-    override fun setPixel(x: Int, y: Int, color: Int) {
-        image.setRGB(x, y, color)
+    override fun setPixel(x: Int, y: Int, color: ARGB) {
+        image.setRGB(x, y, color.value)
     }
 
     override fun setPixels(x: Int, y: Int, width: Int, height: Int, colors: IntArray) {

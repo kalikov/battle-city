@@ -18,7 +18,7 @@ class TankExplosionFactoryTest {
     fun beforeEach() {
         eventManager = mock()
         spriteContainer = mock()
-        factory = TankExplosionFactory(eventManager, mock(), mock(), spriteContainer)
+        factory = TankExplosionFactory(eventManager, mock(), spriteContainer)
     }
 
     @Test

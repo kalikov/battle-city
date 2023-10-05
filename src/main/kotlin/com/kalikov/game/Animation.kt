@@ -33,4 +33,8 @@ class Animation private constructor(
         }
         timer.update()
     }
+
+    fun dispose() {
+        timer.dispose()
+    }
 }

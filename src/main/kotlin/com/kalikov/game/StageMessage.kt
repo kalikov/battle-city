@@ -1,10 +1,10 @@
 package com.kalikov.game
 
 class StageMessage(private val stageManager: StageManager) {
-    var visible = false
+    var isVisible = false
 
     fun draw(surface: ScreenSurface) {
-        if (!visible) {
+        if (!isVisible) {
             return
         }
         val x = Globals.CANVAS_WIDTH / 2 - 4 * 8

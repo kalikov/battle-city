@@ -9,7 +9,7 @@ import javax.sound.sampled.DataLine
 import javax.sound.sampled.SourceDataLine
 import kotlin.concurrent.withLock
 
-class JavaSound(private val bytes: ByteArray) : Sound {
+class JavaSound(private val bytes: ByteArray, private val disposeCallback: (Sound) -> Unit) : Sound {
     private val buffer = ByteArray(4096)
 
     private val lock = ReentrantLock()
@@ -37,6 +37,11 @@ class JavaSound(private val bytes: ByteArray) : Sound {
             }
             playback = null
         }
+    }
+
+    override fun dispose() {
+        stop()
+        disposeCallback(this)
     }
 
     private fun start(callback: (SourceDataLine, AudioInputStream) -> Unit) {

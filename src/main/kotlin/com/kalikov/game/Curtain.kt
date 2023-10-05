@@ -4,8 +4,8 @@ class Curtain {
     var height = Globals.CANVAS_HEIGHT / 2
     var position = 0
 
-    val isFallen: Boolean get() = position >= height
-    val isRisen: Boolean get() = position <= 0
+    val isFallen get() = position >= height
+    val isRisen get() = position <= 0
 
     fun fall() {
         if (isFallen) {

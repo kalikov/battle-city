@@ -297,7 +297,7 @@ class TankTest {
         tank.isFlashing = true
         tank.hit()
         assertTrue(tank.isDestroyed)
-        verify(eventManager).fireEvent(Tank.FlashingTankHit(tank))
+        verify(eventManager).fireEvent(Tank.FlashingTankHit)
     }
 
     @Test
@@ -306,7 +306,7 @@ class TankTest {
         tank.isFlashing = true
         tank.hit()
         assertFalse(tank.isDestroyed)
-        verify(eventManager).fireEvent(Tank.FlashingTankHit(tank))
+        verify(eventManager).fireEvent(Tank.FlashingTankHit)
     }
 
     @Test
@@ -365,11 +365,11 @@ class TankTest {
         val color = TankColor(clock)
         tank.color = color
         tank.update()
-        assertFalse(color.alternative)
+        assertFalse(color.isAlternative)
 
         clock.tick(TankColor.FLASHING_INTERVAL)
         tank.updateColor()
-        assertTrue(color.alternative)
+        assertTrue(color.isAlternative)
     }
 
     @Test

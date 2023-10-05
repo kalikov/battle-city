@@ -59,6 +59,10 @@ class ConcurrentSoundManager(
         playbacks.values.forEach {
             it.cancel(true)
         }
+        playbacks.clear()
+
+        sounds.values.forEach { it.dispose() }
+        sounds.clear()
 
         executor.awaitTermination(1, TimeUnit.MINUTES)
         executor.shutdownNow()

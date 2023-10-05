@@ -32,15 +32,19 @@ class AITankControllerContainer(
             is EnemyFactory.EnemyCreated -> {
                 controllers[event.enemy] = createController(event.enemy)
             }
+
             is PowerUpHandler.Freeze -> {
                 freeze()
             }
+
             is FreezeHandler.Unfreeze -> {
                 unfreeze()
             }
+
             is Tank.Destroyed -> {
-                controllers.remove(event.tank)
+                controllers.remove(event.tank)?.dispose()
             }
+
             else -> {
             }
         }
@@ -82,6 +86,7 @@ class AITankControllerContainer(
     }
 
     fun dispose() {
+        controllers.values.forEach { it.dispose() }
         controllers.clear()
 
         eventManager.removeSubscriber(this, subscriptions)

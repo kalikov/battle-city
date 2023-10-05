@@ -25,7 +25,7 @@ abstract class Sprite(
 
     val position get() = Point(x, y)
 
-    var static = false
+    var isStatic = false
 
     var isDestroyed = false
         private set
