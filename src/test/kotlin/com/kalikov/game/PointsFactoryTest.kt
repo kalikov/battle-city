@@ -31,7 +31,6 @@ class PointsFactoryTest {
     fun `should create points when enemy tank is destroyed`() {
         val tank = mockTank(eventManager)
         tank.enemyType = Tank.EnemyType.BASIC
-        tank.value = 100
 
         val explosion = mockTankExplosion(eventManager, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
@@ -53,7 +52,7 @@ class PointsFactoryTest {
     fun `should not create points when enemy tank with zero value is destroyed`() {
         val tank = mockTank(eventManager)
         tank.enemyType = Tank.EnemyType.BASIC
-        tank.value = 0
+        tank.devalue()
 
         val explosion = mockTankExplosion(eventManager, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
@@ -65,7 +64,6 @@ class PointsFactoryTest {
     @Test
     fun `should not create points when player tank is destroyed`() {
         val tank = mockTank(eventManager)
-        tank.value = 100
 
         val explosion = mockTankExplosion(eventManager, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))

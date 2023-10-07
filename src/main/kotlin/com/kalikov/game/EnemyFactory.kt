@@ -116,7 +116,6 @@ class EnemyFactory(
                 tank.color.colors = arrayOf(0 to 1, 0 to 2, 1 to 2, 0 to 0)
             }
         }
-        tank.value = type.score
 
         if (flashingTanks.contains(enemyIndex + 1)) {
             tank.isFlashing = true

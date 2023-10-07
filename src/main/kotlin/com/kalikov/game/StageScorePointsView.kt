@@ -4,16 +4,22 @@ import java.time.Clock
 
 class StageScorePointsView(
     private val eventManager: EventManager,
-    private val value: Int,
-    count: Int,
+    imageManager: ImageManager,
+    private val enemyType: Tank.EnemyType,
+    score: StageScore,
     private val listener: Script,
     clock: Clock
 ) : ScriptNode {
+    private val count = score.getTanks(enemyType)
     private var counter = if (count > 0) 1 else 0
-    private var visible = false
+    private var isScoreVisible = false
     private val script = Script()
 
+    private val enemyImage = imageManager.getImage("tank_enemy")
+    private val arrowImage = imageManager.getImage("arrows")
+
     init {
+        script.enqueue(Execute { isScoreVisible = true })
         if (count > 0) {
             script.enqueue(Execute {
                 eventManager.fireEvent(SoundManager.Play("statistics_1"))
@@ -38,15 +44,21 @@ class StageScorePointsView(
     }
 
     fun draw(surface: ScreenSurface, x: Int, y: Int) {
-        if (!visible) {
-            return
+        surface.fillText("PTS", x + 6 * Globals.TILE_SIZE, y, ARGB.WHITE, Globals.FONT_REGULAR)
+        if (isScoreVisible) {
+            var str = "${counter * enemyType.score}".padStart(5, ' ')
+            str += "     " + "$counter".padStart(2, ' ')
+            surface.fillText(str, x, y, ARGB.WHITE, Globals.FONT_REGULAR)
         }
-        var str = "${counter * value}".padStart(5, ' ')
-        str += "     " + "$counter".padStart(2, ' ')
-        surface.fillText(str, x, y, ARGB.WHITE, Globals.FONT_REGULAR)
-    }
-
-    fun show() {
-        visible = true
+        surface.draw(
+            x + 104,
+            y - 10,
+            enemyImage,
+            0,
+            2 * enemyType.index * Globals.UNIT_SIZE,
+            Globals.UNIT_SIZE,
+            Globals.UNIT_SIZE
+        )
+        surface.draw(x + 96, y - 7, arrowImage, 0, 0, 7, 7)
     }
 }

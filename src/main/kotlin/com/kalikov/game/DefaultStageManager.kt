@@ -15,6 +15,9 @@ class DefaultStageManager(
 
     private var index = 0
 
+    override var highScore: Int = 20000
+        private set
+
     override var constructionMap: StageMapConfig
         get() = currentConstructionMap
         set(value) {
@@ -48,8 +51,8 @@ class DefaultStageManager(
         index = 0
         constructionMap = defaultConstructionMap
         constructionStage = Stage(defaultConstructionMap, stages[0].enemySpawnDelay, stages[0].enemies)
-        player.dispose()
-        player = Player(eventManager)
+        highScore = max(highScore, player.score)
+        player.reset()
     }
 
     override fun resetConstruction() {

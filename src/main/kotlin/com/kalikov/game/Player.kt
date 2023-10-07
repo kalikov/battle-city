@@ -1,6 +1,10 @@
 package com.kalikov.game
 
-class Player(private val eventManager: EventManager) : EventSubscriber {
+class Player(
+    private val eventManager: EventManager,
+    private val bonusLifeScore: Int = 20000,
+    initialScore: Int = 0
+) : EventSubscriber {
     private companion object {
         private val subscriptions = setOf(
             PointsFactory.PointsCreated::class,
@@ -9,9 +13,13 @@ class Player(private val eventManager: EventManager) : EventSubscriber {
         )
     }
 
+    var previousScore: Int = 0
+        private set
+
     var lives = 2
         private set
-    var score = 0
+    var score = initialScore
+        private set
 
     var upgradeLevel = 0
 
@@ -26,7 +34,11 @@ class Player(private val eventManager: EventManager) : EventSubscriber {
     override fun notify(event: Event) {
         when (event) {
             is PointsFactory.PointsCreated -> {
+                val previousValue = score
                 score += event.points.value
+                if (bonusLifeScore in (previousValue + 1)..score) {
+                    incrementLife()
+                }
             }
 
             is Tank.PlayerDestroyed -> {
@@ -38,12 +50,23 @@ class Player(private val eventManager: EventManager) : EventSubscriber {
             }
 
             is PowerUpHandler.Life -> {
-                lives++
+                incrementLife()
             }
 
             else -> {
             }
         }
+    }
+
+    fun reset() {
+        previousScore = score
+        lives = 2
+        score = 0
+        upgradeLevel = 0
+    }
+
+    private fun incrementLife() {
+        lives++
     }
 
     fun dispose() {

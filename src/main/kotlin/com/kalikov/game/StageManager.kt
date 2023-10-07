@@ -10,6 +10,8 @@ interface StageManager {
 
     var curtainBackground: ScreenSurface?
 
+    val highScore: Int
+
     fun init(stages: List<Stage>, defaultConstructionMap: StageMapConfig)
 
     fun reset()

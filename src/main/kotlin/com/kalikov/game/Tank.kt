@@ -81,7 +81,9 @@ class Tank(
             field = value
         }
 
-    var value = 0
+    private var isValued = true
+    val value: Int get() = if (isValued) this.enemyType?.score ?: 0 else 0
+
     var isFlashing = false
         set(value) {
             if (hit != 0) {
@@ -330,6 +332,10 @@ class Tank(
 
     override fun draw(surface: ScreenSurface) {
         state.draw(surface)
+    }
+
+    fun devalue() {
+        isValued = false
     }
 
     fun upgrade() {

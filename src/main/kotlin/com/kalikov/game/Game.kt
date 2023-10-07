@@ -66,7 +66,7 @@ class Game(
 
         if (config.debug) {
             screen.surface.fillText(
-                "${duration / 1000000}." + "${duration % 1000000 / 1000}ms".padStart(3, '0'),
+                "${duration / 1000000}.".padStart(4, ' ') + "${duration % 1000000 / 1000}ms".padStart(5, '0'),
                 0,
                 Globals.UNIT_SIZE,
                 ARGB.WHITE,

@@ -28,8 +28,7 @@ class StageSceneTest {
         val stageManager: StageManager = mock()
         val imageManager = TestImageManager(fonts)
 
-        val player = Player(eventManager)
-        player.score = 100
+        val player = Player(eventManager, initialScore = 100)
         whenever(stageManager.player).thenReturn(player)
 
         val json = Json { ignoreUnknownKeys = true }
@@ -64,8 +63,7 @@ class StageSceneTest {
         val imageManager = TestImageManager(fonts)
         val stageManager: StageManager = mock()
 
-        val player = Player(eventManager)
-        player.score = 100
+        val player = Player(eventManager, initialScore = 100)
         whenever(stageManager.player).thenReturn(player)
 
         val map = StageMapConfig(emptyList(), Point(12, 24), Point(8, 24), emptyList())

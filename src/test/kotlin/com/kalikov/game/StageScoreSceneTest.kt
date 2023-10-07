@@ -22,14 +22,14 @@ class StageScoreSceneTest {
         val eventManager: EventManager = mock()
         val imageManager = TestImageManager(fonts)
         val stageManager: StageManager = mock()
+        whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
 
         val score = StageScore()
         score.increment(createTank(Tank.EnemyType.BASIC))
         score.increment(createTank(Tank.EnemyType.FAST))
 
-        val player = Player(eventManager)
-        player.score = 25200
+        val player = Player(eventManager, initialScore = 25200)
         whenever(stageManager.player).thenReturn(player)
         val scene = StageScoreScene(screen, eventManager, imageManager, stageManager, mock(), score, false, clock)
 
@@ -60,7 +60,6 @@ class StageScoreSceneTest {
     private fun createTank(type: Tank.EnemyType): Tank {
         val tank = mockTank()
         tank.enemyType = type
-        tank.value = type.score
         return tank
     }
 }

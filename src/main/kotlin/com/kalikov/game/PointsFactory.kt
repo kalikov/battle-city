@@ -34,11 +34,11 @@ class PointsFactory(
             eventManager,
             imageManager,
             clock,
+            value,
             center.x - Points.SIZE / 2,
             center.y - Points.SIZE / 2,
             duration
         )
-        points.value = value
         eventManager.fireEvent(PointsCreated(points))
         return points
     }

@@ -94,6 +94,6 @@ class PointsTest {
     }
 
     private fun createPoints(duration: Int): Points {
-        return Points(eventManager, mock(), clock, 0, 0, duration = duration)
+        return Points(eventManager, mock(), clock,  100, 0, 0, duration = duration)
     }
 }

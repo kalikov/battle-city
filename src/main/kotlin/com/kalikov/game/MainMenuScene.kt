@@ -6,7 +6,7 @@ class MainMenuScene(
     screen: Screen,
     private val eventManager: EventManager,
     private val imageManager: ImageManager,
-    stageManager: StageManager,
+    private val stageManager: StageManager,
     entityFactory: EntityFactory,
     clock: Clock
 ) : Scene, EventSubscriber {
@@ -89,10 +89,22 @@ class MainMenuScene(
         surface.fillText("CITY", 64, top + 116, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
 
         surface.draw(18, top + 24, imageManager.getImage("roman_one"))
-        surface.fillText("     00", 25, top + 31, ARGB.WHITE, Globals.FONT_REGULAR)
+        surface.fillText(
+            "${stageManager.player.previousScore / 10}".padStart(6, ' ') + "0",
+            25,
+            top + 31,
+            ARGB.WHITE,
+            Globals.FONT_REGULAR
+        )
         surface.fillRect(25, top + 27, 6, 2, ARGB.WHITE)
 
-        surface.fillText("HI  20000", 89, top + 31, ARGB.WHITE, Globals.FONT_REGULAR)
+        surface.fillText(
+            "HI" + "${stageManager.highScore / 10}".padStart(6, ' ') + "0",
+            89,
+            top + 31,
+            ARGB.WHITE,
+            Globals.FONT_REGULAR
+        )
         surface.fillRect(105, top + 27, 6, 2, ARGB.WHITE)
 
         surface.draw(88, top + 184, imageManager.getImage("namco")) { dst, src, _, _ ->

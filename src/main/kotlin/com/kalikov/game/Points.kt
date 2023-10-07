@@ -6,6 +6,7 @@ class Points(
     eventManager: EventManager,
     imageManager: ImageManager,
     clock: Clock,
+    val value: Int,
     x: Int,
     y: Int,
     duration: Int
@@ -13,8 +14,6 @@ class Points(
     companion object {
         const val SIZE = Globals.UNIT_SIZE
     }
-
-    var value = 0
 
     private val timer = PauseAwareTimer(eventManager, clock, duration, ::destroy)
     private val image = imageManager.getImage("points")

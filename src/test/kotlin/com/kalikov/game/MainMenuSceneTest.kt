@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import java.awt.image.BufferedImage
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -13,6 +14,7 @@ class MainMenuSceneTest {
     private lateinit var fonts: TestFonts
     private lateinit var clock: TestClock
     private lateinit var eventManager: EventManager
+    private lateinit var stageManager: StageManager
     private lateinit var scene: MainMenuScene
 
     @BeforeEach
@@ -20,12 +22,16 @@ class MainMenuSceneTest {
         fonts = TestFonts()
         clock = TestClock()
         eventManager = mock()
-        scene = MainMenuScene(mock(), eventManager, TestImageManager(fonts), mock(), mock(), clock)
+        stageManager = mock()
+        scene = MainMenuScene(mock(), eventManager, TestImageManager(fonts), stageManager, mock(), clock)
     }
 
     @Test
     fun `should draw main menu scene`() {
         scene.arrived()
+        val player = Player(eventManager)
+        whenever(stageManager.player).thenReturn(player)
+        whenever(stageManager.highScore).thenReturn(20000)
 
         val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
         scene.draw(AwtScreenSurface(fonts, image))

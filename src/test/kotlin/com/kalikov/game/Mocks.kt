@@ -89,10 +89,11 @@ fun mockPoints(
     eventManager: EventManager = mock(),
     imageManager: ImageManager = mock(),
     clock: Clock = mock(),
+    value: Int = 100,
     x: Int = 0,
     y: Int = 0
 ): Points {
-    return Points(eventManager, imageManager, clock, x, y, 200)
+    return Points(eventManager, imageManager, clock, value, x, y, 200)
 }
 
 fun mockPowerUp(
