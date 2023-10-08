@@ -37,7 +37,6 @@ class StageScoreScene(
         script.enqueue(Delay(script, 2000, clock))
         script.enqueue(Execute {
             if (gameOver) {
-                stageManager.reset()
                 eventManager.fireEvent(Scene.Start {
                     GameOverScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
                 })

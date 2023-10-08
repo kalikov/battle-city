@@ -13,6 +13,8 @@ class MainMenuScene(
     companion object {
         const val INTERVAL = 16
 
+        const val NAMCO_LTD = "1980 1985 NAMCO LTD"
+
         private val subscriptions = setOf(Keyboard.KeyPressed::class)
     }
 
@@ -37,6 +39,8 @@ class MainMenuScene(
             return ARGB.rgb(0xB53121)
         }
     }
+
+    private val namco = imageManager.getImage("namco")
 
     init {
         LeaksDetector.add(this)
@@ -85,36 +89,69 @@ class MainMenuScene(
     override fun draw(surface: ScreenSurface) {
         clearCanvas(surface)
 
-        surface.fillText("BATTLE", 28, top + 76, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
-        surface.fillText("CITY", 64, top + 116, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
+        val nameTop = top + 6 * Globals.TILE_SIZE + Globals.FONT_BIG_CORRECTION
+        surface.fillText(
+            "BATTLE",
+            3 * Globals.TILE_SIZE + Globals.TILE_SIZE / 2,
+            nameTop,
+            ARGB.WHITE,
+            Globals.FONT_BIG,
+            brickBlending
+        )
+        surface.fillText(
+            "CITY",
+            8 * Globals.TILE_SIZE,
+            nameTop + Globals.FONT_BIG_SIZE + Globals.TILE_SIZE,
+            ARGB.WHITE,
+            Globals.FONT_BIG,
+            brickBlending
+        )
 
-        surface.draw(18, top + 24, imageManager.getImage("roman_one"))
+        surface.draw(2 * Globals.TILE_SIZE + 2, top + 3 * Globals.TILE_SIZE, imageManager.getImage("roman_one"))
+        surface.fillRect(3 * Globals.TILE_SIZE + 1, top + 3 * Globals.TILE_SIZE + 3, 6, 2, ARGB.WHITE)
         surface.fillText(
             "${stageManager.player.previousScore / 10}".padStart(6, ' ') + "0",
-            25,
-            top + 31,
+            3 * Globals.TILE_SIZE + 1,
+            top + 3 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
-        surface.fillRect(25, top + 27, 6, 2, ARGB.WHITE)
 
         surface.fillText(
             "HI" + "${stageManager.highScore / 10}".padStart(6, ' ') + "0",
-            89,
-            top + 31,
+            11 * Globals.TILE_SIZE + 1,
+            top + 3 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
-        surface.fillRect(105, top + 27, 6, 2, ARGB.WHITE)
+        surface.fillRect(13 * Globals.TILE_SIZE + 1, top + 3 * Globals.TILE_SIZE + 3, 6, 2, ARGB.WHITE)
 
-        surface.draw(88, top + 184, imageManager.getImage("namco")) { dst, src, _, _ ->
+        surface.draw(11 * Globals.TILE_SIZE, top + 23 * Globals.TILE_SIZE, namco) { dst, src, _, _ ->
             ARGB.rgb(0xB53121).and(src).over(dst)
         }
 
-        surface.draw(32, top + 200, imageManager.getImage("copyright"))
-        surface.fillText("1980 1985 NAMCO LTD", 49, top + 207, ARGB.WHITE, Globals.FONT_REGULAR)
-        surface.fillText(".", 200, top + 207, ARGB.WHITE, Globals.FONT_REGULAR)
-        surface.fillText("ALL RIGHTS RESERVED", 49, top + 223, ARGB.WHITE, Globals.FONT_REGULAR)
+        surface.draw(4 * Globals.TILE_SIZE, top + 25 * Globals.TILE_SIZE, imageManager.getImage("copyright"))
+        surface.fillText(
+            NAMCO_LTD,
+            6 * Globals.TILE_SIZE + 1,
+            top + 25 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+            ARGB.WHITE,
+            Globals.FONT_REGULAR
+        )
+        surface.fillText(
+            ".",
+            6 * Globals.TILE_SIZE + 1 + NAMCO_LTD.length * Globals.FONT_REGULAR_SIZE - 1,
+            top + 25 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+            ARGB.WHITE,
+            Globals.FONT_REGULAR
+        )
+        surface.fillText(
+            "ALL RIGHTS RESERVED",
+            6 * Globals.TILE_SIZE + 1,
+            top + 27 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+            ARGB.WHITE,
+            Globals.FONT_REGULAR
+        )
 
         mainMenuView.draw(surface, top)
     }

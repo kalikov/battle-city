@@ -1,3 +1,3 @@
-1. Replace au sounds with wav
-2. Two players
+1. Two players
+2. Replace au sounds with wav
 3. Demo screen

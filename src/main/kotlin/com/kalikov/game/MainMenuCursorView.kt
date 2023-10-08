@@ -6,6 +6,10 @@ class MainMenuCursorView(
     imageManager: ImageManager,
     clock: Clock
 ) {
+    companion object {
+        const val SIZE = Tank.SIZE
+    }
+
     var visible = false
 
     private val trackAnimation = Animation.basic(frameLoopOf(1, 2), clock, 64)
@@ -29,8 +33,8 @@ class MainMenuCursorView(
             image,
             Globals.UNIT_SIZE * (5 + trackAnimation.frame),
             0,
-            Globals.UNIT_SIZE,
-            Globals.UNIT_SIZE
+            SIZE,
+            SIZE
         )
     }
 
