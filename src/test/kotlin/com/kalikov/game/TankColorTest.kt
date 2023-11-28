@@ -12,7 +12,7 @@ class TankColorTest {
     fun beforeEach() {
         clock = TestClock()
         color = TankColor(clock)
-        color.colors = arrayOf(0 to 1, 0 to 2, 1 to 2, 0 to 0)
+        color.colors = arrayOf(intArrayOf(0, 1), intArrayOf(0, 2), intArrayOf(1, 2), intArrayOf(0))
     }
 
     @Test

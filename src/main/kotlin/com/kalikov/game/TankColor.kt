@@ -8,17 +8,21 @@ class TankColor(clock: Clock) {
         const val FLASHING_INTERVAL = 16
     }
 
-    var colors: Array<Pair<Int, Int>> = arrayOf(0 to 0)
+    var colors: Array<IntArray> = arrayOf(intArrayOf(0))
+        set(value) {
+            require(value.isNotEmpty())
+            field = value
+        }
 
     private val timer = BasicTimer(clock, FLASHING_INTERVAL, ::change)
     private var hit = 0
 
-    var isAlternative = false
+    var index = 0
         private set
 
     fun getColor(): Int {
-        val pair = colors[hit]
-        return if (isAlternative) pair.second else pair.first
+        val sequence = colors[hit]
+        return sequence[index]
     }
 
     fun update() {
@@ -29,12 +33,14 @@ class TankColor(clock: Clock) {
     }
 
     private fun change(count: Int) {
-        if (count % 2 != 0) {
-            isAlternative = !isAlternative
+        val size = colors[hit].size
+        if (size > 1) {
+            index = (index + count) % size
         }
     }
 
     fun hit() {
         hit = min(hit + 1, colors.size - 1)
+        index = 0
     }
 }

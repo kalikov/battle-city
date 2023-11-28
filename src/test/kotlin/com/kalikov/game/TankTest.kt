@@ -230,7 +230,7 @@ class TankTest {
     @Test
     fun `should change color on hit`() {
         val color = TankColor(mock())
-        color.colors = arrayOf(0 to 0, 1 to 1)
+        color.colors = arrayOf(intArrayOf(0), intArrayOf(1))
         tank.color = color
 
         tank.hit()
@@ -363,13 +363,14 @@ class TankTest {
     @Test
     fun `should update color`() {
         val color = TankColor(clock)
+        color.colors = arrayOf(intArrayOf(0, 1))
         tank.color = color
         tank.update()
-        assertFalse(color.isAlternative)
+        assertEquals(0, color.index)
 
         clock.tick(TankColor.FLASHING_INTERVAL)
         tank.updateColor()
-        assertTrue(color.isAlternative)
+        assertEquals(1, color.index)
     }
 
     @Test

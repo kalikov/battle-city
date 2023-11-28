@@ -113,7 +113,7 @@ class EnemyFactory(
             Tank.EnemyType.ARMOR -> {
                 tank.moveFrequency = 8
                 tank.hitLimit = 4
-                tank.color.colors = arrayOf(0 to 1, 0 to 2, 1 to 2, 0 to 0)
+                tank.color.colors = arrayOf(intArrayOf(0, 1), intArrayOf(0, 2), intArrayOf(1, 2), intArrayOf(0))
             }
         }
 
