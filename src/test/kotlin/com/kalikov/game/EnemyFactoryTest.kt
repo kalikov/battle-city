@@ -33,11 +33,11 @@ class EnemyFactoryTest {
     @Test
     fun `should subscribe`() {
         val factory = createFactory(emptyList(), emptyList())
-        verify(eventManager).addSubscriber(factory, setOf(TankExplosion.Destroyed::class))
+        verify(eventManager).addSubscriber(factory, setOf(TankExplosion.Destroyed::class, Tank.Hit::class))
     }
 
     @Test
-    fun `should return positions in a loop`() {
+    fun `should iterate over positions in a loop`() {
         val position1 = Point(0, 0)
         val position2 = Point(10, 20)
         val position3 = Point(40, 100)
@@ -45,17 +45,14 @@ class EnemyFactoryTest {
             listOf(position1, position2, position3),
             emptyList()
         )
-        assertEquals(position1, factory.position)
-        factory.nextPosition()
-        assertEquals(position2, factory.position)
-        factory.nextPosition()
-        assertEquals(position3, factory.position)
-        factory.nextPosition()
-        assertEquals(position1, factory.position)
+        assertEquals(position1, factory.nextPosition())
+        assertEquals(position2, factory.nextPosition())
+        assertEquals(position3, factory.nextPosition())
+        assertEquals(position1, factory.nextPosition())
     }
 
     @Test
-    fun `should iterate over enemies`() {
+    fun `should iterate over enemies in a loop`() {
         val group1 = EnemyGroupConfig(Tank.EnemyType.BASIC, 1)
         val group2 = EnemyGroupConfig(Tank.EnemyType.FAST, 2)
         val group3 = EnemyGroupConfig(Tank.EnemyType.BASIC, 1)
@@ -63,13 +60,11 @@ class EnemyFactoryTest {
             emptyList(),
             listOf(group1, group2, group3)
         )
-        assertEquals(group1.type, factory.enemy)
-        factory.nextEnemy()
-        assertEquals(group2.type, factory.enemy)
-        factory.nextEnemy()
-        assertEquals(group2.type, factory.enemy)
-        factory.nextEnemy()
-        assertEquals(group3.type, factory.enemy)
+        assertEquals(group1.type, factory.nextEnemy())
+        assertEquals(group2.type, factory.nextEnemy())
+        assertEquals(group2.type, factory.nextEnemy())
+        assertEquals(group3.type, factory.nextEnemy())
+        assertEquals(group1.type, factory.nextEnemy())
     }
 
     @Test
@@ -159,7 +154,7 @@ class EnemyFactoryTest {
             listOf(group1, group2, group3),
             1
         )
-        factory.flashingTanks = emptySet()
+        factory.flashingIndices = emptySet()
 
         factory.update()
         verifyEnemyCreated(group1.type, positions[0])
@@ -209,7 +204,7 @@ class EnemyFactoryTest {
             listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 7)),
             1
         )
-        factory.flashingTanks = setOf(3, 5, 6)
+        factory.flashingIndices = setOf(3, 5, 6)
         factory.enemyCountLimit = 7
 
         factory.update()
@@ -373,20 +368,25 @@ class EnemyFactoryTest {
         position: Point,
         flashing: Boolean = false
     ): Tank {
-        val tank = verifyEnemyCreated()
+        val event = captureEnemyCreated()
+        val tank = event.enemy
         assertEquals(type, tank.enemyType)
         assertEquals(position, tank.position)
         assertIs<TankStateAppearing>(tank.state)
         assertFalse(tank.isPlayer)
-        assertEquals(flashing, tank.isFlashing)
+        assertEquals(flashing, event.isFlashing)
         return tank
     }
 
     private fun verifyEnemyCreated(): Tank {
+        return captureEnemyCreated().enemy
+    }
+
+    private fun captureEnemyCreated(): EnemyFactory.EnemyCreated {
         val captor = argumentCaptor<EnemyFactory.EnemyCreated>()
         verify(eventManager).fireEvent(captor.capture())
 
-        return captor.firstValue.enemy
+        return captor.firstValue
     }
 
     private fun createFactory(

@@ -12,24 +12,26 @@ class EnemyFactory(
     enemies: List<EnemyGroupConfig>,
     interval: Int
 ) : EventSubscriber {
-    data class EnemyCreated(val enemy: Tank) : Event()
+    data class EnemyCreated(val enemy: Tank, val isFlashing: Boolean) : Event()
 
     data object LastEnemyDestroyed : Event()
 
-    private companion object {
-        private val subscriptions = setOf(TankExplosion.Destroyed::class)
+    data object FlashingTankHit : Event()
+
+    companion object {
+        private val subscriptions = setOf(TankExplosion.Destroyed::class, Tank.Hit::class)
+
+        val FLASHING_COLORS = intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)
     }
 
     init {
         eventManager.addSubscriber(this, subscriptions)
     }
 
-    var flashingTanks = setOf(4, 11, 18)
+    var flashingIndices = setOf(4, 11, 18)
 
-    val position get() = positions[positionIndex]
-
-    val enemy get() = enemies[enemyIndex]
-    val enemiesToCreateCount get() = enemies.size - enemyIndex
+    var enemiesToCreateCount: Int
+        private set
 
     var enemyCount = 0
         private set
@@ -43,6 +45,8 @@ class EnemyFactory(
 
     private val timer = PauseAwareTimer(eventManager, clock, interval, ::create)
 
+    private val flashingTanks = HashSet<Tank>(flashingIndices.size)
+
     init {
         val count = enemies.sumOf { it.count }
         val array = Array(count) { Tank.EnemyType.BASIC }
@@ -54,6 +58,7 @@ class EnemyFactory(
             }
         }
         this.enemies = array
+        enemiesToCreateCount = array.size
     }
 
     fun update() {
@@ -68,11 +73,13 @@ class EnemyFactory(
         }
     }
 
-    fun nextPosition() {
+    fun nextPosition(): Point {
+        val position = positions[positionIndex]
         positionIndex++
         if (positionIndex >= positions.size) {
             positionIndex = 0
         }
+        return position
     }
 
     private fun create() {
@@ -85,9 +92,18 @@ class EnemyFactory(
     }
 
     private fun createNextEnemy(): Tank {
-        val tank = createEnemy(enemy, position)
-        nextEnemy()
-        nextPosition()
+        check(enemiesToCreateCount >= 0)
+        val tank = createEnemy(nextEnemy(), nextPosition())
+        enemyCount++
+        val total = enemies.size
+        val index = total - enemiesToCreateCount
+        val isFlashing = flashingIndices.contains(index + 1)
+        if (isFlashing) {
+            tank.color.colors[0] = FLASHING_COLORS
+            flashingTanks.add(tank)
+        }
+        enemiesToCreateCount--
+        eventManager.fireEvent(EnemyCreated(tank, isFlashing))
         return tank
     }
 
@@ -113,22 +129,19 @@ class EnemyFactory(
             Tank.EnemyType.ARMOR -> {
                 tank.moveFrequency = 8
                 tank.hitLimit = 4
-                tank.color.colors = arrayOf(intArrayOf(0, 1), intArrayOf(0, 2), intArrayOf(1, 2), intArrayOf(0))
+                tank.color.colors = arrayOf(intArrayOf(0, 2), intArrayOf(0, 3), intArrayOf(2, 3), intArrayOf(0))
             }
         }
-
-        if (flashingTanks.contains(enemyIndex + 1)) {
-            tank.isFlashing = true
-        }
-
-        enemyCount++
-        eventManager.fireEvent(EnemyCreated(tank))
-
         return tank
     }
 
-    fun nextEnemy() {
+    fun nextEnemy(): Tank.EnemyType {
+        val type = enemies[enemyIndex]
         enemyIndex++
+        if (enemyIndex >= enemies.size) {
+            enemyIndex = 0
+        }
+        return type
     }
 
     override fun notify(event: Event) {
@@ -138,6 +151,10 @@ class EnemyFactory(
             }
             if (event.explosion.tank.isEnemy && enemyCount <= 0 && enemiesToCreateCount == 0) {
                 eventManager.fireEvent(LastEnemyDestroyed)
+            }
+        } else if (event is Tank.Hit) {
+            if (flashingTanks.remove(event.tank)) {
+                eventManager.fireEvent(FlashingTankHit)
             }
         }
     }

@@ -293,20 +293,18 @@ class TankTest {
     }
 
     @Test
-    fun `should fire flashing event on tank destroy`() {
-        tank.isFlashing = true
+    fun `should fire hit event on tank destroy`() {
         tank.hit()
         assertTrue(tank.isDestroyed)
-        verify(eventManager).fireEvent(Tank.FlashingTankHit)
+        verify(eventManager).fireEvent(Tank.Hit(tank))
     }
 
     @Test
-    fun `should fire flashing event on armored tank hit`() {
+    fun `should fire hit event on armored tank hit`() {
         tank.hitLimit = 4
-        tank.isFlashing = true
         tank.hit()
         assertFalse(tank.isDestroyed)
-        verify(eventManager).fireEvent(Tank.FlashingTankHit)
+        verify(eventManager).fireEvent(Tank.Hit(tank))
     }
 
     @Test

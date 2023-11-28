@@ -3,7 +3,7 @@ package com.kalikov.game
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
-import kotlin.test.assertFalse
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class TankStateNormalTest {
@@ -13,6 +13,8 @@ class TankStateNormalTest {
     private lateinit var clock: TestClock
     private lateinit var tank: Tank
     private lateinit var state: TankStateNormal
+
+    private val flashInterval = 128
 
     @BeforeEach
     fun beforeEach() {
@@ -27,33 +29,33 @@ class TankStateNormalTest {
 
     @Test
     fun `should flash using flashing interval`() {
-        tank.isFlashing = true
+        tank.color.colors = arrayOf(EnemyFactory.FLASHING_COLORS)
         tank.update()
-        assertTrue(state.isBright)
+        assertEquals(0, tank.color.getColor())
 
-        clock.tick(TankStateNormal.FLASH_INTERVAL / 2)
+        clock.tick(flashInterval / 2)
         tank.update()
-        assertTrue(state.isBright)
+        assertEquals(0, tank.color.getColor())
 
-        clock.tick(TankStateNormal.FLASH_INTERVAL / 4)
+        clock.tick(flashInterval / 4)
         tank.update()
-        assertTrue(state.isBright)
+        assertEquals(0, tank.color.getColor())
 
-        clock.tick(TankStateNormal.FLASH_INTERVAL / 4)
+        clock.tick(flashInterval / 4)
         tank.update()
-        assertFalse(state.isBright)
+        assertEquals(1, tank.color.getColor())
 
-        clock.tick(TankStateNormal.FLASH_INTERVAL / 2)
+        clock.tick(flashInterval / 2)
         tank.update()
-        assertFalse(state.isBright)
+        assertEquals(1, tank.color.getColor())
 
-        clock.tick(TankStateNormal.FLASH_INTERVAL / 4)
+        clock.tick(flashInterval / 4)
         tank.update()
-        assertFalse(state.isBright)
+        assertEquals(1, tank.color.getColor())
 
-        clock.tick(TankStateNormal.FLASH_INTERVAL / 4)
+        clock.tick(flashInterval / 4)
         tank.update()
-        assertTrue(state.isBright)
+        assertEquals(0, tank.color.getColor())
     }
 
     @Test
@@ -64,19 +66,20 @@ class TankStateNormalTest {
         tank = mockTank(eventManager, pauseManager, clock = clock)
         state = TankStateInvincible(eventManager, mock(), tank, 10)
         tank.state = state
+        tank.color.colors = arrayOf(EnemyFactory.FLASHING_COLORS)
         tank.update()
 
-        assertTrue(state.isBright)
+        assertEquals(0, tank.color.getColor())
 
         eventManager.fireEvent(PauseManager.Start)
 
-        clock.tick(TankStateNormal.FLASH_INTERVAL)
+        clock.tick(flashInterval)
         tank.update()
-        assertFalse(state.isBright)
+        assertEquals(1, tank.color.getColor())
 
-        clock.tick(TankStateNormal.FLASH_INTERVAL)
+        clock.tick(flashInterval)
         tank.update()
-        assertTrue(state.isBright)
+        assertEquals(0, tank.color.getColor())
     }
 
 

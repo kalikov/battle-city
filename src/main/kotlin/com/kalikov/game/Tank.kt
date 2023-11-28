@@ -38,7 +38,8 @@ class Tank(
     data class Destroyed(val tank: Tank) : Event()
     data class PlayerDestroyed(val tank: Tank) : Event()
     data class EnemyDestroyed(val tank: Tank) : Event()
-    data object FlashingTankHit : Event()
+    data class Hit(val tank: Tank) : Event()
+//    data object FlashingTankHit : Event()
 
     override var isIdle = true
 
@@ -84,13 +85,6 @@ class Tank(
     private var isValued = true
     val value: Int get() = if (isValued) this.enemyType?.score ?: 0 else 0
 
-    var isFlashing = false
-        set(value) {
-            if (hit != 0) {
-                throw IllegalStateException("Hit tank can not be flashing")
-            }
-            field = value
-        }
     var upgradeLevel = 0
         private set
     var color = TankColor(clock)
@@ -226,9 +220,6 @@ class Tank(
     }
 
     fun updateColor() {
-        if (isFlashing) {
-            return
-        }
         color.update()
     }
 
@@ -256,10 +247,7 @@ class Tank(
         if (isDestroyed) {
             return
         }
-        if (isFlashing) {
-            eventManager.fireEvent(FlashingTankHit)
-            isFlashing = false
-        }
+        eventManager.fireEvent(Hit(this))
         hit++
         color.hit()
         if (hit >= hitLimit) {

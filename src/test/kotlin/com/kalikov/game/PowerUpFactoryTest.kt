@@ -26,7 +26,7 @@ class PowerUpFactoryTest {
     fun `should subscribe`() {
         verify(eventManager).addSubscriber(
             factory,
-            setOf(Tank.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
+            setOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
         )
     }
 
@@ -35,27 +35,20 @@ class PowerUpFactoryTest {
         factory.dispose()
         verify(eventManager).removeSubscriber(
             factory,
-            setOf(Tank.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
+            setOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
         )
     }
 
     @Test
     fun `should create power-up when flashing tank is destroyed`() {
-        val tank = mockTank(eventManager)
-        tank.isFlashing = true
-
-        factory.notify(Tank.FlashingTankHit)
+        factory.notify(EnemyFactory.FlashingTankHit)
 
         verify(spriteContainer).addSprite(isA<PowerUp>())
     }
 
     @Test
     fun `should destroy power up when new flashing type appears`() {
-        val tank = mockTank(eventManager)
-        tank.enemyType = Tank.EnemyType.BASIC
-        tank.isFlashing = true
-
-        factory.notify(Tank.FlashingTankHit)
+        factory.notify(EnemyFactory.FlashingTankHit)
 
         val captor = argumentCaptor<PowerUp>()
         verify(spriteContainer).addSprite(captor.capture())
@@ -66,19 +59,14 @@ class PowerUpFactoryTest {
 
         val newTank = mockTank(eventManager)
         newTank.enemyType = Tank.EnemyType.BASIC
-        newTank.isFlashing = true
-        factory.notify(EnemyFactory.EnemyCreated(newTank))
+        factory.notify(EnemyFactory.EnemyCreated(newTank, true))
 
         assertTrue(powerUp.isDestroyed)
     }
 
     @Test
     fun `should destroy power up when new flashing tank is destroyed`() {
-        val tank = mockTank(eventManager)
-        tank.enemyType = Tank.EnemyType.BASIC
-        tank.isFlashing = true
-
-        factory.notify(Tank.FlashingTankHit)
+        factory.notify(EnemyFactory.FlashingTankHit)
 
         val captor = argumentCaptor<PowerUp>()
         verify(spriteContainer).addSprite(captor.capture())
@@ -87,10 +75,7 @@ class PowerUpFactoryTest {
         assertNotNull(powerUp)
         assertFalse(powerUp.isDestroyed)
 
-        val newTank = mockTank(eventManager)
-        newTank.enemyType = Tank.EnemyType.BASIC
-        newTank.isFlashing = true
-        factory.notify(Tank.FlashingTankHit)
+        factory.notify(EnemyFactory.FlashingTankHit)
 
         assertTrue(powerUp.isDestroyed)
     }

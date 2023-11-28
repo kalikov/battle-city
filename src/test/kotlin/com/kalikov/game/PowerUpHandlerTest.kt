@@ -53,7 +53,7 @@ class PowerUpHandlerTest {
     fun `should handle grenade`() {
         val enemy = mockTank(eventManager)
         enemy.enemyType = Tank.EnemyType.BASIC
-        handler.notify(EnemyFactory.EnemyCreated(enemy))
+        handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 
         powerUp.type = PowerUp.Type.GRENADE
         handler.notify(PowerUp.Pick(powerUp, tank))
@@ -67,7 +67,7 @@ class PowerUpHandlerTest {
         val enemy = mockTank(eventManager)
         enemy.enemyType = Tank.EnemyType.BASIC
         enemy.state = TankStateAppearing(eventManager, mock(), enemy)
-        handler.notify(EnemyFactory.EnemyCreated(enemy))
+        handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 
         powerUp.type = PowerUp.Type.GRENADE
         handler.notify(PowerUp.Pick(powerUp, tank))
