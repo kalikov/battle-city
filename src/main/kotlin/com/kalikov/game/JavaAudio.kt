@@ -22,14 +22,10 @@ class JavaAudio : Audio {
         return lock.read {
             check(!destroyed)
             val bytes = stream.readAllBytes()
-            val sound = JavaSound(bytes, this::onDispose)
+            val sound = JavaSound(bytes)
             sounds.add(sound)
             sound
         }
-    }
-
-    private fun onDispose(sound: Sound) {
-        sounds.remove(sound)
     }
 
     override fun destroy() {
@@ -37,10 +33,8 @@ class JavaAudio : Audio {
             check(!destroyed)
             destroyed = true
 
-            val items = ArrayList(sounds)
-            items.forEach { it.dispose() }
-
-            check(sounds.isEmpty())
+            sounds.forEach { it.stop() }
+            sounds.clear()
         }
     }
 }

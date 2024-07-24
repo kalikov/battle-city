@@ -10,6 +10,7 @@ class JavaAudioTest {
     fun `should play sound once`() {
         val audio = JavaAudio()
         val sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
+            requireNotNull(it)
             audio.load(it)
         }
         val start = System.currentTimeMillis()
@@ -21,6 +22,7 @@ class JavaAudioTest {
     fun `should play sound multiple times`() {
         val audio = JavaAudio()
         val sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
+            requireNotNull(it)
             audio.load(it)
         }
         val start = System.currentTimeMillis()
@@ -35,6 +37,7 @@ class JavaAudioTest {
     fun `should loop and stop sound`() {
         val audio = JavaAudio()
         val sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
+            requireNotNull(it)
             audio.load(it)
         }
         val thread = Thread {
@@ -43,8 +46,34 @@ class JavaAudioTest {
         thread.start()
         Thread.sleep(500)
 
-        assertTrue(sound.isPlaying)
+        assertTrue(sound.state == Sound.State.PLAYING)
         sound.stop()
+
+        thread.join()
+    }
+
+    @Test
+    @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
+    fun `should pause and resume sound`() {
+        val audio = JavaAudio()
+        val sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
+            requireNotNull(it)
+            audio.load(it)
+        }
+        val thread = Thread {
+            sound.play()
+        }
+        thread.start()
+        while (sound.state != Sound.State.PLAYING) {
+            // do nothing
+        }
+        sound.pause()
+
+        Thread.sleep(1000)
+
+        assertTrue(sound.state == Sound.State.PAUSED)
+
+        sound.resume()
 
         thread.join()
     }

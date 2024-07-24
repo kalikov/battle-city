@@ -10,6 +10,15 @@ class ConcurrentSoundManager(
     private val audio: Audio,
     private val eventManager: EventManager
 ) : SoundManager, EventSubscriber {
+    private companion object {
+        private val subscriptions = setOf(
+            SoundManager.Play::class,
+            SoundManager.Stop::class,
+            SoundManager.Pause::class,
+            SoundManager.Resume::class
+        )
+    }
+
     private val sounds: MutableMap<String, Sound> = ConcurrentHashMap()
 
     private val executor: ExecutorService = Executors.newFixedThreadPool(8)
@@ -17,7 +26,7 @@ class ConcurrentSoundManager(
     private val playbacks: MutableMap<String, Future<*>> = ConcurrentHashMap()
 
     init {
-        eventManager.addSubscriber(this, setOf(SoundManager.Play::class, SoundManager.Stop::class))
+        eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun load(name: String, path: String) {
@@ -26,10 +35,12 @@ class ConcurrentSoundManager(
     }
 
     override fun notify(event: Event) {
-        if (event is SoundManager.Play) {
-            play(event.name)
-        } else if (event is SoundManager.Stop) {
-            stop(event.name)
+        when (event) {
+            is SoundManager.Play -> play(event.name)
+            is SoundManager.Stop -> stop(event.name)
+            is SoundManager.Pause -> pause()
+            is SoundManager.Resume -> resume()
+            else -> {}
         }
     }
 
@@ -51,8 +62,20 @@ class ConcurrentSoundManager(
         }
     }
 
+    private fun pause() {
+        for (key in playbacks.keys) {
+            sounds[key]?.pause()
+        }
+    }
+
+    private fun resume() {
+        for (key in playbacks.keys) {
+            sounds[key]?.resume()
+        }
+    }
+
     override fun destroy() {
-        eventManager.removeSubscriber(this, setOf(SoundManager.Play::class, SoundManager.Stop::class))
+        eventManager.removeSubscriber(this, subscriptions)
 
         executor.shutdown()
 
@@ -61,7 +84,7 @@ class ConcurrentSoundManager(
         }
         playbacks.clear()
 
-        sounds.values.forEach { it.dispose() }
+        sounds.values.forEach { it.stop() }
         sounds.clear()
 
         executor.awaitTermination(1, TimeUnit.MINUTES)

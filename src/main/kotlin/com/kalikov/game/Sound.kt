@@ -1,13 +1,21 @@
 package com.kalikov.game
 
 interface Sound {
-    val isPlaying: Boolean
+    enum class State {
+        STOPPED,
+        PLAYING,
+        PAUSED
+    }
+
+    val state: State
 
     fun play()
 
     fun loop()
 
-    fun stop()
+    fun pause()
 
-    fun dispose()
+    fun resume()
+
+    fun stop()
 }

@@ -9,7 +9,7 @@ import javax.sound.sampled.DataLine
 import javax.sound.sampled.SourceDataLine
 import kotlin.concurrent.withLock
 
-class JavaSound(private val bytes: ByteArray, private val disposeCallback: (Sound) -> Unit) : Sound {
+class JavaSound(private val bytes: ByteArray) : Sound {
     private val buffer = ByteArray(4096)
 
     private val lock = ReentrantLock()
@@ -17,8 +17,16 @@ class JavaSound(private val bytes: ByteArray, private val disposeCallback: (Soun
     @Volatile
     private var playback: SourceDataLine? = null
 
-    override val isPlaying: Boolean
-        get() = playback?.isOpen ?: false
+    @Volatile
+    private var playbackState = PlaybackState.PLAYING
+
+    private enum class PlaybackState(val soundState: Sound.State) {
+        PLAYING(Sound.State.PLAYING),
+        PAUSING(Sound.State.PAUSED),
+        PAUSED(Sound.State.PAUSED),
+    }
+
+    override val state get() = if (playback?.isOpen == true) playbackState.soundState else Sound.State.STOPPED
 
     override fun play() {
         start { line, audio -> play(line, audio) }
@@ -28,20 +36,37 @@ class JavaSound(private val bytes: ByteArray, private val disposeCallback: (Soun
         start { line, audio -> loop(line, audio) }
     }
 
+    override fun pause() {
+        return lock.withLock {
+            if (playback?.isOpen == true) {
+                if (playbackState == PlaybackState.PLAYING) {
+                    playbackState = PlaybackState.PAUSING
+                }
+            }
+        }
+    }
+
+    override fun resume() {
+        lock.withLock {
+            if (playback?.isOpen == true) {
+                if (playbackState == PlaybackState.PAUSING) {
+                    playbackState = PlaybackState.PLAYING
+                } else if (playbackState == PlaybackState.PAUSED) {
+                    playback?.start()
+                    playbackState = PlaybackState.PLAYING
+                }
+            }
+        }
+    }
+
     override fun stop() {
         lock.withLock {
             playback?.use {
                 it.stop()
                 it.flush()
-                it.close()
             }
             playback = null
         }
-    }
-
-    override fun dispose() {
-        stop()
-        disposeCallback(this)
     }
 
     private fun start(callback: (SourceDataLine, AudioInputStream) -> Unit) {
@@ -49,6 +74,10 @@ class JavaSound(private val bytes: ByteArray, private val disposeCallback: (Soun
         var locked = true
         try {
             if (playback?.isOpen == true) {
+                if (playbackState == PlaybackState.PAUSED) {
+                    playback?.start()
+                    playbackState = PlaybackState.PLAYING
+                }
                 return
             }
             ByteArrayInputStream(bytes).use { input ->
@@ -56,11 +85,12 @@ class JavaSound(private val bytes: ByteArray, private val disposeCallback: (Soun
                     val line = getLine(audio.format)
                     line.use {
                         it.open(audio.format)
-                        playback = line
+                        it.start()
+                        playback = it
+                        playbackState = PlaybackState.PLAYING
                         lock.unlock()
                         locked = false
 
-                        it.start()
                         callback(it, audio)
                         it.stop()
                     }
@@ -74,25 +104,34 @@ class JavaSound(private val bytes: ByteArray, private val disposeCallback: (Soun
     }
 
     private fun play(line: SourceDataLine, audio: AudioInputStream) {
-        var read = 0
-        while (!Thread.currentThread().isInterrupted && line.isOpen && read != -1) {
-            line.write(buffer, 0, read)
-            read = audio.read(buffer, 0, buffer.size)
-        }
+        playOnce(line, audio)
         line.drain()
     }
 
     private fun loop(line: SourceDataLine, audio: AudioInputStream) {
         audio.mark(Integer.MAX_VALUE)
         while (!Thread.currentThread().isInterrupted && line.isOpen) {
-            var read = 0
-            while (!Thread.currentThread().isInterrupted && line.isOpen && read != -1) {
-                line.write(buffer, 0, read)
-                read = audio.read(buffer, 0, buffer.size)
-            }
+            playOnce(line, audio)
             audio.reset()
         }
         line.drain()
+    }
+
+    private fun playOnce(line: SourceDataLine, audio: AudioInputStream) {
+        var read = 0
+        while (!Thread.currentThread().isInterrupted && line.isOpen && read != -1) {
+            if (playbackState == PlaybackState.PLAYING) {
+                line.write(buffer, 0, read)
+                read = audio.read(buffer, 0, buffer.size)
+            } else if (playbackState == PlaybackState.PAUSING) {
+                lock.withLock {
+                    if (playbackState == PlaybackState.PAUSING) {
+                        line.stop()
+                        playbackState = PlaybackState.PAUSED
+                    }
+                }
+            }
+        }
     }
 
     private fun getLine(audioFormat: AudioFormat): SourceDataLine {

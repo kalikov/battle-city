@@ -30,10 +30,12 @@ class PauseListener(private val eventManager: EventManager) : EventSubscriber, P
             isPaused = !isPaused
 
             if (isPaused) {
-                eventManager.fireEvent(SoundManager.Play("pause"))
                 eventManager.fireEvent(PauseManager.Start)
+                eventManager.fireEvent(SoundManager.Pause)
+                eventManager.fireEvent(SoundManager.Play("pause"))
             } else {
                 eventManager.fireEvent(PauseManager.End)
+                eventManager.fireEvent(SoundManager.Resume)
             }
         }
     }
