@@ -9,7 +9,7 @@ This is a recreation of the classic game implemented using the Kotlin programmin
 
 ## Features
 * Classic top-down tank battle gameplay.
-* Single-player ~~and cooperative multiplayer modes~~.
+* Single-player and cooperative multiplayer modes.
 * A variety of enemy tanks with different behaviors and abilities.
 * Power-ups and obstacles to enhance gameplay.
 * ~~Sound and visual effects faithful to the original game.~~
