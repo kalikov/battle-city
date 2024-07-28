@@ -19,7 +19,7 @@ class SteelWall(
     }
 
     override fun hit(bullet: Bullet) {
-        if (bullet.tank.isPlayer) {
+        if (bullet.tank is PlayerTank) {
             eventRouter.fireEvent(SoundManager.Play("bullet_hit_1"))
         }
         if (bullet.type == Bullet.Type.ENHANCED) {

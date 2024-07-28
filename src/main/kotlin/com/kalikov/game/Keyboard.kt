@@ -11,7 +11,7 @@ object Keyboard {
         START,
     }
 
-    data class KeyPressed(val key: Key) : Event()
+    data class KeyPressed(val key: Key, val playerIndex: Int) : Event()
 
-    data class KeyReleased(val key: Key) : Event()
+    data class KeyReleased(val key: Key, val playerIndex: Int) : Event()
 }

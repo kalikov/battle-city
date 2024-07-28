@@ -24,7 +24,7 @@ class PlayerTankControllerFactoryTest {
     fun beforeEach() {
         eventManager = mock()
 
-        factory = PlayerTankControllerFactory(eventManager, mock())
+        factory = PlayerTankControllerFactory(eventManager, mock(), Player(eventManager))
     }
 
     @Test
@@ -34,7 +34,7 @@ class PlayerTankControllerFactoryTest {
 
     @Test
     fun `should create controller on player tank creation`() {
-        val tank = mockTank(eventManager)
+        val tank = mockPlayerTank(eventManager, player = factory.player)
 
         reset(eventManager)
         factory.notify(PlayerTankFactory.PlayerTankCreated(tank))
@@ -48,12 +48,12 @@ class PlayerTankControllerFactoryTest {
 
     @Test
     fun `should recreate controller on subsequent player tank creation`() {
-        val tank1 = mockTank(eventManager)
+        val tank1 = mockPlayerTank(eventManager, player = factory.player)
         factory.notify(PlayerTankFactory.PlayerTankCreated(tank1))
         val controller1 = factory.controller
         assertNotNull(controller1)
 
-        val tank2 = mockTank(eventManager)
+        val tank2 = mockPlayerTank(eventManager, player = factory.player)
         reset(eventManager)
 
         factory.notify(PlayerTankFactory.PlayerTankCreated(tank2))

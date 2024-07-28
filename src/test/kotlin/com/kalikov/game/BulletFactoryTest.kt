@@ -79,7 +79,7 @@ class BulletFactoryTest {
         val imageManager = TestImageManager(fonts)
         val factory = BulletFactory(mock(), spriteContainer)
 
-        val tank = mockTank(imageManager = imageManager, x = tankPosition.x, y = tankPosition.y)
+        val tank = mockPlayerTank(imageManager = imageManager, x = tankPosition.x, y = tankPosition.y)
         tank.direction = direction
 
         factory.notify(Tank.Shoot(tank))
@@ -140,7 +140,7 @@ class BulletFactoryTest {
         val spriteContainer: SpriteContainer = mock()
         val factory = BulletFactory(mock(), spriteContainer)
 
-        val tank = mockTank()
+        val tank = mockPlayerTank()
         tank.setPosition(tankPosition)
         tank.direction = direction
 
@@ -169,7 +169,7 @@ class BulletFactoryTest {
         val spriteContainer: SpriteContainer = mock()
         val factory = BulletFactory(mock(), spriteContainer)
 
-        val tank = mockTank()
+        val tank = mockPlayerTank()
         tank.bulletType = type
 
         factory.notify(Tank.Shoot(tank))
@@ -186,7 +186,7 @@ class BulletFactoryTest {
         val spriteContainer: SpriteContainer = mock()
         val factory = BulletFactory(mock(), spriteContainer)
 
-        val tank = mockTank()
+        val tank = mockPlayerTank()
         factory.notify(Tank.Shoot(tank))
         verify(spriteContainer).addSprite(isA<Bullet>())
     }

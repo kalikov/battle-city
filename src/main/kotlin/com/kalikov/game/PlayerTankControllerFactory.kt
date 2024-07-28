@@ -2,7 +2,8 @@ package com.kalikov.game
 
 class PlayerTankControllerFactory(
     private val eventManager: EventManager,
-    private val pauseManager: PauseManager
+    private val pauseManager: PauseManager,
+    val player: Player,
 ) : EventSubscriber {
     private companion object {
         private val subscriptions = setOf(PlayerTankFactory.PlayerTankCreated::class)
@@ -19,13 +20,15 @@ class PlayerTankControllerFactory(
 
     override fun notify(event: Event) {
         if (event is PlayerTankFactory.PlayerTankCreated) {
-            controller?.dispose()
-            controller = null
-            controller = create(event.tank)
+            if (event.tank.player === player) {
+                controller?.dispose()
+                controller = null
+                controller = create(event.tank)
+            }
         }
     }
 
-    private fun create(tank: Tank): PlayerTankController {
+    private fun create(tank: PlayerTank): PlayerTankController {
         return PlayerTankController(eventManager, pauseManager, tank)
     }
 

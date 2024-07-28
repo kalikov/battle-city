@@ -4,22 +4,20 @@ class StageScore {
     var tanksCount = 0
         private set
 
-    private val tanks: Array<Int> = Array(Tank.EnemyType.entries.size) { 0 }
+    private val tanks: Array<Int> = Array(EnemyTank.EnemyType.entries.size) { 0 }
 
     init {
         tanksCount = 0
     }
 
-    fun increment(tank: Tank) {
-        tank.enemyType?.let {
-            if (tank.value > 0) {
-                tanks[it.ordinal]++
-                tanksCount++
-            }
+    fun increment(tank: EnemyTank) {
+        if (tank.value > 0) {
+            tanks[tank.enemyType.ordinal]++
+            tanksCount++
         }
     }
 
-    fun getTanks(type: Tank.EnemyType): Int {
+    fun getTanks(type: EnemyTank.EnemyType): Int {
         return tanks[type.ordinal]
     }
 }

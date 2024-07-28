@@ -2,6 +2,6 @@ package com.kalikov.game
 
 @kotlinx.serialization.Serializable
 data class EnemyGroupConfig(
-    val type: Tank.EnemyType,
+    val type: EnemyTank.EnemyType,
     val count: Int
 )

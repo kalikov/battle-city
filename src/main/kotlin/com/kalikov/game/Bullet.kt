@@ -3,9 +3,9 @@ package com.kalikov.game
 class Bullet(
     private val eventManager: EventManager,
     imageManager: ImageManager,
-    val tank: Tank,
+    override val tank: Tank,
     val speed: Speed
-) : Sprite(eventManager, 0, 0, SIZE, SIZE) {
+) : BulletHandle, Sprite(eventManager, 0, 0, SIZE, SIZE) {
     internal companion object {
         internal const val SIZE = Globals.TILE_SIZE / 2
     }
@@ -71,7 +71,7 @@ class Bullet(
     }
 
     fun outOfBounds() {
-        if (tank.isPlayer) {
+        if (tank is PlayerTank) {
             eventManager.fireEvent(SoundManager.Play("bullet_hit_1"))
         }
         destroy()

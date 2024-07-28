@@ -17,7 +17,7 @@ class HighScoreSceneTest {
     @Test
     fun `should draw high score scene`() {
         val stageManager: StageManager = mock()
-        val scene = HighScoreScene(mock(), mock(), TestImageManager(fonts), stageManager, mock(), mock())
+        val scene = HighScoreScene(mock(), TestImageManager(fonts), stageManager, mock(), mock())
 
         whenever(stageManager.highScore).thenReturn(29100)
 

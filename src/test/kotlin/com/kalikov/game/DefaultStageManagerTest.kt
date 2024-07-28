@@ -17,16 +17,15 @@ class DefaultStageManagerTest {
 
     @Test
     fun `should update high score`() {
-        val stageMapConfig = StageMapConfig(emptyList(), Point(), Point(), emptyList())
+        val stageMapConfig = StageMapConfig(emptyList(), Point(), emptyList(), emptyList())
         stageManager.init(listOf(Stage(stageMapConfig, 0, emptyList())), stageMapConfig)
 
-        val points = mockPoints(value = 40000)
-        stageManager.player.notify(PointsFactory.PointsCreated(points))
+        stageManager.players[0].notify(Player.Score(stageManager.players[0], 40000))
 
         stageManager.reset()
 
         assertEquals(40000, stageManager.highScore)
-        assertEquals(0, stageManager.player.score)
-        assertEquals(40000, stageManager.player.previousScore)
+        assertEquals(0, stageManager.players[0].score)
+        assertEquals(40000, stageManager.players[0].previousScore)
     }
 }

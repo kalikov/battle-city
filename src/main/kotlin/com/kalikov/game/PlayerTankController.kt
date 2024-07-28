@@ -3,7 +3,7 @@ package com.kalikov.game
 class PlayerTankController(
     private val eventManager: EventManager,
     private val pauseManager: PauseManager,
-    val tank: PlayerTankHandle
+    val tank: PlayerTankHandle,
 ) : EventSubscriber {
     private companion object {
         private val subscriptions = setOf(
@@ -39,11 +39,15 @@ class PlayerTankController(
     override fun notify(event: Event) {
         when (event) {
             is Keyboard.KeyPressed -> {
-                keyPressed(event.key)
+                if (event.playerIndex == tank.player.index) {
+                    keyPressed(event.key)
+                }
             }
 
             is Keyboard.KeyReleased -> {
-                keyReleased(event.key)
+                if (event.playerIndex == tank.player.index) {
+                    keyReleased(event.key)
+                }
             }
 
             is BaseExplosion.Destroyed -> {

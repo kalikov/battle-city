@@ -14,11 +14,17 @@ class GameField(
 
     val bounds = Rect(x, y, SIZE, SIZE)
 
-    fun load(map: StageMapConfig) {
+    fun load(map: StageMapConfig, playersCount: Int) {
         val cleanRects = mutableSetOf(
-            Rect(map.base, 2, 2).multiply(Globals.TILE_SIZE).translate(bounds.x, bounds.y),
-            Rect(map.playerSpawnPoint, 2, 2).multiply(Globals.TILE_SIZE).translate(bounds.x, bounds.y),
+            Rect(map.base, 2, 2).multiply(Globals.TILE_SIZE).translate(bounds.x, bounds.y)
         )
+        map.playerSpawnPoints.asSequence()
+            .take(playersCount)
+            .map {
+                Rect(it, 2, 2).multiply(Globals.TILE_SIZE).translate(bounds.x, bounds.y)
+            }.forEach {
+                cleanRects.add(it)
+            }
         map.enemySpawnPoints.forEach {
             cleanRects.add(Rect(it, 2, 2).multiply(Globals.TILE_SIZE).translate(bounds.x, bounds.y))
         }
@@ -52,7 +58,10 @@ class GameField(
     fun draw(surface: ScreenSurface) {
         surface.fillRect(bounds.x, bounds.y, bounds.width, bounds.height, ARGB.BLACK)
 
-        val sprites = spriteContainer.sprites
-        sprites.filterNot { it.isDestroyed }.forEach { it.draw(surface) }
+        spriteContainer.sprites.forEach {
+            if (!it.isDestroyed) {
+                it.draw(surface)
+            }
+        }
     }
 }

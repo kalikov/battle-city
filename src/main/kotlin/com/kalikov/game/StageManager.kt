@@ -1,7 +1,7 @@
 package com.kalikov.game
 
 interface StageManager {
-    val player: Player
+    val players: List<Player>
 
     val stage: Stage
     val stageNumber: Int
@@ -13,6 +13,8 @@ interface StageManager {
     val highScore: Int
 
     fun init(stages: List<Stage>, defaultConstructionMap: StageMapConfig)
+
+    fun setPlayersCount(playersCount: Int)
 
     fun reset()
     fun resetConstruction()

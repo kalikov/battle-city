@@ -48,14 +48,14 @@ class PointsTest {
         points.update()
         assertFalse(points.isDestroyed)
 
-        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         assertTrue(pauseManager.isPaused)
 
         clock.tick(100)
         points.update()
         assertFalse(points.isDestroyed)
 
-        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         assertFalse(pauseManager.isPaused)
 
         clock.tick(1)
@@ -84,7 +84,7 @@ class PointsTest {
 
         val points = createPoints(1)
 
-        eventManager.fireEvent(Keyboard.KeyPressed(Keyboard.Key.START))
+        eventManager.fireEvent(Keyboard.KeyPressed(Keyboard.Key.START, 0))
 
         points.update()
 

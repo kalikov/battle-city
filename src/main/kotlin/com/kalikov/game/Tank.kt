@@ -2,10 +2,10 @@ package com.kalikov.game
 
 import java.time.Clock
 
-class Tank(
-    private val eventManager: EventManager,
-    private val pauseManager: PauseManager,
-    private val imageManager: ImageManager,
+sealed class Tank(
+    protected val eventManager: EventManager,
+    protected val pauseManager: PauseManager,
+    protected val imageManager: ImageManager,
     val clock: Clock,
     x: Int,
     y: Int
@@ -15,7 +15,7 @@ class Tank(
     y,
     SIZE,
     SIZE
-), AITankHandle, PlayerTankHandle, EventSubscriber {
+), AITankHandle, EventSubscriber {
     companion object {
         const val COOLDOWN_INTERVAL = 200
         const val SIZE = Globals.UNIT_SIZE
@@ -25,23 +25,25 @@ class Tank(
             TankStateAppearing.End::class,
             TankStateInvincible.End::class
         )
-    }
 
-    enum class EnemyType(val score: Int, val index: Int) {
-        BASIC(100, 0),
-        FAST(200, 1),
-        POWER(300, 2),
-        ARMOR(400, 3)
+        @JvmStatic
+        protected fun <T: Tank> init(tank: T): T {
+            LeaksDetector.add(tank)
+
+            tank.internalState = TankStateNormal(tank.imageManager, tank)
+            tank.eventManager.addSubscriber(tank, subscriptions)
+            return tank
+        }
     }
 
     data class Shoot(val tank: Tank) : Event()
     data class Destroyed(val tank: Tank) : Event()
-    data class PlayerDestroyed(val tank: Tank) : Event()
-    data class EnemyDestroyed(val tank: Tank) : Event()
     data class Hit(val tank: Tank) : Event()
-//    data object FlashingTankHit : Event()
 
     override var isIdle = true
+
+    abstract val image: String
+    abstract val imageMod: Int
 
     val isSlipping get() = !slipCountDown.isStopped
 
@@ -74,28 +76,14 @@ class Tank(
             field = value
         }
 
-    var enemyType: EnemyType? = null
+    private lateinit var internalState: TankState
 
-    var state: TankState = TankStateNormal(imageManager, this)
+    var state: TankState
+        get() = internalState
         set(value) {
-            field.dispose()
-            field = value
+            internalState.dispose()
+            internalState = value
         }
-
-    private var isValued = true
-    val value: Int get() = if (isValued) this.enemyType?.score ?: 0 else 0
-
-    var upgradeLevel = 0
-        private set
-    var color = TankColor(clock)
-
-    var hitLimit = 1
-    private var hit = 0
-
-    val isPlayer get() = enemyType == null
-    val isEnemy get() = enemyType != null
-
-    val isHit get() = hit > 0
 
     var bulletSpeed = Bullet.Speed.NORMAL
     var bulletsLimit = 1
@@ -103,7 +91,6 @@ class Tank(
 
     var bulletType = Bullet.Type.REGULAR
 
-    private var shooting = false
     private val cooldownTimer = PauseAwareTimer(eventManager, clock, COOLDOWN_INTERVAL, ::resetCooldown)
 
     private val turnRoundTo = Globals.TILE_SIZE
@@ -115,11 +102,7 @@ class Tank(
         private set
 
     init {
-        LeaksDetector.add(this)
-
         z = 1
-
-        eventManager.addSubscriber(this, subscriptions)
     }
 
     private fun moved() {
@@ -214,13 +197,6 @@ class Tank(
     override fun updateHook() {
         state.update()
         cooldownTimer.update()
-        if (shooting) {
-            shoot()
-        }
-    }
-
-    fun updateColor() {
-        color.update()
     }
 
     override fun notify(event: Event) {
@@ -233,36 +209,20 @@ class Tank(
         }
     }
 
-    private fun stateAppearingEnd() {
-        if (enemyType == null) {
-            state = TankStateInvincible(eventManager, imageManager, this)
-            direction = Direction.UP
-        } else {
-            state = TankStateNormal(imageManager, this)
-            direction = Direction.DOWN
-        }
-    }
+    abstract fun stateAppearingEnd()
 
-    fun hit() {
+    fun hit(bullet: BulletHandle) {
         if (isDestroyed) {
             return
         }
         eventManager.fireEvent(Hit(this))
-        hit++
-        color.hit()
-        if (hit >= hitLimit) {
-            destroy()
-        }
+        hitHook(bullet)
     }
+
+    abstract fun hitHook(bullet: BulletHandle)
 
     override fun destroyHook() {
         eventManager.fireEvent(Destroyed(this))
-
-        if (enemyType == null) {
-            eventManager.fireEvent(PlayerDestroyed(this))
-        } else {
-            eventManager.fireEvent(EnemyDestroyed(this))
-        }
     }
 
     override fun dispose() {
@@ -273,15 +233,6 @@ class Tank(
         eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
-    }
-
-    override fun startShooting() {
-        shooting = true
-        shoot()
-    }
-
-    override fun stopShooting() {
-        shooting = false
     }
 
     private fun isSmoothTurnRequired(newDirection: Direction): Boolean {
@@ -320,22 +271,5 @@ class Tank(
 
     override fun draw(surface: ScreenSurface) {
         state.draw(surface)
-    }
-
-    fun devalue() {
-        isValued = false
-    }
-
-    fun upgrade() {
-        if (upgradeLevel == 3) {
-            return
-        }
-        upgradeLevel++
-
-        when (upgradeLevel) {
-            1 -> bulletSpeed = Bullet.Speed.FAST
-            2 -> bulletsLimit = 2
-            3 -> bulletType = Bullet.Type.ENHANCED
-        }
     }
 }

@@ -18,7 +18,7 @@ class SteelWallTest {
 
     @Test
     fun `should be invincible for normal bullets`() {
-        val tank = mockTank()
+        val tank = mockPlayerTank()
         val bullet = tank.createBullet()
         bullet.direction = Direction.UP
         wall.hit(bullet)
@@ -27,7 +27,7 @@ class SteelWallTest {
 
     @Test
     fun `should be destroyed by enhanced bullet`() {
-        val tank = mockTank()
+        val tank = mockPlayerTank()
         val bullet = tank.createBullet()
         bullet.direction = Direction.UP
         bullet.type = Bullet.Type.ENHANCED

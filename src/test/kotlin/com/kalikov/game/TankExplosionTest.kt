@@ -13,7 +13,7 @@ class TankExplosionTest {
     @BeforeEach
     fun beforeEach() {
         eventManager = mock()
-        tank = mockTank(eventManager)
+        tank = mockPlayerTank(eventManager)
         explosion = TankExplosion(eventManager, mock(), tank)
     }
 

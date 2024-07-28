@@ -12,20 +12,14 @@ open class TankStateNormal(
 
     private val trackFrames = arrayOf(1, 2)
 
-    private val image = imageManager.getImage(if (tank.isPlayer) "tank_player" else "tank_enemy")
+    private val image = imageManager.getImage(tank.image)
 
     override fun update() {
-        tank.updateColor()
     }
 
     override fun draw(surface: ScreenSurface) {
         val column = 2 * tank.direction.index + getTrackFrame() - 1
-        val row = if (tank.isPlayer) {
-            tank.upgradeLevel
-        } else {
-            val typeOffset = 2 * (tank.enemyType?.index ?: 0)
-            typeOffset + tank.color.getColor()
-        }
+        val row = tank.imageMod
         surface.draw(tank.x, tank.y, image, column * tank.width, row * tank.height, tank.width, tank.height)
     }
 

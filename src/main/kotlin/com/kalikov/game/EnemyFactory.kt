@@ -12,7 +12,7 @@ class EnemyFactory(
     enemies: List<EnemyGroupConfig>,
     interval: Int
 ) : EventSubscriber {
-    data class EnemyCreated(val enemy: Tank, val isFlashing: Boolean) : Event()
+    data class EnemyCreated(val enemy: EnemyTank, val isFlashing: Boolean) : Event()
 
     data object LastEnemyDestroyed : Event()
 
@@ -40,7 +40,7 @@ class EnemyFactory(
 
     private var positionIndex = 0
 
-    private var enemies = emptyArray<Tank.EnemyType>()
+    private var enemies = emptyArray<EnemyTank.EnemyType>()
     private var enemyIndex = 0
 
     private val timer = PauseAwareTimer(eventManager, clock, interval, ::create)
@@ -49,7 +49,7 @@ class EnemyFactory(
 
     init {
         val count = enemies.sumOf { it.count }
-        val array = Array(count) { Tank.EnemyType.BASIC }
+        val array = Array(count) { EnemyTank.EnemyType.BASIC }
         var index = 0
         for (enemyGroup in enemies) {
             for (i in 0 until enemyGroup.count) {
@@ -107,26 +107,25 @@ class EnemyFactory(
         return tank
     }
 
-    private fun createEnemy(type: Tank.EnemyType, position: Point): Tank {
-        val tank = Tank(eventManager, pauseManager, imageManager, clock, position.x, position.y)
-        tank.enemyType = type
+    private fun createEnemy(type: EnemyTank.EnemyType, position: Point): EnemyTank {
+        val tank = EnemyTank.create(eventManager, pauseManager, imageManager, clock, position.x, position.y, type)
         tank.state = TankStateAppearing(eventManager, imageManager, tank)
 
         when (type) {
-            Tank.EnemyType.BASIC -> {
+            EnemyTank.EnemyType.BASIC -> {
                 tank.moveFrequency = 8
             }
 
-            Tank.EnemyType.FAST -> {
+            EnemyTank.EnemyType.FAST -> {
                 tank.moveFrequency = 4
             }
 
-            Tank.EnemyType.POWER -> {
+            EnemyTank.EnemyType.POWER -> {
                 tank.moveFrequency = 8
                 tank.bulletSpeed = Bullet.Speed.FAST
             }
 
-            Tank.EnemyType.ARMOR -> {
+            EnemyTank.EnemyType.ARMOR -> {
                 tank.moveFrequency = 8
                 tank.hitLimit = 4
                 tank.color.colors = arrayOf(intArrayOf(0, 2), intArrayOf(0, 3), intArrayOf(2, 3), intArrayOf(0))
@@ -135,7 +134,7 @@ class EnemyFactory(
         return tank
     }
 
-    fun nextEnemy(): Tank.EnemyType {
+    fun nextEnemy(): EnemyTank.EnemyType {
         val type = enemies[enemyIndex]
         enemyIndex++
         if (enemyIndex >= enemies.size) {
@@ -146,10 +145,10 @@ class EnemyFactory(
 
     override fun notify(event: Event) {
         if (event is TankExplosion.Destroyed) {
-            if (event.explosion.tank.isEnemy) {
+            if (event.explosion.tank is EnemyTank) {
                 enemyCount--
             }
-            if (event.explosion.tank.isEnemy && enemyCount <= 0 && enemiesToCreateCount == 0) {
+            if (event.explosion.tank is EnemyTank && enemyCount <= 0 && enemiesToCreateCount == 0) {
                 eventManager.fireEvent(LastEnemyDestroyed)
             }
         } else if (event is Tank.Hit) {

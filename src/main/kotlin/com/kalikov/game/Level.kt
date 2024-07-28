@@ -15,7 +15,7 @@ class Level(
             Base.Hit::class,
             BaseExplosion.Destroyed::class,
             Player.OutOfLives::class,
-            Tank.EnemyDestroyed::class,
+            EnemyTank.Score::class,
             EnemyFactory.LastEnemyDestroyed::class
         )
     }
@@ -24,9 +24,8 @@ class Level(
 
     private val pauseListener = PauseListener(eventManager)
 
-    private val playerTankControllerFactory: PlayerTankControllerFactory
-
-    private val playerTankFactory: PlayerTankFactory
+    private val playersTankControllerFactories: List<PlayerTankControllerFactory>
+    private val playersTankFactories: List<PlayerTankFactory>
 
     private val bulletFactory: BulletFactory
     private val bulletExplosionFactory: BulletExplosionFactory
@@ -57,7 +56,7 @@ class Level(
     private val gameOverScript: Script
     private val nextStageScript: Script
 
-    private val statistics = StageScore()
+    private val statistics = List(stageManager.players.size) { StageScore() }
 
     private val spriteContainer: SpriteContainer
     private val gameField: GameField
@@ -85,18 +84,24 @@ class Level(
             clock
         )
 
-        playerTankControllerFactory = PlayerTankControllerFactory(eventManager, pauseListener)
+        playersTankControllerFactories = stageManager.players.map { player ->
+            PlayerTankControllerFactory(eventManager, pauseListener, player)
+        }
 
         val stage = stageManager.stage
 
-        playerTankFactory = PlayerTankFactory(
-            eventManager,
-            imageManager,
-            pauseListener,
-            spriteContainer,
-            stage.map.playerSpawnPoint.multiply(Globals.TILE_SIZE).translate(gameField.bounds.x, gameField.bounds.y),
-            clock
-        )
+        playersTankFactories = stageManager.players.mapIndexed { index, player ->
+            PlayerTankFactory(
+                eventManager,
+                imageManager,
+                pauseListener,
+                spriteContainer,
+                stage.map.playerSpawnPoints[index].multiply(Globals.TILE_SIZE)
+                    .translate(gameField.bounds.x, gameField.bounds.y),
+                clock,
+                player,
+            )
+        }
 
         bulletFactory = BulletFactory(eventManager, spriteContainer)
         bulletExplosionFactory = BulletExplosionFactory(eventManager, imageManager, spriteContainer, clock)
@@ -155,7 +160,7 @@ class Level(
 
         livesView = LivesView(
             imageManager,
-            stageManager.player,
+            stageManager.players,
             gameField.bounds.right + 1 + Globals.TILE_SIZE,
             gameField.bounds.bottom + 1 - 5 * Globals.UNIT_SIZE - Globals.TILE_SIZE
         )
@@ -186,12 +191,15 @@ class Level(
         nextStageScript.isActive = false
         nextStageScript.enqueue(Delay(nextStageScript, 2500, clock))
         nextStageScript.enqueue(Execute {
-            val playerTank = playerTankFactory.playerTank
-            if (playerTank == null || gameOver) {
-                gameOver = true
-            } else {
-                playerTank.destroy()
-
+            playersTankFactories.forEachIndexed { index, it ->
+                stageManager.players[index].upgradeLevel = 0
+                it.playerTank?.let { playerTank ->
+                    playerTank.destroy()
+                    stageManager.players[index].upgradeLevel = playerTank.upgradeLevel
+                }
+            }
+            gameOver = gameOver || playersTankFactories.all { it.playerTank == null }
+            if (!gameOver) {
                 for (sprite in spriteContainer.sprites) {
                     sprite.isStatic = true
                     if (sprite is Tank) {
@@ -203,18 +211,17 @@ class Level(
                 draw(image)
 
                 stageManager.curtainBackground = image
-                stageManager.player.upgradeLevel = playerTank.upgradeLevel
             }
             startStageScoreScene()
         })
 
-        gameField.load(stageManager.stage.map)
+        gameField.load(stageManager.stage.map, stageManager.players.size)
     }
 
     fun update() {
         gameField.update()
         movementController.update()
-        playerTankControllerFactory.update()
+        playersTankControllerFactories.forEach { it.update() }
         enemyFactory.update()
         aiControllersContainer.update()
         freezeHandler.update()
@@ -243,7 +250,12 @@ class Level(
     }
 
     fun start() {
-        playerTankFactory.init(stageManager.player.upgradeLevel)
+        playersTankFactories.forEachIndexed { index, it ->
+            val player = stageManager.players[index]
+            if (player.lives > 0) {
+                it.init(player.upgradeLevel)
+            }
+        }
         pauseListener.isActive = true
     }
 
@@ -251,10 +263,16 @@ class Level(
         when (event) {
             is Base.Hit -> gameOver = true
             is BaseExplosion.Destroyed -> runGameOverScript()
-            is Player.OutOfLives -> runGameOverScript()
+            is Player.OutOfLives -> onPlayerOutOfLives()
             is EnemyFactory.LastEnemyDestroyed -> runNextStageScript()
-            is Tank.EnemyDestroyed -> statistics.increment(event.tank)
+            is EnemyTank.Score -> statistics[event.player.index].increment(event.tank)
             else -> Unit
+        }
+    }
+
+    private fun onPlayerOutOfLives() {
+        if (stageManager.players.none { it.lives > 0 }) {
+            runGameOverScript()
         }
     }
 
@@ -321,9 +339,8 @@ class Level(
         bulletExplosionFactory.dispose()
         bulletFactory.dispose()
 
-        playerTankFactory.dispose()
-
-        playerTankControllerFactory.dispose()
+        playersTankFactories.forEach { it.dispose() }
+        playersTankControllerFactories.forEach { it.dispose() }
 
         movementController.dispose()
 

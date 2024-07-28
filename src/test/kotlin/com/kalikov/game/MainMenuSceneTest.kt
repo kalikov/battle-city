@@ -30,13 +30,27 @@ class MainMenuSceneTest {
     fun `should draw main menu scene`() {
         scene.arrived()
         val player = Player(eventManager)
-        whenever(stageManager.player).thenReturn(player)
+        whenever(stageManager.players).thenReturn(listOf(player))
         whenever(stageManager.highScore).thenReturn(20000)
 
         val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("main_menu.png", image)
+    }
+
+    @Test
+    fun `should draw main menu scene with two players`() {
+        scene.arrived()
+        val player1 = Player(eventManager)
+        val player2 = Player(eventManager)
+        whenever(stageManager.players).thenReturn(listOf(player1, player2))
+        whenever(stageManager.highScore).thenReturn(20000)
+
+        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
+        scene.draw(AwtScreenSurface(fonts, image))
+
+        assertImageEquals("main_menu_two_players.png", image)
     }
 
     @Test
@@ -61,7 +75,7 @@ class MainMenuSceneTest {
     }
 
     private fun shouldArriveOnKey(key: Keyboard.Key) {
-        scene.notify(Keyboard.KeyPressed(key))
+        scene.notify(Keyboard.KeyPressed(key, 0))
         assertEquals(0, scene.top)
     }
 

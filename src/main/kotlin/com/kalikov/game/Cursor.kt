@@ -12,7 +12,7 @@ class Cursor(
 ) : Sprite(eventRouter, x, y, Globals.UNIT_SIZE, Globals.UNIT_SIZE) {
     private val blinkTimer = BlinkTimer(clock, 320)
 
-    private val image = imageManager.getImage("tank_player")
+    private val image = imageManager.getImage("tank_player1")
 
     init {
         z = 10000

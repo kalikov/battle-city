@@ -31,7 +31,7 @@ class MainMenuControllerTest {
         val controller = MainMenuController(mock(), menu)
         controller.isActive = true
 
-        controller.notify(Keyboard.KeyPressed(Keyboard.Key.SELECT))
+        controller.notify(Keyboard.KeyPressed(Keyboard.Key.SELECT, 0))
 
         assertSame(item2, menu.getCurrentItem())
     }
@@ -42,7 +42,7 @@ class MainMenuControllerTest {
         val controller = MainMenuController(mock(), MainMenu(item))
         controller.isActive = true
 
-        controller.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        controller.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
 
         verify(item).execute()
     }
@@ -52,7 +52,7 @@ class MainMenuControllerTest {
         val item = mock<MainMenuItem>()
         val controller = MainMenuController(mock(), MainMenu(item))
 
-        controller.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        controller.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
 
         verify(item, never()).execute()
     }

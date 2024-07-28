@@ -29,18 +29,14 @@ class PointsFactoryTest {
 
     @Test
     fun `should create points when enemy tank is destroyed`() {
-        val tank = mockTank(eventManager)
-        tank.enemyType = Tank.EnemyType.BASIC
+        val tank = mockEnemyTank(eventManager)
 
         val explosion = mockTankExplosion(eventManager, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
-        val captor = argumentCaptor<PointsFactory.PointsCreated>()
-        verify(eventManager).fireEvent(captor.capture())
-        val event = captor.firstValue
-        val points = event.points
-
-        verify(spriteContainer).addSprite(points)
+        val captor = argumentCaptor<Points>()
+        verify(spriteContainer).addSprite(captor.capture())
+        val points = captor.firstValue
 
         assertNotNull(points)
         assertEquals(explosion.center.x, points.x + points.width / 2)
@@ -50,25 +46,22 @@ class PointsFactoryTest {
 
     @Test
     fun `should not create points when enemy tank with zero value is destroyed`() {
-        val tank = mockTank(eventManager)
-        tank.enemyType = Tank.EnemyType.BASIC
+        val tank = mockEnemyTank(eventManager)
         tank.devalue()
 
         val explosion = mockTankExplosion(eventManager, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
-        verify(eventManager, never()).fireEvent(isA<PointsFactory.PointsCreated>())
         verify(spriteContainer, never()).addSprite(isA<Points>())
     }
 
     @Test
     fun `should not create points when player tank is destroyed`() {
-        val tank = mockTank(eventManager)
+        val tank = mockPlayerTank(eventManager)
 
         val explosion = mockTankExplosion(eventManager, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
-        verify(eventManager, never()).fireEvent(isA<PointsFactory.PointsCreated>())
         verify(spriteContainer, never()).addSprite(isA<Points>())
     }
 
@@ -77,16 +70,13 @@ class PointsFactoryTest {
         val powerUp = mockPowerUp(eventManager, position = Point(1, 2))
         powerUp.value = 200
 
-        val tank = mockTank(eventManager)
+        val tank = mockPlayerTank(eventManager)
 
         factory.notify(PowerUp.Pick(powerUp, tank))
 
-        val captor = argumentCaptor<PointsFactory.PointsCreated>()
-        verify(eventManager).fireEvent(captor.capture())
-        val event = captor.firstValue
-        val points = event.points
-
-        verify(spriteContainer).addSprite(points)
+        val captor = argumentCaptor<Points>()
+        verify(spriteContainer).addSprite(captor.capture())
+        val points = captor.firstValue
 
         assertNotNull(points)
         assertEquals(powerUp.center.x, points.x + points.width / 2)

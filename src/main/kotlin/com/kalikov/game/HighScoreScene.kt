@@ -3,12 +3,11 @@ package com.kalikov.game
 import java.time.Clock
 
 class HighScoreScene(
-    private val screen: Screen,
     private val eventManager: EventManager,
     private val imageManager: ImageManager,
     private val stageManager: StageManager,
-    private val entityFactory: EntityFactory,
-    private val clock: Clock
+    private val nextSceneFactory: () -> Scene,
+    clock: Clock,
 ) : Scene {
     companion object {
         const val BLINK_INTERVAL = 32
@@ -76,9 +75,7 @@ class HighScoreScene(
         counter++
         if (counter == BLINK_COUNT) {
             timer.stop()
-            eventManager.fireEvent(Scene.Start {
-                MainMenuScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
-            })
+            eventManager.fireEvent(Scene.Start(nextSceneFactory))
         }
     }
 

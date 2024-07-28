@@ -14,7 +14,7 @@ class MainMenuCursorView(
 
     private val trackAnimation = Animation.basic(frameLoopOf(1, 2), clock, 64)
 
-    private val image = imageManager.getImage("tank_player")
+    private val image = imageManager.getImage("tank_player1")
 
     fun update() {
         if (!trackAnimation.isRunning) {

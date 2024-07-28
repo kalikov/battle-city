@@ -17,6 +17,7 @@ class ConstructionScene(
         )
     }
 
+    @Suppress("JoinDeclarationAndAssignment")
     val spriteContainer: SpriteContainer
 
     val cursor: Cursor
@@ -25,7 +26,7 @@ class ConstructionScene(
     private val cursorController: CursorController
 
     private val basePosition: Point
-    private val playerPosition: Point
+    private val playerPositions: List<Point>
     private val enemyPositions: List<Point>
 
     init {
@@ -43,7 +44,7 @@ class ConstructionScene(
 
         val map = stageManager.constructionMap
         basePosition = map.base
-        playerPosition = map.playerSpawnPoint
+        playerPositions = map.playerSpawnPoints
         enemyPositions = map.enemySpawnPoints
         val base = Base(
             eventManager,
@@ -108,10 +109,12 @@ class ConstructionScene(
 
     private fun getConstructionMap(): StageMapConfig {
         return StageMapConfig(
-            spriteContainer.sprites.filterIsInstance(Entity::class.java)
-                .map { it.toStageObject(gameField.bounds.x, gameField.bounds.y) },
+            spriteContainer.sprites.asSequence()
+                .filterIsInstance<Entity>()
+                .map { it.toStageObject(gameField.bounds.x, gameField.bounds.y) }
+                .toList(),
             basePosition,
-            playerPosition,
+            playerPositions,
             enemyPositions
         )
     }

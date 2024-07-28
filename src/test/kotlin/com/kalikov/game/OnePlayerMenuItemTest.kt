@@ -18,7 +18,7 @@ class OnePlayerMenuItemTest {
                 StageMapConfig(
                     emptyList(),
                     Point(12, 24),
-                    Point(8, 24),
+                    emptyList(),
                     emptyList()
                 ),
                 1,
@@ -26,7 +26,7 @@ class OnePlayerMenuItemTest {
             )
         )
         val player = Player(eventManager)
-        whenever(stageManager.player).thenReturn(player)
+        whenever(stageManager.players).thenReturn(listOf(player))
 
         val item = OnePlayerMenuItem(mock(), eventManager, mock(), stageManager, mock(), mock())
         item.execute()

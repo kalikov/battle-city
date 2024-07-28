@@ -3,15 +3,28 @@ package com.kalikov.game
 import org.mockito.kotlin.mock
 import java.time.Clock
 
-fun mockTank(
+fun mockEnemyTank(
     eventManager: EventManager = mock(),
     pauseManager: PauseManager = mock(),
     imageManager: ImageManager = mock(),
     clock: Clock = mock(),
     x: Int = 0,
-    y: Int = 0
-): Tank {
-    return Tank(eventManager, pauseManager, imageManager, clock, x, y)
+    y: Int = 0,
+    enemyType: EnemyTank.EnemyType = EnemyTank.EnemyType.BASIC,
+): EnemyTank {
+    return EnemyTank.create(eventManager, pauseManager, imageManager, clock, x, y, enemyType)
+}
+
+fun mockPlayerTank(
+    eventManager: EventManager = mock(),
+    pauseManager: PauseManager = mock(),
+    imageManager: ImageManager = mock(),
+    clock: Clock = mock(),
+    x: Int = 0,
+    y: Int = 0,
+    player: Player = Player(eventManager),
+): PlayerTank {
+    return PlayerTank.create(eventManager, pauseManager, imageManager, clock, x, y, player)
 }
 
 fun mockBase(

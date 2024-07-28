@@ -21,14 +21,19 @@ class GameOverScene(
         script.enqueue(Execute {
             val highScore = stageManager.highScore
             stageManager.reset()
+            val mainMenuFactory = {
+                val mainMenu = MainMenuScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+                if (stageManager.players.size == 2) {
+                    mainMenu.setMenuItem(1)
+                }
+                mainMenu
+            }
             if (highScore < stageManager.highScore) {
                 eventManager.fireEvent(Scene.Start {
-                    HighScoreScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+                    HighScoreScene(eventManager, imageManager, stageManager, mainMenuFactory, clock)
                 })
             } else {
-                eventManager.fireEvent(Scene.Start {
-                    MainMenuScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
-                })
+                eventManager.fireEvent(Scene.Start(mainMenuFactory))
             }
         })
     }

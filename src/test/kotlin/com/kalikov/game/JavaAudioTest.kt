@@ -1,18 +1,26 @@
 package com.kalikov.game
 
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
 import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
 
 class JavaAudioTest {
-    @Test
-    fun `should play sound once`() {
-        val audio = JavaAudio()
-        val sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
+    private lateinit var sound: Sound
+
+    @BeforeEach
+    fun beforeEach() {
+         val audio = JavaAudio()
+         sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
             requireNotNull(it)
             audio.load(it)
         }
+    }
+
+    @Test
+    fun `should play sound once`() {
         val start = System.currentTimeMillis()
         sound.play()
         assertTrue(System.currentTimeMillis() - start >= 500)
@@ -20,11 +28,6 @@ class JavaAudioTest {
 
     @Test
     fun `should play sound multiple times`() {
-        val audio = JavaAudio()
-        val sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
-            requireNotNull(it)
-            audio.load(it)
-        }
         val start = System.currentTimeMillis()
         sound.play()
         sound.play()
@@ -35,11 +38,6 @@ class JavaAudioTest {
     @Test
     @Timeout(value = 1500, unit = TimeUnit.MILLISECONDS)
     fun `should loop and stop sound`() {
-        val audio = JavaAudio()
-        val sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
-            requireNotNull(it)
-            audio.load(it)
-        }
         val thread = Thread {
             sound.loop()
         }
@@ -55,11 +53,6 @@ class JavaAudioTest {
     @Test
     @Timeout(value = 3000, unit = TimeUnit.MILLISECONDS)
     fun `should pause and resume sound`() {
-        val audio = JavaAudio()
-        val sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
-            requireNotNull(it)
-            audio.load(it)
-        }
         val thread = Thread {
             sound.play()
         }
@@ -71,7 +64,7 @@ class JavaAudioTest {
 
         Thread.sleep(1000)
 
-        assertTrue(sound.state == Sound.State.PAUSED)
+        assertEquals(Sound.State.PAUSED, sound.state)
 
         sound.resume()
 

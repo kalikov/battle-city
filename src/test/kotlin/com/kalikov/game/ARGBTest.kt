@@ -30,7 +30,7 @@ class ARGBTest {
         }
 
         private fun argumentsOfColors(vararg values: Long): Arguments {
-            return Arguments.of(*values.map { it.toInt() }.toTypedArray())
+            return Arguments.of(*Array(values.size) { values[it].toInt() })
         }
     }
 

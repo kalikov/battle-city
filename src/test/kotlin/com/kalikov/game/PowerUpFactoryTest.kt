@@ -57,8 +57,7 @@ class PowerUpFactoryTest {
         assertNotNull(powerUp)
         assertFalse(powerUp.isDestroyed)
 
-        val newTank = mockTank(eventManager)
-        newTank.enemyType = Tank.EnemyType.BASIC
+        val newTank = mockEnemyTank(eventManager)
         factory.notify(EnemyFactory.EnemyCreated(newTank, true))
 
         assertTrue(powerUp.isDestroyed)

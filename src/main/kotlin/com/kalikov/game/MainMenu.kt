@@ -24,6 +24,6 @@ class MainMenu(private vararg var items: MainMenuItem = emptyArray()) {
     }
 
     fun getItemsInfo(): Array<MainMenuItemInfo> {
-        return items.map { MainMenuItemInfo(it.name, isCurrent(it)) }.toTypedArray()
+        return Array(items.size) { i -> MainMenuItemInfo(items[i].name, isCurrent(items[i])) }
     }
 }

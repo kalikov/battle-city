@@ -4,7 +4,7 @@ class PowerUpHandler(
     private val eventManager: EventManager,
     private val imageManager: ImageManager,
 ) : EventSubscriber {
-    data object Life : Event()
+    data class Life(val player: Player) : Event()
     data object Freeze : Event()
     data object ShovelStart : Event()
 
@@ -18,7 +18,7 @@ class PowerUpHandler(
         )
     }
 
-    private val enemies = HashSet<Tank>()
+    private val enemies = HashSet<EnemyTank>()
 
     init {
         eventManager.addSubscriber(this, subscriptions)
@@ -29,12 +29,12 @@ class PowerUpHandler(
             handle(event.powerUp, event.tank)
         } else if (event is EnemyFactory.EnemyCreated) {
             enemies.add(event.enemy)
-        } else if (event is Tank.Destroyed && event.tank.isEnemy) {
+        } else if (event is Tank.Destroyed && event.tank is EnemyTank) {
             enemies.remove(event.tank)
         }
     }
 
-    private fun handle(powerUp: PowerUp, playerTank: Tank) {
+    private fun handle(powerUp: PowerUp, playerTank: PlayerTank) {
         eventManager.fireEvent(SoundManager.Play("powerup_pick"))
 
         when (powerUp.type) {
@@ -43,14 +43,16 @@ class PowerUpHandler(
             PowerUp.Type.TIMER -> handleTimer()
             PowerUp.Type.SHOVEL -> handleShovel()
             PowerUp.Type.STAR -> handleStar(playerTank)
-            PowerUp.Type.TANK -> handleTank()
+            PowerUp.Type.TANK -> handleTank(playerTank)
         }
     }
 
     private fun handleGrenade() {
-        enemies.filter { it.canBeDestroyed }.filterNot { it.isDestroyed }.forEach { tank ->
-            tank.devalue()
-            tank.destroy()
+        enemies.forEach { tank ->
+            if (tank.canBeDestroyed && !tank.isDestroyed) {
+                tank.devalue()
+                tank.destroy()
+            }
         }
     }
 
@@ -67,12 +69,12 @@ class PowerUpHandler(
         eventManager.fireEvent(ShovelStart)
     }
 
-    private fun handleStar(playerTank: Tank) {
+    private fun handleStar(playerTank: PlayerTank) {
         playerTank.upgrade()
     }
 
-    private fun handleTank() {
-        eventManager.fireEvent(Life)
+    private fun handleTank(playerTank: PlayerTank) {
+        eventManager.fireEvent(Life(playerTank.player))
     }
 
     fun dispose() {

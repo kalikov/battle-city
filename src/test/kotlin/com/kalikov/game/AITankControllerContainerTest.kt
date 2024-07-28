@@ -37,7 +37,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should create controller on enemy creation`() {
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertTrue(container.hasController(tank))
@@ -58,7 +58,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should create tanks with normal speed when not frozen`() {
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertFalse(tank.isIdle)
@@ -68,7 +68,7 @@ class AITankControllerContainerTest {
     fun `should create tanks stopped when frozen`() {
         container.notify(PowerUpHandler.Freeze)
 
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertTrue(tank.isIdle)
@@ -79,7 +79,7 @@ class AITankControllerContainerTest {
         container.notify(PowerUpHandler.Freeze)
         container.notify(FreezeHandler.Unfreeze)
 
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertFalse(tank.isIdle)
@@ -87,7 +87,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should stop existing tanks on freeze`() {
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.notify(PowerUpHandler.Freeze)
@@ -99,7 +99,7 @@ class AITankControllerContainerTest {
     fun `should restore tank speed when unfrozen`() {
         container.notify(PowerUpHandler.Freeze)
 
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.notify(FreezeHandler.Unfreeze)
@@ -109,7 +109,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should remove controller when tank is destroyed`() {
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertTrue(container.hasController(tank))
@@ -128,10 +128,10 @@ class AITankControllerContainerTest {
             mock(),
             AITankControllerParams(clock = clock, shootInterval = 1, shootProbability = 1.0)
         )
-        val tank1 = mockTank(eventManager)
+        val tank1 = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank1, false))
 
-        val tank2 = mockTank(eventManager)
+        val tank2 = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank2, false))
 
         container.update()
@@ -157,7 +157,7 @@ class AITankControllerContainerTest {
             )
         )
 
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.update()
@@ -183,7 +183,7 @@ class AITankControllerContainerTest {
                 shootProbability = 1.0
             )
         )
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.update()
@@ -208,7 +208,7 @@ class AITankControllerContainerTest {
         )
         container.notify(PowerUpHandler.Freeze)
 
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.update()
@@ -235,7 +235,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should remove controllers on dispose`() {
-        val tank = mockTank(eventManager)
+        val tank = mockEnemyTank(eventManager)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.dispose()

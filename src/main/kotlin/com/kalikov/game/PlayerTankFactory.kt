@@ -8,17 +8,18 @@ class PlayerTankFactory(
     private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
     private val appearPosition: Point,
-    private val clock: Clock
+    private val clock: Clock,
+    val player: Player,
 ) : EventSubscriber {
-    data class PlayerTankCreated(val tank: Tank) : Event()
+    data class PlayerTankCreated(val tank: PlayerTank) : Event()
 
     private companion object {
         private val subscriptions = setOf(TankExplosion.Destroyed::class, Player.OutOfLives::class)
     }
 
-    private var gameOver = false
+    private var outOfLives = true
 
-    var playerTank: Tank? = null
+    var playerTank: PlayerTank? = null
         private set
 
     init {
@@ -26,6 +27,7 @@ class PlayerTankFactory(
     }
 
     fun init(upgradeLevel: Int) {
+        outOfLives = false
         check(playerTank == null)
         val tank = create()
         for (i in 1..upgradeLevel) {
@@ -38,17 +40,25 @@ class PlayerTankFactory(
         if (playerTankExplosionDestroyed(event)) {
             playerTank?.dispose()
             playerTank = null
-            if (!gameOver) {
+            if (!outOfLives) {
                 val tank = create()
                 playerTank = tank
             }
-        } else if (event is Player.OutOfLives) {
-            gameOver = true
+        } else if (event is Player.OutOfLives && event.player === player) {
+            outOfLives = true
         }
     }
 
-    private fun create(): Tank {
-        val tank = Tank(eventManager, pauseManager, imageManager, clock, appearPosition.x, appearPosition.y)
+    private fun create(): PlayerTank {
+        val tank = PlayerTank.create(
+            eventManager,
+            pauseManager,
+            imageManager,
+            clock,
+            appearPosition.x,
+            appearPosition.y,
+            player,
+        )
         spriteContainer.addSprite(tank)
         tank.state = TankStateAppearing(eventManager, imageManager, tank, 48)
         eventManager.fireEvent(PlayerTankCreated(tank))
@@ -60,7 +70,7 @@ class PlayerTankFactory(
             return false
         }
         val tank = event.explosion.tank
-        return tank.isPlayer
+        return tank is PlayerTank && tank.player === player
     }
 
     fun dispose() {

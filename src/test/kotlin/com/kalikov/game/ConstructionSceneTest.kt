@@ -19,7 +19,7 @@ class ConstructionSceneTest {
         eventManager = mock()
         stageManager = mock()
         whenever(stageManager.constructionMap).thenReturn(
-            StageMapConfig(emptyList(), Point(), Point(), emptyList()),
+            StageMapConfig(emptyList(), Point(), emptyList(), emptyList()),
         )
 
         constructionScene = ConstructionScene(mock(), eventManager, mock(), stageManager, mock(), mock())

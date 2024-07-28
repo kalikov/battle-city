@@ -55,7 +55,7 @@ class BrickWall(
     }
 
     override fun hit(bullet: Bullet) {
-        if (bullet.tank.isPlayer) {
+        if (bullet.tank is PlayerTank) {
             eventRouter.fireEvent(SoundManager.Play("bullet_hit_2"))
         }
         if (bullet.type == Bullet.Type.ENHANCED) {

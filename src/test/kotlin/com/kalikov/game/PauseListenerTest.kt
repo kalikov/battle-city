@@ -25,40 +25,40 @@ class PauseListenerTest {
 
     @Test
     fun `should pause on start`() {
-        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         assertTrue(listener.isPaused)
     }
 
     @Test
     fun `should resume on second start`() {
-        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
-        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         assertFalse(listener.isPaused)
     }
 
     @Test
     fun `should handle sequence of events properly`() {
         assertFalse(listener.isPaused)
-        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         assertTrue(listener.isPaused)
-        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         assertFalse(listener.isPaused)
-        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         assertTrue(listener.isPaused)
     }
 
     @Test
     fun `should fire events on pause state change`() {
-        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         verify(eventManager).fireEvent(PauseManager.Start)
 
-        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         verify(eventManager).fireEvent(PauseManager.End)
     }
 
     @Test
     fun `should play sound on pause start`() {
-        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         verify(eventManager).fireEvent(SoundManager.Play("pause"))
     }
 

@@ -91,7 +91,7 @@ class FreezeHandlerTest {
 
     @Test
     fun `should not unfreeze when paused`() {
-        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
 
         timer.notify(PowerUpHandler.Freeze)
         assertTrue(timer.isActive)
@@ -117,7 +117,7 @@ class FreezeHandlerTest {
         timer.update()
         verify(unfreezeListener, never()).notify(FreezeHandler.Unfreeze)
 
-        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         assertTrue(timer.isActive)
 
         clock.tick(15000)
@@ -128,7 +128,7 @@ class FreezeHandlerTest {
         timer.update()
         verify(unfreezeListener, never()).notify(FreezeHandler.Unfreeze)
 
-        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START))
+        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
         assertTrue(timer.isActive)
 
         clock.tick(3000)

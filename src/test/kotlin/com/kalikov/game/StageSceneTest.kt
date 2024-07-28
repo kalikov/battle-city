@@ -29,7 +29,7 @@ class StageSceneTest {
         val imageManager = TestImageManager(fonts)
 
         val player = Player(eventManager, initialScore = 100)
-        whenever(stageManager.player).thenReturn(player)
+        whenever(stageManager.players).thenReturn(listOf(player))
 
         val json = Json { ignoreUnknownKeys = true }
         val map: StageMapConfig = FileInputStream(File("data/stage1.json")).use {
@@ -38,7 +38,7 @@ class StageSceneTest {
         val stage = Stage(
             map,
             1,
-            listOf(EnemyGroupConfig(Tank.EnemyType.BASIC, 19))
+            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 19))
         )
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.stageNumber).thenReturn(1)
@@ -57,6 +57,43 @@ class StageSceneTest {
         assertImageEquals("stage.png", image)
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
+    @Test
+    fun `should draw two players scene correctly`() {
+        val eventManager: EventManager = mock()
+        val stageManager: StageManager = mock()
+        val imageManager = TestImageManager(fonts)
+
+        val playerOne = Player(eventManager, initialScore = 100)
+        val playerTwo = Player(eventManager, initialScore = 6000)
+        whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
+
+        val json = Json { ignoreUnknownKeys = true }
+        val map: StageMapConfig = FileInputStream(File("data/stage1.json")).use {
+            json.decodeFromStream(it)
+        }
+        val stage = Stage(
+            map,
+            1,
+            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 19))
+        )
+        whenever(stageManager.stage).thenReturn(stage)
+        whenever(stageManager.stageNumber).thenReturn(1)
+
+        val entityFactory = DefaultEntityFactory(eventManager, imageManager, clock)
+        val scene = StageScene(mock(), eventManager, imageManager, stageManager, entityFactory, clock)
+
+        while (!scene.isReady) {
+            clock.tick(1)
+            scene.update()
+        }
+
+        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
+        scene.draw(AwtScreenSurface(fonts, image))
+
+        assertImageEquals("stage_two_players.png", image)
+    }
+
     @Test
     fun `should draw game over message correctly`() {
         val eventManager = ConcurrentEventManager()
@@ -64,9 +101,9 @@ class StageSceneTest {
         val stageManager: StageManager = mock()
 
         val player = Player(eventManager, initialScore = 100)
-        whenever(stageManager.player).thenReturn(player)
+        whenever(stageManager.players).thenReturn(listOf(player))
 
-        val map = StageMapConfig(emptyList(), Point(12, 24), Point(8, 24), emptyList())
+        val map = StageMapConfig(emptyList(), Point(12, 24), listOf(Point(8, 24)), emptyList())
         val stage = Stage(map, 1, emptyList())
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.stageNumber).thenReturn(1)

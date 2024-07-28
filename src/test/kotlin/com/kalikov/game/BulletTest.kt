@@ -21,7 +21,7 @@ class BulletTest {
         imageManager = TestImageManager(fonts)
         eventManager = mock()
         pauseManager = mock()
-        val tank = mockTank(eventManager, pauseManager, imageManager)
+        val tank = mockPlayerTank(eventManager, pauseManager, imageManager)
         bullet = tank.createBullet()
     }
 

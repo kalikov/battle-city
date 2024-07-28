@@ -110,12 +110,24 @@ class MainMenuScene(
         surface.draw(2 * Globals.TILE_SIZE + 2, top + 3 * Globals.TILE_SIZE, imageManager.getImage("roman_one"))
         surface.fillRect(3 * Globals.TILE_SIZE + 1, top + 3 * Globals.TILE_SIZE + 3, 6, 2, ARGB.WHITE)
         surface.fillText(
-            "${stageManager.player.previousScore / 10}".padStart(6, ' ') + "0",
+            "${stageManager.players[0].previousScore / 10}".padStart(6, ' ') + "0",
             3 * Globals.TILE_SIZE + 1,
             top + 3 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
+
+        if (stageManager.players.size > 1) {
+            surface.draw(21 * Globals.TILE_SIZE + 2, top + 3 * Globals.TILE_SIZE, imageManager.getImage("roman_two"))
+            surface.fillRect(22 * Globals.TILE_SIZE + 1, top + 3 * Globals.TILE_SIZE + 3, 6, 2, ARGB.WHITE)
+            surface.fillText(
+                "${stageManager.players[1].previousScore / 10}".padStart(6, ' ') + "0",
+                22 * Globals.TILE_SIZE + 1,
+                top + 3 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+                ARGB.WHITE,
+                Globals.FONT_REGULAR
+            )
+        }
 
         surface.fillText(
             "HI" + "${stageManager.highScore / 10}".padStart(6, ' ') + "0",
@@ -157,7 +169,7 @@ class MainMenuScene(
     }
 
     override fun notify(event: Event) {
-        if (event is Keyboard.KeyPressed) {
+        if (event is Keyboard.KeyPressed && event.playerIndex == 0) {
             keyPressed(event.key)
         }
     }

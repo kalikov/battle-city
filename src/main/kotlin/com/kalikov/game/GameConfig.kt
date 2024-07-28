@@ -6,7 +6,7 @@ data class GameConfig(
     val resolution: Size = Size(800, 600),
     val fpsLimit: Int = 125,
     val debug: Boolean = false,
-    val keyboard: KeyboardConfig = KeyboardConfig(),
+    val keyboard: Map<String, KeyEventConfig> = emptyMap(),
     val fonts: Map<String, FontConfig> = emptyMap(),
     val sounds: Map<String, String> = emptyMap(),
     val images: Map<String, String> = emptyMap(),

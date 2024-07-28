@@ -27,23 +27,23 @@ class CursorControllerTest {
 
         val cursorController = CursorController(eventManager, cursor, Rect(), mock())
 
-        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.ACTION))
+        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.ACTION, 0))
         verify(eventManager).fireEvent(isA<Builder.StructureCreated>())
         reset(eventManager)
 
-        cursorController.notify(Keyboard.KeyReleased(Keyboard.Key.ACTION))
+        cursorController.notify(Keyboard.KeyReleased(Keyboard.Key.ACTION, 0))
         verify(eventManager, never()).fireEvent(isA<Builder.StructureCreated>())
 
-        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.ACTION))
+        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.ACTION, 0))
         verify(eventManager).fireEvent(isA<Builder.StructureCreated>())
         reset(eventManager)
 
-        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.RIGHT))
+        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.RIGHT, 0))
         verify(eventManager).fireEvent(isA<Builder.StructureCreated>())
         reset(eventManager)
 
-        cursorController.notify(Keyboard.KeyReleased(Keyboard.Key.ACTION))
-        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.RIGHT))
+        cursorController.notify(Keyboard.KeyReleased(Keyboard.Key.ACTION, 0))
+        cursorController.notify(Keyboard.KeyPressed(Keyboard.Key.RIGHT, 0))
         verify(eventManager, never()).fireEvent(isA<Builder.StructureCreated>())
     }
 }

@@ -34,7 +34,7 @@ class TankExplosionFactoryTest {
 
     @Test
     fun `should create explosion when tank is destroyed`() {
-        val tank = mockTank(eventManager)
+        val tank = mockPlayerTank(eventManager)
         factory.notify(Tank.Destroyed(tank))
 
         verify(spriteContainer).addSprite(isA<TankExplosion>())
@@ -42,7 +42,7 @@ class TankExplosionFactoryTest {
 
     @Test
     fun `should correctly place created explosion`() {
-        val tank = mockTank(eventManager, x = 5, y = 6)
+        val tank = mockPlayerTank(eventManager, x = 5, y = 6)
         factory.notify(Tank.Destroyed(tank))
 
         val captor = argumentCaptor<TankExplosion>()

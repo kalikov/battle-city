@@ -11,6 +11,7 @@ class OnePlayerMenuItem(
     private val clock: Clock
 ) : MainMenuItem("1 PLAYER") {
     override fun execute() {
+        stageManager.setPlayersCount(1)
         eventManager.fireEvent(
             Scene.Start {
                 StageScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)

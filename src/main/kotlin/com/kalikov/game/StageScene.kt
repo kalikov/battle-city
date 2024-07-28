@@ -21,7 +21,8 @@ class StageScene(
     init {
         LeaksDetector.add(this)
 
-        val isFirstStage = stageManager.player.score == 0
+        // Player can't complete the first stage without scoring
+        val isFirstStage = stageManager.players[0].score == 0
         script.enqueue(CurtainFall(curtain, script, clock))
         script.enqueue(Execute {
             stageMessage.isVisible = true

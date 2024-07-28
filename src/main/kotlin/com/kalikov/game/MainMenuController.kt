@@ -14,7 +14,7 @@ class MainMenuController(private val eventManager: EventManager, private val men
     }
 
     override fun notify(event: Event) {
-        if (event is Keyboard.KeyPressed) {
+        if (event is Keyboard.KeyPressed && event.playerIndex == 0) {
             keyPressed(event.key)
         }
     }

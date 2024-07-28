@@ -9,8 +9,8 @@ import org.mockito.kotlin.verify
 class ConcurrentEventManagerTest {
     @Test
     fun `should notify subscribers about events`() {
-        val event1 = Keyboard.KeyPressed(Keyboard.Key.START)
-        val event2 = Keyboard.KeyReleased(Keyboard.Key.START)
+        val event1 = Keyboard.KeyPressed(Keyboard.Key.START, 0)
+        val event2 = Keyboard.KeyReleased(Keyboard.Key.START, 0)
 
         val eventManager = ConcurrentEventManager()
 
@@ -31,8 +31,8 @@ class ConcurrentEventManagerTest {
 
     @Test
     fun `should remove subscriber`() {
-        val event1 = Keyboard.KeyPressed(Keyboard.Key.START)
-        val event2 = Keyboard.KeyReleased(Keyboard.Key.START)
+        val event1 = Keyboard.KeyPressed(Keyboard.Key.START, 0)
+        val event2 = Keyboard.KeyReleased(Keyboard.Key.START, 0)
 
         val eventManager = ConcurrentEventManager()
 

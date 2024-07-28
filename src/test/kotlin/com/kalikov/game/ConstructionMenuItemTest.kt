@@ -17,7 +17,7 @@ class ConstructionMenuItemTest {
             StageMapConfig(
                 emptyList(),
                 Point(12, 24),
-                Point(8, 24),
+                listOf(Point(8, 24)),
                 emptyList()
             )
         )

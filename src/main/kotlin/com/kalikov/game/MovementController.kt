@@ -69,7 +69,7 @@ class MovementController(
                 } else if (sprite is Tank && bullet.bounds.intersects(sprite.bounds) && !tankHit) {
                     if (isBulletCollidable(bullet, sprite)) {
                         explode = if (sprite.canBeDestroyed) {
-                            sprite.hit()
+                            sprite.hit(bullet)
                             tankHit = true
                             true
                         } else {
@@ -87,7 +87,7 @@ class MovementController(
 
     private fun isBulletCollidable(bullet: Bullet, tank: Tank): Boolean {
         val bulletTank = bullet.tank
-        return bulletTank !== tank && (!tank.isEnemy || !bulletTank.isEnemy) && tank.isCollidable
+        return bulletTank !== tank && (tank !is EnemyTank || bulletTank !is EnemyTank) && tank.isCollidable
     }
 
     private fun bulletIntersects(bullet1: Bullet, bullet2: Bullet): Boolean {
@@ -95,7 +95,7 @@ class MovementController(
     }
 
     private fun isBulletCollidable(bullet1: Bullet, bullet2: Bullet): Boolean {
-        return !(bullet1.tank.isEnemy && bullet2.tank.isEnemy)
+        return !(bullet1.tank is EnemyTank && bullet2.tank is EnemyTank)
     }
 
     private fun moveTanks() {
@@ -112,27 +112,31 @@ class MovementController(
         }
         val isSlippingMove = tank.isSlipping
         if (!tank.isIdle || isSlippingMove) {
-            if (tank.isEnemy) {
-                if (tank.move { !hasCollisionForEnemyTank(tank) }) {
-                    detectBulletCollisionForTank(tank)
+            when (tank) {
+                is EnemyTank -> {
+                    if (tank.move { !hasCollisionForEnemyTank(tank) }) {
+                        detectBulletCollisionForTank(tank)
+                    }
                 }
-            } else {
-                if (tank.move { !hasCollisionForPlayerTank(tank) }) {
-                    detectPowerUpCollisionForTank(tank)
-                    detectBulletCollisionForTank(tank)
-                    if (isTankOnIce(tank)) {
-                        if (!isSlippingMove) {
-                            tank.startSlipping()
+
+                is PlayerTank -> {
+                    if (tank.move { !hasCollisionForPlayerTank(tank) }) {
+                        detectPowerUpCollisionForTank(tank)
+                        detectBulletCollisionForTank(tank)
+                        if (isTankOnIce(tank)) {
+                            if (!isSlippingMove) {
+                                tank.startSlipping()
+                            }
+                        } else {
+                            tank.stopSlipping()
                         }
-                    } else {
-                        tank.stopSlipping()
                     }
                 }
             }
         }
     }
 
-    private fun detectPowerUpCollisionForTank(tank: Tank) {
+    private fun detectPowerUpCollisionForTank(tank: PlayerTank) {
         // reduced rectangle is used
         val reduction = Bullet.SIZE
         var left = tank.left
@@ -160,7 +164,7 @@ class MovementController(
         for (sprite in spriteContainer.sprites) {
             if (sprite is Bullet && isBulletCollision(sprite, tank) && tank.bounds.intersects(sprite.bounds)) {
                 if (tank.canBeDestroyed) {
-                    tank.hit()
+                    tank.hit(sprite)
                 }
                 sprite.hit(tank.canBeDestroyed)
                 if (tank.isDestroyed) {
@@ -262,8 +266,8 @@ class MovementController(
     }
 
     private fun isEnemyIntersectingTank(enemy: Tank, tank: Tank, dx: Int, dy: Int): Boolean {
-        return !tank.isPlayer && intersects(enemy, tank, dx, dy)
-                || tank.isPlayer && intersectsPlayer(enemy, tank, dx, dy)
+        return tank !is PlayerTank && intersects(enemy, tank, dx, dy)
+                || tank is PlayerTank && intersectsPlayer(enemy, tank, dx, dy)
     }
 
     private fun intersects(tank: Tank, sprite: Sprite, dx: Int, dy: Int): Boolean {
@@ -294,14 +298,14 @@ class MovementController(
 
     private fun isBulletCollision(bullet: Bullet, tank: Tank): Boolean {
         val bulletTank = bullet.tank
-        return bulletTank !== tank && (!tank.isEnemy || !bulletTank.isEnemy) && tank.isCollidable && !bullet.isDestroyed
+        return bulletTank !== tank && (tank !is EnemyTank || bulletTank !is EnemyTank) && tank.isCollidable && !bullet.isDestroyed
     }
 
     private fun detectCollisionsForPowerUp(powerUp: PowerUp) {
         val sprites = spriteContainer.sprites
         for (sprite in sprites) {
             if (powerUp !== sprite) {
-                if (sprite is Tank && sprite.isPlayer && powerUp.bounds.intersects(sprite.bounds)) {
+                if (sprite is PlayerTank && powerUp.bounds.intersects(sprite.bounds)) {
                     powerUp.pick(sprite)
                     break
                 }
@@ -315,7 +319,7 @@ class MovementController(
                 when (event.sprite) {
                     is Bullet -> detectCollisionsForBullet(event.sprite)
                     is Tank -> {
-                        if (event.sprite.isPlayer) {
+                        if (event.sprite is PlayerTank) {
                             detectPowerUpCollisionForTank(event.sprite)
                         }
                         detectBulletCollisionForTank(event.sprite)

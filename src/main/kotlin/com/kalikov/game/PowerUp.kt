@@ -11,7 +11,7 @@ class PowerUp(
     companion object {
         const val SIZE = Globals.UNIT_SIZE
     }
-    data class Pick(val powerUp: PowerUp, val tank: Tank) : Event()
+    data class Pick(val powerUp: PowerUp, val tank: PlayerTank) : Event()
 
     enum class Type(val key: String, val index: Int) {
         HELMET("helmet", 0),
@@ -47,9 +47,10 @@ class PowerUp(
         blinkTimer.update()
     }
 
-    fun pick(tank: Tank) {
+    fun pick(tank: PlayerTank) {
         if (!isDestroyed) {
             eventRouter.fireEvent(Pick(this, tank))
+            eventRouter.fireEvent(Player.Score(tank.player, this.value))
             destroy()
         }
     }

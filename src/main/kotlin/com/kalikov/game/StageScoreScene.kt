@@ -8,7 +8,7 @@ class StageScoreScene(
     private val imageManager: ImageManager,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
-    private val score: StageScore,
+    private val scores: List<StageScore>,
     private val gameOver: Boolean,
     clock: Clock
 ) : Scene {
@@ -17,13 +17,13 @@ class StageScoreScene(
     private val script = Script()
 
     private val basicTankPoints =
-        StageScorePointsView(eventManager, imageManager, Tank.EnemyType.BASIC, score, script, clock)
+        StageScorePointsView(eventManager, imageManager, EnemyTank.EnemyType.BASIC, scores, script, clock)
     private val fastTankPoints =
-        StageScorePointsView(eventManager, imageManager, Tank.EnemyType.FAST, score, script, clock)
+        StageScorePointsView(eventManager, imageManager, EnemyTank.EnemyType.FAST, scores, script, clock)
     private val powerTankPoints =
-        StageScorePointsView(eventManager, imageManager, Tank.EnemyType.POWER, score, script, clock)
+        StageScorePointsView(eventManager, imageManager, EnemyTank.EnemyType.POWER, scores, script, clock)
     private val armorTankPoints =
-        StageScorePointsView(eventManager, imageManager, Tank.EnemyType.ARMOR, score, script, clock)
+        StageScorePointsView(eventManager, imageManager, EnemyTank.EnemyType.ARMOR, scores, script, clock)
 
     private var drawTotal = false
 
@@ -57,36 +57,62 @@ class StageScoreScene(
     override fun draw(surface: ScreenSurface) {
         surface.clear(ARGB.BLACK)
 
-        surface.fillText("HI-SCORE", 65, 31, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
+        var y = 2 * Globals.UNIT_SIZE
+        surface.fillText("HI-SCORE", 65, y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
         surface.fillText(
             "${stageManager.highScore}".padStart(7, ' '),
             137,
-            31,
+            y - 1,
             ARGB.rgb(0xfeac4e),
             Globals.FONT_REGULAR
         )
 
+        y += Globals.UNIT_SIZE
         val stage = "STAGE " + "${stageManager.stageNumber}".padStart(2, ' ')
-        surface.fillText(stage, 97, 47, ARGB.WHITE, Globals.FONT_REGULAR)
+        surface.fillText(stage, 97, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
 
-        surface.draw(26, 56, imageManager.getImage("roman_one")) { dst, src, _, _ ->
+        y += Globals.UNIT_SIZE
+        surface.draw(26, y - Globals.TILE_SIZE, imageManager.getImage("roman_one")) { dst, src, _, _ ->
             src.and(ARGB.rgb(0xe44437)).over(dst)
         }
-        surface.fillText("-PLAYER", 33, 63, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
+        if (stageManager.players.size > 1) {
+            surface.draw(170, y - Globals.TILE_SIZE, imageManager.getImage("roman_two")) { dst, src, _, _ ->
+                src.and(ARGB.rgb(0xe44437)).over(dst)
+            }
+        }
+        surface.fillText("-PLAYER", 33, y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
+        if (stageManager.players.size > 1) {
+            surface.fillText("-PLAYER", 177, y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
 
-        val playerScore = "${stageManager.player.score}".padStart(7, ' ')
-        surface.fillText(playerScore, 33, 79, ARGB.rgb(0xfeac4e), Globals.FONT_REGULAR)
+        }
 
-        basicTankPoints.draw(surface, 17, 103)
-        fastTankPoints.draw(surface, 17, 127)
-        powerTankPoints.draw(surface, 17, 151)
-        armorTankPoints.draw(surface, 17, 175)
+        y += Globals.UNIT_SIZE
+        val playerOneScore = "${stageManager.players[0].score}".padStart(7, ' ')
+        surface.fillText(playerOneScore, 33, y - 1, ARGB.rgb(0xfeac4e), Globals.FONT_REGULAR)
 
-        surface.fillText("TOTAL", 49, 191, ARGB.WHITE, Globals.FONT_REGULAR)
-        surface.fillRect(96, 181, 64, 2, ARGB.WHITE)
+        if (stageManager.players.size > 1) {
+            val playerTwoScore = "${stageManager.players[1].score}".padStart(7, ' ')
+            surface.fillText(playerTwoScore, 177, y - 1, ARGB.rgb(0xfeac4e), Globals.FONT_REGULAR)
+        }
+
+        y += 2 * Globals.UNIT_SIZE
+        basicTankPoints.draw(surface, 17, y - Globals.TILE_SIZE - 1)
+        y += Globals.UNIT_SIZE
+        fastTankPoints.draw(surface, 17, y - 1)
+        y += 2 * Globals.UNIT_SIZE
+        powerTankPoints.draw(surface, 17, y - Globals.TILE_SIZE - 1)
+        y += Globals.UNIT_SIZE
+        armorTankPoints.draw(surface, 17, y - 1)
+
+        y += Globals.UNIT_SIZE
+        surface.fillText("TOTAL", 49, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
+        surface.fillRect(96, y - 3 - Globals.TILE_SIZE, 64, 2, ARGB.WHITE)
 
         if (drawTotal) {
-            surface.fillText("${score.tanksCount}".padStart(2, ' '), 97, 191, ARGB.WHITE, Globals.FONT_REGULAR)
+            surface.fillText("${scores[0].tanksCount}".padStart(2, ' '), 97, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
+            if (scores.size > 1) {
+                surface.fillText("${scores[1].tanksCount}".padStart(2, ' '), 145, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
+            }
         }
     }
 

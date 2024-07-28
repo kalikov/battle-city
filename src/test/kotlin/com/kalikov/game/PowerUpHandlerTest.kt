@@ -13,7 +13,7 @@ class PowerUpHandlerTest {
     private lateinit var eventManager: EventManager
     private lateinit var powerUp: PowerUp
     private lateinit var handler: PowerUpHandler
-    private lateinit var tank: Tank
+    private lateinit var tank: PlayerTank
 
     @BeforeEach
     fun beforeEach() {
@@ -21,7 +21,7 @@ class PowerUpHandlerTest {
         powerUp = mockPowerUp(eventManager)
         handler = PowerUpHandler(eventManager, mock())
 
-        tank = mockTank(eventManager)
+        tank = mockPlayerTank(eventManager)
     }
 
     @Test
@@ -51,8 +51,7 @@ class PowerUpHandlerTest {
 
     @Test
     fun `should handle grenade`() {
-        val enemy = mockTank(eventManager)
-        enemy.enemyType = Tank.EnemyType.BASIC
+        val enemy = mockEnemyTank(eventManager)
         handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 
         powerUp.type = PowerUp.Type.GRENADE
@@ -64,8 +63,7 @@ class PowerUpHandlerTest {
 
     @Test
     fun `should not explode appearing enemies with grenade`() {
-        val enemy = mockTank(eventManager)
-        enemy.enemyType = Tank.EnemyType.BASIC
+        val enemy = mockEnemyTank(eventManager)
         enemy.state = TankStateAppearing(eventManager, mock(), enemy)
         handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 
@@ -113,6 +111,6 @@ class PowerUpHandlerTest {
         powerUp.type = PowerUp.Type.TANK
         handler.notify(PowerUp.Pick(powerUp, tank))
 
-        verify(eventManager).fireEvent(PowerUpHandler.Life)
+        verify(eventManager).fireEvent(PowerUpHandler.Life(tank.player))
     }
 }

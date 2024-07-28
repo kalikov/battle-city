@@ -7,13 +7,58 @@
   "fpsLimit": 125,
   "debug": false,
   "keyboard": {
-    "up": 38,
-    "down": 40,
-    "left": 37,
-    "right": 39,
-    "start": 10,
-    "select": 9,
-    "action": 32
+    "0x26": {
+      "key": "UP",
+      "player": 1
+    },
+    "0x28": {
+      "key": "DOWN",
+      "player": 1
+    },
+    "0x25": {
+      "key": "LEFT",
+      "player": 1
+    },
+    "0x27": {
+      "key": "RIGHT",
+      "player": 1
+    },
+    "0xA": {
+      "key": "START",
+      "player": 1
+    },
+    "0x10": {
+      "key": "SELECT",
+      "player": 1
+    },
+    "0x20": {
+      "key": "ACTION",
+      "player": 1
+    },
+    "0x57": {
+      "key": "UP",
+      "player": 2
+    },
+    "0x53": {
+      "key": "DOWN",
+      "player": 2
+    },
+    "0x41": {
+      "key": "LEFT",
+      "player": 2
+    },
+    "0x44": {
+      "key": "RIGHT",
+      "player": 2
+    },
+    "0x9": {
+      "key": "START",
+      "player": 2
+    },
+    "0x46": {
+      "key": "ACTION",
+      "player": 2
+    }
   },
   "fonts": {
     "prstart": {
@@ -39,7 +84,8 @@
     "statistics_1": "sounds/statistics_1.au"
   },
   "images": {
-    "tank_player": "images/tank_player.png",
+    "tank_player1": "images/tank_player1.png",
+    "tank_player2": "images/tank_player2.png",
     "tank_enemy": "images/tank_enemy.png",
     "appear": "images/appear.png",
     "big_explosion": "images/big_explosion.png",
@@ -56,6 +102,7 @@
     "lives": "images/lives.png",
     "flag": "images/flag.png",
     "roman_one": "images/roman_one.png",
+    "roman_two": "images/roman_two.png",
     "points": "images/points.png",
     "powerup": "images/powerup.png",
     "namco": "images/namco.png",

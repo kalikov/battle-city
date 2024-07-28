@@ -4,6 +4,6 @@ package com.kalikov.game
 data class StageMapConfig(
     val objects: List<StageObject>,
     val base: Point,
-    val playerSpawnPoint: Point,
+    val playerSpawnPoints: List<Point>,
     val enemySpawnPoints: List<Point>
 )

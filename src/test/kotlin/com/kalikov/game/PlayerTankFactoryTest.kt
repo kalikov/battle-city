@@ -24,7 +24,15 @@ class PlayerTankFactoryTest {
     fun beforeEach() {
         eventManager = mock()
         spriteContainer = mock()
-        factory = PlayerTankFactory(eventManager, mock(), mock(), spriteContainer, Point(10, 100), mock())
+        factory = PlayerTankFactory(
+            eventManager,
+            mock(),
+            mock(),
+            spriteContainer,
+            Point(10, 100),
+            mock(),
+            Player(eventManager)
+        )
     }
 
     @Test
@@ -87,7 +95,7 @@ class PlayerTankFactoryTest {
         factory.init(0)
         reset(eventManager)
 
-        factory.notify(Player.OutOfLives)
+        factory.notify(Player.OutOfLives(factory.player))
         val explosion = mockTankExplosion(eventManager, tank = factory.playerTank!!)
         factory.notify(TankExplosion.Destroyed(explosion))
 

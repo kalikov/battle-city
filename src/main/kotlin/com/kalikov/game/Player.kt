@@ -3,12 +3,17 @@ package com.kalikov.game
 class Player(
     private val eventManager: EventManager,
     private val bonusLifeScore: Int = 20000,
-    initialScore: Int = 0
+    initialScore: Int = 0,
+    val index: Int = 0,
 ) : EventSubscriber {
+    data class Score(val player: Player, val points: Int) : Event()
+
     private companion object {
+        const val DEFAULT_LIVES_COUNT = 3
+
         private val subscriptions = setOf(
-            PointsFactory.PointsCreated::class,
-            Tank.PlayerDestroyed::class,
+            Score::class,
+            PlayerTank.PlayerDestroyed::class,
             PowerUpHandler.Life::class
         )
     }
@@ -16,7 +21,7 @@ class Player(
     var previousScore: Int = 0
         private set
 
-    var lives = 2
+    var lives = DEFAULT_LIVES_COUNT
         private set
     var score = initialScore
         private set
@@ -29,28 +34,33 @@ class Player(
         eventManager.addSubscriber(this, subscriptions)
     }
 
-    data object OutOfLives : Event()
+    data class OutOfLives(val player: Player) : Event()
 
     override fun notify(event: Event) {
         when (event) {
-            is PointsFactory.PointsCreated -> {
-                val previousValue = score
-                score += event.points.value
-                if (bonusLifeScore in (previousValue + 1)..score) {
-                    incrementLife()
+            is Score -> {
+                if (event.player === this) {
+                    val previousValue = score
+                    score += event.points
+                    if (bonusLifeScore in (previousValue + 1)..score) {
+                        incrementLife()
+                    }
                 }
             }
 
-            is Tank.PlayerDestroyed -> {
-                if (lives == 0) {
-                    eventManager.fireEvent(OutOfLives)
-                } else {
+            is PlayerTank.PlayerDestroyed -> {
+                if (event.tank.player === this) {
                     lives--
+                    if (lives == 0) {
+                        eventManager.fireEvent(OutOfLives(this))
+                    }
                 }
             }
 
             is PowerUpHandler.Life -> {
-                incrementLife()
+                if (event.player === this) {
+                    incrementLife()
+                }
             }
 
             else -> {
@@ -60,7 +70,7 @@ class Player(
 
     fun reset() {
         previousScore = score
-        lives = 2
+        lives = DEFAULT_LIVES_COUNT
         score = 0
         upgradeLevel = 0
     }

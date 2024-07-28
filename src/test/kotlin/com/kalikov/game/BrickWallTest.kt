@@ -20,7 +20,7 @@ class BrickWallTest {
         eventManager = mock()
         wall = BrickWall(eventManager, TestImageManager(fonts), 0, 0)
 
-        val tank = mockTank(eventManager)
+        val tank = mockPlayerTank(eventManager)
         bullet = tank.createBullet()
     }
 

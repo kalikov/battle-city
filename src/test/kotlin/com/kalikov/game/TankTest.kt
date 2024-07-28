@@ -1,33 +1,32 @@
 package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
-import java.awt.image.BufferedImage
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertIsNot
 import kotlin.test.assertTrue
 
-class TankTest {
-    private lateinit var eventManager: EventManager
-    private lateinit var imageManager: ImageManager
-    private lateinit var clock: TestClock
-    private lateinit var tank: Tank
+abstract class TankTest<T : Tank> {
+    protected lateinit var eventManager: EventManager
+    protected lateinit var imageManager: ImageManager
+    protected lateinit var clock: TestClock
+    protected lateinit var tank: T
 
     @BeforeEach
     fun beforeEach() {
         eventManager = mock()
         imageManager = TestImageManager(mock())
         clock = TestClock()
-        tank = Tank(eventManager, mock(), imageManager, clock, 0, 0)
+        tank = createTank()
     }
+
+    protected abstract fun createTank(): T
 
     @Test
     fun `should fire event on shoot`() {
@@ -206,71 +205,6 @@ class TankTest {
     }
 
     @Test
-    fun `should be destroyed on hit`() {
-        tank.hitLimit = 1
-
-        tank.hit()
-        assertTrue(tank.isDestroyed)
-    }
-
-    @Test
-    fun `should be destroyed on multiple hits`() {
-        tank.hitLimit = 4
-
-        tank.hit()
-        assertFalse(tank.isDestroyed)
-        tank.hit()
-        assertFalse(tank.isDestroyed)
-        tank.hit()
-        assertFalse(tank.isDestroyed)
-        tank.hit()
-        assertTrue(tank.isDestroyed)
-    }
-
-    @Test
-    fun `should change color on hit`() {
-        val color = TankColor(mock())
-        color.colors = arrayOf(intArrayOf(0), intArrayOf(1))
-        tank.color = color
-
-        tank.hit()
-        assertEquals(1, color.getColor())
-    }
-
-    @Test
-    fun `should be in invincible state when appearing state ends`() {
-        tank.state = TankStateAppearing(mock(), mock(), tank)
-        tank.notify(TankStateAppearing.End(tank))
-        assertIs<TankStateInvincible>(tank.state)
-    }
-
-    @Test
-    fun `should face up direction when appearing state ends`() {
-        tank.state = TankStateAppearing(mock(), mock(), tank)
-        tank.direction = Direction.DOWN
-        tank.notify(TankStateAppearing.End(tank))
-        assertEquals(Direction.UP, tank.direction)
-    }
-
-    @Test
-    fun `enemy should be in normal state when appearing state ends`() {
-        tank.state = TankStateAppearing(mock(), mock(), tank)
-        tank.enemyType = Tank.EnemyType.BASIC
-        tank.notify(TankStateAppearing.End(tank))
-        assertIs<TankStateNormal>(tank.state)
-        assertIsNot<TankStateInvincible>(tank.state)
-    }
-
-    @Test
-    fun `enemy should down direction when appearing state ends`() {
-        tank.state = TankStateAppearing(mock(), mock(), tank)
-        tank.enemyType = Tank.EnemyType.BASIC
-        tank.direction = Direction.UP
-        tank.notify(TankStateAppearing.End(tank))
-        assertEquals(Direction.DOWN, tank.direction)
-    }
-
-    @Test
     fun `should fire event on destroy`() {
         tank.destroy()
         tank.update()
@@ -278,97 +212,10 @@ class TankTest {
     }
 
     @Test
-    fun `should fire player destroy event`() {
-        tank.destroy()
-        tank.update()
-        verify(eventManager).fireEvent(Tank.PlayerDestroyed(tank))
-    }
-
-    @Test
-    fun `should fire enemy destroy event`() {
-        tank.enemyType = Tank.EnemyType.BASIC
-        tank.destroy()
-        tank.update()
-        verify(eventManager).fireEvent(Tank.EnemyDestroyed(tank))
-    }
-
-    @Test
     fun `should fire hit event on tank destroy`() {
-        tank.hit()
+        tank.hit(mock())
         assertTrue(tank.isDestroyed)
         verify(eventManager).fireEvent(Tank.Hit(tank))
-    }
-
-    @Test
-    fun `should fire hit event on armored tank hit`() {
-        tank.hitLimit = 4
-        tank.hit()
-        assertFalse(tank.isDestroyed)
-        verify(eventManager).fireEvent(Tank.Hit(tank))
-    }
-
-    @Test
-    fun `should upgrade to first level`() {
-        assertEquals(0, tank.upgradeLevel)
-        assertEquals(Bullet.Speed.NORMAL, tank.bulletSpeed)
-
-        tank.upgrade()
-
-        assertEquals(1, tank.upgradeLevel)
-        assertEquals(Bullet.Speed.FAST, tank.bulletSpeed)
-    }
-
-    @Test
-    fun `should upgrade to second level`() {
-        tank.upgrade()
-
-        assertEquals(1, tank.upgradeLevel)
-        assertEquals(1, tank.bulletsLimit)
-
-        tank.upgrade()
-
-        assertEquals(2, tank.upgradeLevel)
-        assertEquals(2, tank.bulletsLimit)
-    }
-
-    @Test
-    fun `should upgrade to third level`() {
-        tank.upgrade()
-        tank.upgrade()
-
-        assertEquals(2, tank.upgradeLevel)
-        assertEquals(Bullet.Type.REGULAR, tank.bulletType)
-
-        tank.upgrade()
-
-        assertEquals(3, tank.upgradeLevel)
-        assertEquals(Bullet.Type.ENHANCED, tank.bulletType)
-    }
-
-    @Test
-    fun `should remain in third level and not upgrade to fourth level`() {
-        tank.upgrade()
-        tank.upgrade()
-        tank.upgrade()
-
-        assertEquals(3, tank.upgradeLevel)
-
-        tank.upgrade()
-
-        assertEquals(3, tank.upgradeLevel)
-    }
-
-    @Test
-    fun `should update color`() {
-        val color = TankColor(clock)
-        color.colors = arrayOf(intArrayOf(0, 1))
-        tank.color = color
-        tank.update()
-        assertEquals(0, color.index)
-
-        clock.tick(TankColor.FLASHING_INTERVAL)
-        tank.updateColor()
-        assertEquals(1, color.index)
     }
 
     @Test
@@ -381,65 +228,5 @@ class TankTest {
                 TankStateInvincible.End::class
             )
         )
-    }
-
-    @Test
-    @DisplayName("should draw tank in normal state with right direction")
-    fun shouldDrawNormalRight() {
-        shouldDrawTank(Direction.RIGHT, "tank_player_right_c0_t1")
-    }
-
-    @Test
-    @DisplayName("should draw tank in normal state with up direction")
-    fun shouldDrawNormalUp() {
-        shouldDrawTank(Direction.UP, "tank_player_up_c0_t1")
-    }
-
-    @Test
-    @DisplayName("should draw tank in normal state with down direction")
-    fun shouldDrawNormalDown() {
-        shouldDrawTank(Direction.DOWN, "tank_player_down_c0_t1")
-    }
-
-    @Test
-    @DisplayName("should draw tank in normal state with left direction")
-    fun shouldDrawNormalLeft() {
-        shouldDrawTank(Direction.LEFT, "tank_player_left_c0_t1")
-    }
-
-    @Test
-    @DisplayName("should draw tank in invincible state with right direction")
-    fun shouldDrawInvincibleRight() {
-        tank.state = TankStateInvincible(eventManager, imageManager, tank)
-        shouldDrawTank(Direction.RIGHT, "tank_player_right_c0_t1_i")
-    }
-
-    @Test
-    @DisplayName("should draw tank in invincible state with up direction")
-    fun shouldDrawInvincibleUp() {
-        tank.state = TankStateInvincible(eventManager, imageManager, tank)
-        shouldDrawTank(Direction.UP, "tank_player_up_c0_t1_i")
-    }
-
-    @Test
-    @DisplayName("should draw tank in invincible state with down direction")
-    fun shouldDrawInvincibleDown() {
-        tank.state = TankStateInvincible(eventManager, imageManager, tank)
-        shouldDrawTank(Direction.DOWN, "tank_player_down_c0_t1_i")
-    }
-
-    @Test
-    @DisplayName("should draw tank in invincible state with left direction")
-    fun shouldDrawInvincibleLeft() {
-        tank.state = TankStateInvincible(eventManager, imageManager, tank)
-        shouldDrawTank(Direction.LEFT, "tank_player_left_c0_t1_i")
-    }
-
-    private fun shouldDrawTank(direction: Direction, imageName: String) {
-        val image = BufferedImage(Globals.UNIT_SIZE, Globals.UNIT_SIZE, BufferedImage.TYPE_INT_ARGB)
-        tank.direction = direction
-        tank.draw(AwtScreenSurface(mock(), image))
-
-        assertImageEquals("$imageName.png", image)
     }
 }

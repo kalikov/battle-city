@@ -11,7 +11,7 @@ class DefaultStageManager(
     private lateinit var currentConstructionMap: StageMapConfig
     private lateinit var constructionStage: Stage
 
-    override lateinit var player: Player
+    override lateinit var players: List<Player>
 
     private var index = 0
 
@@ -42,17 +42,26 @@ class DefaultStageManager(
         require(stages.isNotEmpty())
         this.stages = stages
         this.defaultConstructionMap = defaultConstructionMap
-        player = Player(eventManager)
+        players = listOf(Player(eventManager))
         constructionStage = Stage(defaultConstructionMap, stages[0].enemySpawnDelay, stages[0].enemies)
         constructionMap = defaultConstructionMap
+    }
+
+    override fun setPlayersCount(playersCount: Int) {
+        if (playersCount == players.size) {
+            return
+        }
+        players = List(playersCount) { i ->
+            if (i < players.size) players[i] else Player(eventManager, index = i)
+        }
     }
 
     override fun reset() {
         index = 0
         constructionMap = defaultConstructionMap
         constructionStage = Stage(defaultConstructionMap, stages[0].enemySpawnDelay, stages[0].enemies)
-        highScore = max(highScore, player.score)
-        player.reset()
+        highScore = max(highScore, players.maxOf { it.score })
+        players.forEach { it.reset() }
     }
 
     override fun resetConstruction() {
@@ -76,6 +85,6 @@ class DefaultStageManager(
     }
 
     override fun dispose() {
-        player.dispose()
+        players.forEach { it.dispose() }
     }
 }

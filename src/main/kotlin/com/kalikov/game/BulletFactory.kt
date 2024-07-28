@@ -21,7 +21,7 @@ class BulletFactory(
     private fun createBullet(tank: Tank): Bullet {
         val bullet = tank.createBullet()
 
-        if (tank.isPlayer) {
+        if (tank is PlayerTank) {
             eventManager.fireEvent(SoundManager.Play("bullet_shot"))
         }
 

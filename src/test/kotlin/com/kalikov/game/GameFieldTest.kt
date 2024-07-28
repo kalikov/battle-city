@@ -22,10 +22,6 @@ class GameFieldTest {
                 .map { File(it) }
                 .mapIndexed { index, file -> Arguments.of(index, file) }
         }
-//
-//        const val SEPARATOR = ";"
-//
-//        val PATTERN: Pattern = Pattern.compile("(\\w+)\\((\\d+),(\\d+)\\)")
     }
 
     private lateinit var fonts: TestFonts
@@ -55,7 +51,7 @@ class GameFieldTest {
         val map: StageMapConfig = FileInputStream(file).use {
             json.decodeFromStream(it)
         }
-        field.load(map)
+        field.load(map, 1)
 
         val image = BufferedImage(field.bounds.width, field.bounds.height, BufferedImage.TYPE_INT_ARGB)
         field.draw(AwtScreenSurface(fonts, image))

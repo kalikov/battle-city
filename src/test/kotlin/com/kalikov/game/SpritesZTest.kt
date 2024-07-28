@@ -21,7 +21,7 @@ class SpritesZTest {
 
     @BeforeEach
     fun beforeEach() {
-        tank = mockTank()
+        tank = mockPlayerTank()
         explosion = mockTankExplosion(tank = tank)
         bullet = tank.createBullet()
         base = mockBase()
