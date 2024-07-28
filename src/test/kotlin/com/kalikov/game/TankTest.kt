@@ -225,7 +225,8 @@ abstract class TankTest<T : Tank> {
             setOf(
                 Bullet.Destroyed::class,
                 TankStateAppearing.End::class,
-                TankStateInvincible.End::class
+                TankStateInvincible.End::class,
+                TankStateFrozen.End::class,
             )
         )
     }

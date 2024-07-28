@@ -6,6 +6,7 @@ interface PlayerTankHandle {
     var direction: Direction
 
     var isIdle: Boolean
+    val canMove: Boolean
 
     fun startShooting()
     fun stopShooting()

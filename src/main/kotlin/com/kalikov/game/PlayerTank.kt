@@ -59,7 +59,16 @@ class PlayerTank private constructor(
     }
 
     override fun hitHook(bullet: BulletHandle) {
-        destroy()
+        if (bullet.tank is PlayerTank) {
+            if (state is TankStateFrozen) {
+                (state as TankStateFrozen).restartTimer()
+            } else {
+                state = TankStateFrozen(eventManager, imageManager, this, clock)
+                isIdle = true
+            }
+        } else {
+            destroy()
+        }
     }
 
     override fun startShooting() {

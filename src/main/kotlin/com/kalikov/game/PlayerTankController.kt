@@ -32,7 +32,9 @@ class PlayerTankController(
 
     fun update() {
         targetDirection?.let {
-            setDirection(it)
+            if (tank.canMove) {
+                setDirection(it)
+            }
         }
     }
 
@@ -71,8 +73,7 @@ class PlayerTankController(
                 if (horzPressed == FLAG_BOTH) {
                     updateStateOnVert()
                 } else {
-                    setDirection(Direction.LEFT)
-                    tank.isIdle = false
+                    updateDirection(Direction.LEFT)
                 }
             }
 
@@ -81,8 +82,7 @@ class PlayerTankController(
                 if (horzPressed == FLAG_BOTH) {
                     updateStateOnVert()
                 } else {
-                    setDirection(Direction.RIGHT)
-                    tank.isIdle = false
+                    updateDirection(Direction.RIGHT)
                 }
             }
 
@@ -91,8 +91,7 @@ class PlayerTankController(
                 if (vertPressed == FLAG_BOTH) {
                     updateStateOnHorz()
                 } else {
-                    setDirection(Direction.UP)
-                    tank.isIdle = false
+                    updateDirection(Direction.UP)
                 }
             }
 
@@ -101,8 +100,7 @@ class PlayerTankController(
                 if (vertPressed == FLAG_BOTH) {
                     updateStateOnHorz()
                 } else {
-                    setDirection(Direction.DOWN)
-                    tank.isIdle = false
+                    updateDirection(Direction.DOWN)
                 }
             }
 
@@ -117,8 +115,7 @@ class PlayerTankController(
 
     private fun updateStateOnHorz() {
         if (horzPressed != 0 && horzPressed != FLAG_BOTH) {
-            setDirection(if (horzPressed == FLAG_LEFT) Direction.LEFT else Direction.RIGHT)
-            tank.isIdle = false
+            updateDirection(if (horzPressed == FLAG_LEFT) Direction.LEFT else Direction.RIGHT)
         } else {
             tank.isIdle = true
             targetDirection = null
@@ -127,11 +124,19 @@ class PlayerTankController(
 
     private fun updateStateOnVert() {
         if (vertPressed != 0 && vertPressed != FLAG_BOTH) {
-            setDirection(if (vertPressed == FLAG_UP) Direction.UP else Direction.DOWN)
-            tank.isIdle = false
+            updateDirection(if (vertPressed == FLAG_UP) Direction.UP else Direction.DOWN)
         } else {
             tank.isIdle = true
             targetDirection = null
+        }
+    }
+
+    private fun updateDirection(direction: Direction) {
+        if (tank.canMove) {
+            setDirection(direction)
+            tank.isIdle = false
+        } else {
+            tank.isIdle = true
         }
     }
 

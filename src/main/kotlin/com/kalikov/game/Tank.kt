@@ -23,11 +23,12 @@ sealed class Tank(
         private val subscriptions = setOf(
             Bullet.Destroyed::class,
             TankStateAppearing.End::class,
-            TankStateInvincible.End::class
+            TankStateInvincible.End::class,
+            TankStateFrozen.End::class
         )
 
         @JvmStatic
-        protected fun <T: Tank> init(tank: T): T {
+        protected fun <T : Tank> init(tank: T): T {
             LeaksDetector.add(tank)
 
             tank.internalState = TankStateNormal(tank.imageManager, tank)
@@ -70,6 +71,9 @@ sealed class Tank(
                 return
             }
             if (!slipCountDown.isStopped && isSmoothTurnRequired(value)) {
+                return
+            }
+            if (!state.canMove) {
                 return
             }
             smoothTurn(value)
@@ -205,6 +209,8 @@ sealed class Tank(
         } else if (event is TankStateAppearing.End && event.tank === this) {
             stateAppearingEnd()
         } else if (event is TankStateInvincible.End && event.tank === this) {
+            state = TankStateNormal(imageManager, this)
+        } else if (event is TankStateFrozen.End && event.tank === this) {
             state = TankStateNormal(imageManager, this)
         }
     }
