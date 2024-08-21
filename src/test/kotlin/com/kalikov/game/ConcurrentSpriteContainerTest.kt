@@ -76,9 +76,11 @@ class ConcurrentSpriteContainerTest {
         spriteContainer.addSprite(spriteFive)
         spriteContainer.addSprite(spriteTwo)
 
+        val sprites = ArrayList<Sprite>()
+        spriteContainer.forEach { sprites.add(it) }
         assertContentEquals(
             listOf(spriteOne, spriteTwo, spriteThree, spriteFour, spriteFive),
-            spriteContainer.sprites
+            sprites
         )
     }
 

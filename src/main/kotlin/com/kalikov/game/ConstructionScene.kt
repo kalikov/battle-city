@@ -17,7 +17,6 @@ class ConstructionScene(
         )
     }
 
-    @Suppress("JoinDeclarationAndAssignment")
     val spriteContainer: SpriteContainer
 
     val cursor: Cursor
@@ -77,7 +76,7 @@ class ConstructionScene(
     }
 
     private fun destroySpritesUnderCursor(cursor: Cursor) {
-        spriteContainer.sprites.forEach {
+        spriteContainer.forEach {
             if (it != cursor && it.bounds.intersects(cursor.bounds)) {
                 it.destroy()
             }
@@ -96,7 +95,7 @@ class ConstructionScene(
             val surface = screen.createSurface(screen.surface.width, screen.surface.height)
             draw(surface)
 
-            stageManager.constructionMap = getConstructionMap()
+            stageManager.constructionMap = createConstructionMapConfig()
             stageManager.curtainBackground = surface
             eventManager.fireEvent(Scene.Start {
                 val mainMenu = MainMenuScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
@@ -107,12 +106,15 @@ class ConstructionScene(
         }
     }
 
-    private fun getConstructionMap(): StageMapConfig {
+    private fun createConstructionMapConfig(): StageMapConfig {
+        val objects = ArrayList<StageObject>(spriteContainer.size)
+        spriteContainer.forEach {
+            if (it is Entity) {
+                objects.add(it.toStageObject(gameField.bounds.x, gameField.bounds.y))
+            }
+        }
         return StageMapConfig(
-            spriteContainer.sprites.asSequence()
-                .filterIsInstance<Entity>()
-                .map { it.toStageObject(gameField.bounds.x, gameField.bounds.y) }
-                .toList(),
+            objects,
             basePosition,
             playerPositions,
             enemyPositions

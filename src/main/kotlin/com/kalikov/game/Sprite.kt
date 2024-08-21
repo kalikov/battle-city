@@ -7,6 +7,12 @@ abstract class Sprite(
     val width: Int,
     val height: Int
 ) {
+    private companion object {
+        private var counter = 0
+    }
+
+    val id = ++counter
+
     var x = x
         private set
     var y = y

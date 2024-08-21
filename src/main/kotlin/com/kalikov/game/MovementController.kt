@@ -39,7 +39,7 @@ class MovementController(
     }
 
     private fun moveBullets() {
-        for (sprite in spriteContainer.sprites) {
+        spriteContainer.forEach { sprite ->
             if (sprite is Bullet && !sprite.isDestroyed) {
                 if (sprite.move()) {
                     detectCollisionsForBullet(sprite)
@@ -53,10 +53,9 @@ class MovementController(
             bullet.outOfBounds()
             return
         }
-        val sprites = spriteContainer.sprites
         var explode: Boolean? = null
         var tankHit = false
-        sprites.forEach { sprite ->
+        spriteContainer.forEach { sprite ->
             if (bullet !== sprite && !sprite.isDestroyed) {
                 if (sprite is Base && bullet.bounds.intersects(sprite.bounds)) {
                     if (!sprite.isHit) {
@@ -99,7 +98,7 @@ class MovementController(
     }
 
     private fun moveTanks() {
-        for (sprite in spriteContainer.sprites) {
+        spriteContainer.forEach { sprite ->
             if (sprite is Tank && !sprite.isDestroyed) {
                 move(sprite)
             }
@@ -149,28 +148,30 @@ class MovementController(
             Direction.DOWN -> bottom -= reduction
             Direction.RIGHT -> right -= reduction
         }
-        for (sprite in spriteContainer.sprites) {
+        spriteContainer.iterateWhile { sprite ->
             if (sprite is PowerUp) {
                 val rect = sprite.bounds
                 if (left <= rect.right && right >= rect.left && top <= rect.bottom && bottom >= rect.top) {
                     sprite.pick(tank)
                 }
-                break
+                return@iterateWhile false
             }
+            true
         }
     }
 
     private fun detectBulletCollisionForTank(tank: Tank) {
-        for (sprite in spriteContainer.sprites) {
+        spriteContainer.iterateWhile { sprite ->
             if (sprite is Bullet && isBulletCollision(sprite, tank) && tank.bounds.intersects(sprite.bounds)) {
                 if (tank.canBeDestroyed) {
                     tank.hit(sprite)
                 }
                 sprite.hit(tank.canBeDestroyed)
                 if (tank.isDestroyed) {
-                    break
+                    return@iterateWhile false
                 }
             }
+            true
         }
     }
 
@@ -184,20 +185,20 @@ class MovementController(
 
     private inline fun hasCollisionForTank(
         tank: Tank,
-        isCollisionFunction: (Tank, Sprite, Int, Int) -> Boolean
+        crossinline isCollisionFunction: (Tank, Sprite, Int, Int) -> Boolean
     ): Boolean {
-        val sprites = spriteContainer.sprites
         when (tank.direction) {
             Direction.UP -> {
                 if (tank.y - 1 < bounds.top) {
                     return true
                 }
-                sprites.forEach { sprite ->
+                return !spriteContainer.iterateWhile { sprite ->
                     if (tank !== sprite && !sprite.isDestroyed && sprite.y < tank.y) {
                         if (isCollisionFunction(tank, sprite, 0, -1)) {
-                            return true
+                            return@iterateWhile false
                         }
                     }
+                    true
                 }
             }
 
@@ -205,12 +206,13 @@ class MovementController(
                 if (tank.x - 1 < bounds.left) {
                     return true
                 }
-                sprites.forEach { sprite ->
+                return !spriteContainer.iterateWhile { sprite ->
                     if (tank !== sprite && !sprite.isDestroyed && sprite.x < tank.x) {
                         if (isCollisionFunction(tank, sprite, -1, 0)) {
-                            return true
+                            return@iterateWhile false
                         }
                     }
+                    true
                 }
             }
 
@@ -218,12 +220,13 @@ class MovementController(
                 if (tank.bottom + 1 > bounds.bottom) {
                     return true
                 }
-                sprites.forEach { sprite ->
+                return !spriteContainer.iterateWhile { sprite ->
                     if (tank !== sprite && !sprite.isDestroyed && sprite.bottom > tank.bottom) {
                         if (isCollisionFunction(tank, sprite, 0, 1)) {
-                            return true
+                            return@iterateWhile false
                         }
                     }
+                    true
                 }
             }
 
@@ -231,22 +234,22 @@ class MovementController(
                 if (tank.right + 1 > bounds.right) {
                     return true
                 }
-                sprites.forEach { sprite ->
+                return !spriteContainer.iterateWhile { sprite ->
                     if (tank !== sprite && !sprite.isDestroyed && sprite.right > tank.right) {
                         if (isCollisionFunction(tank, sprite, 1, 0)) {
-                            return true
+                            return@iterateWhile false
                         }
                     }
+                    true
                 }
             }
         }
-        return false
     }
 
     private fun isTankOnIce(tank: Tank): Boolean {
         val area = tank.bounds.area
         var firmArea = area
-        spriteContainer.sprites.forEach { sprite ->
+        spriteContainer.forEach { sprite ->
             if (tank !== sprite && !sprite.isDestroyed && sprite is Ice) {
                 firmArea -= sprite.bounds.intersection(tank.bounds)?.area ?: 0
             }
@@ -302,14 +305,14 @@ class MovementController(
     }
 
     private fun detectCollisionsForPowerUp(powerUp: PowerUp) {
-        val sprites = spriteContainer.sprites
-        for (sprite in sprites) {
+        spriteContainer.iterateWhile { sprite ->
             if (powerUp !== sprite) {
                 if (sprite is PlayerTank && powerUp.bounds.intersects(sprite.bounds)) {
                     powerUp.pick(sprite)
-                    break
+                    return@iterateWhile false
                 }
             }
+            true
         }
     }
 

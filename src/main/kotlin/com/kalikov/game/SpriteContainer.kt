@@ -1,11 +1,15 @@
 package com.kalikov.game
 
 interface SpriteContainer {
+    val size: Int
+
     data class Added(val sprite: Sprite) : Event()
 
     data class Removed(val sprite: Sprite) : Event()
 
-    val sprites: Collection<Sprite>
+    fun forEach(action: (Sprite) -> Unit)
+
+    fun iterateWhile(action: (Sprite) -> Boolean): Boolean
 
     fun addSprite(sprite: Sprite)
 

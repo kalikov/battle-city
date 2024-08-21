@@ -2,6 +2,7 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -41,7 +42,7 @@ class MovementControllerTest {
 
         val base = Base(eventManager, mock(), Globals.UNIT_SIZE, 0)
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(base, tank, bullet))
+        mockSprites(listOf(base, tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -59,7 +60,7 @@ class MovementControllerTest {
 
         val wall = mockBrickWall(eventManager, x = Globals.UNIT_SIZE, y = 0)
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(wall, tank, bullet))
+        mockSprites(listOf(wall, tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -78,7 +79,7 @@ class MovementControllerTest {
 
         val bullet = tank.createBullet()
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(enemyTank, tank, bullet))
+        mockSprites(listOf(enemyTank, tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -99,7 +100,7 @@ class MovementControllerTest {
 
         val bullet = tank.createBullet()
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(enemyTank1, enemyTank2, enemyTank3, tank, bullet))
+        mockSprites(listOf(enemyTank1, enemyTank2, enemyTank3, tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -120,7 +121,7 @@ class MovementControllerTest {
 
         val bullet = tank1.createBullet()
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(tank1, tank2, bullet))
+        mockSprites(listOf(tank1, tank2, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -141,7 +142,7 @@ class MovementControllerTest {
 
         val bullet = enemyTank.createBullet()
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(enemyTank, playerTank, bullet))
+        mockSprites(listOf(enemyTank, playerTank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -162,7 +163,7 @@ class MovementControllerTest {
 
         val bullet = enemyTank.createBullet()
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(enemyTank, playerTank, bullet))
+        mockSprites(listOf(enemyTank, playerTank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -181,7 +182,7 @@ class MovementControllerTest {
 
         val bullet = enemyTank.createBullet()
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(playerTank, enemyTank, bullet))
+        mockSprites(listOf(playerTank, enemyTank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -203,7 +204,7 @@ class MovementControllerTest {
 
         val otherBullet = otherTank.createBullet()
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(tank, otherTank, bullet, otherBullet))
+        mockSprites(listOf(tank, otherTank, bullet, otherBullet))
 
         movementController.notify(SpriteContainer.Added(bullet))
 
@@ -227,7 +228,7 @@ class MovementControllerTest {
 
         val bullet = tank.createBullet()
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(player, tank, playerBullet, bullet))
+        mockSprites(listOf(player, tank, playerBullet, bullet))
 
         movementController.notify(SpriteContainer.Added(bullet))
 
@@ -250,7 +251,7 @@ class MovementControllerTest {
         val bullet = tank.createBullet()
         val x = bullet.x
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(tank, bullet))
+        mockSprites(listOf(tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -268,7 +269,7 @@ class MovementControllerTest {
         val bullet = tank.createBullet()
         val x = bullet.x
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(tank, bullet))
+        mockSprites(listOf(tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -307,7 +308,7 @@ class MovementControllerTest {
         tank.isIdle = false
         val wall = mockBrickWall(eventManager)
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(wall, tank))
+        mockSprites(listOf(wall, tank))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -322,7 +323,7 @@ class MovementControllerTest {
         tank.isIdle = false
         val powerUp = mockPowerUp(eventManager)
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(tank, powerUp))
+        mockSprites(listOf(tank, powerUp))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -339,7 +340,7 @@ class MovementControllerTest {
         tank1.isIdle = false
         val tank2 = mockPlayerTank(eventManager)
 
-        whenever(spriteContainer.sprites).thenReturn(listOf(tank1, tank2))
+        mockSprites(listOf(tank1, tank2))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -347,5 +348,20 @@ class MovementControllerTest {
 
         assertEquals(Point(0, -8), tank1.position)
         assertEquals(Point(0, 0), tank2.position)
+    }
+
+    private fun mockSprites(sprites: List<Sprite>) {
+        whenever(spriteContainer.forEach(any())).thenAnswer {
+            sprites.forEach(it.getArgument(0))
+        }
+        whenever(spriteContainer.iterateWhile(any())).thenAnswer {
+            val action: (Sprite) -> Boolean = it.getArgument(0)
+            for (sprite in sprites) {
+                if (!action(sprite)) {
+                    return@thenAnswer false
+                }
+            }
+            true
+        }
     }
 }

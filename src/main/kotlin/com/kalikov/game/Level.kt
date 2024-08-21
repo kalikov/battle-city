@@ -200,7 +200,7 @@ class Level(
             }
             gameOver = gameOver || playersTankFactories.all { it.playerTank == null }
             if (!gameOver) {
-                for (sprite in spriteContainer.sprites) {
+                spriteContainer.forEach { sprite ->
                     sprite.isStatic = true
                     if (sprite is Tank) {
                         sprite.destroy()

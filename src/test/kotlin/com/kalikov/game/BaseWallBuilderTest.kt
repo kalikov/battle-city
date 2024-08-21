@@ -51,10 +51,12 @@ class BaseWallBuilderTest {
         )
         builder.buildWall(BrickWallFactory(eventManager, mock()))
 
-        val sprites = spriteContainer.sprites
-        assertEquals(8, sprites.size)
+        assertEquals(8, spriteContainer.size)
 
-        val positions = sprites.map { Point(it.x, it.y) }.toSet()
+        val positions = HashSet<Point>()
+        spriteContainer.forEach {
+            positions.add(Point(it.x, it.y))
+        }
         assertEquals(
             setOf(
                 Point(11 * Globals.TILE_SIZE, 25 * Globals.TILE_SIZE),

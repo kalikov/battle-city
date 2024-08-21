@@ -51,14 +51,13 @@ class GameField(
     }
 
     fun update() {
-        val sprites = spriteContainer.sprites
-        sprites.forEach { it.update() }
+        spriteContainer.forEach { it.update() }
     }
 
     fun draw(surface: ScreenSurface) {
         surface.fillRect(bounds.x, bounds.y, bounds.width, bounds.height, ARGB.BLACK)
 
-        spriteContainer.sprites.forEach {
+        spriteContainer.forEach {
             if (!it.isDestroyed) {
                 it.draw(surface)
             }

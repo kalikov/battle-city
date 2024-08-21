@@ -1,6 +1,6 @@
 package com.kalikov.game
 
-import java.util.concurrent.ConcurrentSkipListSet
+import java.util.TreeSet
 
 class ConcurrentSpriteContainer(private val eventManager: EventManager) : SpriteContainer, EventSubscriber {
     private val ordering = Comparator<Sprite> { a, b ->
@@ -8,25 +8,61 @@ class ConcurrentSpriteContainer(private val eventManager: EventManager) : Sprite
         if (cmp != 0) {
             cmp
         } else {
-            System.identityHashCode(a) - System.identityHashCode(b)
+            a.id - b.id
         }
     }
 
-    override val sprites = ConcurrentSkipListSet(ordering)
+    private var sprites = TreeSet(ordering)
+    private var copyOnWrite = false
 
     init {
         eventManager.addSubscriber(this, setOf(Sprite.Destroyed::class))
     }
 
+    override val size get() = sprites.size
+
+    override fun forEach(action: (Sprite) -> Unit) {
+        copyOnWrite = true
+        try {
+            sprites.forEach(action)
+        } finally {
+            copyOnWrite = false
+        }
+    }
+
+    override fun iterateWhile(action: (Sprite) -> Boolean): Boolean {
+        copyOnWrite = true
+        try {
+            for (sprite in sprites) {
+                if (!action(sprite)) {
+                    return false
+                }
+            }
+        } finally {
+            copyOnWrite = false
+        }
+        return true
+    }
+
     override fun addSprite(sprite: Sprite) {
+        if (copyOnWrite) {
+            sprites = TreeSet(sprites)
+            copyOnWrite = false
+        }
         if (sprites.add(sprite)) {
             eventManager.fireEvent(SpriteContainer.Added(sprite))
         }
     }
 
     override fun removeSprite(sprite: Sprite) {
+        if (copyOnWrite) {
+            sprites = TreeSet(sprites)
+            copyOnWrite = false
+        }
         if (sprites.remove(sprite)) {
             eventManager.fireEvent(SpriteContainer.Removed(sprite))
+        } else {
+            println("Sprite $sprite was not removed")
         }
     }
 
