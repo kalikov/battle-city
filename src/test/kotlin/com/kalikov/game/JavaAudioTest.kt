@@ -56,6 +56,7 @@ class JavaAudioTest {
         val thread = Thread {
             sound.play()
         }
+        thread.priority = Thread.MIN_PRIORITY
         thread.start()
         while (sound.state != Sound.State.PLAYING) {
             // do nothing

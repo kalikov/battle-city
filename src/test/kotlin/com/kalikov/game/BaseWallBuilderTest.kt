@@ -15,7 +15,7 @@ class BaseWallBuilderTest {
     @BeforeEach
     fun beforeEach() {
         eventManager = ConcurrentEventManager()
-        spriteContainer = ConcurrentSpriteContainer(eventManager)
+        spriteContainer = DefaultSpriteContainer(eventManager)
     }
 
     @Test

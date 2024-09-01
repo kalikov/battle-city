@@ -42,7 +42,7 @@ class GameFieldTest {
             eventManager,
             imageManager,
             DefaultEntityFactory(eventManager, imageManager, clock),
-            ConcurrentSpriteContainer(eventManager),
+            DefaultSpriteContainer(eventManager),
             0,
             0
         )

@@ -29,7 +29,7 @@ class ConstructionScene(
     private val enemyPositions: List<Point>
 
     init {
-        spriteContainer = ConcurrentSpriteContainer(eventManager)
+        spriteContainer = DefaultSpriteContainer(eventManager)
         gameField = GameField(eventManager, imageManager, entityFactory, spriteContainer)
 
         eventManager.addSubscriber(this, subscriptions)

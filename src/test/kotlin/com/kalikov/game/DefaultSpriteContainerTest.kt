@@ -8,12 +8,12 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ConcurrentSpriteContainerTest {
+class DefaultSpriteContainerTest {
     @Test
     fun `should subscribe`() {
         val eventManager: EventManager = mock()
 
-        val spriteContainer = ConcurrentSpriteContainer(eventManager)
+        val spriteContainer = DefaultSpriteContainer(eventManager)
         verify(eventManager).addSubscriber(spriteContainer, setOf(Sprite.Destroyed::class))
     }
 
@@ -21,7 +21,7 @@ class ConcurrentSpriteContainerTest {
     fun `should unsubscribe`() {
         val eventManager: EventManager = mock()
 
-        val spriteContainer = ConcurrentSpriteContainer(eventManager)
+        val spriteContainer = DefaultSpriteContainer(eventManager)
         spriteContainer.dispose()
         verify(eventManager).removeSubscriber(spriteContainer, setOf(Sprite.Destroyed::class))
     }
@@ -31,7 +31,7 @@ class ConcurrentSpriteContainerTest {
         val eventManager: EventManager = mock()
         val sprite = mockSprite(eventManager)
 
-        val spriteContainer = ConcurrentSpriteContainer(eventManager)
+        val spriteContainer = DefaultSpriteContainer(eventManager)
         spriteContainer.addSprite(sprite)
 
         assertTrue(spriteContainer.containsSprite(sprite))
@@ -43,7 +43,7 @@ class ConcurrentSpriteContainerTest {
     fun `should add sprite when it is created`() {
         val eventManager: EventManager = mock()
         val sprite = mockSprite(eventManager)
-        val spriteContainer = ConcurrentSpriteContainer(eventManager)
+        val spriteContainer = DefaultSpriteContainer(eventManager)
 
         assertFalse(spriteContainer.containsSprite(sprite))
         spriteContainer.addSprite(sprite)
@@ -69,7 +69,7 @@ class ConcurrentSpriteContainerTest {
         val spriteFive = mockSprite(eventManager)
         spriteFive.z = 5
 
-        val spriteContainer = ConcurrentSpriteContainer(eventManager)
+        val spriteContainer = DefaultSpriteContainer(eventManager)
         spriteContainer.addSprite(spriteFour)
         spriteContainer.addSprite(spriteOne)
         spriteContainer.addSprite(spriteThree)

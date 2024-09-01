@@ -73,7 +73,7 @@ class Level(
 
         eventManager.addSubscriber(this, subscriptions)
 
-        spriteContainer = ConcurrentSpriteContainer(eventManager)
+        spriteContainer = DefaultSpriteContainer(eventManager)
         gameField = GameField(eventManager, imageManager, entityFactory, spriteContainer)
 
         movementController = MovementController(

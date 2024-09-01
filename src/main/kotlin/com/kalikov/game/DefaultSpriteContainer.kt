@@ -2,7 +2,7 @@ package com.kalikov.game
 
 import java.util.TreeSet
 
-class ConcurrentSpriteContainer(private val eventManager: EventManager) : SpriteContainer, EventSubscriber {
+class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteContainer, EventSubscriber {
     private val ordering = Comparator<Sprite> { a, b ->
         val cmp = a.z - b.z
         if (cmp != 0) {
