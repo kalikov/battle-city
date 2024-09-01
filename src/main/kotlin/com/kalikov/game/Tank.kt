@@ -21,7 +21,7 @@ sealed class Tank(
         const val SIZE = Globals.UNIT_SIZE
 
         private val subscriptions = setOf(
-            Bullet.Destroyed::class,
+            Reload::class,
             TankStateAppearing.End::class,
             TankStateInvincible.End::class,
             TankStateFrozen.End::class
@@ -38,6 +38,7 @@ sealed class Tank(
     }
 
     data class Shoot(val tank: Tank) : Event()
+    data class Reload(val tank: Tank) : Event()
     data class Destroyed(val tank: Tank) : Event()
     data class Hit(val tank: Tank) : Event()
 
@@ -204,7 +205,7 @@ sealed class Tank(
     }
 
     override fun notify(event: Event) {
-        if (event is Bullet.Destroyed && event.bullet.tank === this) {
+        if (event is Reload && event.tank === this) {
             bullets--
         } else if (event is TankStateAppearing.End && event.tank === this) {
             stateAppearingEnd()

@@ -9,7 +9,7 @@ class BulletExplosionFactory(
     private val clock: Clock
 ) : EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(Bullet.Destroyed::class)
+        private val subscriptions = setOf(Bullet.Exploded::class)
     }
 
     init {
@@ -17,13 +17,13 @@ class BulletExplosionFactory(
     }
 
     override fun notify(event: Event) {
-        if (event is Bullet.Destroyed && event.bullet.shouldExplode) {
+        if (event is Bullet.Exploded) {
             spriteContainer.addSprite(create(event.bullet))
         }
     }
 
     private fun create(bullet: Bullet): BulletExplosion {
-        val explosion = BulletExplosion(eventManager, imageManager, clock)
+        val explosion = BulletExplosion(eventManager, imageManager, clock, bullet)
         explosion.setPosition(bullet.center.translate(-explosion.width / 2, -explosion.height / 2))
         return explosion
     }

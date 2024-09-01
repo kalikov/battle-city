@@ -3,6 +3,7 @@ package com.kalikov.game
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import java.awt.image.BufferedImage
 import kotlin.test.assertFalse
@@ -29,7 +30,7 @@ class BulletTest {
     fun `should fire event on destroy`() {
         bullet.destroy()
         bullet.update()
-        verify(eventManager).fireEvent(Bullet.Destroyed(bullet))
+        verify(eventManager).fireEvent(Bullet.Exploded(bullet))
     }
 
     @Test
@@ -46,10 +47,26 @@ class BulletTest {
     }
 
     @Test
+    fun `should reload when hit without explosion`() {
+        bullet.hit(false)
+        bullet.update()
+        verify(eventManager).fireEvent(Tank.Reload(bullet.tank))
+        verify(eventManager, never()).fireEvent(Bullet.Exploded(bullet))
+    }
+
+    @Test
     fun `should be destroyed when hit with explosion`() {
         bullet.hit(true)
         assertTrue(bullet.shouldExplode)
         assertTrue(bullet.isDestroyed)
+    }
+
+    @Test
+    fun `should fire event when exploded`() {
+        bullet.hit(true)
+        bullet.update()
+        verify(eventManager).fireEvent(Bullet.Exploded(bullet))
+        verify(eventManager, never()).fireEvent(Tank.Reload(bullet.tank))
     }
 
     @Test

@@ -45,8 +45,7 @@ abstract class TankTest<T : Tank> {
         tank.shoot()
         verify(eventManager, never()).fireEvent(any())
 
-        val bullet = tank.createBullet()
-        tank.notify(Bullet.Destroyed(bullet))
+        tank.notify(Tank.Reload(tank))
 
         clock.tick(Tank.COOLDOWN_INTERVAL)
         tank.update()
@@ -72,8 +71,7 @@ abstract class TankTest<T : Tank> {
         tank.shoot()
         verify(eventManager, never()).fireEvent(any())
 
-        val bullet = tank.createBullet()
-        tank.notify(Bullet.Destroyed(bullet))
+        tank.notify(Tank.Reload(tank))
 
         clock.tick(Tank.COOLDOWN_INTERVAL)
         tank.update()
@@ -223,7 +221,7 @@ abstract class TankTest<T : Tank> {
         verify(eventManager).addSubscriber(
             tank,
             setOf(
-                Bullet.Destroyed::class,
+                Tank.Reload::class,
                 TankStateAppearing.End::class,
                 TankStateInvincible.End::class,
                 TankStateFrozen.End::class,

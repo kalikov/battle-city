@@ -3,9 +3,10 @@ package com.kalikov.game
 import java.time.Clock
 
 class BulletExplosion(
-    eventManager: EventManager,
+    private val eventManager: EventManager,
     imageManager: ImageManager,
-    clock: Clock
+    clock: Clock,
+    private val bullet: Bullet,
 ) : Explosion(
     eventManager,
     Animation.pauseAware(eventManager, frameSequenceOf(*animationFrames), clock, ANIMATION_INTERVAL),
@@ -18,4 +19,8 @@ class BulletExplosion(
     }
 
     override val image = imageManager.getImage("bullet_explosion")
+
+    override fun destroyHook() {
+        eventManager.fireEvent(Tank.Reload(bullet.tank))
+    }
 }

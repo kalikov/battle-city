@@ -2,11 +2,9 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.isA
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import kotlin.test.assertEquals
 
@@ -28,18 +26,18 @@ class BulletExplosionFactoryTest {
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(explosionFactory, setOf(Bullet.Destroyed::class))
+        verify(eventManager).addSubscriber(explosionFactory, setOf(Bullet.Exploded::class))
     }
 
     @Test
     fun `should unsubscribe`() {
         explosionFactory.dispose()
-        verify(eventManager).removeSubscriber(explosionFactory, setOf(Bullet.Destroyed::class))
+        verify(eventManager).removeSubscriber(explosionFactory, setOf(Bullet.Exploded::class))
     }
 
     @Test
     fun `should place explosion correctly`() {
-        explosionFactory.notify(Bullet.Destroyed(bullet))
+        explosionFactory.notify(Bullet.Exploded(bullet))
 
         val captor = argumentCaptor<BulletExplosion>()
         verify(spriteContainer).addSprite(captor.capture())
@@ -56,20 +54,11 @@ class BulletExplosionFactoryTest {
         )
     }
 
-
     @Test
     fun `should create explosion when bullet exploded`() {
         bullet.hit(true)
-        explosionFactory.notify(Bullet.Destroyed(bullet))
+        explosionFactory.notify(Bullet.Exploded(bullet))
 
         verify(spriteContainer).addSprite(isA<BulletExplosion>())
-    }
-
-    @Test
-    fun `should not create explosion when bullet didn't explode`() {
-        bullet.hit(false)
-        explosionFactory.notify(Bullet.Destroyed(bullet))
-
-        verify(spriteContainer, never()).addSprite(any())
     }
 }

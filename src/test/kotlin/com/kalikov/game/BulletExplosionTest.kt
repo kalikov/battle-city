@@ -19,7 +19,8 @@ class BulletExplosionTest {
         clock = TestClock()
         pauseManager = mock()
         fonts = TestFonts()
-        explosion = BulletExplosion(mock(), TestImageManager(fonts), clock)
+        val tank = mockPlayerTank()
+        explosion = BulletExplosion(mock(), TestImageManager(fonts), clock, tank.createBullet())
     }
 
     @Test

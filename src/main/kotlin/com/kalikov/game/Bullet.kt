@@ -10,7 +10,7 @@ class Bullet(
         internal const val SIZE = Globals.TILE_SIZE / 2
     }
 
-    data class Destroyed(val bullet: Bullet) : Event()
+    data class Exploded(val bullet: Bullet) : Event()
 
     enum class Speed(val value: Int, val frequency: Int) {
         NORMAL(1, 2),
@@ -60,7 +60,11 @@ class Bullet(
     }
 
     override fun destroyHook() {
-        eventManager.fireEvent(Destroyed(this))
+        if (shouldExplode) {
+            eventManager.fireEvent(Exploded(this))
+        } else {
+            eventManager.fireEvent(Tank.Reload(tank))
+        }
     }
 
     override fun dispose() {

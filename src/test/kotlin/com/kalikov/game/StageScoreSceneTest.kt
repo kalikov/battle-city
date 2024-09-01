@@ -116,6 +116,67 @@ class StageScoreSceneTest {
         assertImageEquals("stage_score_two_players.png", image)
     }
 
+    @Test
+    fun `should not draw two players bonus`() {
+        val screen: Screen = mock()
+        val eventManager: EventManager = mock()
+        val imageManager = TestImageManager(fonts)
+        val stageManager: StageManager = mock()
+        whenever(stageManager.highScore).thenReturn(20000)
+        whenever(stageManager.stageNumber).thenReturn(7)
+
+        val scoreOne = StageScore()
+        scoreOne.increment(createTank(EnemyTank.EnemyType.BASIC))
+        scoreOne.increment(createTank(EnemyTank.EnemyType.FAST))
+        scoreOne.increment(createTank(EnemyTank.EnemyType.POWER))
+        scoreOne.increment(createTank(EnemyTank.EnemyType.POWER))
+        scoreOne.increment(createTank(EnemyTank.EnemyType.ARMOR))
+
+        val scoreTwo = StageScore()
+        scoreTwo.increment(createTank(EnemyTank.EnemyType.BASIC))
+        scoreTwo.increment(createTank(EnemyTank.EnemyType.BASIC))
+        scoreTwo.increment(createTank(EnemyTank.EnemyType.BASIC))
+        scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
+        scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
+
+        val playerOne = Player(eventManager, initialScore = 25200)
+        val playerTwo = Player(eventManager, initialScore = 5600)
+        whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
+        val scene = StageScoreScene(
+            screen,
+            eventManager,
+            imageManager,
+            stageManager,
+            mock(),
+            listOf(scoreOne, scoreTwo),
+            false,
+            clock
+        )
+
+        val stage = Stage(
+            StageMapConfig(
+                emptyList(),
+                Point(0, 0),
+                emptyList(),
+                listOf(Point(12, 0), Point(24, 0), Point(0, 0))
+            ),
+            1,
+            emptyList()
+        )
+
+        whenever(stageManager.stage).thenReturn(stage)
+
+        while (!scene.isComplete) {
+            clock.tick(1)
+            scene.update()
+        }
+
+        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
+        scene.draw(AwtScreenSurface(fonts, image))
+
+        assertImageEquals("stage_score_no_bonus.png", image)
+    }
+
     private fun createTank(type: EnemyTank.EnemyType): EnemyTank {
         return mockEnemyTank(enemyType = type)
     }
