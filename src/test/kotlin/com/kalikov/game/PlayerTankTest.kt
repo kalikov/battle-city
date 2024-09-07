@@ -10,7 +10,14 @@ import kotlin.test.assertIs
 
 class PlayerTankTest : TankTest<PlayerTank>() {
     override fun createTank(): PlayerTank {
-        return PlayerTank.create(eventManager, mock(), imageManager, clock, 0, 0, Player(eventManager))
+        return PlayerTank.create(
+            mockGame(mock(), eventManager, imageManager),
+            mock(),
+            clock,
+            0,
+            0,
+            Player(eventManager)
+        )
     }
 
     @Test

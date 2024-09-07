@@ -3,31 +3,28 @@ package com.kalikov.game
 import java.time.Clock
 
 class PlayerTank private constructor(
-    eventManager: EventManager,
+    game: Game,
     pauseManager: PauseManager,
-    imageManager: ImageManager,
     clock: Clock,
     x: Int,
     y: Int,
     override val player: Player,
 ) : Tank(
-    eventManager,
+    game,
     pauseManager,
-    imageManager,
     clock,
     x,
     y
 ), PlayerTankHandle {
     companion object {
         fun create(
-            eventManager: EventManager,
+            game: Game,
             pauseManager: PauseManager,
-            imageManager: ImageManager,
             clock: Clock,
             x: Int,
             y: Int,
             player: Player,
-        ) = init(PlayerTank(eventManager, pauseManager, imageManager, clock, x, y, player))
+        ) = init(PlayerTank(game, pauseManager, clock, x, y, player))
     }
 
     data class PlayerDestroyed(val tank: PlayerTank) : Event()
@@ -41,7 +38,7 @@ class PlayerTank private constructor(
     override val imageMod get() = upgradeLevel
 
     override fun stateAppearingEnd() {
-        state = TankStateInvincible(eventManager, imageManager, this)
+        state = TankStateInvincible(game.eventManager, game.imageManager, this)
         direction = Direction.UP
     }
 
@@ -55,7 +52,7 @@ class PlayerTank private constructor(
     override fun destroyHook() {
         super.destroyHook()
 
-        eventManager.fireEvent(PlayerDestroyed(this))
+        game.eventManager.fireEvent(PlayerDestroyed(this))
     }
 
     override fun hitHook(bullet: BulletHandle) {
@@ -63,7 +60,7 @@ class PlayerTank private constructor(
             if (state is TankStateFrozen) {
                 (state as TankStateFrozen).restartTimer()
             } else {
-                state = TankStateFrozen(eventManager, imageManager, this, clock)
+                state = TankStateFrozen(game.eventManager, game.imageManager, this, clock)
                 isIdle = true
             }
         } else {

@@ -25,8 +25,7 @@ class PlayerTankFactoryTest {
         eventManager = mock()
         spriteContainer = mock()
         factory = PlayerTankFactory(
-            eventManager,
-            mock(),
+            mockGame(eventManager = eventManager),
             mock(),
             spriteContainer,
             Point(10, 100),

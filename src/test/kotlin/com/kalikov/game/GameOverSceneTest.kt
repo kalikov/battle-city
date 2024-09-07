@@ -15,7 +15,7 @@ class GameOverSceneTest {
 
     @Test
     fun `should draw game over scene`() {
-        val scene = GameOverScene(mock(), mock(), TestImageManager(fonts), mock(), mock(), mock())
+        val scene = GameOverScene(mockGame(imageManager = TestImageManager(fonts)), mock(), mock(), mock())
 
         val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_RGB)
         scene.draw(AwtScreenSurface(fonts, image))

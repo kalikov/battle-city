@@ -11,27 +11,27 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class PointsFactoryTest {
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var factory: PointsFactory
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        game = mockGame()
         spriteContainer = mock()
-        factory = PointsFactory(eventManager, mock(), spriteContainer, mock())
+        factory = PointsFactory(game.eventManager, mock(), spriteContainer, mock())
     }
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(factory, setOf(TankExplosion.Destroyed::class, PowerUp.Pick::class))
+        verify(game.eventManager).addSubscriber(factory, setOf(TankExplosion.Destroyed::class, PowerUp.Pick::class))
     }
 
     @Test
     fun `should create points when enemy tank is destroyed`() {
-        val tank = mockEnemyTank(eventManager)
+        val tank = mockEnemyTank(game)
 
-        val explosion = mockTankExplosion(eventManager, tank = tank)
+        val explosion = mockTankExplosion(game.eventManager, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         val captor = argumentCaptor<Points>()
@@ -46,10 +46,10 @@ class PointsFactoryTest {
 
     @Test
     fun `should not create points when enemy tank with zero value is destroyed`() {
-        val tank = mockEnemyTank(eventManager)
+        val tank = mockEnemyTank(game)
         tank.devalue()
 
-        val explosion = mockTankExplosion(eventManager, tank = tank)
+        val explosion = mockTankExplosion(game.eventManager, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(spriteContainer, never()).addSprite(isA<Points>())
@@ -57,9 +57,9 @@ class PointsFactoryTest {
 
     @Test
     fun `should not create points when player tank is destroyed`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
 
-        val explosion = mockTankExplosion(eventManager, tank = tank)
+        val explosion = mockTankExplosion(game.eventManager, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(spriteContainer, never()).addSprite(isA<Points>())
@@ -67,10 +67,10 @@ class PointsFactoryTest {
 
     @Test
     fun `should create points when power up is picked`() {
-        val powerUp = mockPowerUp(eventManager, position = Point(1, 2))
+        val powerUp = mockPowerUp(game.eventManager, position = Point(1, 2))
         powerUp.value = 200
 
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
 
         factory.notify(PowerUp.Pick(powerUp, tank))
 

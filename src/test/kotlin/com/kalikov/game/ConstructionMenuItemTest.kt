@@ -10,8 +10,8 @@ import kotlin.test.assertIs
 class ConstructionMenuItemTest {
     @Test
     fun `should start construction scene on execute`() {
+        val game = mockGame()
         val stageManager: StageManager = mock()
-        val eventManager: EventManager = mock()
 
         whenever(stageManager.constructionMap).thenReturn(
             StageMapConfig(
@@ -22,11 +22,11 @@ class ConstructionMenuItemTest {
             )
         )
 
-        val item = ConstructionMenuItem(mock(), eventManager, mock(), stageManager, mock(), mock())
+        val item = ConstructionMenuItem(game, stageManager, mock(), mock())
         item.execute()
 
         val captor = argumentCaptor<Scene.Start>()
-        verify(eventManager).fireEvent(captor.capture())
+        verify(game.eventManager).fireEvent(captor.capture())
 
         val event = captor.firstValue
         assertIs<ConstructionScene>(event.sceneFactory())

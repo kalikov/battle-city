@@ -10,6 +10,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class PowerUpHandlerTest {
+    private lateinit var game: Game
     private lateinit var eventManager: EventManager
     private lateinit var powerUp: PowerUp
     private lateinit var handler: PowerUpHandler
@@ -17,11 +18,12 @@ class PowerUpHandlerTest {
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        game = mockGame()
+        eventManager = game.eventManager
         powerUp = mockPowerUp(eventManager)
         handler = PowerUpHandler(eventManager, mock())
 
-        tank = mockPlayerTank(eventManager)
+        tank = mockPlayerTank(game)
     }
 
     @Test
@@ -51,7 +53,7 @@ class PowerUpHandlerTest {
 
     @Test
     fun `should handle grenade`() {
-        val enemy = mockEnemyTank(eventManager)
+        val enemy = mockEnemyTank(game)
         handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 
         powerUp.type = PowerUp.Type.GRENADE
@@ -63,7 +65,7 @@ class PowerUpHandlerTest {
 
     @Test
     fun `should not explode appearing enemies with grenade`() {
-        val enemy = mockEnemyTank(eventManager)
+        val enemy = mockEnemyTank(game)
         enemy.state = TankStateAppearing(eventManager, mock(), enemy)
         handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 

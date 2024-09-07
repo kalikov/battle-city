@@ -3,9 +3,7 @@ package com.kalikov.game
 import java.time.Clock
 
 class StageScoreScene(
-    private val screen: Screen,
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
     private val scores: List<StageScore>,
@@ -21,13 +19,13 @@ class StageScoreScene(
     private val script = Script()
 
     private val basicTankPoints =
-        StageScorePointsView(eventManager, imageManager, EnemyTank.EnemyType.BASIC, scores, script, clock)
+        StageScorePointsView(game.eventManager, game.imageManager, EnemyTank.EnemyType.BASIC, scores, script, clock)
     private val fastTankPoints =
-        StageScorePointsView(eventManager, imageManager, EnemyTank.EnemyType.FAST, scores, script, clock)
+        StageScorePointsView(game.eventManager, game.imageManager, EnemyTank.EnemyType.FAST, scores, script, clock)
     private val powerTankPoints =
-        StageScorePointsView(eventManager, imageManager, EnemyTank.EnemyType.POWER, scores, script, clock)
+        StageScorePointsView(game.eventManager, game.imageManager, EnemyTank.EnemyType.POWER, scores, script, clock)
     private val armorTankPoints =
-        StageScorePointsView(eventManager, imageManager, EnemyTank.EnemyType.ARMOR, scores, script, clock)
+        StageScorePointsView(game.eventManager, game.imageManager, EnemyTank.EnemyType.ARMOR, scores, script, clock)
 
     private var drawTotal = false
     private var drawBonusIndex = -1
@@ -54,21 +52,21 @@ class StageScoreScene(
                 script.enqueue(Delay(script, 320, clock))
                 script.enqueue(Execute {
                     drawBonusIndex = maxTanksIndex
-                    eventManager.fireEvent(Player.Score(stageManager.players[maxTanksIndex], BONUS_SCORE))
+                    game.eventManager.fireEvent(Player.Score(stageManager.players[maxTanksIndex], BONUS_SCORE))
                 })
             }
         }
         script.enqueue(Delay(script, 2000, clock))
         script.enqueue(Execute {
             if (gameOver) {
-                eventManager.fireEvent(Scene.Start {
-                    GameOverScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+                game.eventManager.fireEvent(Scene.Start {
+                    GameOverScene(game, stageManager, entityFactory, clock)
                 })
             } else {
                 stageManager.next()
                 stageManager.resetConstruction()
-                eventManager.fireEvent(Scene.Start {
-                    StageScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+                game.eventManager.fireEvent(Scene.Start {
+                    StageScene(game, stageManager, entityFactory, clock)
                 })
             }
         })
@@ -96,11 +94,11 @@ class StageScoreScene(
         surface.fillText(stage, 97, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
 
         y += Globals.UNIT_SIZE
-        surface.draw(26, y - Globals.TILE_SIZE, imageManager.getImage("roman_one")) { dst, src, _, _ ->
+        surface.draw(26, y - Globals.TILE_SIZE, game.imageManager.getImage("roman_one")) { dst, src, _, _ ->
             src.and(ARGB.rgb(0xe44437)).over(dst)
         }
         if (stageManager.players.size > 1) {
-            surface.draw(170, y - Globals.TILE_SIZE, imageManager.getImage("roman_two")) { dst, src, _, _ ->
+            surface.draw(170, y - Globals.TILE_SIZE, game.imageManager.getImage("roman_two")) { dst, src, _, _ ->
                 src.and(ARGB.rgb(0xe44437)).over(dst)
             }
         }
@@ -148,7 +146,7 @@ class StageScoreScene(
         if (drawBonusIndex == 0 || drawBonusIndex == 1) {
             val x = if (drawBonusIndex == 0) 25 else 169
             surface.fillText("BONUS", x, y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
-            surface.draw(x + 42, y - Globals.TILE_SIZE, imageManager.getImage("exclamation")) { dst, src, _, _ ->
+            surface.draw(x + 42, y - Globals.TILE_SIZE, game.imageManager.getImage("exclamation")) { dst, src, _, _ ->
                 src.and(ARGB.rgb(0xe44437)).over(dst)
             }
             y += Globals.TILE_SIZE

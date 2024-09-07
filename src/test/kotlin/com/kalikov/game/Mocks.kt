@@ -1,30 +1,44 @@
 package com.kalikov.game
 
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import java.time.Clock
 
-fun mockEnemyTank(
+fun mockGame(
+    screen: Screen = mock(),
     eventManager: EventManager = mock(),
-    pauseManager: PauseManager = mock(),
     imageManager: ImageManager = mock(),
+    config: GameConfig = GameConfig(),
+): Game {
+    val game: Game = mock {
+        on { this.screen } doReturn screen
+        on { this.eventManager } doReturn eventManager
+        on { this.imageManager } doReturn imageManager
+        on { this.config } doReturn config
+    }
+    return game
+}
+
+fun mockEnemyTank(
+    game: Game = mockGame(),
+    pauseManager: PauseManager = mock(),
     clock: Clock = mock(),
     x: Int = 0,
     y: Int = 0,
     enemyType: EnemyTank.EnemyType = EnemyTank.EnemyType.BASIC,
 ): EnemyTank {
-    return EnemyTank.create(eventManager, pauseManager, imageManager, clock, x, y, enemyType)
+    return EnemyTank.create(game, pauseManager, clock, x, y, enemyType)
 }
 
 fun mockPlayerTank(
-    eventManager: EventManager = mock(),
+    game: Game = mockGame(),
     pauseManager: PauseManager = mock(),
-    imageManager: ImageManager = mock(),
     clock: Clock = mock(),
     x: Int = 0,
     y: Int = 0,
-    player: Player = Player(eventManager),
+    player: Player = Player(game.eventManager),
 ): PlayerTank {
-    return PlayerTank.create(eventManager, pauseManager, imageManager, clock, x, y, player)
+    return PlayerTank.create(game, pauseManager, clock, x, y, player)
 }
 
 fun mockBase(

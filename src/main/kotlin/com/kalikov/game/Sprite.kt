@@ -76,6 +76,7 @@ abstract class Sprite(
 
     private fun updateBounds() {
         bounds = Rect(x, y, width, height)
+        boundsHook()
     }
 
     protected open fun boundsHook() = Unit

@@ -1,11 +1,10 @@
 package com.kalikov.game
 
 class Bullet(
-    private val eventManager: EventManager,
-    imageManager: ImageManager,
+    private val game: Game,
     override val tank: Tank,
     val speed: Speed
-) : BulletHandle, Sprite(eventManager, 0, 0, SIZE, SIZE) {
+) : BulletHandle, Sprite(game.eventManager, 0, 0, SIZE, SIZE) {
     internal companion object {
         internal const val SIZE = Globals.TILE_SIZE / 2
     }
@@ -31,7 +30,7 @@ class Bullet(
     var shouldExplode = true
         private set
 
-    private val image = imageManager.getImage("bullet")
+    private val image = game.imageManager.getImage("bullet")
 
     init {
         z = 2
@@ -61,9 +60,9 @@ class Bullet(
 
     override fun destroyHook() {
         if (shouldExplode) {
-            eventManager.fireEvent(Exploded(this))
+            game.eventManager.fireEvent(Exploded(this))
         } else {
-            eventManager.fireEvent(Tank.Reload(tank))
+            game.eventManager.fireEvent(Tank.Reload(tank))
         }
     }
 
@@ -72,11 +71,14 @@ class Bullet(
 
     override fun draw(surface: ScreenSurface) {
         surface.draw(x, y, image, direction.index * width, 0, width, height)
+        if (game.config.debug) {
+            surface.drawRect(bounds.x, bounds.y, bounds.width, bounds.height, ARGB(0x6600FF00))
+        }
     }
 
     fun outOfBounds() {
         if (tank is PlayerTank) {
-            eventManager.fireEvent(SoundManager.Play("bullet_hit_1"))
+            game.eventManager.fireEvent(SoundManager.Play("bullet_hit_1"))
         }
         destroy()
     }

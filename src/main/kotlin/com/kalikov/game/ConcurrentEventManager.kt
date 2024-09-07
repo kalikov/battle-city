@@ -27,7 +27,7 @@ class ConcurrentEventManager : EventManager {
         }
     }
 
-    override fun destroy() {
+    fun destroy() {
         subscriptions.forEach { (event, subscribers) ->
             subscribers.forEach { subscriber -> println("Dangling subscriber $subscriber for event ${event.qualifiedName}") }
         }

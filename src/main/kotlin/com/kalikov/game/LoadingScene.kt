@@ -12,9 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 class LoadingScene(
-    private val config: GameConfig,
-    private val screen: Screen,
-    private val eventManager: EventManager,
+    private val game: Game,
     private val imageManager: LoadingImageManager,
     private val soundManager: SoundManager,
     private val fontManager: FontManager,
@@ -46,13 +44,13 @@ class LoadingScene(
         if (failure.get()) {
             executor.shutdown()
 
-            eventManager.fireEvent(Game.Quit)
+            game.eventManager.fireEvent(BasicGame.Quit)
         } else if (remainingJobs.get() == 0) {
             executor.shutdown()
 
             stageManager.init(getStages(), requireNotNull(constructionMap))
-            eventManager.fireEvent(Scene.Start {
-                MainMenuScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+            game.eventManager.fireEvent(Scene.Start {
+                MainMenuScene(game, stageManager, entityFactory, clock)
             })
         }
     }
@@ -78,7 +76,7 @@ class LoadingScene(
     private fun loadSounds() {
         remainingJobs.incrementAndGet()
         executor.submit {
-            config.sounds.forEach { (name, path) ->
+            game.config.sounds.forEach { (name, path) ->
                 loadSound(name, path)
             }
             remainingJobs.decrementAndGet()
@@ -101,10 +99,10 @@ class LoadingScene(
     private fun loadStages() {
         remainingJobs.incrementAndGet()
         executor.submit {
-            for ((index, stageConfig) in config.stages.withIndex()) {
+            for ((index, stageConfig) in game.config.stages.withIndex()) {
                 loadStage(index, stageConfig)
             }
-            loadConstructionMap(config.construction)
+            loadConstructionMap(game.config.construction)
             remainingJobs.decrementAndGet()
         }
     }
@@ -141,7 +139,7 @@ class LoadingScene(
     private fun loadImages() {
         remainingJobs.incrementAndGet()
         executor.submit {
-            config.images.forEach { (name, path) ->
+            game.config.images.forEach { (name, path) ->
                 loadImage(name, path)
             }
             remainingJobs.decrementAndGet()
@@ -164,7 +162,7 @@ class LoadingScene(
     private fun loadFonts() {
         remainingJobs.incrementAndGet()
         executor.submit {
-            config.fonts.forEach { (name, config) ->
+            game.config.fonts.forEach { (name, config) ->
                 loadFont(name, config)
             }
             remainingJobs.decrementAndGet()

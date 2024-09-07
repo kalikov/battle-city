@@ -10,7 +10,7 @@ import kotlin.test.assertIs
 class OnePlayerMenuItemTest {
     @Test
     fun `should start stage scene on execute`() {
-        val eventManager: EventManager = mock()
+        val game = mockGame()
         val stageManager: StageManager = mock()
 
         whenever(stageManager.stage).thenReturn(
@@ -25,14 +25,14 @@ class OnePlayerMenuItemTest {
                 emptyList()
             )
         )
-        val player = Player(eventManager)
+        val player = Player(game.eventManager)
         whenever(stageManager.players).thenReturn(listOf(player))
 
-        val item = OnePlayerMenuItem(mock(), eventManager, mock(), stageManager, mock(), mock())
+        val item = OnePlayerMenuItem(game, stageManager, mock(), mock())
         item.execute()
 
         val captor = argumentCaptor<Scene.Start>()
-        verify(eventManager).fireEvent(captor.capture())
+        verify(game.eventManager).fireEvent(captor.capture())
 
         val event = captor.firstValue
         assertIs<StageScene>(event.sceneFactory())

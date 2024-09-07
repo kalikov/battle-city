@@ -3,8 +3,7 @@ package com.kalikov.game
 import java.time.Clock
 
 class PlayerTankFactory(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
     private val appearPosition: Point,
@@ -23,7 +22,7 @@ class PlayerTankFactory(
         private set
 
     init {
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     fun init(upgradeLevel: Int) {
@@ -51,17 +50,16 @@ class PlayerTankFactory(
 
     private fun create(): PlayerTank {
         val tank = PlayerTank.create(
-            eventManager,
+            game,
             pauseManager,
-            imageManager,
             clock,
             appearPosition.x,
             appearPosition.y,
             player,
         )
         spriteContainer.addSprite(tank)
-        tank.state = TankStateAppearing(eventManager, imageManager, tank, 48)
-        eventManager.fireEvent(PlayerTankCreated(tank))
+        tank.state = TankStateAppearing(game.eventManager, game.imageManager, tank, 48)
+        game.eventManager.fireEvent(PlayerTankCreated(tank))
         return tank
     }
 
@@ -76,6 +74,6 @@ class PlayerTankFactory(
     fun dispose() {
         playerTank?.dispose()
 
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

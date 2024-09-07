@@ -79,7 +79,7 @@ class BulletFactoryTest {
         val imageManager = TestImageManager(fonts)
         val factory = BulletFactory(mock(), spriteContainer)
 
-        val tank = mockPlayerTank(imageManager = imageManager, x = tankPosition.x, y = tankPosition.y)
+        val tank = mockPlayerTank(mockGame(imageManager = imageManager), x = tankPosition.x, y = tankPosition.y)
         tank.direction = direction
 
         factory.notify(Tank.Shoot(tank))

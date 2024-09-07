@@ -3,7 +3,6 @@ package com.kalikov.game
 import java.time.Clock
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
-import kotlin.math.min
 
 class MovementController(
     private val eventManager: EventManager,
@@ -65,7 +64,7 @@ class MovementController(
                 } else if (sprite is Wall && bullet.bounds.intersects(sprite.hitRect)) {
                     sprite.hit(bullet)
                     explode = true
-                } else if (sprite is Tank && bullet.bounds.intersects(sprite.bounds) && !tankHit) {
+                } else if (sprite is Tank && bullet.bounds.intersects(sprite.hitRect) && !tankHit) {
                     if (isBulletCollidable(bullet, sprite)) {
                         explode = if (sprite.canBeDestroyed) {
                             sprite.hit(bullet)
@@ -113,13 +112,13 @@ class MovementController(
         if (!tank.isIdle || isSlippingMove) {
             when (tank) {
                 is EnemyTank -> {
-                    if (tank.move { !hasCollisionForEnemyTank(tank) }) {
+                    if (tank.move { !hasCollisionForTank(tank) }) {
                         detectBulletCollisionForTank(tank)
                     }
                 }
 
                 is PlayerTank -> {
-                    if (tank.move { !hasCollisionForPlayerTank(tank) }) {
+                    if (tank.move { !hasCollisionForTank(tank) }) {
                         detectPowerUpCollisionForTank(tank)
                         detectBulletCollisionForTank(tank)
                         if (isTankOnIce(tank)) {
@@ -136,22 +135,9 @@ class MovementController(
     }
 
     private fun detectPowerUpCollisionForTank(tank: PlayerTank) {
-        // reduced rectangle is used
-        val reduction = Bullet.SIZE
-        var left = tank.left
-        var right = tank.right
-        var top = tank.top
-        var bottom = tank.bottom
-        when (tank.direction) {
-            Direction.UP -> top += reduction
-            Direction.LEFT -> left += reduction
-            Direction.DOWN -> bottom -= reduction
-            Direction.RIGHT -> right -= reduction
-        }
         spriteContainer.iterateWhile { sprite ->
             if (sprite is PowerUp) {
-                val rect = sprite.bounds
-                if (left <= rect.right && right >= rect.left && top <= rect.bottom && bottom >= rect.top) {
+                if (sprite.bounds.intersects(tank.hitRect)) {
                     sprite.pick(tank)
                 }
                 return@iterateWhile false
@@ -162,7 +148,7 @@ class MovementController(
 
     private fun detectBulletCollisionForTank(tank: Tank) {
         spriteContainer.iterateWhile { sprite ->
-            if (sprite is Bullet && isBulletCollision(sprite, tank) && tank.bounds.intersects(sprite.bounds)) {
+            if (sprite is Bullet && isBulletCollision(sprite, tank) && tank.hitRect.intersects(sprite.bounds)) {
                 if (tank.canBeDestroyed) {
                     tank.hit(sprite)
                 }
@@ -175,18 +161,7 @@ class MovementController(
         }
     }
 
-    private fun hasCollisionForEnemyTank(tank: Tank): Boolean {
-        return hasCollisionForTank(tank, this::isCollisionForEnemyTank)
-    }
-
-    private fun hasCollisionForPlayerTank(tank: Tank): Boolean {
-        return hasCollisionForTank(tank, this::isCollisionForPlayerTank)
-    }
-
-    private inline fun hasCollisionForTank(
-        tank: Tank,
-        crossinline isCollisionFunction: (Tank, Sprite, Int, Int) -> Boolean
-    ): Boolean {
+    private fun hasCollisionForTank(tank: Tank): Boolean {
         when (tank.direction) {
             Direction.UP -> {
                 if (tank.y - 1 < bounds.top) {
@@ -194,7 +169,7 @@ class MovementController(
                 }
                 return !spriteContainer.iterateWhile { sprite ->
                     if (tank !== sprite && !sprite.isDestroyed && sprite.y < tank.y) {
-                        if (isCollisionFunction(tank, sprite, 0, -1)) {
+                        if (isCollisionForTank(tank, sprite, 0, -1)) {
                             return@iterateWhile false
                         }
                     }
@@ -208,7 +183,7 @@ class MovementController(
                 }
                 return !spriteContainer.iterateWhile { sprite ->
                     if (tank !== sprite && !sprite.isDestroyed && sprite.x < tank.x) {
-                        if (isCollisionFunction(tank, sprite, -1, 0)) {
+                        if (isCollisionForTank(tank, sprite, -1, 0)) {
                             return@iterateWhile false
                         }
                     }
@@ -222,7 +197,7 @@ class MovementController(
                 }
                 return !spriteContainer.iterateWhile { sprite ->
                     if (tank !== sprite && !sprite.isDestroyed && sprite.bottom > tank.bottom) {
-                        if (isCollisionFunction(tank, sprite, 0, 1)) {
+                        if (isCollisionForTank(tank, sprite, 0, 1)) {
                             return@iterateWhile false
                         }
                     }
@@ -236,7 +211,7 @@ class MovementController(
                 }
                 return !spriteContainer.iterateWhile { sprite ->
                     if (tank !== sprite && !sprite.isDestroyed && sprite.right > tank.right) {
-                        if (isCollisionFunction(tank, sprite, 1, 0)) {
+                        if (isCollisionForTank(tank, sprite, 1, 0)) {
                             return@iterateWhile false
                         }
                     }
@@ -257,31 +232,20 @@ class MovementController(
         return firmArea <= area / 2
     }
 
-    private fun isCollisionForEnemyTank(enemy: Tank, sprite: Sprite, dx: Int, dy: Int): Boolean {
+    private fun isCollisionForTank(tank: Tank, sprite: Sprite, dx: Int, dy: Int): Boolean {
         val isStaticCollision = isWallCollision(sprite) || isBaseCollision(sprite) || isWaterCollision(sprite)
-        return isStaticCollision && intersects(enemy, sprite, dx, dy)
-                || isTankCollision(sprite) && isEnemyIntersectingTank(enemy, sprite, dx, dy)
+        return isStaticCollision && intersects(tank.bounds, sprite.bounds, dx, dy)
+                || isTankCollision(sprite) && intersects(
+            tank.bounds,
+            sprite.hitRect,
+            dx,
+            dy
+        )
     }
 
-    private fun isCollisionForPlayerTank(enemy: Tank, sprite: Sprite, dx: Int, dy: Int): Boolean {
-        return (isWallCollision(sprite) || isBaseCollision(sprite) || isWaterCollision(sprite) || isTankCollision(sprite))
-                && intersects(enemy, sprite, dx, dy)
-    }
-
-    private fun isEnemyIntersectingTank(enemy: Tank, tank: Tank, dx: Int, dy: Int): Boolean {
-        return tank !is PlayerTank && intersects(enemy, tank, dx, dy)
-                || tank is PlayerTank && intersectsPlayer(enemy, tank, dx, dy)
-    }
-
-    private fun intersects(tank: Tank, sprite: Sprite, dx: Int, dy: Int): Boolean {
-        return tank.left + dx <= sprite.right && tank.right + dx >= sprite.left &&
-                tank.top + dy <= sprite.bottom && tank.bottom + dy >= sprite.top
-    }
-
-    private fun intersectsPlayer(tank: Tank, player: Tank, dx: Int, dy: Int): Boolean {
-        val shrink = min((Globals.UNIT_SIZE - Bullet.SIZE) / 2, Tank.SIZE)
-        return tank.left + dx <= player.right - shrink && tank.right + dx >= player.left + shrink &&
-                tank.top + dy <= player.bottom - shrink && tank.bottom + dy >= player.top + shrink
+    private fun intersects(rect1: Rect, rect2: Rect, dx: Int, dy: Int): Boolean {
+        return rect1.left + dx <= rect2.right && rect1.right + dx >= rect2.left &&
+                rect1.top + dy <= rect2.bottom && rect1.bottom + dy >= rect2.top
     }
 
     private fun isWallCollision(target: Sprite) = target is Wall

@@ -3,31 +3,28 @@ package com.kalikov.game
 import java.time.Clock
 
 class EnemyTank private constructor(
-    eventManager: EventManager,
+    game: Game,
     pauseManager: PauseManager,
-    imageManager: ImageManager,
     clock: Clock,
     x: Int,
     y: Int,
     val enemyType: EnemyType,
 ) : Tank(
-    eventManager,
+    game,
     pauseManager,
-    imageManager,
     clock,
     x,
     y
 ) {
     companion object {
         fun create(
-            eventManager: EventManager,
+            game: Game,
             pauseManager: PauseManager,
-            imageManager: ImageManager,
             clock: Clock,
             x: Int,
             y: Int,
             enemyType: EnemyType,
-        ) = init(EnemyTank(eventManager, pauseManager, imageManager, clock, x, y, enemyType))
+        ) = init(EnemyTank(game, pauseManager, clock, x, y, enemyType))
     }
 
     data class Score(val tank: EnemyTank, val player: Player) : Event()
@@ -57,7 +54,7 @@ class EnemyTank private constructor(
     val isHit get() = hit > 0
 
     override fun stateAppearingEnd() {
-        state = TankStateNormal(imageManager, this)
+        state = TankStateNormal(game.imageManager, this)
         direction = Direction.DOWN
     }
 
@@ -76,8 +73,8 @@ class EnemyTank private constructor(
             destroy()
             val bulletTank = bullet.tank
             if (bulletTank is PlayerTank) {
-                eventManager.fireEvent(Player.Score(bulletTank.player, this.value))
-                eventManager.fireEvent(Score(this, bulletTank.player))
+                game.eventManager.fireEvent(Player.Score(bulletTank.player, this.value))
+                game.eventManager.fireEvent(Score(this, bulletTank.player))
             }
         }
     }

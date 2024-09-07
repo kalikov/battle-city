@@ -3,8 +3,7 @@ package com.kalikov.game
 import java.time.Clock
 
 class EnemyFactory(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
     private val positions: List<Point>,
@@ -25,7 +24,7 @@ class EnemyFactory(
     }
 
     init {
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     var flashingIndices = setOf(4, 11, 18)
@@ -43,7 +42,7 @@ class EnemyFactory(
     private var enemies = emptyArray<EnemyTank.EnemyType>()
     private var enemyIndex = 0
 
-    private val timer = PauseAwareTimer(eventManager, clock, interval, ::create)
+    private val timer = PauseAwareTimer(game.eventManager, clock, interval, ::create)
 
     private val flashingTanks = HashSet<Tank>(flashingIndices.size)
 
@@ -103,13 +102,13 @@ class EnemyFactory(
             flashingTanks.add(tank)
         }
         enemiesToCreateCount--
-        eventManager.fireEvent(EnemyCreated(tank, isFlashing))
+        game.eventManager.fireEvent(EnemyCreated(tank, isFlashing))
         return tank
     }
 
     private fun createEnemy(type: EnemyTank.EnemyType, position: Point): EnemyTank {
-        val tank = EnemyTank.create(eventManager, pauseManager, imageManager, clock, position.x, position.y, type)
-        tank.state = TankStateAppearing(eventManager, imageManager, tank)
+        val tank = EnemyTank.create(game, pauseManager, clock, position.x, position.y, type)
+        tank.state = TankStateAppearing(game.eventManager, game.imageManager, tank)
 
         when (type) {
             EnemyTank.EnemyType.BASIC -> {
@@ -149,11 +148,11 @@ class EnemyFactory(
                 enemyCount--
             }
             if (event.explosion.tank is EnemyTank && enemyCount <= 0 && enemiesToCreateCount == 0) {
-                eventManager.fireEvent(LastEnemyDestroyed)
+                game.eventManager.fireEvent(LastEnemyDestroyed)
             }
         } else if (event is Tank.Hit) {
             if (flashingTanks.remove(event.tank)) {
-                eventManager.fireEvent(FlashingTankHit)
+                game.eventManager.fireEvent(FlashingTankHit)
             }
         }
     }
@@ -161,6 +160,6 @@ class EnemyFactory(
     fun dispose() {
         timer.dispose()
 
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

@@ -10,31 +10,31 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class TankExplosionFactoryTest {
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var factory: TankExplosionFactory
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        game = mockGame()
         spriteContainer = mock()
-        factory = TankExplosionFactory(eventManager, mock(), spriteContainer)
+        factory = TankExplosionFactory(game.eventManager, mock(), spriteContainer)
     }
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(factory, setOf(Tank.Destroyed::class))
+        verify(game.eventManager).addSubscriber(factory, setOf(Tank.Destroyed::class))
     }
 
     @Test
     fun `should unsubscribe`() {
         factory.dispose()
-        verify(eventManager).removeSubscriber(factory, setOf(Tank.Destroyed::class))
+        verify(game.eventManager).removeSubscriber(factory, setOf(Tank.Destroyed::class))
     }
 
     @Test
     fun `should create explosion when tank is destroyed`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         factory.notify(Tank.Destroyed(tank))
 
         verify(spriteContainer).addSprite(isA<TankExplosion>())
@@ -42,7 +42,7 @@ class TankExplosionFactoryTest {
 
     @Test
     fun `should correctly place created explosion`() {
-        val tank = mockPlayerTank(eventManager, x = 5, y = 6)
+        val tank = mockPlayerTank(game, x = 5, y = 6)
         factory.notify(Tank.Destroyed(tank))
 
         val captor = argumentCaptor<TankExplosion>()

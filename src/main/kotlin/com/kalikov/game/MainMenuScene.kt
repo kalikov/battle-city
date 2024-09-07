@@ -3,9 +3,7 @@ package com.kalikov.game
 import java.time.Clock
 
 class MainMenuScene(
-    screen: Screen,
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val stageManager: StageManager,
     entityFactory: EntityFactory,
     clock: Clock
@@ -30,7 +28,7 @@ class MainMenuScene(
 
     private val arriveTimer = BasicTimer(clock, INTERVAL, this::updatePosition)
 
-    private val brickBlending = object : TextureBlending(imageManager.getImage("wall_brick")) {
+    private val brickBlending = object : TextureBlending(game.imageManager.getImage("wall_brick")) {
         override fun blend(dst: ARGB, src: ARGB, x: Int, y: Int): ARGB {
             val pixel = super.blend(dst, src, x, y - top)
             if (pixel == ARGB.rgb(0x636363)) {
@@ -40,25 +38,25 @@ class MainMenuScene(
         }
     }
 
-    private val namco = imageManager.getImage("namco")
+    private val namco = game.imageManager.getImage("namco")
 
     init {
         LeaksDetector.add(this)
 
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
 
         arriveTimer.restart()
 
         mainMenu = MainMenu(
-            OnePlayerMenuItem(screen, eventManager, imageManager, stageManager, entityFactory, clock),
-            TwoPlayersMenuItem(screen, eventManager, imageManager, stageManager, entityFactory, clock),
-            ConstructionMenuItem(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+            OnePlayerMenuItem(game, stageManager, entityFactory, clock),
+            TwoPlayersMenuItem(game, stageManager, entityFactory, clock),
+            ConstructionMenuItem(game, stageManager, entityFactory, clock)
         )
 
-        mainMenuController = MainMenuController(eventManager, mainMenu)
+        mainMenuController = MainMenuController(game.eventManager, mainMenu)
         mainMenuController.isActive = false
 
-        cursorView = MainMenuCursorView(imageManager, clock)
+        cursorView = MainMenuCursorView(game.imageManager, clock)
         mainMenuView = MainMenuView(mainMenu, cursorView)
     }
 
@@ -107,7 +105,7 @@ class MainMenuScene(
             brickBlending
         )
 
-        surface.draw(2 * Globals.TILE_SIZE + 2, top + 3 * Globals.TILE_SIZE, imageManager.getImage("roman_one"))
+        surface.draw(2 * Globals.TILE_SIZE + 2, top + 3 * Globals.TILE_SIZE, game.imageManager.getImage("roman_one"))
         surface.fillRect(3 * Globals.TILE_SIZE + 1, top + 3 * Globals.TILE_SIZE + 3, 6, 2, ARGB.WHITE)
         surface.fillText(
             "${stageManager.players[0].previousScore / 10}".padStart(6, ' ') + "0",
@@ -118,7 +116,7 @@ class MainMenuScene(
         )
 
         if (stageManager.players.size > 1) {
-            surface.draw(21 * Globals.TILE_SIZE + 2, top + 3 * Globals.TILE_SIZE, imageManager.getImage("roman_two"))
+            surface.draw(21 * Globals.TILE_SIZE + 2, top + 3 * Globals.TILE_SIZE, game.imageManager.getImage("roman_two"))
             surface.fillRect(22 * Globals.TILE_SIZE + 1, top + 3 * Globals.TILE_SIZE + 3, 6, 2, ARGB.WHITE)
             surface.fillText(
                 "${stageManager.players[1].previousScore / 10}".padStart(6, ' ') + "0",
@@ -142,7 +140,7 @@ class MainMenuScene(
             ARGB.rgb(0xB53121).and(src).over(dst)
         }
 
-        surface.draw(4 * Globals.TILE_SIZE, top + 25 * Globals.TILE_SIZE, imageManager.getImage("copyright"))
+        surface.draw(4 * Globals.TILE_SIZE, top + 25 * Globals.TILE_SIZE, game.imageManager.getImage("copyright"))
         surface.fillText(
             NAMCO_LTD,
             6 * Globals.TILE_SIZE + 1,
@@ -192,7 +190,7 @@ class MainMenuScene(
         mainMenuController.dispose()
         cursorView.dispose()
 
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
     }

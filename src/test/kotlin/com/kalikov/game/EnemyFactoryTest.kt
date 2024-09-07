@@ -394,8 +394,7 @@ class EnemyFactoryTest {
         interval: Int = 3000
     ): EnemyFactory {
         return EnemyFactory(
-            eventManager,
-            mock(),
+            mockGame(eventManager = eventManager),
             pauseManager,
             spriteContainer,
             positions,

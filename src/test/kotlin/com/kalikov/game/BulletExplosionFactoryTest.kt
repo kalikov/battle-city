@@ -20,7 +20,7 @@ class BulletExplosionFactoryTest {
         spriteContainer = mock()
         explosionFactory = BulletExplosionFactory(eventManager, mock(), spriteContainer, mock())
 
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(mockGame(eventManager = eventManager))
         bullet = tank.createBullet()
     }
 

@@ -18,7 +18,7 @@ class PowerUpTest {
 
     @Test
     fun `should destroy on pick`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(mockGame(eventManager = eventManager))
         powerUp.pick(tank)
 
         assertTrue(powerUp.isDestroyed)

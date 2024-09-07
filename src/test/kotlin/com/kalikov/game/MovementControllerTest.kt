@@ -14,7 +14,7 @@ class MovementControllerTest {
     private val updateInterval = 8L
 
     private lateinit var clock: TestClock
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var pauseManager: PauseManager
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var movementController: MovementController
@@ -22,11 +22,11 @@ class MovementControllerTest {
     @BeforeEach
     fun beforeEach() {
         clock = TestClock()
-        eventManager = mock()
+        game = mockGame()
         pauseManager = mock()
         spriteContainer = mock()
         movementController = MovementController(
-            eventManager,
+            game.eventManager,
             pauseManager,
             Rect(0, 0, Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT),
             spriteContainer,
@@ -36,11 +36,11 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should hit base on bullet movement`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         tank.direction = Direction.RIGHT
         val bullet = tank.createBullet()
 
-        val base = Base(eventManager, mock(), Globals.UNIT_SIZE, 0)
+        val base = Base(game.eventManager, mock(), Globals.UNIT_SIZE, 0)
 
         mockSprites(listOf(base, tank, bullet))
 
@@ -54,11 +54,11 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should hit wall on bullet movement`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         tank.direction = Direction.RIGHT
         val bullet = tank.createBullet()
 
-        val wall = mockBrickWall(eventManager, x = Globals.UNIT_SIZE, y = 0)
+        val wall = mockBrickWall(game.eventManager, x = Globals.UNIT_SIZE, y = 0)
 
         mockSprites(listOf(wall, tank, bullet))
 
@@ -72,10 +72,10 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should hit enemy tank on bullet movement`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         tank.direction = Direction.RIGHT
 
-        val enemyTank = mockEnemyTank(eventManager, x = Globals.UNIT_SIZE, y = 0)
+        val enemyTank = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
 
         val bullet = tank.createBullet()
 
@@ -91,12 +91,12 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should hit only one enemy tank on bullet movement`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         tank.direction = Direction.RIGHT
 
-        val enemyTank1 = mockEnemyTank(eventManager, x = Globals.UNIT_SIZE, y = 0)
-        val enemyTank2 = mockEnemyTank(eventManager, x = Globals.UNIT_SIZE, y = 0)
-        val enemyTank3 = mockEnemyTank(eventManager, x = Globals.UNIT_SIZE, y = 0)
+        val enemyTank1 = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
+        val enemyTank2 = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
+        val enemyTank3 = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
 
         val bullet = tank.createBullet()
 
@@ -114,10 +114,10 @@ class MovementControllerTest {
 
     @Test
     fun `enemy bullet should go through enemy tank on bullet movement`() {
-        val tank1 = mockEnemyTank(eventManager)
+        val tank1 = mockEnemyTank(game)
         tank1.direction = Direction.RIGHT
 
-        val tank2 = mockEnemyTank(eventManager, x = Globals.UNIT_SIZE, y = 0)
+        val tank2 = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
 
         val bullet = tank1.createBullet()
 
@@ -134,11 +134,11 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should not hit invincible tank on bullet movement`() {
-        val enemyTank = mockEnemyTank(eventManager)
+        val enemyTank = mockEnemyTank(game)
         enemyTank.direction = Direction.RIGHT
 
-        val playerTank = mockPlayerTank(eventManager, x = Globals.UNIT_SIZE, y = 0)
-        playerTank.state = TankStateInvincible(eventManager, mock(), playerTank)
+        val playerTank = mockPlayerTank(game, x = Globals.UNIT_SIZE, y = 0)
+        playerTank.state = TankStateInvincible(game.eventManager, mock(), playerTank)
 
         val bullet = enemyTank.createBullet()
 
@@ -155,11 +155,11 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should go through appearing tank on bullet movement`() {
-        val enemyTank = mockEnemyTank(eventManager)
+        val enemyTank = mockEnemyTank(game)
         enemyTank.direction = Direction.RIGHT
 
-        val playerTank = mockPlayerTank(eventManager, x = Globals.UNIT_SIZE, y = 0)
-        playerTank.state = TankStateAppearing(eventManager, mock(), playerTank)
+        val playerTank = mockPlayerTank(game, x = Globals.UNIT_SIZE, y = 0)
+        playerTank.state = TankStateAppearing(game.eventManager, mock(), playerTank)
 
         val bullet = enemyTank.createBullet()
 
@@ -175,10 +175,10 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should hit player tank on bullet movement`() {
-        val enemyTank = mockEnemyTank(eventManager)
+        val enemyTank = mockEnemyTank(game)
         enemyTank.direction = Direction.RIGHT
 
-        val playerTank = mockPlayerTank(eventManager, x = Globals.UNIT_SIZE, y = 0)
+        val playerTank = mockPlayerTank(game, x = Globals.UNIT_SIZE, y = 0)
 
         val bullet = enemyTank.createBullet()
 
@@ -194,12 +194,12 @@ class MovementControllerTest {
 
     @Test
     fun `enemy bullet should go through enemy bullet`() {
-        val tank = mockEnemyTank(eventManager)
+        val tank = mockEnemyTank(game)
         tank.direction = Direction.RIGHT
 
         val bullet = tank.createBullet()
 
-        val otherTank = mockEnemyTank(eventManager, x = Globals.UNIT_SIZE + Bullet.SIZE, y = 0)
+        val otherTank = mockEnemyTank(game, x = Globals.UNIT_SIZE + Bullet.SIZE, y = 0)
         otherTank.direction = Direction.LEFT
 
         val otherBullet = otherTank.createBullet()
@@ -218,12 +218,12 @@ class MovementControllerTest {
 
     @Test
     fun `player bullet should hit enemy bullet`() {
-        val player = mockPlayerTank(eventManager)
+        val player = mockPlayerTank(game)
         player.direction = Direction.RIGHT
 
         val playerBullet = player.createBullet()
 
-        val tank = mockEnemyTank(eventManager, x = Globals.UNIT_SIZE + Bullet.SIZE, y = 0)
+        val tank = mockEnemyTank(game, x = Globals.UNIT_SIZE + Bullet.SIZE, y = 0)
         tank.direction = Direction.LEFT
 
         val bullet = tank.createBullet()
@@ -244,7 +244,7 @@ class MovementControllerTest {
 
     @Test
     fun `should move normal bullet`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         tank.direction = Direction.RIGHT
         tank.bulletSpeed = Bullet.Speed.NORMAL
 
@@ -262,7 +262,7 @@ class MovementControllerTest {
 
     @Test
     fun `should move fast bullet`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         tank.direction = Direction.RIGHT
         tank.bulletSpeed = Bullet.Speed.FAST
 
@@ -282,7 +282,7 @@ class MovementControllerTest {
     fun `should not move bullet when paused`() {
         whenever(pauseManager.isPaused).thenReturn(true)
 
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         tank.direction = Direction.RIGHT
         tank.bulletSpeed = Bullet.Speed.FAST
 
@@ -302,11 +302,11 @@ class MovementControllerTest {
 
     @Test
     fun `tank should collide wall on tank movement left`() {
-        val tank = mockPlayerTank(eventManager, x = Globals.TILE_SIZE - 2, y = 0)
+        val tank = mockPlayerTank(game, x = Globals.TILE_SIZE - 2, y = 0)
         tank.moveFrequency = 1
         tank.direction = Direction.LEFT
         tank.isIdle = false
-        val wall = mockBrickWall(eventManager)
+        val wall = mockBrickWall(game.eventManager)
 
         mockSprites(listOf(wall, tank))
 
@@ -319,9 +319,9 @@ class MovementControllerTest {
 
     @Test
     fun `tank should pick power up on tank movement`() {
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         tank.isIdle = false
-        val powerUp = mockPowerUp(eventManager)
+        val powerUp = mockPowerUp(game.eventManager)
 
         mockSprites(listOf(tank, powerUp))
 
@@ -330,15 +330,15 @@ class MovementControllerTest {
         movementController.update()
 
         assertTrue(powerUp.isDestroyed)
-        verify(eventManager).fireEvent(PowerUp.Pick(powerUp, tank))
+        verify(game.eventManager).fireEvent(PowerUp.Pick(powerUp, tank))
     }
 
     @Test
     fun `tanks should overlap when one is out of bounds`() {
-        val tank1 = mockPlayerTank(eventManager, x = 0, y = -8)
+        val tank1 = mockPlayerTank(game, x = 0, y = -8)
         tank1.direction = Direction.DOWN
         tank1.isIdle = false
-        val tank2 = mockPlayerTank(eventManager)
+        val tank2 = mockPlayerTank(game)
 
         mockSprites(listOf(tank1, tank2))
 

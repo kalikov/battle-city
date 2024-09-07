@@ -16,7 +16,14 @@ class EnemyTankTest : TankTest<EnemyTank>() {
     private val flashInterval = 128
 
     override fun createTank(): EnemyTank {
-        return EnemyTank.create(eventManager, mock(), imageManager, clock, 0, 0, EnemyTank.EnemyType.BASIC)
+        return EnemyTank.create(
+            mockGame(mock(), eventManager, imageManager),
+            mock(),
+            clock,
+            0,
+            0,
+            EnemyTank.EnemyType.BASIC
+        )
     }
 
     @Test
@@ -96,8 +103,7 @@ class EnemyTankTest : TankTest<EnemyTank>() {
     fun `should not pause flashing`() {
         eventManager = ConcurrentEventManager()
         val pauseListener = PauseListener(eventManager)
-        val pauseManager = pauseListener
-        tank = mockEnemyTank(eventManager, pauseManager, clock = clock)
+        tank = mockEnemyTank(mockGame(eventManager = eventManager), pauseListener, clock = clock)
         val state = TankStateInvincible(eventManager, mock(), tank, 10)
         tank.state = state
         tank.color.colors = arrayOf(EnemyFactory.FLASHING_COLORS)

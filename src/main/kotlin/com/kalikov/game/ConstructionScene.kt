@@ -3,9 +3,7 @@ package com.kalikov.game
 import java.time.Clock
 
 class ConstructionScene(
-    private val screen: Screen,
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
     private val clock: Clock
@@ -17,6 +15,7 @@ class ConstructionScene(
         )
     }
 
+    @Suppress("JoinDeclarationAndAssignment")
     val spriteContainer: SpriteContainer
 
     val cursor: Cursor
@@ -29,15 +28,15 @@ class ConstructionScene(
     private val enemyPositions: List<Point>
 
     init {
-        spriteContainer = DefaultSpriteContainer(eventManager)
-        gameField = GameField(eventManager, imageManager, entityFactory, spriteContainer)
+        spriteContainer = DefaultSpriteContainer(game.eventManager)
+        gameField = GameField(game.eventManager, game.imageManager, entityFactory, spriteContainer)
 
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
 
-        cursor = Cursor(eventManager, imageManager, Builder(eventManager, imageManager, clock), clock)
+        cursor = Cursor(game.eventManager, game.imageManager, Builder(game.eventManager, game.imageManager, clock), clock)
         cursor.setPosition(Point(gameField.bounds.x, gameField.bounds.y))
 
-        cursorController = CursorController(eventManager, cursor, gameField.bounds, clock)
+        cursorController = CursorController(game.eventManager, cursor, gameField.bounds, clock)
 
         spriteContainer.addSprite(cursor)
 
@@ -46,8 +45,8 @@ class ConstructionScene(
         playerPositions = map.playerSpawnPoints
         enemyPositions = map.enemySpawnPoints
         val base = Base(
-            eventManager,
-            imageManager,
+            game.eventManager,
+            game.imageManager,
             gameField.bounds.x + map.base.x * Globals.TILE_SIZE,
             gameField.bounds.y + map.base.y * Globals.TILE_SIZE
         )
@@ -92,13 +91,13 @@ class ConstructionScene(
     private fun keyPressed(key: Keyboard.Key) {
         if (key == Keyboard.Key.START) {
             cursor.destroy()
-            val surface = screen.createSurface(screen.surface.width, screen.surface.height)
+            val surface = game.screen.createSurface(game.screen.surface.width, game.screen.surface.height)
             draw(surface)
 
             stageManager.constructionMap = createConstructionMapConfig()
             stageManager.curtainBackground = surface
-            eventManager.fireEvent(Scene.Start {
-                val mainMenu = MainMenuScene(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+            game.eventManager.fireEvent(Scene.Start {
+                val mainMenu = MainMenuScene(game, stageManager, entityFactory, clock)
                 mainMenu.setMenuItem(2)
                 mainMenu.arrived()
                 mainMenu
@@ -135,7 +134,7 @@ class ConstructionScene(
     override fun destroy() {
         cursorController.dispose()
 
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
 
         spriteContainer.dispose()
     }

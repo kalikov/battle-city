@@ -17,9 +17,8 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class LevelTest {
-    private lateinit var screen: Screen
+    private lateinit var game: Game
     private lateinit var eventManager: EventManager
-    private lateinit var imageManager: ImageManager
     private lateinit var stageManager: StageManager
     private lateinit var entityFactory: EntityFactory
 
@@ -29,11 +28,10 @@ class LevelTest {
 
     @BeforeEach
     fun beforeEach() {
-        screen = mock()
-        whenever(screen.createSurface()).thenReturn(mock())
+        game = mockGame()
+        whenever(game.screen.createSurface()).thenReturn(mock())
 
-        eventManager = mock()
-        imageManager = mock()
+        eventManager = game.eventManager
 
         stageManager = mock()
         val stage = Stage(
@@ -54,7 +52,7 @@ class LevelTest {
 
         clock = TestClock()
 
-        level = Level(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+        level = Level(game, stageManager, entityFactory, clock)
     }
 
     @Test
@@ -127,7 +125,7 @@ class LevelTest {
 
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
-        level = Level(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+        level = Level(game, stageManager, entityFactory, clock)
 
         reset(eventManager)
         level.start()

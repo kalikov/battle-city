@@ -3,9 +3,7 @@ package com.kalikov.game
 import java.time.Clock
 
 class Level(
-    private val screen: Screen,
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
     private val clock: Clock
@@ -22,7 +20,7 @@ class Level(
 
     private var visible = false
 
-    private val pauseListener = PauseListener(eventManager)
+    private val pauseListener = PauseListener(game.eventManager)
 
     private val playersTankControllerFactories: List<PlayerTankControllerFactory>
     private val playersTankFactories: List<PlayerTankFactory>
@@ -71,13 +69,13 @@ class Level(
 
         pauseListener.isActive = false
 
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
 
-        spriteContainer = DefaultSpriteContainer(eventManager)
-        gameField = GameField(eventManager, imageManager, entityFactory, spriteContainer)
+        spriteContainer = DefaultSpriteContainer(game.eventManager)
+        gameField = GameField(game.eventManager, game.imageManager, entityFactory, spriteContainer)
 
         movementController = MovementController(
-            eventManager,
+            game.eventManager,
             pauseListener,
             gameField.bounds,
             spriteContainer,
@@ -85,15 +83,14 @@ class Level(
         )
 
         playersTankControllerFactories = stageManager.players.map { player ->
-            PlayerTankControllerFactory(eventManager, pauseListener, player)
+            PlayerTankControllerFactory(game.eventManager, pauseListener, player)
         }
 
         val stage = stageManager.stage
 
         playersTankFactories = stageManager.players.mapIndexed { index, player ->
             PlayerTankFactory(
-                eventManager,
-                imageManager,
+                game,
                 pauseListener,
                 spriteContainer,
                 stage.map.playerSpawnPoints[index].multiply(Globals.TILE_SIZE)
@@ -103,24 +100,23 @@ class Level(
             )
         }
 
-        bulletFactory = BulletFactory(eventManager, spriteContainer)
-        bulletExplosionFactory = BulletExplosionFactory(eventManager, imageManager, spriteContainer, clock)
-        tankExplosionFactory = TankExplosionFactory(eventManager, imageManager, spriteContainer)
-        baseExplosionFactory = BaseExplosionFactory(eventManager, imageManager, spriteContainer, clock)
-        pointsFactory = PointsFactory(eventManager, imageManager, spriteContainer, clock)
-        freezeHandler = FreezeHandler(eventManager, clock)
+        bulletFactory = BulletFactory(game.eventManager, spriteContainer)
+        bulletExplosionFactory = BulletExplosionFactory(game.eventManager, game.imageManager, spriteContainer, clock)
+        tankExplosionFactory = TankExplosionFactory(game.eventManager, game.imageManager, spriteContainer)
+        baseExplosionFactory = BaseExplosionFactory(game.eventManager, game.imageManager, spriteContainer, clock)
+        pointsFactory = PointsFactory(game.eventManager, game.imageManager, spriteContainer, clock)
+        freezeHandler = FreezeHandler(game.eventManager, clock)
 
         val basePosition = stage.map.base.multiply(Globals.TILE_SIZE).translate(gameField.bounds.x, gameField.bounds.y)
 
         aiControllersContainer = AITankControllerContainer(
-            eventManager,
+            game.eventManager,
             pauseListener,
             basePosition
         )
 
         enemyFactory = EnemyFactory(
-            eventManager,
-            imageManager,
+            game,
             pauseListener,
             spriteContainer,
             stage.map.enemySpawnPoints.map {
@@ -132,34 +128,34 @@ class Level(
         )
 
         enemyFactoryView = EnemyFactoryView(
-            imageManager,
+            game.imageManager,
             enemyFactory,
             gameField.bounds.right + 1 + Globals.TILE_SIZE,
             gameField.bounds.y + Globals.TILE_SIZE
         )
 
-        powerUpFactory = PowerUpFactory(eventManager, imageManager, spriteContainer, clock, gameField.bounds)
+        powerUpFactory = PowerUpFactory(game.eventManager, game.imageManager, spriteContainer, clock, gameField.bounds)
 
         baseWallBuilder = BaseWallBuilder(
-            eventManager,
+            game.eventManager,
             spriteContainer,
             gameField.bounds,
             basePosition
         )
 
-        powerUpHandler = PowerUpHandler(eventManager, imageManager)
+        powerUpHandler = PowerUpHandler(game.eventManager, game.imageManager)
 
-        shovelHandler = ShovelHandler(eventManager, imageManager, baseWallBuilder, clock)
+        shovelHandler = ShovelHandler(game.eventManager, game.imageManager, baseWallBuilder, clock)
 
         pauseMessageView = PauseMessageView(
-            eventManager,
+            game.eventManager,
             gameField.bounds.x + gameField.bounds.width / 2,
             gameField.bounds.y + gameField.bounds.height / 2,
             clock
         )
 
         livesView = LivesView(
-            imageManager,
+            game.imageManager,
             stageManager.players,
             gameField.bounds.right + 1 + Globals.TILE_SIZE,
             gameField.bounds.bottom + 1 - 5 * Globals.UNIT_SIZE - Globals.TILE_SIZE
@@ -207,7 +203,7 @@ class Level(
                     }
                 }
 
-                val image = screen.createSurface()
+                val image = game.screen.createSurface()
                 draw(image)
 
                 stageManager.curtainBackground = image
@@ -292,12 +288,10 @@ class Level(
     }
 
     private fun startStageScoreScene() {
-        eventManager.fireEvent(
+        game.eventManager.fireEvent(
             Scene.Start {
                 StageScoreScene(
-                    screen,
-                    eventManager,
-                    imageManager,
+                    game,
                     stageManager,
                     entityFactory,
                     statistics,
@@ -309,7 +303,7 @@ class Level(
     }
 
     private fun drawFlag(surface: ScreenSurface) {
-        val flag = imageManager.getImage("flag")
+        val flag = game.imageManager.getImage("flag")
         val x = gameField.bounds.right + 1 + Globals.TILE_SIZE
         val y = gameField.bounds.bottom + 1 - 2 * Globals.UNIT_SIZE - Globals.TILE_SIZE
         surface.draw(x, y, flag)
@@ -348,7 +342,7 @@ class Level(
 
         pauseListener.dispose()
 
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
     }

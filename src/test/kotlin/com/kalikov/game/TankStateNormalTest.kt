@@ -6,21 +6,19 @@ import org.mockito.kotlin.mock
 import kotlin.test.assertTrue
 
 class TankStateNormalTest {
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var pauseManager: PauseManager
-    private lateinit var imageManager: ImageManager
     private lateinit var clock: TestClock
     private lateinit var tank: Tank
     private lateinit var state: TankStateNormal
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        game = mockGame()
         pauseManager = mock()
-        imageManager = mock()
         clock = TestClock()
-        tank = mockPlayerTank(eventManager, pauseManager, imageManager, clock)
-        state = TankStateNormal(imageManager, tank)
+        tank = mockPlayerTank(game, pauseManager, clock)
+        state = TankStateNormal(game.imageManager, tank)
         tank.state = state
     }
 

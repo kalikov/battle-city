@@ -9,25 +9,25 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class ConstructionSceneTest {
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var stageManager: StageManager
 
     private lateinit var constructionScene: ConstructionScene
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        game = mockGame()
         stageManager = mock()
         whenever(stageManager.constructionMap).thenReturn(
             StageMapConfig(emptyList(), Point(), emptyList(), emptyList()),
         )
 
-        constructionScene = ConstructionScene(mock(), eventManager, mock(), stageManager, mock(), mock())
+        constructionScene = ConstructionScene(game, stageManager, mock(), mock())
     }
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(
+        verify(game.eventManager).addSubscriber(
             constructionScene,
             setOf(Keyboard.KeyPressed::class, Builder.StructureCreated::class)
         )
@@ -35,7 +35,7 @@ class ConstructionSceneTest {
 
     @Test
     fun `should add created structure`() {
-        val structure = listOf(BrickWall(eventManager, mock(), 0, 0), BrickWall(eventManager, mock(), 16, 0))
+        val structure = listOf(BrickWall(game.eventManager, mock(), 0, 0), BrickWall(game.eventManager, mock(), 16, 0))
         constructionScene.notify(Builder.StructureCreated(structure, constructionScene.cursor))
 
         for (sprite in structure) {
@@ -45,13 +45,13 @@ class ConstructionSceneTest {
 
     @Test
     fun `should destroy sprite under the cursor`() {
-        val cursor = mockCursor(eventManager = eventManager)
+        val cursor = mockCursor(eventManager = game.eventManager)
         cursor.setPosition(2, 3)
 
-        val wallOne = mockBrickWall(eventManager, x = 2, y = 3)
-        val wallTwo = mockBrickWall(eventManager, x = 6, y = 3)
-        val wallThree = mockBrickWall(eventManager, x = 10, y = 3)
-        val wallFour = mockBrickWall(eventManager, x = 10, y = 7)
+        val wallOne = mockBrickWall(game.eventManager, x = 2, y = 3)
+        val wallTwo = mockBrickWall(game.eventManager, x = 6, y = 3)
+        val wallThree = mockBrickWall(game.eventManager, x = 10, y = 3)
+        val wallFour = mockBrickWall(game.eventManager, x = 10, y = 7)
 
         val structureOne = listOf(wallOne, wallTwo)
         val structureTwo = listOf(wallThree, wallFour)
@@ -67,10 +67,10 @@ class ConstructionSceneTest {
 
     @Test
     fun `should add sprites of structure created`() {
-        val wallOne = mockBrickWall(eventManager)
-        val wallTwo = mockBrickWall(eventManager)
+        val wallOne = mockBrickWall(game.eventManager)
+        val wallTwo = mockBrickWall(game.eventManager)
 
-        val cursor = mockCursor(eventManager = eventManager)
+        val cursor = mockCursor(eventManager = game.eventManager)
 
         constructionScene.notify(Builder.StructureCreated(listOf(wallOne, wallTwo), cursor))
 

@@ -2,7 +2,6 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.mock
 import java.awt.image.BufferedImage
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -10,17 +9,17 @@ import kotlin.test.assertTrue
 
 class BrickWallTest {
     private lateinit var fonts: TestFonts
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var wall: BrickWall
     private lateinit var bullet: Bullet
 
     @BeforeEach
     fun beforeMethod() {
         fonts = TestFonts()
-        eventManager = mock()
-        wall = BrickWall(eventManager, TestImageManager(fonts), 0, 0)
+        game = mockGame()
+        wall = BrickWall(game.eventManager, TestImageManager(fonts), 0, 0)
 
-        val tank = mockPlayerTank(eventManager)
+        val tank = mockPlayerTank(game)
         bullet = tank.createBullet()
     }
 

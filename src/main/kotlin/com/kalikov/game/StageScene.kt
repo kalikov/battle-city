@@ -3,9 +3,7 @@ package com.kalikov.game
 import java.time.Clock
 
 class StageScene(
-    screen: Screen,
-    private val eventManager: EventManager,
-    imageManager: ImageManager,
+    private val game: Game,
     private val stageManager: StageManager,
     entityFactory: EntityFactory,
     clock: Clock
@@ -28,17 +26,17 @@ class StageScene(
             stageMessage.isVisible = true
         })
         if (isFirstStage) {
-            script.enqueue(StageSelect(eventManager, stageManager, script))
+            script.enqueue(StageSelect(game.eventManager, stageManager, script))
         }
         script.enqueue(Execute {
-            eventManager.fireEvent(SoundManager.Play("stage_start"))
+            game.eventManager.fireEvent(SoundManager.Play("stage_start"))
             stageManager.curtainBackground = null
         })
         if (!isFirstStage) {
             script.enqueue(Delay(script, 1300, clock))
         }
         script.enqueue(Execute {
-            val level = Level(screen, eventManager, imageManager, stageManager, entityFactory, clock)
+            val level = Level(game, stageManager, entityFactory, clock)
             this.level = level
             script.enqueue(Execute { level.start() })
             stageMessage.isVisible = false

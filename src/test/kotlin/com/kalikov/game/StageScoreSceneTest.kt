@@ -18,9 +18,7 @@ class StageScoreSceneTest {
 
     @Test
     fun `should draw scene correctly`() {
-        val screen: Screen = mock()
-        val eventManager: EventManager = mock()
-        val imageManager = TestImageManager(fonts)
+        val game = mockGame(imageManager = TestImageManager(fonts))
         val stageManager: StageManager = mock()
         whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
@@ -29,10 +27,16 @@ class StageScoreSceneTest {
         score.increment(createTank(EnemyTank.EnemyType.BASIC))
         score.increment(createTank(EnemyTank.EnemyType.FAST))
 
-        val player = Player(eventManager, initialScore = 25200)
+        val player = Player(game.eventManager, initialScore = 25200)
         whenever(stageManager.players).thenReturn(listOf(player))
-        val scene =
-            StageScoreScene(screen, eventManager, imageManager, stageManager, mock(), listOf(score), false, clock)
+        val scene = StageScoreScene(
+            game,
+            stageManager,
+            mock(),
+            listOf(score),
+            false,
+            clock
+        )
 
         val stage = Stage(
             StageMapConfig(
@@ -60,9 +64,7 @@ class StageScoreSceneTest {
 
     @Test
     fun `should draw two players scene correctly`() {
-        val screen: Screen = mock()
-        val eventManager: EventManager = mock()
-        val imageManager = TestImageManager(fonts)
+        val game = mockGame(imageManager = TestImageManager(fonts))
         val stageManager: StageManager = mock()
         whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
@@ -78,13 +80,11 @@ class StageScoreSceneTest {
         scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
         scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
 
-        val playerOne = Player(eventManager, initialScore = 25200)
-        val playerTwo = Player(eventManager, initialScore = 5600)
+        val playerOne = Player(game.eventManager, initialScore = 25200)
+        val playerTwo = Player(game.eventManager, initialScore = 5600)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
-            screen,
-            eventManager,
-            imageManager,
+            game,
             stageManager,
             mock(),
             listOf(scoreOne, scoreTwo),
@@ -118,9 +118,7 @@ class StageScoreSceneTest {
 
     @Test
     fun `should not draw two players bonus`() {
-        val screen: Screen = mock()
-        val eventManager: EventManager = mock()
-        val imageManager = TestImageManager(fonts)
+        val game = mockGame(imageManager = TestImageManager(fonts))
         val stageManager: StageManager = mock()
         whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
@@ -139,13 +137,11 @@ class StageScoreSceneTest {
         scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
         scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
 
-        val playerOne = Player(eventManager, initialScore = 25200)
-        val playerTwo = Player(eventManager, initialScore = 5600)
+        val playerOne = Player(game.eventManager, initialScore = 25200)
+        val playerTwo = Player(game.eventManager, initialScore = 5600)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
-            screen,
-            eventManager,
-            imageManager,
+            game,
             stageManager,
             mock(),
             listOf(scoreOne, scoreTwo),

@@ -3,14 +3,13 @@ package com.kalikov.game
 import java.time.Clock
 
 sealed class Tank(
-    protected val eventManager: EventManager,
+    protected val game: Game,
     protected val pauseManager: PauseManager,
-    protected val imageManager: ImageManager,
     val clock: Clock,
     x: Int,
     y: Int
 ) : Sprite(
-    eventManager,
+    game.eventManager,
     x,
     y,
     SIZE,
@@ -31,9 +30,33 @@ sealed class Tank(
         protected fun <T : Tank> init(tank: T): T {
             LeaksDetector.add(tank)
 
-            tank.internalState = TankStateNormal(tank.imageManager, tank)
-            tank.eventManager.addSubscriber(tank, subscriptions)
+            tank.internalState = TankStateNormal(tank.game.imageManager, tank)
+            tank.game.eventManager.addSubscriber(tank, subscriptions)
             return tank
+        }
+
+        fun calculateHitRect(bounds: Rect): Rect {
+            var width = bounds.width
+            var height = bounds.height
+            val dx = bounds.x % Globals.TILE_SIZE
+            var x = bounds.x - dx
+            if (dx >= Bullet.SIZE / 2) {
+                x += Globals.TILE_SIZE
+                width -= Globals.TILE_SIZE
+            }
+            if (dx > Globals.TILE_SIZE - Bullet.SIZE / 2) {
+                width += Globals.TILE_SIZE
+            }
+            val dy = bounds.y % Globals.TILE_SIZE
+            var y = bounds.y - dy
+            if (dy >= Bullet.SIZE / 2) {
+                y += Globals.TILE_SIZE
+                height -= Globals.TILE_SIZE
+            }
+            if (dy > Globals.TILE_SIZE - Bullet.SIZE / 2) {
+                height += Globals.TILE_SIZE
+            }
+            return Rect(x, y, width, height)
         }
     }
 
@@ -79,6 +102,7 @@ sealed class Tank(
             }
             smoothTurn(value)
             field = value
+            updateHitRect()
         }
 
     private lateinit var internalState: TankState
@@ -96,18 +120,25 @@ sealed class Tank(
 
     var bulletType = Bullet.Type.REGULAR
 
-    private val cooldownTimer = PauseAwareTimer(eventManager, clock, COOLDOWN_INTERVAL, ::resetCooldown)
+    private val cooldownTimer = PauseAwareTimer(game.eventManager, clock, COOLDOWN_INTERVAL, ::resetCooldown)
 
     private val turnRoundTo = Globals.TILE_SIZE
 
     private var moveCountDown = CountDown(moveFrequency, ::moved)
     private var slipCountDown = CountDown(slipDuration)
 
+    var hitRect = calculateHitRect(bounds)
+        private set
+
     var moveDistance = 0
         private set
 
     init {
         z = 1
+    }
+
+    private fun updateHitRect() {
+        hitRect = calculateHitRect(bounds)
     }
 
     private fun moved() {
@@ -144,7 +175,7 @@ sealed class Tank(
     }
 
     fun createBullet(): Bullet {
-        val bullet = Bullet(eventManager, imageManager, this, bulletSpeed)
+        val bullet = Bullet(game, this, bulletSpeed)
         bullet.setPosition(getBulletPosition(bullet))
         bullet.direction = direction
         bullet.type = bulletType
@@ -190,7 +221,7 @@ sealed class Tank(
         }
         if (cooldownTimer.isStopped) {
             bullets++
-            eventManager.fireEvent(Shoot(this))
+            game.eventManager.fireEvent(Shoot(this))
             cooldownTimer.restart()
         }
     }
@@ -204,15 +235,19 @@ sealed class Tank(
         cooldownTimer.update()
     }
 
+    override fun boundsHook() {
+        updateHitRect()
+    }
+
     override fun notify(event: Event) {
         if (event is Reload && event.tank === this) {
             bullets--
         } else if (event is TankStateAppearing.End && event.tank === this) {
             stateAppearingEnd()
         } else if (event is TankStateInvincible.End && event.tank === this) {
-            state = TankStateNormal(imageManager, this)
+            state = TankStateNormal(game.imageManager, this)
         } else if (event is TankStateFrozen.End && event.tank === this) {
-            state = TankStateNormal(imageManager, this)
+            state = TankStateNormal(game.imageManager, this)
         }
     }
 
@@ -222,14 +257,14 @@ sealed class Tank(
         if (isDestroyed) {
             return
         }
-        eventManager.fireEvent(Hit(this))
+        game.eventManager.fireEvent(Hit(this))
         hitHook(bullet)
     }
 
     abstract fun hitHook(bullet: BulletHandle)
 
     override fun destroyHook() {
-        eventManager.fireEvent(Destroyed(this))
+        game.eventManager.fireEvent(Destroyed(this))
     }
 
     override fun dispose() {
@@ -237,7 +272,7 @@ sealed class Tank(
 
         state.dispose()
 
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
     }
@@ -278,5 +313,15 @@ sealed class Tank(
 
     override fun draw(surface: ScreenSurface) {
         state.draw(surface)
+        if (game.config.debug) {
+            surface.drawRect(bounds.x, bounds.y, bounds.width, bounds.height, ARGB(0x6600FF00))
+            surface.drawRect(
+                hitRect.x,
+                hitRect.y,
+                hitRect.width,
+                hitRect.height,
+                ARGB(0x66FF0000)
+            )
+        }
     }
 }

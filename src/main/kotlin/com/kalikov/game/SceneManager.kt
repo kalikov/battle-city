@@ -33,7 +33,6 @@ class SceneManager(
         scene = null
 
         eventManager.removeSubscriber(this, setOf(Scene.Start::class))
-        eventManager.destroy()
 
         LeaksDetector.remove(this)
     }
