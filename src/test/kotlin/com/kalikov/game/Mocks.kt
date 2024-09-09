@@ -9,12 +9,14 @@ fun mockGame(
     eventManager: EventManager = mock(),
     imageManager: ImageManager = mock(),
     config: GameConfig = GameConfig(),
+    clock: Clock = mock(),
 ): Game {
     val game: Game = mock {
         on { this.screen } doReturn screen
         on { this.eventManager } doReturn eventManager
         on { this.imageManager } doReturn imageManager
         on { this.config } doReturn config
+        on { this.clock } doReturn clock
     }
     return game
 }
@@ -22,23 +24,21 @@ fun mockGame(
 fun mockEnemyTank(
     game: Game = mockGame(),
     pauseManager: PauseManager = mock(),
-    clock: Clock = mock(),
     x: Int = 0,
     y: Int = 0,
     enemyType: EnemyTank.EnemyType = EnemyTank.EnemyType.BASIC,
 ): EnemyTank {
-    return EnemyTank.create(game, pauseManager, clock, x, y, enemyType)
+    return EnemyTank.create(game, pauseManager, x, y, enemyType)
 }
 
 fun mockPlayerTank(
     game: Game = mockGame(),
     pauseManager: PauseManager = mock(),
-    clock: Clock = mock(),
     x: Int = 0,
     y: Int = 0,
     player: Player = Player(game.eventManager),
 ): PlayerTank {
-    return PlayerTank.create(game, pauseManager, clock, x, y, player)
+    return PlayerTank.create(game, pauseManager, x, y, player)
 }
 
 fun mockBase(
@@ -97,11 +97,10 @@ fun mockSteelWall(
 }
 
 fun mockTankExplosion(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
+    game: Game = mockGame(),
     tank: Tank
 ): TankExplosion {
-    return TankExplosion(eventManager, imageManager, tank)
+    return TankExplosion(game, tank)
 }
 
 fun mockBaseExplosion(

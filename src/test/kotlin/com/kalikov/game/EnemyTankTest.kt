@@ -17,9 +17,8 @@ class EnemyTankTest : TankTest<EnemyTank>() {
 
     override fun createTank(): EnemyTank {
         return EnemyTank.create(
-            mockGame(mock(), eventManager, imageManager),
+            game,
             mock(),
-            clock,
             0,
             0,
             EnemyTank.EnemyType.BASIC
@@ -28,7 +27,7 @@ class EnemyTankTest : TankTest<EnemyTank>() {
 
     @Test
     fun `should face down direction when appearing state ends`() {
-        tank.state = TankStateAppearing(mock(), mock(), tank)
+        tank.state = TankStateAppearing(game, tank)
         tank.direction = Direction.UP
         tank.notify(TankStateAppearing.End(tank))
         assertEquals(Direction.DOWN, tank.direction)
@@ -36,7 +35,7 @@ class EnemyTankTest : TankTest<EnemyTank>() {
 
     @Test
     fun `enemy should be in normal state when appearing state ends`() {
-        tank.state = TankStateAppearing(mock(), mock(), tank)
+        tank.state = TankStateAppearing(game, tank)
         tank.notify(TankStateAppearing.End(tank))
         assertIs<TankStateNormal>(tank.state)
         assertIsNot<TankStateInvincible>(tank.state)
@@ -44,7 +43,7 @@ class EnemyTankTest : TankTest<EnemyTank>() {
 
     @Test
     fun `enemy should down direction when appearing state ends`() {
-        tank.state = TankStateAppearing(mock(), mock(), tank)
+        tank.state = TankStateAppearing(game, tank)
         tank.direction = Direction.UP
         tank.notify(TankStateAppearing.End(tank))
         assertEquals(Direction.DOWN, tank.direction)
@@ -103,8 +102,9 @@ class EnemyTankTest : TankTest<EnemyTank>() {
     fun `should not pause flashing`() {
         eventManager = ConcurrentEventManager()
         val pauseListener = PauseListener(eventManager)
-        tank = mockEnemyTank(mockGame(eventManager = eventManager), pauseListener, clock = clock)
-        val state = TankStateInvincible(eventManager, mock(), tank, 10)
+        game = mockGame(eventManager = eventManager, clock = clock)
+        tank = mockEnemyTank(game, pauseListener)
+        val state = TankStateInvincible(game, tank, 10)
         tank.state = state
         tank.color.colors = arrayOf(EnemyFactory.FLASHING_COLORS)
         tank.update()

@@ -1,18 +1,14 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class EnemyTank private constructor(
     game: Game,
     pauseManager: PauseManager,
-    clock: Clock,
     x: Int,
     y: Int,
     val enemyType: EnemyType,
 ) : Tank(
     game,
     pauseManager,
-    clock,
     x,
     y
 ) {
@@ -20,11 +16,10 @@ class EnemyTank private constructor(
         fun create(
             game: Game,
             pauseManager: PauseManager,
-            clock: Clock,
             x: Int,
             y: Int,
             enemyType: EnemyType,
-        ) = init(EnemyTank(game, pauseManager, clock, x, y, enemyType))
+        ) = init(EnemyTank(game, pauseManager, x, y, enemyType))
     }
 
     data class Score(val tank: EnemyTank, val player: Player) : Event()
@@ -46,7 +41,7 @@ class EnemyTank private constructor(
     private var isValued = true
     val value: Int get() = if (isValued) this.enemyType.score else 0
 
-    var color = TankColor(clock)
+    var color = TankColor(game.clock)
 
     var hitLimit = 1
     private var hit = 0

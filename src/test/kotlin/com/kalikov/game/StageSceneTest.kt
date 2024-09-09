@@ -24,7 +24,7 @@ class StageSceneTest {
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun `should draw scene correctly`() {
-        val game = mockGame(imageManager = TestImageManager(fonts))
+        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
         val stageManager: StageManager = mock()
 
         val player = Player(game.eventManager, initialScore = 100)
@@ -43,7 +43,7 @@ class StageSceneTest {
         whenever(stageManager.stageNumber).thenReturn(1)
 
         val entityFactory = DefaultEntityFactory(game.eventManager, game.imageManager, clock)
-        val scene = StageScene(game, stageManager, entityFactory, clock)
+        val scene = StageScene(game, stageManager, entityFactory)
 
         while (!scene.isReady) {
             clock.tick(1)
@@ -59,7 +59,7 @@ class StageSceneTest {
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun `should draw two players scene correctly`() {
-        val game = mockGame(imageManager = TestImageManager(fonts))
+        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
         val stageManager: StageManager = mock()
 
         val playerOne = Player(game.eventManager, initialScore = 100)
@@ -79,7 +79,7 @@ class StageSceneTest {
         whenever(stageManager.stageNumber).thenReturn(1)
 
         val entityFactory = DefaultEntityFactory(game.eventManager, game.imageManager, clock)
-        val scene = StageScene(game, stageManager, entityFactory, clock)
+        val scene = StageScene(game, stageManager, entityFactory)
 
         while (!scene.isReady) {
             clock.tick(1)
@@ -94,7 +94,7 @@ class StageSceneTest {
 
     @Test
     fun `should draw game over message correctly`() {
-        val game = mockGame(eventManager = ConcurrentEventManager(), imageManager = TestImageManager(fonts))
+        val game = mockGame(eventManager = ConcurrentEventManager(), imageManager = TestImageManager(fonts), clock = clock)
         val stageManager: StageManager = mock()
 
         val player = Player(game.eventManager, initialScore = 100)
@@ -105,7 +105,7 @@ class StageSceneTest {
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.stageNumber).thenReturn(1)
 
-        val scene = StageScene(game, stageManager, mock(), clock)
+        val scene = StageScene(game, stageManager, mock())
 
         while (!scene.isReady) {
             clock.tick(1)

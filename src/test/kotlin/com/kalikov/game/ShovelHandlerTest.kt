@@ -9,28 +9,28 @@ import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 
 class ShovelHandlerTest {
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var clock: TestClock
     private lateinit var baseWallBuilder: ShovelWallBuilder
     private lateinit var handler: ShovelHandler
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
-        baseWallBuilder = mock()
         clock = TestClock()
-        handler = ShovelHandler(eventManager, mock(), baseWallBuilder, clock)
+        game = mockGame(clock = clock)
+        baseWallBuilder = mock()
+        handler = ShovelHandler(game, baseWallBuilder)
     }
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(handler, setOf(PowerUpHandler.ShovelStart::class))
+        verify(game.eventManager).addSubscriber(handler, setOf(PowerUpHandler.ShovelStart::class))
     }
 
     @Test
     fun `should unsubscribe`() {
         handler.dispose()
-        verify(eventManager).removeSubscriber(handler, setOf(PowerUpHandler.ShovelStart::class))
+        verify(game.eventManager).removeSubscriber(handler, setOf(PowerUpHandler.ShovelStart::class))
     }
 
     @Test
@@ -57,18 +57,18 @@ class ShovelHandlerTest {
 
     @Test
     fun `should not update when paused`() {
-        eventManager = ConcurrentEventManager()
-        handler = ShovelHandler(eventManager, mock(), baseWallBuilder, clock)
+        game = mockGame(clock = clock, eventManager = ConcurrentEventManager())
+        handler = ShovelHandler(game, baseWallBuilder)
         handler.notify(PowerUpHandler.ShovelStart)
         reset(baseWallBuilder)
 
-        eventManager.fireEvent(PauseManager.Start)
+        game.eventManager.fireEvent(PauseManager.Start)
 
         clock.tick(10 * ShovelHandler.SOLID_DURATION)
         handler.update()
         verify(baseWallBuilder, never()).buildWall(isA<BrickWallFactory>())
 
-        eventManager.fireEvent(PauseManager.End)
+        game.eventManager.fireEvent(PauseManager.End)
 
         clock.tick(ShovelHandler.SOLID_DURATION)
         handler.update()

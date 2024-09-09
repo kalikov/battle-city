@@ -1,14 +1,11 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class StageScoreScene(
     private val game: Game,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
     private val scores: List<StageScore>,
     private val gameOver: Boolean,
-    clock: Clock
 ) : Scene {
     private companion object {
         const val BONUS_SCORE = 1000
@@ -18,20 +15,44 @@ class StageScoreScene(
 
     private val script = Script()
 
-    private val basicTankPoints =
-        StageScorePointsView(game.eventManager, game.imageManager, EnemyTank.EnemyType.BASIC, scores, script, clock)
-    private val fastTankPoints =
-        StageScorePointsView(game.eventManager, game.imageManager, EnemyTank.EnemyType.FAST, scores, script, clock)
-    private val powerTankPoints =
-        StageScorePointsView(game.eventManager, game.imageManager, EnemyTank.EnemyType.POWER, scores, script, clock)
-    private val armorTankPoints =
-        StageScorePointsView(game.eventManager, game.imageManager, EnemyTank.EnemyType.ARMOR, scores, script, clock)
+    private val basicTankPoints = StageScorePointsView(
+        game.eventManager,
+        game.imageManager,
+        EnemyTank.EnemyType.BASIC,
+        scores,
+        script,
+        game.clock
+    )
+    private val fastTankPoints = StageScorePointsView(
+        game.eventManager,
+        game.imageManager,
+        EnemyTank.EnemyType.FAST,
+        scores,
+        script,
+        game.clock
+    )
+    private val powerTankPoints = StageScorePointsView(
+        game.eventManager,
+        game.imageManager,
+        EnemyTank.EnemyType.POWER,
+        scores,
+        script,
+        game.clock
+    )
+    private val armorTankPoints = StageScorePointsView(
+        game.eventManager,
+        game.imageManager,
+        EnemyTank.EnemyType.ARMOR,
+        scores,
+        script,
+        game.clock
+    )
 
     private var drawTotal = false
     private var drawBonusIndex = -1
 
     init {
-        script.enqueue(Delay(script, 640, clock))
+        script.enqueue(Delay(script, 640, game.clock))
         script.enqueue(basicTankPoints)
         script.enqueue(fastTankPoints)
         script.enqueue(powerTankPoints)
@@ -49,24 +70,24 @@ class StageScoreScene(
                 }
             }
             if (maxTanksIndex >= 0) {
-                script.enqueue(Delay(script, 320, clock))
+                script.enqueue(Delay(script, 320, game.clock))
                 script.enqueue(Execute {
                     drawBonusIndex = maxTanksIndex
                     game.eventManager.fireEvent(Player.Score(stageManager.players[maxTanksIndex], BONUS_SCORE))
                 })
             }
         }
-        script.enqueue(Delay(script, 2000, clock))
+        script.enqueue(Delay(script, 2000, game.clock))
         script.enqueue(Execute {
             if (gameOver) {
                 game.eventManager.fireEvent(Scene.Start {
-                    GameOverScene(game, stageManager, entityFactory, clock)
+                    GameOverScene(game, stageManager, entityFactory)
                 })
             } else {
                 stageManager.next()
                 stageManager.resetConstruction()
                 game.eventManager.fireEvent(Scene.Start {
-                    StageScene(game, stageManager, entityFactory, clock)
+                    StageScene(game, stageManager, entityFactory)
                 })
             }
         })

@@ -18,8 +18,9 @@ class TankStateInvincibleTest {
         eventManager = mock()
         pauseManager = mock()
         clock = TestClock()
-        tank = mockPlayerTank(mockGame(eventManager = eventManager), pauseManager, clock = clock)
-        state = TankStateInvincible(eventManager, mock(), tank, 4)
+        val game = mockGame(eventManager = eventManager, clock = clock)
+        tank = mockPlayerTank(game, pauseManager)
+        state = TankStateInvincible(game, tank, 4)
         tank.state = state
     }
 
@@ -49,8 +50,9 @@ class TankStateInvincibleTest {
         eventManager = ConcurrentEventManager()
         val pauseListener = PauseListener(eventManager)
         pauseManager = pauseListener
-        tank = mockPlayerTank(mockGame(eventManager = eventManager), pauseManager, clock = clock)
-        state = TankStateInvincible(eventManager, mock(), tank, 10)
+        val game = mockGame(eventManager = eventManager, clock = clock)
+        tank = mockPlayerTank(game, pauseManager)
+        state = TankStateInvincible(game, tank, 10)
         tank.state = state
         tank.update()
 

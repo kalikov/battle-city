@@ -16,9 +16,10 @@ class BaseExplosionFactoryTest {
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        val game = mockGame()
+        eventManager = game.eventManager
         spriteContainer = mock()
-        factory = BaseExplosionFactory(eventManager, mock(), spriteContainer, mock())
+        factory = BaseExplosionFactory(game, spriteContainer)
     }
 
     @Test

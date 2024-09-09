@@ -23,7 +23,11 @@ class MainMenuSceneTest {
         clock = TestClock()
         eventManager = mock()
         stageManager = mock()
-        scene = MainMenuScene(mockGame(mock(), eventManager, TestImageManager(fonts)), stageManager, mock(), clock)
+        scene = MainMenuScene(
+            mockGame(eventManager = eventManager, imageManager = TestImageManager(fonts), clock = clock),
+            stageManager,
+            mock()
+        )
     }
 
     @Test

@@ -19,6 +19,7 @@ import kotlin.test.assertTrue
 class EnemyFactoryTest {
     private lateinit var clock: TestClock
     private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var pauseManager: PauseManager
     private lateinit var spriteContainer: SpriteContainer
 
@@ -26,6 +27,7 @@ class EnemyFactoryTest {
     fun beforeEach() {
         clock = TestClock()
         eventManager = mock()
+        game = mockGame(eventManager = eventManager, clock = clock)
         pauseManager = mock()
         spriteContainer = mock()
     }
@@ -253,7 +255,7 @@ class EnemyFactoryTest {
 
         val tank = verifyEnemyCreated()
 
-        val explosion = mockTankExplosion(eventManager, tank = tank)
+        val explosion = mockTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         assertEquals(0, factory.enemyCount)
@@ -270,7 +272,7 @@ class EnemyFactoryTest {
         assertEquals(1, factory.enemyCount)
         val tank = verifyEnemyCreated()
 
-        val explosion = mockTankExplosion(eventManager, tank = tank)
+        val explosion = mockTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager).fireEvent(EnemyFactory.LastEnemyDestroyed)
@@ -286,7 +288,7 @@ class EnemyFactoryTest {
         factory.update()
         val tank = verifyEnemyCreated()
 
-        val explosion = mockTankExplosion(eventManager, tank = tank)
+        val explosion = mockTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager, never()).fireEvent(EnemyFactory.LastEnemyDestroyed)
@@ -308,7 +310,7 @@ class EnemyFactoryTest {
 
         assertEquals(0, factory.enemiesToCreateCount)
 
-        val explosion = mockTankExplosion(eventManager, tank = tank)
+        val explosion = mockTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager, never()).fireEvent(EnemyFactory.LastEnemyDestroyed)
@@ -356,7 +358,7 @@ class EnemyFactoryTest {
         clock.tick(5000)
         factory.update()
 
-        val explosion = mockTankExplosion(eventManager, tank = tank)
+        val explosion = mockTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         factory.update()

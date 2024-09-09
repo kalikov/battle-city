@@ -8,16 +8,14 @@ import kotlin.test.assertTrue
 class TankStateNormalTest {
     private lateinit var game: Game
     private lateinit var pauseManager: PauseManager
-    private lateinit var clock: TestClock
     private lateinit var tank: Tank
     private lateinit var state: TankStateNormal
 
     @BeforeEach
     fun beforeEach() {
-        game = mockGame()
+        game = mockGame(clock = TestClock())
         pauseManager = mock()
-        clock = TestClock()
-        tank = mockPlayerTank(game, pauseManager, clock)
+        tank = mockPlayerTank(game, pauseManager)
         state = TankStateNormal(game.imageManager, tank)
         tank.state = state
     }

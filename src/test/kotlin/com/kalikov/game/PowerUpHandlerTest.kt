@@ -2,7 +2,6 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -21,7 +20,7 @@ class PowerUpHandlerTest {
         game = mockGame()
         eventManager = game.eventManager
         powerUp = mockPowerUp(eventManager)
-        handler = PowerUpHandler(eventManager, mock())
+        handler = PowerUpHandler(game)
 
         tank = mockPlayerTank(game)
     }
@@ -66,7 +65,7 @@ class PowerUpHandlerTest {
     @Test
     fun `should not explode appearing enemies with grenade`() {
         val enemy = mockEnemyTank(game)
-        enemy.state = TankStateAppearing(eventManager, mock(), enemy)
+        enemy.state = TankStateAppearing(game, enemy)
         handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 
         powerUp.type = PowerUp.Type.GRENADE

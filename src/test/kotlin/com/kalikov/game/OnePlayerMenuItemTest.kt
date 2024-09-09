@@ -28,7 +28,7 @@ class OnePlayerMenuItemTest {
         val player = Player(game.eventManager)
         whenever(stageManager.players).thenReturn(listOf(player))
 
-        val item = OnePlayerMenuItem(game, stageManager, mock(), mock())
+        val item = OnePlayerMenuItem(game, stageManager, mock())
         item.execute()
 
         val captor = argumentCaptor<Scene.Start>()

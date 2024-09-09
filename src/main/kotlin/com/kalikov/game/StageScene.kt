@@ -6,7 +6,6 @@ class StageScene(
     private val game: Game,
     private val stageManager: StageManager,
     entityFactory: EntityFactory,
-    clock: Clock
 ) : Scene {
     private val curtain = Curtain()
     private val stageMessage = StageMessage(stageManager)
@@ -21,7 +20,7 @@ class StageScene(
 
         // Player can't complete the first stage without scoring
         val isFirstStage = stageManager.players[0].score == 0
-        script.enqueue(CurtainFall(curtain, script, clock))
+        script.enqueue(CurtainFall(curtain, script, game.clock))
         script.enqueue(Execute {
             stageMessage.isVisible = true
         })
@@ -33,16 +32,16 @@ class StageScene(
             stageManager.curtainBackground = null
         })
         if (!isFirstStage) {
-            script.enqueue(Delay(script, 1300, clock))
+            script.enqueue(Delay(script, 1300, game.clock))
         }
         script.enqueue(Execute {
-            val level = Level(game, stageManager, entityFactory, clock)
+            val level = Level(game, stageManager, entityFactory)
             this.level = level
             script.enqueue(Execute { level.start() })
             stageMessage.isVisible = false
             level.show()
         })
-        script.enqueue(CurtainRise(curtain, script, clock))
+        script.enqueue(CurtainRise(curtain, script, game.clock))
     }
 
     override fun update() {

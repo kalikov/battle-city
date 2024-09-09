@@ -1,18 +1,14 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class PlayerTank private constructor(
     game: Game,
     pauseManager: PauseManager,
-    clock: Clock,
     x: Int,
     y: Int,
     override val player: Player,
 ) : Tank(
     game,
     pauseManager,
-    clock,
     x,
     y
 ), PlayerTankHandle {
@@ -20,11 +16,10 @@ class PlayerTank private constructor(
         fun create(
             game: Game,
             pauseManager: PauseManager,
-            clock: Clock,
             x: Int,
             y: Int,
             player: Player,
-        ) = init(PlayerTank(game, pauseManager, clock, x, y, player))
+        ) = init(PlayerTank(game, pauseManager, x, y, player))
     }
 
     data class PlayerDestroyed(val tank: PlayerTank) : Event()
@@ -38,7 +33,7 @@ class PlayerTank private constructor(
     override val imageMod get() = upgradeLevel
 
     override fun stateAppearingEnd() {
-        state = TankStateInvincible(game.eventManager, game.imageManager, this)
+        state = TankStateInvincible(game, this)
         direction = Direction.UP
     }
 
@@ -60,7 +55,7 @@ class PlayerTank private constructor(
             if (state is TankStateFrozen) {
                 (state as TankStateFrozen).restartTimer()
             } else {
-                state = TankStateFrozen(game.eventManager, game.imageManager, this, clock)
+                state = TankStateFrozen(game.eventManager, game.imageManager, this, game.clock)
                 isIdle = true
             }
         } else {

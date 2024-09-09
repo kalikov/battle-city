@@ -18,7 +18,6 @@ class LoadingScene(
     private val fontManager: FontManager,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
-    private val clock: Clock
 ) : Scene {
     private val remainingJobs = AtomicInteger()
     private val failure = AtomicBoolean()
@@ -50,7 +49,7 @@ class LoadingScene(
 
             stageManager.init(getStages(), requireNotNull(constructionMap))
             game.eventManager.fireEvent(Scene.Start {
-                MainMenuScene(game, stageManager, entityFactory, clock)
+                MainMenuScene(game, stageManager, entityFactory)
             })
         }
     }

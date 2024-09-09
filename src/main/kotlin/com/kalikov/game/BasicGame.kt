@@ -1,11 +1,13 @@
 package com.kalikov.game
 
 import java.awt.Font
+import java.time.Clock
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.max
 
 class BasicGame(
     override val config: GameConfig,
+    override val clock: Clock,
     override val screen: Screen,
     private val input: Input,
     audio: Audio

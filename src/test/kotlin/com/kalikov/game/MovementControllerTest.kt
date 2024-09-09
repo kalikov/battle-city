@@ -138,7 +138,7 @@ class MovementControllerTest {
         enemyTank.direction = Direction.RIGHT
 
         val playerTank = mockPlayerTank(game, x = Globals.UNIT_SIZE, y = 0)
-        playerTank.state = TankStateInvincible(game.eventManager, mock(), playerTank)
+        playerTank.state = TankStateInvincible(game, playerTank)
 
         val bullet = enemyTank.createBullet()
 
@@ -159,7 +159,7 @@ class MovementControllerTest {
         enemyTank.direction = Direction.RIGHT
 
         val playerTank = mockPlayerTank(game, x = Globals.UNIT_SIZE, y = 0)
-        playerTank.state = TankStateAppearing(game.eventManager, mock(), playerTank)
+        playerTank.state = TankStateAppearing(game, playerTank)
 
         val bullet = enemyTank.createBullet()
 

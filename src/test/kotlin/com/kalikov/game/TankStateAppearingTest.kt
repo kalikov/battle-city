@@ -19,8 +19,9 @@ class TankStateAppearingTest {
         eventManager = mock()
         pauseManager = mock()
         clock = TestClock()
-        tank = mockPlayerTank(mockGame(eventManager = eventManager), pauseManager, clock = clock)
-        state = TankStateAppearing(eventManager, mock(), tank)
+        val game = mockGame(eventManager = eventManager, clock = clock)
+        tank = mockPlayerTank(game, pauseManager)
+        state = TankStateAppearing(game, tank)
         tank.state = state
     }
 
@@ -42,8 +43,9 @@ class TankStateAppearingTest {
         eventManager = ConcurrentEventManager()
         val pauseListener = PauseListener(eventManager)
         pauseManager = pauseListener
-        tank = mockPlayerTank(mockGame(eventManager = eventManager), pauseManager, clock = clock)
-        state = TankStateAppearing(eventManager, mock(), tank)
+        val game = mockGame(eventManager = eventManager, clock = clock)
+        tank = mockPlayerTank(game, pauseManager)
+        state = TankStateAppearing(game, tank)
         tank.state = state
         tank.update()
 

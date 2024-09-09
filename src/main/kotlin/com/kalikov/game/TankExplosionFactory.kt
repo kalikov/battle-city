@@ -1,14 +1,13 @@
 package com.kalikov.game
 
 class TankExplosionFactory(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val spriteContainer: SpriteContainer
 ) : EventSubscriber {
     init {
         LeaksDetector.add(this)
 
-        eventManager.addSubscriber(this, setOf(Tank.Destroyed::class))
+        game.eventManager.addSubscriber(this, setOf(Tank.Destroyed::class))
     }
 
     override fun notify(event: Event) {
@@ -18,16 +17,16 @@ class TankExplosionFactory(
     }
 
     private fun create(tank: Tank): TankExplosion {
-        val explosion = TankExplosion(eventManager, imageManager, tank)
+        val explosion = TankExplosion(game, tank)
         explosion.setPosition(tank.center.translate(-explosion.width / 2, -explosion.height / 2))
 
-        eventManager.fireEvent(SoundManager.Play("explosion_1"))
+        game.eventManager.fireEvent(SoundManager.Play("explosion_1"))
 
         return explosion
     }
 
     fun dispose() {
-        eventManager.removeSubscriber(this, setOf(Tank.Destroyed::class))
+        game.eventManager.removeSubscriber(this, setOf(Tank.Destroyed::class))
 
         LeaksDetector.remove(this)
     }

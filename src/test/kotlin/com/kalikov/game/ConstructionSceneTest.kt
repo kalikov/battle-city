@@ -22,7 +22,7 @@ class ConstructionSceneTest {
             StageMapConfig(emptyList(), Point(), emptyList(), emptyList()),
         )
 
-        constructionScene = ConstructionScene(game, stageManager, mock(), mock())
+        constructionScene = ConstructionScene(game, stageManager, mock())
     }
 
     @Test

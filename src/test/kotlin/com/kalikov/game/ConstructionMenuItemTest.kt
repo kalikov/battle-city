@@ -22,7 +22,7 @@ class ConstructionMenuItemTest {
             )
         )
 
-        val item = ConstructionMenuItem(game, stageManager, mock(), mock())
+        val item = ConstructionMenuItem(game, stageManager, mock())
         item.execute()
 
         val captor = argumentCaptor<Scene.Start>()

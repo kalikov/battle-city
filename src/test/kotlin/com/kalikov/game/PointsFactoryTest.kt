@@ -31,7 +31,7 @@ class PointsFactoryTest {
     fun `should create points when enemy tank is destroyed`() {
         val tank = mockEnemyTank(game)
 
-        val explosion = mockTankExplosion(game.eventManager, tank = tank)
+        val explosion = mockTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         val captor = argumentCaptor<Points>()
@@ -49,7 +49,7 @@ class PointsFactoryTest {
         val tank = mockEnemyTank(game)
         tank.devalue()
 
-        val explosion = mockTankExplosion(game.eventManager, tank = tank)
+        val explosion = mockTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(spriteContainer, never()).addSprite(isA<Points>())
@@ -59,7 +59,7 @@ class PointsFactoryTest {
     fun `should not create points when player tank is destroyed`() {
         val tank = mockPlayerTank(game)
 
-        val explosion = mockTankExplosion(game.eventManager, tank = tank)
+        val explosion = mockTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(spriteContainer, never()).addSprite(isA<Points>())

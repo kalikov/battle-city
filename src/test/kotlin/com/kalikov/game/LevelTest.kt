@@ -28,7 +28,8 @@ class LevelTest {
 
     @BeforeEach
     fun beforeEach() {
-        game = mockGame()
+        clock = TestClock()
+        game = mockGame(clock = clock)
         whenever(game.screen.createSurface()).thenReturn(mock())
 
         eventManager = game.eventManager
@@ -50,9 +51,7 @@ class LevelTest {
 
         entityFactory = mock()
 
-        clock = TestClock()
-
-        level = Level(game, stageManager, entityFactory, clock)
+        level = Level(game, stageManager, entityFactory)
     }
 
     @Test
@@ -125,7 +124,7 @@ class LevelTest {
 
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
-        level = Level(game, stageManager, entityFactory, clock)
+        level = Level(game, stageManager, entityFactory)
 
         reset(eventManager)
         level.start()

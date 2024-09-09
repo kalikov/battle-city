@@ -1,11 +1,10 @@
 package com.kalikov.game
 
 class TankStateInvincible(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val tank: Tank,
     shieldDuration: Int = 3000
-) : TankStateNormal(imageManager, tank) {
+) : TankStateNormal(game.imageManager, tank) {
     private companion object {
         private val animationFrames = intArrayOf(1, 2)
     }
@@ -14,9 +13,9 @@ class TankStateInvincible(
 
     override val canBeDestroyed get() = false
 
-    private val shieldAnimation = Animation.pauseAware(eventManager, frameLoopOf(*animationFrames), tank.clock, 32)
+    private val shieldAnimation = Animation.pauseAware(game.eventManager, frameLoopOf(*animationFrames), game.clock, 32)
 
-    private val shieldTimer = PauseAwareTimer(eventManager, tank.clock, shieldDuration, ::end)
+    private val shieldTimer = PauseAwareTimer(game.eventManager, game.clock, shieldDuration, ::end)
 
     override fun update() {
         super.update()
@@ -36,7 +35,7 @@ class TankStateInvincible(
         surface.draw(
             tank.x,
             tank.y,
-            imageManager.getImage("shield"),
+            game.imageManager.getImage("shield"),
             tank.width * (shieldAnimation.frame - 1),
             0,
             tank.width,
@@ -52,6 +51,6 @@ class TankStateInvincible(
 
     private fun end() {
         shieldTimer.stop()
-        eventManager.fireEvent(End(tank))
+        game.eventManager.fireEvent(End(tank))
     }
 }

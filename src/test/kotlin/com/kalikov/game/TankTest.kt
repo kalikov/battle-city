@@ -16,6 +16,8 @@ abstract class TankTest<T : Tank> {
     protected lateinit var eventManager: EventManager
     protected lateinit var imageManager: ImageManager
     protected lateinit var clock: TestClock
+    protected lateinit var game: Game
+
     protected lateinit var tank: T
 
     @BeforeEach
@@ -23,6 +25,7 @@ abstract class TankTest<T : Tank> {
         eventManager = mock()
         imageManager = TestImageManager(mock())
         clock = TestClock()
+        game = mockGame(eventManager = eventManager, imageManager = imageManager, clock = clock)
         tank = createTank()
     }
 
@@ -196,7 +199,7 @@ abstract class TankTest<T : Tank> {
 
     @Test
     fun `should be in normal state when invincible state ends`() {
-        tank.state = TankStateInvincible(mock(), mock(), tank)
+        tank.state = TankStateInvincible(game, tank)
         tank.notify(TankStateInvincible.End(tank))
         assertIs<TankStateNormal>(tank.state)
         assertIsNot<TankStateInvincible>(tank.state)

@@ -1,13 +1,10 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class PlayerTankFactory(
     private val game: Game,
     private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
-    private val appearPosition: Point,
-    private val clock: Clock,
+    val appearPosition: Point,
     val player: Player,
 ) : EventSubscriber {
     data class PlayerTankCreated(val tank: PlayerTank) : Event()
@@ -52,13 +49,12 @@ class PlayerTankFactory(
         val tank = PlayerTank.create(
             game,
             pauseManager,
-            clock,
             appearPosition.x,
             appearPosition.y,
             player,
         )
         spriteContainer.addSprite(tank)
-        tank.state = TankStateAppearing(game.eventManager, game.imageManager, tank, 48)
+        tank.state = TankStateAppearing(game, tank, 48)
         game.eventManager.fireEvent(PlayerTankCreated(tank))
         return tank
     }

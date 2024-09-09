@@ -1,26 +1,23 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class GameOverScene(
     private val game: Game,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
-    clock: Clock
 ) : Scene {
     private val script = Script()
 
     private val brickBlending = TextureBlending(game.imageManager.getImage("wall_brick"))
 
     init {
-        script.enqueue(Delay(script, 320, clock))
+        script.enqueue(Delay(script, 320, game.clock))
         script.enqueue(Execute { game.eventManager.fireEvent(SoundManager.Play("game_over")) })
-        script.enqueue(Delay(script, 1800, clock))
+        script.enqueue(Delay(script, 1800, game.clock))
         script.enqueue(Execute {
             val highScore = stageManager.highScore
             stageManager.reset()
             val mainMenuFactory = {
-                val mainMenu = MainMenuScene(game, stageManager, entityFactory, clock)
+                val mainMenu = MainMenuScene(game, stageManager, entityFactory)
                 if (stageManager.players.size == 2) {
                     mainMenu.setMenuItem(1)
                 }
@@ -28,7 +25,7 @@ class GameOverScene(
             }
             if (highScore < stageManager.highScore) {
                 game.eventManager.fireEvent(Scene.Start {
-                    HighScoreScene(game.eventManager, game.imageManager, stageManager, mainMenuFactory, clock)
+                    HighScoreScene(game.eventManager, game.imageManager, stageManager, mainMenuFactory, game.clock)
                 })
             } else {
                 game.eventManager.fireEvent(Scene.Start(mainMenuFactory))

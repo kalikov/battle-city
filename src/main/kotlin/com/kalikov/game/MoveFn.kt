@@ -10,7 +10,7 @@ class MoveFn(
     clock: Clock
 ) : ScriptNode {
     private val timer = BasicTimer(clock, 1, ::move)
-    private val startValue = property.value
+    private var startValue = property.value
 
     private var isActive = true
     private var elapsed = 0L
@@ -22,6 +22,7 @@ class MoveFn(
             return
         }
         if (timer.isStopped) {
+            startValue = property.value
             timer.restart()
         }
         timer.update()

@@ -1,11 +1,8 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 sealed class Tank(
     protected val game: Game,
     protected val pauseManager: PauseManager,
-    val clock: Clock,
     x: Int,
     y: Int
 ) : Sprite(
@@ -120,7 +117,7 @@ sealed class Tank(
 
     var bulletType = Bullet.Type.REGULAR
 
-    private val cooldownTimer = PauseAwareTimer(game.eventManager, clock, COOLDOWN_INTERVAL, ::resetCooldown)
+    private val cooldownTimer = PauseAwareTimer(game.eventManager, game.clock, COOLDOWN_INTERVAL, ::resetCooldown)
 
     private val turnRoundTo = Globals.TILE_SIZE
 

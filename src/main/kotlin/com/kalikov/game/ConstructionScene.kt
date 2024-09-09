@@ -1,12 +1,9 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class ConstructionScene(
     private val game: Game,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
-    private val clock: Clock
 ) : Scene, EventSubscriber {
     private companion object {
         private val subscriptions = setOf(
@@ -33,10 +30,15 @@ class ConstructionScene(
 
         game.eventManager.addSubscriber(this, subscriptions)
 
-        cursor = Cursor(game.eventManager, game.imageManager, Builder(game.eventManager, game.imageManager, clock), clock)
+        cursor = Cursor(
+            game.eventManager,
+            game.imageManager,
+            Builder(game.eventManager, game.imageManager, game.clock),
+            game.clock
+        )
         cursor.setPosition(Point(gameField.bounds.x, gameField.bounds.y))
 
-        cursorController = CursorController(game.eventManager, cursor, gameField.bounds, clock)
+        cursorController = CursorController(game.eventManager, cursor, gameField.bounds, game.clock)
 
         spriteContainer.addSprite(cursor)
 
@@ -97,7 +99,7 @@ class ConstructionScene(
             stageManager.constructionMap = createConstructionMapConfig()
             stageManager.curtainBackground = surface
             game.eventManager.fireEvent(Scene.Start {
-                val mainMenu = MainMenuScene(game, stageManager, entityFactory, clock)
+                val mainMenu = MainMenuScene(game, stageManager, entityFactory)
                 mainMenu.setMenuItem(2)
                 mainMenu.arrived()
                 mainMenu

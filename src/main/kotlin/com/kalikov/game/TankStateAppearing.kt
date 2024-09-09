@@ -1,8 +1,7 @@
 package com.kalikov.game
 
 class TankStateAppearing(
-    private val eventManager: EventManager,
-    imageManager: ImageManager,
+    private val game: Game,
     private val tank: Tank,
     animationInterval: Int = DEFAULT_ANIMATION_INTERVAL
 ) : TankState {
@@ -23,12 +22,12 @@ class TankStateAppearing(
     override val isCollidable get() = false
 
     private val animation = Animation.pauseAware(
-        eventManager,
+        game.eventManager,
         frameSequenceOf(*animationFrames),
-        tank.clock,
+        game.clock,
         animationInterval
     )
-    private val image = imageManager.getImage("appear")
+    private val image = game.imageManager.getImage("appear")
 
     override fun update() {
         if (!animation.isRunning) {
@@ -36,7 +35,7 @@ class TankStateAppearing(
         }
         animation.update()
         if (animation.isCompleted) {
-            eventManager.fireEvent(End(tank))
+            game.eventManager.fireEvent(End(tank))
         }
     }
 

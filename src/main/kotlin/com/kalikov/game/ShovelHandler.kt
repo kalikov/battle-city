@@ -1,12 +1,8 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class ShovelHandler(
-    private val eventManager: EventManager,
-    imageManager: ImageManager,
+    private val game: Game,
     private val baseWallBuilder: ShovelWallBuilder,
-    clock: Clock,
     solidDuration: Int = SOLID_DURATION,
     blinkDuration: Int = BLINK_DURATION,
     private val blinkCount: Int = 6
@@ -18,16 +14,16 @@ class ShovelHandler(
         private val subscriptions = setOf(PowerUpHandler.ShovelStart::class)
     }
 
-    private val solidTimer = PauseAwareTimer(eventManager, clock, solidDuration, ::end)
-    private val blinkTimer = PauseAwareTimer(eventManager, clock, blinkDuration, ::blink)
+    private val solidTimer = PauseAwareTimer(game.eventManager, game.clock, solidDuration, ::end)
+    private val blinkTimer = PauseAwareTimer(game.eventManager, game.clock, blinkDuration, ::blink)
 
-    private val steelWallFactory = SteelWallFactory(eventManager, imageManager)
-    private val brickWallFactory = BrickWallFactory(eventManager, imageManager)
+    private val steelWallFactory = SteelWallFactory(game.eventManager, game.imageManager)
+    private val brickWallFactory = BrickWallFactory(game.eventManager, game.imageManager)
 
     private var blinkFrame = 0
 
     init {
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun notify(event: Event) {
@@ -75,6 +71,6 @@ class ShovelHandler(
     fun dispose() {
         solidTimer.dispose()
         blinkTimer.dispose()
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

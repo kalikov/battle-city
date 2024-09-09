@@ -11,9 +11,8 @@ import kotlin.test.assertIs
 class PlayerTankTest : TankTest<PlayerTank>() {
     override fun createTank(): PlayerTank {
         return PlayerTank.create(
-            mockGame(mock(), eventManager, imageManager),
+            game,
             mock(),
-            clock,
             0,
             0,
             Player(eventManager)
@@ -29,7 +28,7 @@ class PlayerTankTest : TankTest<PlayerTank>() {
 
     @Test
     fun `should be in invincible state when appearing state ends`() {
-        tank.state = TankStateAppearing(mock(), mock(), tank)
+        tank.state = TankStateAppearing(game, tank)
         tank.notify(TankStateAppearing.End(tank))
         assertIs<TankStateInvincible>(tank.state)
     }
@@ -87,7 +86,7 @@ class PlayerTankTest : TankTest<PlayerTank>() {
 
     @Test
     fun `should face up direction when appearing state ends`() {
-        tank.state = TankStateAppearing(mock(), mock(), tank)
+        tank.state = TankStateAppearing(game, tank)
         tank.direction = Direction.DOWN
         tank.notify(TankStateAppearing.End(tank))
         assertEquals(Direction.UP, tank.direction)
@@ -120,28 +119,28 @@ class PlayerTankTest : TankTest<PlayerTank>() {
     @Test
     @DisplayName("should draw tank in invincible state with right direction")
     fun shouldDrawInvincibleRight() {
-        tank.state = TankStateInvincible(eventManager, imageManager, tank)
+        tank.state = TankStateInvincible(game, tank)
         shouldDrawTank(Direction.RIGHT, "tank_player_right_c0_t1_i")
     }
 
     @Test
     @DisplayName("should draw tank in invincible state with up direction")
     fun shouldDrawInvincibleUp() {
-        tank.state = TankStateInvincible(eventManager, imageManager, tank)
+        tank.state = TankStateInvincible(game, tank)
         shouldDrawTank(Direction.UP, "tank_player_up_c0_t1_i")
     }
 
     @Test
     @DisplayName("should draw tank in invincible state with down direction")
     fun shouldDrawInvincibleDown() {
-        tank.state = TankStateInvincible(eventManager, imageManager, tank)
+        tank.state = TankStateInvincible(game, tank)
         shouldDrawTank(Direction.DOWN, "tank_player_down_c0_t1_i")
     }
 
     @Test
     @DisplayName("should draw tank in invincible state with left direction")
     fun shouldDrawInvincibleLeft() {
-        tank.state = TankStateInvincible(eventManager, imageManager, tank)
+        tank.state = TankStateInvincible(game, tank)
         shouldDrawTank(Direction.LEFT, "tank_player_left_c0_t1_i")
     }
 

@@ -1,8 +1,7 @@
 package com.kalikov.game
 
 class PowerUpHandler(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
 ) : EventSubscriber {
     data class Life(val player: Player) : Event()
     data object Freeze : Event()
@@ -21,7 +20,7 @@ class PowerUpHandler(
     private val enemies = HashSet<EnemyTank>()
 
     init {
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun notify(event: Event) {
@@ -35,7 +34,7 @@ class PowerUpHandler(
     }
 
     private fun handle(powerUp: PowerUp, playerTank: PlayerTank) {
-        eventManager.fireEvent(SoundManager.Play("powerup_pick"))
+        game.eventManager.fireEvent(SoundManager.Play("powerup_pick"))
 
         when (powerUp.type) {
             PowerUp.Type.GRENADE -> handleGrenade()
@@ -57,16 +56,16 @@ class PowerUpHandler(
     }
 
     private fun handleHelmet(playerTank: Tank) {
-        val state = TankStateInvincible(eventManager, imageManager, playerTank, HELMET_DURATION)
+        val state = TankStateInvincible(game, playerTank, HELMET_DURATION)
         playerTank.state = state
     }
 
     private fun handleTimer() {
-        eventManager.fireEvent(Freeze)
+        game.eventManager.fireEvent(Freeze)
     }
 
     private fun handleShovel() {
-        eventManager.fireEvent(ShovelStart)
+        game.eventManager.fireEvent(ShovelStart)
     }
 
     private fun handleStar(playerTank: PlayerTank) {
@@ -74,10 +73,10 @@ class PowerUpHandler(
     }
 
     private fun handleTank(playerTank: PlayerTank) {
-        eventManager.fireEvent(Life(playerTank.player))
+        game.eventManager.fireEvent(Life(playerTank.player))
     }
 
     fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

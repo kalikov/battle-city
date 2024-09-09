@@ -1,12 +1,11 @@
 package com.kalikov.game
 
 class TankExplosion(
-    private val eventManager: EventManager,
-    imageManager: ImageManager,
+    private val game: Game,
     val tank: Tank
 ) : Explosion(
-    eventManager,
-    Animation.pauseAware(eventManager, frameSequenceOf(*animationFrames), tank.clock, 96),
+    game.eventManager,
+    Animation.pauseAware(game.eventManager, frameSequenceOf(*animationFrames), game.clock, 96),
     Globals.UNIT_SIZE * 2
 ) {
     private companion object {
@@ -15,9 +14,9 @@ class TankExplosion(
 
     data class Destroyed(val explosion: TankExplosion) : Event()
 
-    override val image = imageManager.getImage("big_explosion")
+    override val image = game.imageManager.getImage("big_explosion")
 
     override fun destroyHook() {
-        eventManager.fireEvent(Destroyed(this))
+        game.eventManager.fireEvent(Destroyed(this))
     }
 }

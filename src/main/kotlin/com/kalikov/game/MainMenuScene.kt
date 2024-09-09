@@ -1,12 +1,9 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class MainMenuScene(
     private val game: Game,
     private val stageManager: StageManager,
     entityFactory: EntityFactory,
-    clock: Clock
 ) : Scene, EventSubscriber {
     companion object {
         const val INTERVAL = 16
@@ -26,7 +23,7 @@ class MainMenuScene(
 
     private val cursorView: MainMenuCursorView
 
-    private val arriveTimer = BasicTimer(clock, INTERVAL, this::updatePosition)
+    private val arriveTimer = BasicTimer(game.clock, INTERVAL, this::updatePosition)
 
     private val brickBlending = object : TextureBlending(game.imageManager.getImage("wall_brick")) {
         override fun blend(dst: ARGB, src: ARGB, x: Int, y: Int): ARGB {
@@ -48,15 +45,15 @@ class MainMenuScene(
         arriveTimer.restart()
 
         mainMenu = MainMenu(
-            OnePlayerMenuItem(game, stageManager, entityFactory, clock),
-            TwoPlayersMenuItem(game, stageManager, entityFactory, clock),
-            ConstructionMenuItem(game, stageManager, entityFactory, clock)
+            OnePlayerMenuItem(game, stageManager, entityFactory),
+            TwoPlayersMenuItem(game, stageManager, entityFactory),
+            ConstructionMenuItem(game, stageManager, entityFactory)
         )
 
         mainMenuController = MainMenuController(game.eventManager, mainMenu)
         mainMenuController.isActive = false
 
-        cursorView = MainMenuCursorView(game.imageManager, clock)
+        cursorView = MainMenuCursorView(game.imageManager, game.clock)
         mainMenuView = MainMenuView(mainMenu, cursorView)
     }
 

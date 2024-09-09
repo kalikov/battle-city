@@ -17,19 +17,20 @@ import kotlin.test.assertSame
 
 class PlayerTankFactoryTest {
     private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var factory: PlayerTankFactory
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        game = mockGame()
+        eventManager = game.eventManager
         spriteContainer = mock()
         factory = PlayerTankFactory(
-            mockGame(eventManager = eventManager),
+            game,
             mock(),
             spriteContainer,
             Point(10, 100),
-            mock(),
             Player(eventManager)
         )
     }
@@ -61,7 +62,7 @@ class PlayerTankFactoryTest {
         factory.init(0)
         reset(eventManager)
 
-        val explosion = mockTankExplosion(eventManager, tank = factory.playerTank!!)
+        val explosion = mockTankExplosion(game, tank = factory.playerTank!!)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager).fireEvent(isA<PlayerTankFactory.PlayerTankCreated>())
@@ -74,7 +75,7 @@ class PlayerTankFactoryTest {
         val firstTank = factory.playerTank
         assertNotNull(firstTank)
 
-        factory.notify(TankExplosion.Destroyed(mockTankExplosion(eventManager, tank = firstTank)))
+        factory.notify(TankExplosion.Destroyed(mockTankExplosion(game, tank = firstTank)))
 
         val captor = argumentCaptor<PlayerTankFactory.PlayerTankCreated>()
         verify(eventManager).fireEvent(captor.capture())
@@ -95,7 +96,7 @@ class PlayerTankFactoryTest {
         reset(eventManager)
 
         factory.notify(Player.OutOfLives(factory.player))
-        val explosion = mockTankExplosion(eventManager, tank = factory.playerTank!!)
+        val explosion = mockTankExplosion(game, tank = factory.playerTank!!)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager, never()).fireEvent(isA<PlayerTankFactory.PlayerTankCreated>())

@@ -47,11 +47,10 @@ class Main {
             val screen = AwtScreen(frame, fontManager)
             val input = AwtInput(frame, config.keyboard)
             val audio = JavaAudio()
-            val game = BasicGame(config, screen, input, audio)
+            val game = BasicGame(config, Clock.systemUTC(), screen, input, audio)
 
-            val clock = Clock.systemUTC()
             val stageManager = DefaultStageManager(game.eventManager)
-            val entityFactory = DefaultEntityFactory(game.eventManager, game.imageManager, clock)
+            val entityFactory = DefaultEntityFactory(game.eventManager, game.imageManager, game.clock)
 
             game.sceneManager.setScene {
                 LoadingScene(
@@ -61,7 +60,6 @@ class Main {
                     fontManager,
                     stageManager,
                     entityFactory,
-                    clock
                 )
             }
 

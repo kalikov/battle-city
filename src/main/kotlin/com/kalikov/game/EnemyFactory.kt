@@ -107,8 +107,8 @@ class EnemyFactory(
     }
 
     private fun createEnemy(type: EnemyTank.EnemyType, position: Point): EnemyTank {
-        val tank = EnemyTank.create(game, pauseManager, clock, position.x, position.y, type)
-        tank.state = TankStateAppearing(game.eventManager, game.imageManager, tank)
+        val tank = EnemyTank.create(game, pauseManager, position.x, position.y, type)
+        tank.state = TankStateAppearing(game, tank)
 
         when (type) {
             EnemyTank.EnemyType.BASIC -> {

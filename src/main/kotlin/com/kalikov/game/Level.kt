@@ -1,12 +1,9 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class Level(
     private val game: Game,
     private val stageManager: StageManager,
     private val entityFactory: EntityFactory,
-    private val clock: Clock
 ) : EventSubscriber {
     private companion object {
         private val subscriptions = setOf(
@@ -54,6 +51,8 @@ class Level(
     private val gameOverScript: Script
     private val nextStageScript: Script
 
+    private val playerGameOverScripts: Map<Player, Script>
+
     private val statistics = List(stageManager.players.size) { StageScore() }
 
     private val spriteContainer: SpriteContainer
@@ -79,7 +78,7 @@ class Level(
             pauseListener,
             gameField.bounds,
             spriteContainer,
-            clock
+            game.clock
         )
 
         playersTankControllerFactories = stageManager.players.map { player ->
@@ -95,17 +94,21 @@ class Level(
                 spriteContainer,
                 stage.map.playerSpawnPoints[index].multiply(Globals.TILE_SIZE)
                     .translate(gameField.bounds.x, gameField.bounds.y),
-                clock,
                 player,
             )
         }
 
         bulletFactory = BulletFactory(game.eventManager, spriteContainer)
-        bulletExplosionFactory = BulletExplosionFactory(game.eventManager, game.imageManager, spriteContainer, clock)
-        tankExplosionFactory = TankExplosionFactory(game.eventManager, game.imageManager, spriteContainer)
-        baseExplosionFactory = BaseExplosionFactory(game.eventManager, game.imageManager, spriteContainer, clock)
-        pointsFactory = PointsFactory(game.eventManager, game.imageManager, spriteContainer, clock)
-        freezeHandler = FreezeHandler(game.eventManager, clock)
+        bulletExplosionFactory = BulletExplosionFactory(
+            game.eventManager,
+            game.imageManager,
+            spriteContainer,
+            game.clock
+        )
+        tankExplosionFactory = TankExplosionFactory(game, spriteContainer)
+        baseExplosionFactory = BaseExplosionFactory(game, spriteContainer)
+        pointsFactory = PointsFactory(game.eventManager, game.imageManager, spriteContainer, game.clock)
+        freezeHandler = FreezeHandler(game.eventManager, game.clock)
 
         val basePosition = stage.map.base.multiply(Globals.TILE_SIZE).translate(gameField.bounds.x, gameField.bounds.y)
 
@@ -122,10 +125,11 @@ class Level(
             stage.map.enemySpawnPoints.map {
                 it.multiply(Globals.TILE_SIZE).translate(gameField.bounds.x, gameField.bounds.y)
             },
-            clock,
+            game.clock,
             stage.enemies,
             stage.enemySpawnDelay
         )
+        enemyFactory.enemyCountLimit = 2 * (stageManager.players.size + 1)
 
         enemyFactoryView = EnemyFactoryView(
             game.imageManager,
@@ -134,7 +138,7 @@ class Level(
             gameField.bounds.y + Globals.TILE_SIZE
         )
 
-        powerUpFactory = PowerUpFactory(game.eventManager, game.imageManager, spriteContainer, clock, gameField.bounds)
+        powerUpFactory = PowerUpFactory(game.eventManager, game.imageManager, spriteContainer, game.clock, gameField.bounds)
 
         baseWallBuilder = BaseWallBuilder(
             game.eventManager,
@@ -143,15 +147,15 @@ class Level(
             basePosition
         )
 
-        powerUpHandler = PowerUpHandler(game.eventManager, game.imageManager)
+        powerUpHandler = PowerUpHandler(game)
 
-        shovelHandler = ShovelHandler(game.eventManager, game.imageManager, baseWallBuilder, clock)
+        shovelHandler = ShovelHandler(game, baseWallBuilder)
 
         pauseMessageView = PauseMessageView(
             game.eventManager,
             gameField.bounds.x + gameField.bounds.width / 2,
             gameField.bounds.y + gameField.bounds.height / 2,
-            clock
+            game.clock
         )
 
         livesView = LivesView(
@@ -161,31 +165,68 @@ class Level(
             gameField.bounds.bottom + 1 - 5 * Globals.UNIT_SIZE - Globals.TILE_SIZE
         )
 
-        gameOverMessage = GameOverMessage(
-            gameField.bounds.x + gameField.bounds.width / 2 - Globals.TILE_SIZE * 2 + 1,
-            Globals.CANVAS_HEIGHT + Globals.UNIT_SIZE
-        )
+        gameOverMessage = GameOverMessage()
+
+        var index = 0
+        playerGameOverScripts = stageManager.players.asSequence().take(2).associateWith {
+            val appearPosition = playersTankFactories[index].appearPosition
+            val script = Script()
+            script.isActive = false
+            script.enqueue(Delay(script, 640, game.clock))
+            script.enqueue(Execute {
+                gameOverMessage.y = appearPosition.y + Globals.TILE_SIZE
+                gameOverMessage.x = if (appearPosition.x < gameField.bounds.x + gameField.bounds.width / 2) {
+                    gameField.bounds.x + Globals.TILE_SIZE
+                } else {
+                    gameField.bounds.right - Globals.TILE_SIZE * 5 + 1
+                }
+                gameOverMessage.isVisible = true
+            })
+            script.enqueue(
+                MoveFn(
+                    MoveHorz(gameOverMessage),
+                    appearPosition.x - Globals.TILE_SIZE + 1,
+                    1536,
+                    script,
+                    game.clock
+                )
+            )
+            script.enqueue(Delay(script, 5000, game.clock))
+            script.enqueue(Execute {
+                gameOverMessage.isVisible = false
+            })
+            index++
+            script
+        }
 
         gameOverScript = Script()
         gameOverScript.isActive = false
-        gameOverScript.enqueue(Delay(gameOverScript, 640, clock))
+        gameOverScript.enqueue(Delay(gameOverScript, 640, game.clock))
+        gameOverScript.enqueue(Execute {
+            playerGameOverScripts.values.forEach {
+                it.isActive = false
+            }
+            gameOverMessage.x = gameField.bounds.x + gameField.bounds.width / 2 - Globals.TILE_SIZE * 2 + 1
+            gameOverMessage.y = Globals.CANVAS_HEIGHT + Globals.UNIT_SIZE
+            gameOverMessage.isVisible = true
+        })
         gameOverScript.enqueue(
             MoveFn(
                 MoveVert(gameOverMessage),
                 Globals.CANVAS_HEIGHT / 2 - Globals.TILE_SIZE + 1,
                 2000,
                 gameOverScript,
-                clock
+                game.clock
             )
         )
-        gameOverScript.enqueue(Delay(gameOverScript, 2000, clock))
+        gameOverScript.enqueue(Delay(gameOverScript, 2000, game.clock))
         gameOverScript.enqueue(Execute {
             startStageScoreScene()
         })
 
         nextStageScript = Script()
         nextStageScript.isActive = false
-        nextStageScript.enqueue(Delay(nextStageScript, 2500, clock))
+        nextStageScript.enqueue(Delay(nextStageScript, 2500, game.clock))
         nextStageScript.enqueue(Execute {
             playersTankFactories.forEachIndexed { index, it ->
                 stageManager.players[index].upgradeLevel = 0
@@ -225,6 +266,7 @@ class Level(
         pauseMessageView.update()
         gameOverScript.update()
         nextStageScript.update()
+        playerGameOverScripts.values.forEach { it.update() }
     }
 
     fun draw(surface: ScreenSurface) {
@@ -259,16 +301,24 @@ class Level(
         when (event) {
             is Base.Hit -> gameOver = true
             is BaseExplosion.Destroyed -> runGameOverScript()
-            is Player.OutOfLives -> onPlayerOutOfLives()
+            is Player.OutOfLives -> onPlayerOutOfLives(event.player)
             is EnemyFactory.LastEnemyDestroyed -> runNextStageScript()
             is EnemyTank.Score -> statistics[event.player.index].increment(event.tank)
             else -> Unit
         }
     }
 
-    private fun onPlayerOutOfLives() {
+    private fun onPlayerOutOfLives(player: Player) {
         if (stageManager.players.none { it.lives > 0 }) {
             runGameOverScript()
+        } else {
+            runPlayerGameOverScript(player)
+        }
+    }
+
+    private fun runPlayerGameOverScript(player: Player) {
+        if (!gameOver) {
+            playerGameOverScripts[player]?.isActive = true
         }
     }
 
@@ -296,7 +346,6 @@ class Level(
                     entityFactory,
                     statistics,
                     gameOver,
-                    clock
                 )
             }
         )

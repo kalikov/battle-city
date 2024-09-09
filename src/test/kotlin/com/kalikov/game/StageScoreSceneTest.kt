@@ -18,7 +18,7 @@ class StageScoreSceneTest {
 
     @Test
     fun `should draw scene correctly`() {
-        val game = mockGame(imageManager = TestImageManager(fonts))
+        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
         val stageManager: StageManager = mock()
         whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
@@ -35,7 +35,6 @@ class StageScoreSceneTest {
             mock(),
             listOf(score),
             false,
-            clock
         )
 
         val stage = Stage(
@@ -64,7 +63,7 @@ class StageScoreSceneTest {
 
     @Test
     fun `should draw two players scene correctly`() {
-        val game = mockGame(imageManager = TestImageManager(fonts))
+        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
         val stageManager: StageManager = mock()
         whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
@@ -89,7 +88,6 @@ class StageScoreSceneTest {
             mock(),
             listOf(scoreOne, scoreTwo),
             false,
-            clock
         )
 
         val stage = Stage(
@@ -118,7 +116,7 @@ class StageScoreSceneTest {
 
     @Test
     fun `should not draw two players bonus`() {
-        val game = mockGame(imageManager = TestImageManager(fonts))
+        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
         val stageManager: StageManager = mock()
         whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
@@ -146,7 +144,6 @@ class StageScoreSceneTest {
             mock(),
             listOf(scoreOne, scoreTwo),
             false,
-            clock
         )
 
         val stage = Stage(
