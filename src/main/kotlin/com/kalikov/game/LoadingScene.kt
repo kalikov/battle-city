@@ -24,6 +24,7 @@ class LoadingScene(
 
     private val stages = ConcurrentHashMap<Int, Stage>()
     private var constructionMap: StageMapConfig? = null
+    private var demoStage: Stage? = null
 
     init {
         LeaksDetector.add(this)
@@ -45,7 +46,7 @@ class LoadingScene(
         } else if (remainingJobs.get() == 0) {
             executor.shutdown()
 
-            stageManager.init(getStages(), requireNotNull(constructionMap))
+            stageManager.init(getStages(), requireNotNull(constructionMap), demoStage)
             game.eventManager.fireEvent(Scene.Start {
                 MainMenuScene(game, stageManager)
             })
@@ -100,6 +101,9 @@ class LoadingScene(
                 loadStage(index, stageConfig)
             }
             loadConstructionMap(game.config.construction)
+            game.config.demo?.let {
+                loadDemoStage(it)
+            }
             remainingJobs.decrementAndGet()
         }
     }
@@ -129,6 +133,21 @@ class LoadingScene(
             constructionMap = FileInputStream(File(path)).use {
                 json.decodeFromStream(it)
             }
+            remainingJobs.decrementAndGet()
+        }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    private fun loadDemoStage(stageConfig: StageConfig) {
+        remainingJobs.incrementAndGet()
+        executor.submit {
+            val json = Json {
+                ignoreUnknownKeys = true
+            }
+            val map: StageMapConfig = FileInputStream(File(stageConfig.map)).use {
+                json.decodeFromStream(it)
+            }
+            demoStage = Stage(map, stageConfig.enemySpawnDelay ?: 3000, stageConfig.enemies)
             remainingJobs.decrementAndGet()
         }
     }

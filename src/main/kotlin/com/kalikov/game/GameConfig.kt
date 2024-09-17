@@ -13,5 +13,6 @@ data class GameConfig(
     val sounds: Map<String, String> = emptyMap(),
     val images: Map<String, String> = emptyMap(),
     val construction: String = "data/construction.json",
+    val demo: StageConfig? = null,
     val stages: List<StageConfig> = emptyList()
 )
