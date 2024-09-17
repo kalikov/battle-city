@@ -18,7 +18,7 @@ class Level(
 
     private val pauseListener = PauseListener(game.eventManager)
 
-    private val playersTankControllerFactories: List<PlayerTankControllerFactory>
+    private val playersTankControllers: List<PlayerTankController>
     private val playersTankFactories: List<PlayerTankFactory>
 
     private val bulletHandler: BulletHandler
@@ -82,8 +82,8 @@ class Level(
             game.clock
         )
 
-        playersTankControllerFactories = stageManager.players.map { player ->
-            PlayerTankControllerFactory(game.eventManager, pauseListener, player)
+        playersTankControllers = stageManager.players.map { player ->
+            PlayerTankController(game.eventManager, pauseListener, player)
         }
 
         val stage = stageManager.stage
@@ -241,7 +241,7 @@ class Level(
     fun update() {
         gameField.update()
         movementController.update()
-        playersTankControllerFactories.forEach { it.update() }
+        playersTankControllers.forEach { it.update() }
         enemyFactory.update()
         aiControllersContainer.update()
         freezeHandler.update()
@@ -363,7 +363,7 @@ class Level(
         bulletHandler.dispose()
 
         playersTankFactories.forEach { it.dispose() }
-        playersTankControllerFactories.forEach { it.dispose() }
+        playersTankControllers.forEach { it.dispose() }
 
         movementController.dispose()
 

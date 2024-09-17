@@ -7,7 +7,7 @@ class PlayerTankFactory(
     val appearPosition: PixelPoint,
     val player: Player,
 ) : EventSubscriber {
-    data class PlayerTankCreated(val tank: PlayerTank) : Event()
+    data class PlayerTankCreated(val tank: PlayerTankHandle) : Event()
 
     private companion object {
         private val subscriptions = setOf(TankExplosion.Destroyed::class, Player.OutOfLives::class)

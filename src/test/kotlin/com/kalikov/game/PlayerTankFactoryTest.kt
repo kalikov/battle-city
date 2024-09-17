@@ -80,14 +80,16 @@ class PlayerTankFactoryTest {
         val captor = argumentCaptor<PlayerTankFactory.PlayerTankCreated>()
         verify(eventManager).fireEvent(captor.capture())
 
-        val tank = captor.firstValue.tank
-        assertNotSame(firstTank, tank)
-        assertSame(tank, factory.playerTank)
+        val eventTank = captor.firstValue.tank
+        assertNotSame(firstTank, eventTank)
+        val factoryTank = factory.playerTank
+        assertNotNull(factoryTank)
+        assertSame(eventTank, factoryTank)
 
-        verify(spriteContainer).addSprite(tank)
-        assertEquals(px(10), tank.x)
-        assertEquals(px(100), tank.y)
-        assertIs<TankStateAppearing>(tank.state)
+        verify(spriteContainer).addSprite(factoryTank)
+        assertEquals(px(10), factoryTank.x)
+        assertEquals(px(100), factoryTank.y)
+        assertIs<TankStateAppearing>(factoryTank.state)
     }
 
     @Test
