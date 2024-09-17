@@ -3,19 +3,20 @@ package com.kalikov.game
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class PointsTest {
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var pauseManager: PauseManager
     private lateinit var clock: TestClock
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
         pauseManager = mock()
         clock = TestClock()
+        game = mockGame(clock = clock)
     }
 
     @Test
@@ -38,8 +39,8 @@ class PointsTest {
 
     @Test
     fun `should respect pause in the points duration`() {
-        eventManager = ConcurrentEventManager()
-        val pauseListener = PauseListener(eventManager)
+        whenever(game.eventManager).thenReturn(ConcurrentEventManager())
+        val pauseListener = PauseListener(game.eventManager)
         pauseManager = pauseListener
         val points = createPoints(3)
         points.update()
@@ -79,12 +80,12 @@ class PointsTest {
 
     @Test
     fun `should not destroy points when paused`() {
-        eventManager = ConcurrentEventManager()
-        pauseManager = PauseListener(eventManager)
+        whenever(game.eventManager).thenReturn(ConcurrentEventManager())
+        pauseManager = PauseListener(game.eventManager)
 
         val points = createPoints(1)
 
-        eventManager.fireEvent(Keyboard.KeyPressed(Keyboard.Key.START, 0))
+        game.eventManager.fireEvent(Keyboard.KeyPressed(Keyboard.Key.START, 0))
 
         points.update()
 
@@ -94,6 +95,6 @@ class PointsTest {
     }
 
     private fun createPoints(duration: Int): Points {
-        return Points(eventManager, mock(), clock,  100, 0, 0, duration = duration)
+        return Points(game, 100, px(0), px(0), duration = duration)
     }
 }

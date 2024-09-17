@@ -1,9 +1,13 @@
 package com.kalikov.game
 
-@kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class StageMapConfig(
-    val objects: List<StageObject>,
-    val base: Point,
-    val playerSpawnPoints: List<Point>,
-    val enemySpawnPoints: List<Point>
+    val ground: GroundConfig = GroundConfig(),
+    val walls: WallsConfig = WallsConfig(),
+    val trees: Set<TilePoint> = emptySet(),
+    val base: TilePoint,
+    val playerSpawnPoints: List<TilePoint>,
+    val enemySpawnPoints: List<TilePoint>
 )

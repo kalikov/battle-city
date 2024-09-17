@@ -4,7 +4,7 @@ class PlayerTankFactory(
     private val game: Game,
     private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
-    val appearPosition: Point,
+    val appearPosition: PixelPoint,
     val player: Player,
 ) : EventSubscriber {
     data class PlayerTankCreated(val tank: PlayerTank) : Event()

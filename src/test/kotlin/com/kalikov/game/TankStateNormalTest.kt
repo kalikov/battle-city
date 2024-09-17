@@ -15,7 +15,7 @@ class TankStateNormalTest {
     fun beforeEach() {
         game = mockGame(clock = TestClock())
         pauseManager = mock()
-        tank = mockPlayerTank(game, pauseManager)
+        tank = stubPlayerTank(game, pauseManager)
         state = TankStateNormal(game.imageManager, tank)
         tank.state = state
     }

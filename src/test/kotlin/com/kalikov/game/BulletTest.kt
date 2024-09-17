@@ -13,7 +13,6 @@ class BulletTest {
     private lateinit var fonts: TestFonts
     private lateinit var eventManager: EventManager
     private lateinit var imageManager: ImageManager
-    private lateinit var pauseManager: PauseManager
     private lateinit var bullet: Bullet
 
     @BeforeEach
@@ -21,9 +20,7 @@ class BulletTest {
         fonts = TestFonts()
         imageManager = TestImageManager(fonts)
         eventManager = mock()
-        pauseManager = mock()
-        val tank = mockPlayerTank(mockGame(mock(), eventManager, imageManager), pauseManager)
-        bullet = tank.createBullet()
+        bullet = Bullet(mockGame(mock(), eventManager, imageManager), mock())
     }
 
     @Test
@@ -90,9 +87,9 @@ class BulletTest {
     }
 
     private fun shouldDrawBullet(direction: Direction, imageName: String) {
-        val image = BufferedImage(Globals.TILE_SIZE, Globals.TILE_SIZE, BufferedImage.TYPE_INT_ARGB)
+        val image = BufferedImage(t(1).toPixel().toInt(), t(1).toPixel().toInt(), BufferedImage.TYPE_INT_ARGB)
         bullet.direction = direction
-        bullet.setPosition((Globals.TILE_SIZE - bullet.width) / 2, (Globals.TILE_SIZE - bullet.height) / 2)
+        bullet.setPosition((t(1).toPixel() - bullet.width) / 2, (t(1).toPixel() - bullet.height) / 2)
         bullet.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("$imageName.png", image)

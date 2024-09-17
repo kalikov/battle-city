@@ -12,6 +12,8 @@ class PlayerTankControllerFactory(
     var controller: PlayerTankController? = null
         private set
 
+    private var isActive = true
+
     init {
         LeaksDetector.add(this)
 

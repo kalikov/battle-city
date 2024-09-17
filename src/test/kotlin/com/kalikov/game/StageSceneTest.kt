@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.awt.image.BufferedImage
@@ -15,18 +16,31 @@ class StageSceneTest {
     private lateinit var fonts: TestFonts
     private lateinit var clock: TestClock
 
+    private lateinit var game: Game
+
+    private lateinit var stageManager: StageManager
+
+    private lateinit var image: BufferedImage
+
     @BeforeEach
     fun beforeEach() {
         fonts = TestFonts()
         clock = TestClock()
+
+        game = mockGame(eventManager = ConcurrentEventManager(), imageManager = TestImageManager(fonts), clock = clock)
+        whenever(game.screen.createSurface(px(anyInt()), px(anyInt()))).thenAnswer {
+            val image = BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
+            AwtScreenSurface(fonts, image)
+        }
+
+        stageManager = mock()
+
+        image = BufferedImage(Globals.CANVAS_WIDTH.toInt(), Globals.CANVAS_HEIGHT.toInt(), BufferedImage.TYPE_INT_ARGB)
     }
 
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun `should draw scene correctly`() {
-        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
-        val stageManager: StageManager = mock()
-
         val player = Player(game.eventManager, initialScore = 100)
         whenever(stageManager.players).thenReturn(listOf(player))
 
@@ -42,15 +56,13 @@ class StageSceneTest {
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.stageNumber).thenReturn(1)
 
-        val entityFactory = DefaultEntityFactory(game.eventManager, game.imageManager, clock)
-        val scene = StageScene(game, stageManager, entityFactory)
+        val scene = StageScene(game, stageManager)
 
         while (!scene.isReady) {
             clock.tick(1)
             scene.update()
         }
 
-        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("stage.png", image)
@@ -59,9 +71,6 @@ class StageSceneTest {
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun `should draw two players scene correctly`() {
-        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
-        val stageManager: StageManager = mock()
-
         val playerOne = Player(game.eventManager, initialScore = 100)
         val playerTwo = Player(game.eventManager, initialScore = 6000)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
@@ -78,15 +87,13 @@ class StageSceneTest {
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.stageNumber).thenReturn(1)
 
-        val entityFactory = DefaultEntityFactory(game.eventManager, game.imageManager, clock)
-        val scene = StageScene(game, stageManager, entityFactory)
+        val scene = StageScene(game, stageManager)
 
         while (!scene.isReady) {
             clock.tick(1)
             scene.update()
         }
 
-        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("stage_two_players.png", image)
@@ -94,24 +101,25 @@ class StageSceneTest {
 
     @Test
     fun `should draw game over message correctly`() {
-        val game = mockGame(eventManager = ConcurrentEventManager(), imageManager = TestImageManager(fonts), clock = clock)
-        val stageManager: StageManager = mock()
-
         val player = Player(game.eventManager, initialScore = 100)
         whenever(stageManager.players).thenReturn(listOf(player))
 
-        val map = StageMapConfig(emptyList(), Point(12, 24), listOf(Point(8, 24)), emptyList())
+        val map = StageMapConfig(
+            base = TilePoint(t(12), t(24)),
+            playerSpawnPoints = listOf(TilePoint(t(8), t(24))),
+            enemySpawnPoints = emptyList(),
+        )
         val stage = Stage(map, 1, emptyList())
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.stageNumber).thenReturn(1)
 
-        val scene = StageScene(game, stageManager, mock())
+        val scene = StageScene(game, stageManager)
 
         while (!scene.isReady) {
             clock.tick(1)
             scene.update()
         }
-        game.eventManager.fireEvent(BaseExplosion.Destroyed(BaseExplosion(game.eventManager, game.imageManager, clock)))
+        game.eventManager.fireEvent(BaseExplosion.Destroyed(BaseExplosion(game)))
         scene.update() // start initial delay
         clock.tick(1000)
         scene.update() // complete initial delay
@@ -119,7 +127,6 @@ class StageSceneTest {
         clock.tick(2000)
         scene.update() // update game over message
 
-        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("stage_game_over.png", image)

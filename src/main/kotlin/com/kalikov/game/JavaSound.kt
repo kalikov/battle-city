@@ -7,6 +7,7 @@ import javax.sound.sampled.AudioInputStream
 import javax.sound.sampled.AudioSystem
 import javax.sound.sampled.DataLine
 import javax.sound.sampled.SourceDataLine
+import kotlin.Unit
 import kotlin.concurrent.withLock
 
 class JavaSound(private val bytes: ByteArray) : Sound {

@@ -1,12 +1,13 @@
 package com.kalikov.game
 
 interface ScreenSurfaceData : Render {
-    val width: Int
-    val height: Int
+    val width: Pixel
 
-    fun getPixel(x: Int, y: Int): ARGB
+    val height: Pixel
 
     val pixels: IntArray
 
-    fun getPixels(x: Int, y: Int, width: Int, height: Int): IntArray
+    fun getPixel(x: Pixel, y: Pixel): ARGB
+
+    fun getPixels(x: Pixel, y: Pixel, width: Pixel, height: Pixel): IntArray
 }

@@ -17,11 +17,16 @@ class HighScoreSceneTest {
     @Test
     fun `should draw high score scene`() {
         val stageManager: StageManager = mock()
-        val scene = HighScoreScene(mock(), TestImageManager(fonts), stageManager, mock(), mock())
+        val game = mockGame(imageManager = TestImageManager(fonts))
+        val scene = HighScoreScene(game, stageManager, mock())
 
         whenever(stageManager.highScore).thenReturn(29100)
 
-        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_RGB)
+        val image = BufferedImage(
+            Globals.CANVAS_WIDTH.toInt(),
+            Globals.CANVAS_HEIGHT.toInt(),
+            BufferedImage.TYPE_INT_RGB
+        )
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("high_score.png", image)

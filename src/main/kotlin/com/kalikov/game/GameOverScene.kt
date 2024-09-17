@@ -3,7 +3,6 @@ package com.kalikov.game
 class GameOverScene(
     private val game: Game,
     private val stageManager: StageManager,
-    private val entityFactory: EntityFactory,
 ) : Scene {
     private val script = Script()
 
@@ -17,7 +16,7 @@ class GameOverScene(
             val highScore = stageManager.highScore
             stageManager.reset()
             val mainMenuFactory = {
-                val mainMenu = MainMenuScene(game, stageManager, entityFactory)
+                val mainMenu = MainMenuScene(game, stageManager)
                 if (stageManager.players.size == 2) {
                     mainMenu.setMenuItem(1)
                 }
@@ -25,7 +24,7 @@ class GameOverScene(
             }
             if (highScore < stageManager.highScore) {
                 game.eventManager.fireEvent(Scene.Start {
-                    HighScoreScene(game.eventManager, game.imageManager, stageManager, mainMenuFactory, game.clock)
+                    HighScoreScene(game, stageManager, mainMenuFactory)
                 })
             } else {
                 game.eventManager.fireEvent(Scene.Start(mainMenuFactory))
@@ -40,9 +39,9 @@ class GameOverScene(
     override fun draw(surface: ScreenSurface) {
         surface.clear(ARGB.BLACK)
 
-        val x = Globals.TILE_SIZE * 8
-        val y = Globals.TILE_SIZE * 9 + Globals.FONT_BIG_CORRECTION
-        val interval = Globals.FONT_BIG_SIZE + Globals.UNIT_SIZE + Globals.TILE_SIZE / 2
+        val x = t(8).toPixel()
+        val y = t(9).toPixel() + Globals.FONT_BIG_CORRECTION
+        val interval = Globals.FONT_BIG_CORRECTION + t(3).toPixel()
         surface.fillText("GAME", x, y, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
         surface.fillText("OVER", x, y + interval, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
     }

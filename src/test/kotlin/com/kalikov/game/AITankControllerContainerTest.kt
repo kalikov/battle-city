@@ -2,12 +2,16 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.isA
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class AITankControllerContainerTest {
@@ -18,10 +22,10 @@ class AITankControllerContainerTest {
 
     @BeforeEach
     fun beforeEach() {
-        game = mockGame()
-        eventManager = game.eventManager
         clock = TestClock()
-        container = AITankControllerContainer(eventManager, mock(), Point())
+        game = mockGame(clock = clock)
+        eventManager = game.eventManager
+        container = AITankControllerContainer(eventManager, mock(), PixelPoint())
     }
 
     @Test
@@ -39,7 +43,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should create controller on enemy creation`() {
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertTrue(container.hasController(tank))
@@ -60,7 +64,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should create tanks with normal speed when not frozen`() {
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertFalse(tank.isIdle)
@@ -70,7 +74,7 @@ class AITankControllerContainerTest {
     fun `should create tanks stopped when frozen`() {
         container.notify(PowerUpHandler.Freeze)
 
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertTrue(tank.isIdle)
@@ -81,7 +85,7 @@ class AITankControllerContainerTest {
         container.notify(PowerUpHandler.Freeze)
         container.notify(FreezeHandler.Unfreeze)
 
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertFalse(tank.isIdle)
@@ -89,7 +93,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should stop existing tanks on freeze`() {
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.notify(PowerUpHandler.Freeze)
@@ -101,7 +105,7 @@ class AITankControllerContainerTest {
     fun `should restore tank speed when unfrozen`() {
         container.notify(PowerUpHandler.Freeze)
 
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.notify(FreezeHandler.Unfreeze)
@@ -111,7 +115,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should remove controller when tank is destroyed`() {
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         assertTrue(container.hasController(tank))
@@ -126,22 +130,24 @@ class AITankControllerContainerTest {
         container = AITankControllerContainer(
             eventManager,
             mock(),
-            Point(),
+            PixelPoint(),
             mock(),
             AITankControllerParams(clock = clock, shootInterval = 1, shootProbability = 1.0)
         )
-        val tank1 = mockEnemyTank(game)
+        val tank1 = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank1, false))
 
-        val tank2 = mockEnemyTank(game)
+        val tank2 = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank2, false))
 
         container.update()
         clock.tick(1)
         container.update()
 
-        verify(eventManager).fireEvent(Tank.Shoot(tank1))
-        verify(eventManager).fireEvent(Tank.Shoot(tank2))
+        val captor = argumentCaptor<Tank.Shoot>()
+        verify(eventManager, times(2)).fireEvent(captor.capture())
+        assertSame(captor.firstValue.bullet.tank, tank1)
+        assertSame(captor.secondValue.bullet.tank, tank2)
     }
 
     @Test
@@ -149,7 +155,7 @@ class AITankControllerContainerTest {
         container = AITankControllerContainer(
             eventManager,
             mock(),
-            Point(),
+            PixelPoint(),
             mock(),
             AITankControllerParams(
                 clock = clock,
@@ -159,7 +165,7 @@ class AITankControllerContainerTest {
             )
         )
 
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.update()
@@ -177,7 +183,7 @@ class AITankControllerContainerTest {
         container = AITankControllerContainer(
             eventManager,
             pauseManager,
-            Point(),
+            PixelPoint(),
             mock(),
             AITankControllerParams(
                 clock = clock,
@@ -185,14 +191,14 @@ class AITankControllerContainerTest {
                 shootProbability = 1.0
             )
         )
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.update()
         clock.tick(1)
         container.update()
 
-        verify(eventManager, never()).fireEvent(Tank.Shoot(tank))
+        verify(eventManager, never()).fireEvent(isA<Tank.Shoot>())
     }
 
     @Test
@@ -200,7 +206,7 @@ class AITankControllerContainerTest {
         container = AITankControllerContainer(
             eventManager,
             mock(),
-            Point(),
+            PixelPoint(),
             mock(),
             AITankControllerParams(
                 clock = clock,
@@ -210,14 +216,14 @@ class AITankControllerContainerTest {
         )
         container.notify(PowerUpHandler.Freeze)
 
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.update()
         clock.tick(1)
         container.update()
 
-        verify(eventManager, never()).fireEvent(Tank.Shoot(tank))
+        verify(eventManager, never()).fireEvent(isA<Tank.Shoot>())
     }
 
     @Test
@@ -237,7 +243,7 @@ class AITankControllerContainerTest {
 
     @Test
     fun `should remove controllers on dispose`() {
-        val tank = mockEnemyTank(game)
+        val tank = stubEnemyTank(game)
         container.notify(EnemyFactory.EnemyCreated(tank, false))
 
         container.dispose()

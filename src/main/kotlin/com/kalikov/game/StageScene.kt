@@ -1,11 +1,8 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class StageScene(
     private val game: Game,
     private val stageManager: StageManager,
-    entityFactory: EntityFactory,
 ) : Scene {
     private val curtain = Curtain()
     private val stageMessage = StageMessage(stageManager)
@@ -35,7 +32,7 @@ class StageScene(
             script.enqueue(Delay(script, 1300, game.clock))
         }
         script.enqueue(Execute {
-            val level = Level(game, stageManager, entityFactory)
+            val level = Level(game, stageManager)
             this.level = level
             script.enqueue(Execute { level.start() })
             stageMessage.isVisible = false
@@ -57,7 +54,7 @@ class StageScene(
         if (level != null) {
             level?.draw(surface)
         } else {
-            stageManager.curtainBackground?.let { surface.draw(0, 0, it) }
+            stageManager.curtainBackground?.let { surface.draw(px(0), px(0), it) }
         }
         curtain.draw(surface)
         stageMessage.draw(surface)

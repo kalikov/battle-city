@@ -21,121 +21,67 @@ fun mockGame(
     return game
 }
 
-fun mockEnemyTank(
+fun stubEnemyTank(
     game: Game = mockGame(),
     pauseManager: PauseManager = mock(),
-    x: Int = 0,
-    y: Int = 0,
+    x: Pixel = px(0),
+    y: Pixel = px(0),
     enemyType: EnemyTank.EnemyType = EnemyTank.EnemyType.BASIC,
 ): EnemyTank {
     return EnemyTank.create(game, pauseManager, x, y, enemyType)
 }
 
-fun mockPlayerTank(
+fun stubPlayerTank(
     game: Game = mockGame(),
     pauseManager: PauseManager = mock(),
-    x: Int = 0,
-    y: Int = 0,
+    x: Pixel = px(0),
+    y: Pixel = px(0),
     player: Player = Player(game.eventManager),
 ): PlayerTank {
     return PlayerTank.create(game, pauseManager, x, y, player)
 }
 
-fun mockBase(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    x: Int = 0,
-    y: Int = 0
-): Base {
-    return Base(eventManager, imageManager, x, y)
+fun stubBullet(
+    game: Game = mockGame(),
+    tank: Tank,
+    x: Pixel = px(0),
+    y: Pixel = px(0),
+): Bullet {
+    return Bullet(game, tank, speed = tank.bulletSpeed, x = x, y = y)
 }
 
-fun mockWater(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    clock: Clock = mock(),
-    x: Int = 0,
-    y: Int = 0
-): Water {
-    return Water(eventManager, imageManager, clock, x, y)
-}
-
-fun mockTrees(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    x: Int = 0,
-    y: Int = 0
-): Trees {
-    return Trees(eventManager, imageManager, x, y)
-}
-
-fun mockIce(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    x: Int = 0,
-    y: Int = 0
-): Ice {
-    return Ice(eventManager, imageManager, x, y)
-}
-
-fun mockBrickWall(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    x: Int = 0,
-    y: Int = 0
-): BrickWall {
-    return BrickWall(eventManager, imageManager, x, y)
-}
-
-fun mockSteelWall(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    x: Int = 0,
-    y: Int = 0
-): SteelWall {
-    return SteelWall(eventManager, imageManager, x, y)
-}
-
-fun mockTankExplosion(
+fun stubTankExplosion(
     game: Game = mockGame(),
     tank: Tank
 ): TankExplosion {
     return TankExplosion(game, tank)
 }
 
-fun mockBaseExplosion(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    clock: Clock = mock()
+fun stubBaseExplosion(
+    game: Game = mockGame()
 ): BaseExplosion {
-    return BaseExplosion(eventManager, imageManager, clock)
+    return BaseExplosion(game)
 }
 
-fun mockPoints(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    clock: Clock = mock(),
+fun stubPoints(
+    game: Game = mockGame(),
     value: Int = 100,
-    x: Int = 0,
-    y: Int = 0
+    x: Pixel = px(0),
+    y: Pixel = px(0),
 ): Points {
-    return Points(eventManager, imageManager, clock, value, x, y, 200)
+    return Points(game, value, x, y, 200)
 }
 
-fun mockPowerUp(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    position: Point = Point(),
-    clock: Clock = mock()
+fun stubPowerUp(
+    game: Game = mockGame(),
+    position: PixelPoint = PixelPoint(),
 ): PowerUp {
-    return PowerUp(eventManager, imageManager, position, clock)
+    return PowerUp(game, position)
 }
 
-fun mockCursor(
-    eventManager: EventManager = mock(),
-    imageManager: ImageManager = mock(),
-    clock: Clock = mock(),
-    builder: Builder = Builder(eventManager, imageManager, clock)
+fun stubCursor(
+    game: Game = mockGame(),
+    builder: BuilderHandler = mock(),
 ): Cursor {
-    return Cursor(eventManager, imageManager, builder, clock)
+    return Cursor(game, builder)
 }

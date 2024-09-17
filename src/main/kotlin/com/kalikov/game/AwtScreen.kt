@@ -35,7 +35,7 @@ class AwtScreen(private val frame: JFrame, private val fonts: AwtFonts) : Screen
         return updateScale(surface.width, surface.height)
     }
 
-    private fun updateScale(baseWidth: Int, baseHeight: Int): Boolean {
+    private fun updateScale(baseWidth: Pixel, baseHeight: Pixel): Boolean {
         val insets = frame.insets
         val width = frame.width - insets.right - insets.left
         val height = frame.height - insets.bottom - insets.top
@@ -118,7 +118,7 @@ class AwtScreen(private val frame: JFrame, private val fonts: AwtFonts) : Screen
         return AwtScreenSurface(fonts, surface.width, surface.height)
     }
 
-    override fun createSurface(width: Int, height: Int): AwtScreenSurface {
+    override fun createSurface(width: Pixel, height: Pixel): AwtScreenSurface {
         return AwtScreenSurface(fonts, width, height)
     }
 

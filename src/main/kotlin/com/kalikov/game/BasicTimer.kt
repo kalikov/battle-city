@@ -1,6 +1,7 @@
 package com.kalikov.game
 
 import java.time.Clock
+import kotlin.Unit
 
 class BasicTimer(
     private val clock: Clock,

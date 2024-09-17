@@ -5,7 +5,7 @@ import java.time.Clock
 class CursorController(
     private val eventManager: EventManager,
     private val cursor: Cursor,
-    private val level: Rect,
+    private val level: PixelRect,
     clock: Clock
 ) : EventSubscriber {
     private companion object {
@@ -17,12 +17,12 @@ class CursorController(
         private const val SHORT_MOVE_INTERVAL = 160
     }
 
-    private var prevBuildStart: Point? = null
-    private var currBuildStart: Point? = null
+    private var prevBuildStart: PixelPoint? = null
+    private var currBuildStart: PixelPoint? = null
 
     private var direction = Direction.RIGHT
 
-    private val speed = Globals.UNIT_SIZE
+    private val speed = t(2).toPixel()
 
     private val moveTimer = BasicTimer(clock, LONG_MOVE_INTERVAL, ::onMove)
 
@@ -67,7 +67,7 @@ class CursorController(
             }
 
             Keyboard.Key.ACTION -> {
-                val position = Point(cursor.x, cursor.y)
+                val position = PixelPoint(cursor.x, cursor.y)
                 if (prevBuildStart == null) {
                     cursor.build()
                 } else if (position != prevBuildStart) {
@@ -133,7 +133,7 @@ class CursorController(
         }
     }
 
-    private fun getNewX(count: Int): Int {
+    private fun getNewX(count: Int): Pixel {
         return when (direction) {
             Direction.RIGHT -> cursor.x + speed * count
             Direction.LEFT -> cursor.x - speed * count
@@ -141,7 +141,7 @@ class CursorController(
         }
     }
 
-    private fun getNewY(count: Int): Int {
+    private fun getNewY(count: Int): Pixel {
         return when (direction) {
             Direction.UP -> cursor.y - speed * count
             Direction.DOWN -> cursor.y + speed * count

@@ -3,18 +3,19 @@ package com.kalikov.game
 sealed class Tank(
     protected val game: Game,
     protected val pauseManager: PauseManager,
-    x: Int,
-    y: Int
+    x: Pixel,
+    y: Pixel
 ) : Sprite(
     game.eventManager,
     x,
     y,
     SIZE,
-    SIZE
+    SIZE,
 ), AITankHandle, EventSubscriber {
     companion object {
         const val COOLDOWN_INTERVAL = 200
-        const val SIZE = Globals.UNIT_SIZE
+
+        val SIZE = t(2).toPixel()
 
         private val subscriptions = setOf(
             Reload::class,
@@ -32,7 +33,7 @@ sealed class Tank(
             return tank
         }
 
-        fun calculateHitRect(bounds: Rect): Rect {
+        fun calculateHitRect(bounds: PixelRect): PixelRect {
             var width = bounds.width
             var height = bounds.height
             val dx = bounds.x % Globals.TILE_SIZE
@@ -53,11 +54,11 @@ sealed class Tank(
             if (dy > Globals.TILE_SIZE - Bullet.SIZE / 2) {
                 height += Globals.TILE_SIZE
             }
-            return Rect(x, y, width, height)
+            return PixelRect(x, y, width, height)
         }
     }
 
-    data class Shoot(val tank: Tank) : Event()
+    data class Shoot(val bullet: Bullet) : Event()
     data class Reload(val tank: Tank) : Event()
     data class Destroyed(val tank: Tank) : Event()
     data class Hit(val tank: Tank) : Event()
@@ -171,39 +172,36 @@ sealed class Tank(
         return false
     }
 
-    fun createBullet(): Bullet {
-        val bullet = Bullet(game, this, bulletSpeed)
-        bullet.setPosition(getBulletPosition(bullet))
-        bullet.direction = direction
-        bullet.type = bulletType
-        return bullet
+    private fun createBullet(): Bullet {
+        val position = getBulletPosition()
+        return Bullet(game, this, bulletSpeed, bulletType, direction, position.x, position.y)
     }
 
-    private fun getBulletPosition(bullet: Bullet): Point {
-        val x: Int
-        val y: Int
-        when (bullet.tank.direction) {
+    private fun getBulletPosition(): PixelPoint {
+        val x: Pixel
+        val y: Pixel
+        when (direction) {
             Direction.RIGHT -> {
-                x = bullet.tank.right + 1
-                y = bullet.tank.top + bullet.tank.height / 2 - bullet.height / 2
+                x = right + 1
+                y = top + height / 2 - Bullet.SIZE / 2
             }
 
             Direction.LEFT -> {
-                x = bullet.tank.left - bullet.width
-                y = bullet.tank.top + bullet.tank.height / 2 - bullet.height / 2
+                x = left - Bullet.SIZE
+                y = top + height / 2 - Bullet.SIZE / 2
             }
 
             Direction.UP -> {
-                x = bullet.tank.left + bullet.tank.width / 2 - bullet.width / 2
-                y = bullet.tank.top - bullet.height
+                x = left + width / 2 - Bullet.SIZE / 2
+                y = top - Bullet.SIZE
             }
 
             Direction.DOWN -> {
-                x = bullet.tank.left + bullet.tank.width / 2 - bullet.width / 2
-                y = bullet.tank.bottom + 1
+                x = left + width / 2 - Bullet.SIZE / 2
+                y = bottom + 1
             }
         }
-        return Point(x, y)
+        return PixelPoint(x, y)
     }
 
     override fun shoot() {
@@ -218,7 +216,8 @@ sealed class Tank(
         }
         if (cooldownTimer.isStopped) {
             bullets++
-            game.eventManager.fireEvent(Shoot(this))
+            val bullet = createBullet()
+            game.eventManager.fireEvent(Shoot(bullet))
             cooldownTimer.restart()
         }
     }

@@ -2,10 +2,10 @@ package com.kalikov.game
 
 abstract class Sprite(
     private val eventRouter: EventRouter,
-    x: Int,
-    y: Int,
-    val width: Int,
-    val height: Int
+    x: Pixel,
+    y: Pixel,
+    val width: Pixel,
+    val height: Pixel
 ) {
     private companion object {
         private var counter = 0
@@ -19,28 +19,25 @@ abstract class Sprite(
         private set
     var z = 0
 
-    var bounds = Rect(x, y, width, height)
+    var bounds = PixelRect(x, y, width, height)
         private set
+
     val left get() = x
     val right get() = x + width - 1
     val top get() = y
-
     val bottom get() = y + height - 1
 
-    val center get() = Point(x + width / 2, y + height / 2)
-
-    val position get() = Point(x, y)
-
-    var isStatic = false
+    val center get() = x + width / 2
+    val middle get() = y + height / 2
 
     var isDestroyed = false
         private set
 
-    fun setPosition(point: Point) {
+    fun setPosition(point: PixelPoint) {
         setPosition(point.x, point.y)
     }
 
-    fun setPosition(x: Int, y: Int) {
+    fun setPosition(x: Pixel, y: Pixel) {
         if (x != this.x || y != this.y) {
             this.x = x
             this.y = y
@@ -75,7 +72,7 @@ abstract class Sprite(
     protected open fun destroyHook() = Unit
 
     private fun updateBounds() {
-        bounds = Rect(x, y, width, height)
+        bounds = PixelRect(x, y, width, height)
         boundsHook()
     }
 

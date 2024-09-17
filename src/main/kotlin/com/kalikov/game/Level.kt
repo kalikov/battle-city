@@ -3,7 +3,6 @@ package com.kalikov.game
 class Level(
     private val game: Game,
     private val stageManager: StageManager,
-    private val entityFactory: EntityFactory,
 ) : EventSubscriber {
     private companion object {
         private val subscriptions = setOf(
@@ -22,7 +21,7 @@ class Level(
     private val playersTankControllerFactories: List<PlayerTankControllerFactory>
     private val playersTankFactories: List<PlayerTankFactory>
 
-    private val bulletFactory: BulletFactory
+    private val bulletHandler: BulletHandler
     private val bulletExplosionFactory: BulletExplosionFactory
     private val tankExplosionFactory: TankExplosionFactory
     private val baseExplosionFactory: BaseExplosionFactory
@@ -36,8 +35,6 @@ class Level(
     private val enemyFactoryView: EnemyFactoryView
 
     private val powerUpFactory: PowerUpFactory
-
-    private val baseWallBuilder: BaseWallBuilder
 
     private val powerUpHandler: PowerUpHandler
     private val shovelHandler: ShovelHandler
@@ -55,7 +52,8 @@ class Level(
 
     private val statistics = List(stageManager.players.size) { StageScore() }
 
-    private val spriteContainer: SpriteContainer
+    private val mainContainer: SpriteContainer
+    private val overlayContainer: SpriteContainer
     private val gameField: GameField
 
     private val movementController: MovementController
@@ -70,14 +68,17 @@ class Level(
 
         game.eventManager.addSubscriber(this, subscriptions)
 
-        spriteContainer = DefaultSpriteContainer(game.eventManager)
-        gameField = GameField(game.eventManager, game.imageManager, entityFactory, spriteContainer)
+        mainContainer = DefaultSpriteContainer(game.eventManager)
+        overlayContainer = DefaultSpriteContainer(game.eventManager)
+        gameField = GameField(game, mainContainer, overlayContainer)
 
         movementController = MovementController(
             game.eventManager,
             pauseListener,
             gameField.bounds,
-            spriteContainer,
+            mainContainer,
+            overlayContainer,
+            gameField,
             game.clock
         )
 
@@ -91,41 +92,34 @@ class Level(
             PlayerTankFactory(
                 game,
                 pauseListener,
-                spriteContainer,
-                stage.map.playerSpawnPoints[index].multiply(Globals.TILE_SIZE)
-                    .translate(gameField.bounds.x, gameField.bounds.y),
+                mainContainer,
+                stage.map.playerSpawnPoints[index].toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y),
                 player,
             )
         }
 
-        bulletFactory = BulletFactory(game.eventManager, spriteContainer)
-        bulletExplosionFactory = BulletExplosionFactory(
-            game.eventManager,
-            game.imageManager,
-            spriteContainer,
-            game.clock
-        )
-        tankExplosionFactory = TankExplosionFactory(game, spriteContainer)
-        baseExplosionFactory = BaseExplosionFactory(game, spriteContainer)
-        pointsFactory = PointsFactory(game.eventManager, game.imageManager, spriteContainer, game.clock)
+        bulletHandler = BulletHandler(game.eventManager, mainContainer)
+        bulletExplosionFactory = BulletExplosionFactory(game, overlayContainer)
+        tankExplosionFactory = TankExplosionFactory(game, overlayContainer)
+        baseExplosionFactory = BaseExplosionFactory(game, overlayContainer)
+        pointsFactory = PointsFactory(game, overlayContainer)
         freezeHandler = FreezeHandler(game.eventManager, game.clock)
 
-        val basePosition = stage.map.base.multiply(Globals.TILE_SIZE).translate(gameField.bounds.x, gameField.bounds.y)
+        val basePosition = stage.map.base.toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y)
 
         aiControllersContainer = AITankControllerContainer(
             game.eventManager,
             pauseListener,
-            basePosition
+            basePosition,
         )
 
         enemyFactory = EnemyFactory(
             game,
             pauseListener,
-            spriteContainer,
+            mainContainer,
             stage.map.enemySpawnPoints.map {
-                it.multiply(Globals.TILE_SIZE).translate(gameField.bounds.x, gameField.bounds.y)
+                it.toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y)
             },
-            game.clock,
             stage.enemies,
             stage.enemySpawnDelay
         )
@@ -138,18 +132,11 @@ class Level(
             gameField.bounds.y + Globals.TILE_SIZE
         )
 
-        powerUpFactory = PowerUpFactory(game.eventManager, game.imageManager, spriteContainer, game.clock, gameField.bounds)
-
-        baseWallBuilder = BaseWallBuilder(
-            game.eventManager,
-            spriteContainer,
-            gameField.bounds,
-            basePosition
-        )
+        powerUpFactory = PowerUpFactory(game, overlayContainer, gameField.bounds)
 
         powerUpHandler = PowerUpHandler(game)
 
-        shovelHandler = ShovelHandler(game, baseWallBuilder)
+        shovelHandler = ShovelHandler(game, gameField)
 
         pauseMessageView = PauseMessageView(
             game.eventManager,
@@ -161,8 +148,8 @@ class Level(
         livesView = LivesView(
             game.imageManager,
             stageManager.players,
-            gameField.bounds.right + 1 + Globals.TILE_SIZE,
-            gameField.bounds.bottom + 1 - 5 * Globals.UNIT_SIZE - Globals.TILE_SIZE
+            gameField.bounds.right + 1 + t(1).toPixel(),
+            gameField.bounds.bottom + 1 - t(11).toPixel()
         )
 
         gameOverMessage = GameOverMessage()
@@ -185,7 +172,7 @@ class Level(
             script.enqueue(
                 MoveFn(
                     MoveHorz(gameOverMessage),
-                    appearPosition.x - Globals.TILE_SIZE + 1,
+                    (appearPosition.x - Globals.TILE_SIZE + 1).toInt(),
                     1536,
                     script,
                     game.clock
@@ -207,13 +194,13 @@ class Level(
                 it.isActive = false
             }
             gameOverMessage.x = gameField.bounds.x + gameField.bounds.width / 2 - Globals.TILE_SIZE * 2 + 1
-            gameOverMessage.y = Globals.CANVAS_HEIGHT + Globals.UNIT_SIZE
+            gameOverMessage.y = Globals.CANVAS_HEIGHT + t(2).toPixel()
             gameOverMessage.isVisible = true
         })
         gameOverScript.enqueue(
             MoveFn(
                 MoveVert(gameOverMessage),
-                Globals.CANVAS_HEIGHT / 2 - Globals.TILE_SIZE + 1,
+                (Globals.CANVAS_HEIGHT / 2 - Globals.TILE_SIZE + 1).toInt(),
                 2000,
                 gameOverScript,
                 game.clock
@@ -237,12 +224,8 @@ class Level(
             }
             gameOver = gameOver || playersTankFactories.all { it.playerTank == null }
             if (!gameOver) {
-                spriteContainer.forEach { sprite ->
-                    sprite.isStatic = true
-                    if (sprite is Tank) {
-                        sprite.destroy()
-                    }
-                }
+                mainContainer.forEach { it.destroy() }
+                overlayContainer.forEach { it.destroy() }
 
                 val image = game.screen.createSurface()
                 draw(image)
@@ -343,7 +326,6 @@ class Level(
                 StageScoreScene(
                     game,
                     stageManager,
-                    entityFactory,
                     statistics,
                     gameOver,
                 )
@@ -353,8 +335,8 @@ class Level(
 
     private fun drawFlag(surface: ScreenSurface) {
         val flag = game.imageManager.getImage("flag")
-        val x = gameField.bounds.right + 1 + Globals.TILE_SIZE
-        val y = gameField.bounds.bottom + 1 - 2 * Globals.UNIT_SIZE - Globals.TILE_SIZE
+        val x = gameField.bounds.right + 1 + t(1).toPixel()
+        val y = gameField.bounds.bottom + 1 - t(5).toPixel()
         surface.draw(x, y, flag)
 
         val stageNumber = "${stageManager.stageNumber}".padStart(2, ' ')
@@ -367,8 +349,6 @@ class Level(
         shovelHandler.dispose()
         powerUpHandler.dispose()
 
-        baseWallBuilder.dispose()
-
         powerUpFactory.dispose()
 
         enemyFactory.dispose()
@@ -380,14 +360,16 @@ class Level(
         baseExplosionFactory.dispose()
         tankExplosionFactory.dispose()
         bulletExplosionFactory.dispose()
-        bulletFactory.dispose()
+        bulletHandler.dispose()
 
         playersTankFactories.forEach { it.dispose() }
         playersTankControllerFactories.forEach { it.dispose() }
 
         movementController.dispose()
 
-        spriteContainer.dispose()
+        gameField.dispose()
+        mainContainer.dispose()
+        overlayContainer.dispose()
 
         pauseListener.dispose()
 

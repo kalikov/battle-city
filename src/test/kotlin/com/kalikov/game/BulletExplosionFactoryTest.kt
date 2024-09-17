@@ -3,36 +3,38 @@ package com.kalikov.game
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.isA
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import kotlin.test.assertEquals
 
 class BulletExplosionFactoryTest {
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var explosionFactory: BulletExplosionFactory
-    private lateinit var bullet: Bullet
+    private lateinit var bullet: BulletHandle
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        game = mockGame()
         spriteContainer = mock()
-        explosionFactory = BulletExplosionFactory(eventManager, mock(), spriteContainer, mock())
+        explosionFactory = BulletExplosionFactory(game, spriteContainer)
 
-        val tank = mockPlayerTank(mockGame(eventManager = eventManager))
-        bullet = tank.createBullet()
+        bullet = mock {
+            on { center } doReturn px(0)
+            on { middle } doReturn px(0)
+        }
     }
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(explosionFactory, setOf(Bullet.Exploded::class))
+        verify(game.eventManager).addSubscriber(explosionFactory, setOf(Bullet.Exploded::class))
     }
 
     @Test
     fun `should unsubscribe`() {
         explosionFactory.dispose()
-        verify(eventManager).removeSubscriber(explosionFactory, setOf(Bullet.Exploded::class))
+        verify(game.eventManager).removeSubscriber(explosionFactory, setOf(Bullet.Exploded::class))
     }
 
     @Test
@@ -44,21 +46,13 @@ class BulletExplosionFactoryTest {
         val explosion = captor.firstValue
 
         assertEquals(
-            Rect(
-                bullet.center.x - Globals.UNIT_SIZE / 2,
-                bullet.center.y - Globals.UNIT_SIZE / 2,
-                Globals.UNIT_SIZE,
-                Globals.UNIT_SIZE
+            PixelRect(
+                bullet.center - BulletExplosion.SIZE / 2,
+                bullet.middle - BulletExplosion.SIZE / 2,
+                BulletExplosion.SIZE,
+                BulletExplosion.SIZE,
             ),
             explosion.bounds
         )
-    }
-
-    @Test
-    fun `should create explosion when bullet exploded`() {
-        bullet.hit(true)
-        explosionFactory.notify(Bullet.Exploded(bullet))
-
-        verify(spriteContainer).addSprite(isA<BulletExplosion>())
     }
 }

@@ -3,7 +3,6 @@ package com.kalikov.game
 class MainMenuScene(
     private val game: Game,
     private val stageManager: StageManager,
-    entityFactory: EntityFactory,
 ) : Scene, EventSubscriber {
     companion object {
         const val INTERVAL = 16
@@ -13,7 +12,7 @@ class MainMenuScene(
         private val subscriptions = setOf(Keyboard.KeyPressed::class)
     }
 
-    var top: Int = Globals.CANVAS_HEIGHT
+    var top = Globals.CANVAS_HEIGHT
 
     val isActive get() = mainMenuController.isActive
 
@@ -26,7 +25,7 @@ class MainMenuScene(
     private val arriveTimer = BasicTimer(game.clock, INTERVAL, this::updatePosition)
 
     private val brickBlending = object : TextureBlending(game.imageManager.getImage("wall_brick")) {
-        override fun blend(dst: ARGB, src: ARGB, x: Int, y: Int): ARGB {
+        override fun blend(dst: ARGB, src: ARGB, x: Pixel, y: Pixel): ARGB {
             val pixel = super.blend(dst, src, x, y - top)
             if (pixel == ARGB.rgb(0x636363)) {
                 return ARGB.WHITE
@@ -45,9 +44,9 @@ class MainMenuScene(
         arriveTimer.restart()
 
         mainMenu = MainMenu(
-            OnePlayerMenuItem(game, stageManager, entityFactory),
-            TwoPlayersMenuItem(game, stageManager, entityFactory),
-            ConstructionMenuItem(game, stageManager, entityFactory)
+            OnePlayerMenuItem(game, stageManager),
+            TwoPlayersMenuItem(game, stageManager),
+            ConstructionMenuItem(game, stageManager)
         )
 
         mainMenuController = MainMenuController(game.eventManager, mainMenu)
@@ -58,7 +57,7 @@ class MainMenuScene(
     }
 
     private fun updatePosition(count: Int) {
-        if (top == 0) {
+        if (top == px(0)) {
             return
         }
         top -= count
@@ -68,7 +67,7 @@ class MainMenuScene(
     }
 
     fun arrived() {
-        top = 0
+        top = px(0)
         cursorView.visible = true
         arriveTimer.stop()
     }
@@ -76,7 +75,7 @@ class MainMenuScene(
     override fun update() {
         arriveTimer.update()
         cursorView.update()
-        if (top == 0) {
+        if (top == px(0)) {
             mainMenuController.isActive = true
         }
     }
@@ -84,10 +83,10 @@ class MainMenuScene(
     override fun draw(surface: ScreenSurface) {
         clearCanvas(surface)
 
-        val nameTop = top + 6 * Globals.TILE_SIZE + Globals.FONT_BIG_CORRECTION
+        val nameTop = top + t(6).toPixel() + Globals.FONT_BIG_CORRECTION
         surface.fillText(
             "BATTLE",
-            3 * Globals.TILE_SIZE + Globals.TILE_SIZE / 2,
+            t(3).toPixel() + t(1).toPixel() / 2,
             nameTop,
             ARGB.WHITE,
             Globals.FONT_BIG,
@@ -95,30 +94,34 @@ class MainMenuScene(
         )
         surface.fillText(
             "CITY",
-            8 * Globals.TILE_SIZE,
-            nameTop + Globals.FONT_BIG_SIZE + Globals.TILE_SIZE,
+            t(8).toPixel(),
+            nameTop + Globals.FONT_BIG_CORRECTION + t(3).toPixel() / 2,
             ARGB.WHITE,
             Globals.FONT_BIG,
             brickBlending
         )
 
-        surface.draw(2 * Globals.TILE_SIZE + 2, top + 3 * Globals.TILE_SIZE, game.imageManager.getImage("roman_one"))
-        surface.fillRect(3 * Globals.TILE_SIZE + 1, top + 3 * Globals.TILE_SIZE + 3, 6, 2, ARGB.WHITE)
+        surface.draw(t(2).toPixel() + 2, top + t(3).toPixel(), game.imageManager.getImage("roman_one"))
+        surface.fillRect(t(3).toPixel() + 1, top + t(3).toPixel() + 3, px(6), px(2), ARGB.WHITE)
         surface.fillText(
             "${stageManager.players[0].previousScore / 10}".padStart(6, ' ') + "0",
-            3 * Globals.TILE_SIZE + 1,
-            top + 3 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+            t(3).toPixel() + 1,
+            top + t(3).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
 
         if (stageManager.players.size > 1) {
-            surface.draw(21 * Globals.TILE_SIZE + 2, top + 3 * Globals.TILE_SIZE, game.imageManager.getImage("roman_two"))
-            surface.fillRect(22 * Globals.TILE_SIZE + 1, top + 3 * Globals.TILE_SIZE + 3, 6, 2, ARGB.WHITE)
+            surface.draw(
+                t(21).toPixel() + 2,
+                top + t(3).toPixel(),
+                game.imageManager.getImage("roman_two")
+            )
+            surface.fillRect(t(22).toPixel() + 1, top + t(3).toPixel() + 3, px(6), px(2), ARGB.WHITE)
             surface.fillText(
                 "${stageManager.players[1].previousScore / 10}".padStart(6, ' ') + "0",
-                22 * Globals.TILE_SIZE + 1,
-                top + 3 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+                t(22).toPixel() + 1,
+                top + t(3).toPixel() + Globals.FONT_REGULAR_CORRECTION,
                 ARGB.WHITE,
                 Globals.FONT_REGULAR
             )
@@ -126,36 +129,36 @@ class MainMenuScene(
 
         surface.fillText(
             "HI" + "${stageManager.highScore / 10}".padStart(6, ' ') + "0",
-            11 * Globals.TILE_SIZE + 1,
-            top + 3 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+            t(11).toPixel() + 1,
+            top + t(3).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
-        surface.fillRect(13 * Globals.TILE_SIZE + 1, top + 3 * Globals.TILE_SIZE + 3, 6, 2, ARGB.WHITE)
+        surface.fillRect(t(13).toPixel() + 1, top + t(3).toPixel() + 3, px(6), px(2), ARGB.WHITE)
 
-        surface.draw(11 * Globals.TILE_SIZE, top + 23 * Globals.TILE_SIZE, namco) { dst, src, _, _ ->
+        surface.draw(t(11).toPixel(), top + t(23).toPixel(), namco) { dst, src, _, _ ->
             ARGB.rgb(0xB53121).and(src).over(dst)
         }
 
-        surface.draw(4 * Globals.TILE_SIZE, top + 25 * Globals.TILE_SIZE, game.imageManager.getImage("copyright"))
+        surface.draw(t(4).toPixel(), top + t(25).toPixel(), game.imageManager.getImage("copyright"))
         surface.fillText(
             NAMCO_LTD,
-            6 * Globals.TILE_SIZE + 1,
-            top + 25 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+            t(6).toPixel() + 1,
+            top + t(25).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
         surface.fillText(
             ".",
-            6 * Globals.TILE_SIZE + 1 + NAMCO_LTD.length * Globals.FONT_REGULAR_SIZE - 1,
-            top + 25 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+            t(6).toPixel() + 1 + NAMCO_LTD.length * Globals.FONT_REGULAR_SIZE - 1,
+            top + t(25).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
         surface.fillText(
             "ALL RIGHTS RESERVED",
-            6 * Globals.TILE_SIZE + 1,
-            top + 27 * Globals.TILE_SIZE + Globals.FONT_REGULAR_CORRECTION,
+            t(6).toPixel() + 1,
+            top + t(27).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )

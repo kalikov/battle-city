@@ -17,7 +17,11 @@ class DefaultStageManagerTest {
 
     @Test
     fun `should update high score`() {
-        val stageMapConfig = StageMapConfig(emptyList(), Point(), emptyList(), emptyList())
+        val stageMapConfig = StageMapConfig(
+            base = TilePoint(),
+            playerSpawnPoints = emptyList(),
+            enemySpawnPoints = emptyList(),
+        )
         stageManager.init(listOf(Stage(stageMapConfig, 0, emptyList())), stageMapConfig)
 
         stageManager.players[0].notify(Player.Score(stageManager.players[0], 40000))

@@ -1,9 +1,11 @@
 package com.kalikov.game
 
-@kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class GameConfig(
     val name: String = "Battle City",
-    val resolution: Size = Size(800, 600),
+    val resolution: PixelSize = PixelSize(px(800), px(600)),
     val fpsLimit: Int = 125,
     val debug: Boolean = false,
     val keyboard: Map<String, KeyEventConfig> = emptyMap(),

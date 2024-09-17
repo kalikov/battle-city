@@ -5,7 +5,7 @@ import kotlin.random.Random
 class AITankControllerContainer(
     private val eventManager: EventManager,
     private val pauseManager: PauseManager,
-    private val base: Point,
+    private val base: PixelPoint,
     private val random: Random = Random.Default,
     private val params: AITankControllerParams = AITankControllerParams()
 ) : EventSubscriber {
@@ -21,7 +21,7 @@ class AITankControllerContainer(
     var isFrozen = false
         private set
 
-    private val controllers = HashMap<Tank, AITankController>()
+    private val controllers = LinkedHashMap<Tank, AITankController>()
 
     init {
         eventManager.addSubscriber(this, subscriptions)

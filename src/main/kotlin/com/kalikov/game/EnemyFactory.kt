@@ -1,13 +1,10 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class EnemyFactory(
     private val game: Game,
     private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
-    private val positions: List<Point>,
-    private val clock: Clock,
+    private val positions: List<PixelPoint>,
     enemies: List<EnemyGroupConfig>,
     interval: Int
 ) : EventSubscriber {
@@ -42,7 +39,7 @@ class EnemyFactory(
     private var enemies = emptyArray<EnemyTank.EnemyType>()
     private var enemyIndex = 0
 
-    private val timer = PauseAwareTimer(game.eventManager, clock, interval, ::create)
+    private val timer = PauseAwareTimer(game.eventManager, game.clock, interval, ::create)
 
     private val flashingTanks = HashSet<Tank>(flashingIndices.size)
 
@@ -72,7 +69,7 @@ class EnemyFactory(
         }
     }
 
-    fun nextPosition(): Point {
+    fun nextPosition(): PixelPoint {
         val position = positions[positionIndex]
         positionIndex++
         if (positionIndex >= positions.size) {
@@ -106,7 +103,7 @@ class EnemyFactory(
         return tank
     }
 
-    private fun createEnemy(type: EnemyTank.EnemyType, position: Point): EnemyTank {
+    private fun createEnemy(type: EnemyTank.EnemyType, position: PixelPoint): EnemyTank {
         val tank = EnemyTank.create(game, pauseManager, position.x, position.y, type)
         tank.state = TankStateAppearing(game, tank)
 

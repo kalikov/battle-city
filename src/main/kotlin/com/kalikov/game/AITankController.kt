@@ -5,7 +5,7 @@ import kotlin.random.Random
 class AITankController(
     eventManager: EventManager,
     private val tank: AITankHandle,
-    private val base: Point,
+    private val base: PixelPoint,
     private val random: Random,
     params: AITankControllerParams = AITankControllerParams(),
 ) {

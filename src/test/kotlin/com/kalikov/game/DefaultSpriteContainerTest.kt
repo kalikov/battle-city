@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.UseConstructor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import kotlin.jvm.internal.DefaultConstructorMarker
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -85,6 +86,6 @@ class DefaultSpriteContainerTest {
     }
 
     private fun mockSprite(eventManager: EventManager): Sprite {
-        return mock(useConstructor = UseConstructor.withArguments(eventManager, 0, 0, 1, 1))
+        return mock()
     }
 }

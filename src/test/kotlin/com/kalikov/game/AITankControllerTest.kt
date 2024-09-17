@@ -19,7 +19,7 @@ class AITankControllerTest {
     fun beforeEach() {
         clock = TestClock()
         tank = mock()
-        whenever(tank.y).thenReturn(-1)
+        whenever(tank.y).thenReturn(px(-1))
         random = mock()
     }
 
@@ -269,6 +269,6 @@ class AITankControllerTest {
     }
 
     private fun createController(params: AITankControllerParams = AITankControllerParams()): AITankController {
-        return AITankController(mock(), tank, Point(), random, params)
+        return AITankController(mock(), tank, PixelPoint(), random, params)
     }
 }

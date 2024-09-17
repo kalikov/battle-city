@@ -11,20 +11,20 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PowerUpFactoryTest {
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var factory: PowerUpFactory
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        game = mockGame()
         spriteContainer = mock()
-        factory = PowerUpFactory(eventManager, mock(), spriteContainer, mock(), Rect(), mock())
+        factory = PowerUpFactory(game, spriteContainer, PixelRect(), mock())
     }
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(
+        verify(game.eventManager).addSubscriber(
             factory,
             setOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
         )
@@ -33,7 +33,7 @@ class PowerUpFactoryTest {
     @Test
     fun `should unsubscribe`() {
         factory.dispose()
-        verify(eventManager).removeSubscriber(
+        verify(game.eventManager).removeSubscriber(
             factory,
             setOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
         )
@@ -57,7 +57,7 @@ class PowerUpFactoryTest {
         assertNotNull(powerUp)
         assertFalse(powerUp.isDestroyed)
 
-        val newTank = mockEnemyTank(mockGame(eventManager = eventManager))
+        val newTank = stubEnemyTank(game)
         factory.notify(EnemyFactory.EnemyCreated(newTank, true))
 
         assertTrue(powerUp.isDestroyed)

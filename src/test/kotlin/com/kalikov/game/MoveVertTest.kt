@@ -19,13 +19,13 @@ class MoveVertTest {
 
     @Test
     fun `should get moveable y property`() {
-        whenever(moveable.y).thenReturn(10)
+        whenever(moveable.y).thenReturn(px(10))
         assertEquals(10, move.value)
     }
 
     @Test
     fun `should set moveable y property`() {
         move.value = 10
-        verify(moveable).y = 10
+        verify(moveable).y = px(10)
     }
 }

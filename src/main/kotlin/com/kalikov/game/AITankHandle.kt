@@ -1,8 +1,8 @@
 package com.kalikov.game
 
 interface AITankHandle {
-    val x: Int
-    val y: Int
+    val x: Pixel
+    val y: Pixel
 
     var direction: Direction
 

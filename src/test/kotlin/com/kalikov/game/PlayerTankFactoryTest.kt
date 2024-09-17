@@ -30,7 +30,7 @@ class PlayerTankFactoryTest {
             game,
             mock(),
             spriteContainer,
-            Point(10, 100),
+            PixelPoint(px(10), px(100)),
             Player(eventManager)
         )
     }
@@ -51,8 +51,8 @@ class PlayerTankFactoryTest {
         factory.init(0)
         val tank = factory.playerTank
         assertNotNull(tank)
-        assertEquals(10, tank.x)
-        assertEquals(100, tank.y)
+        assertEquals(px(10), tank.x)
+        assertEquals(px(100), tank.y)
         assertIs<TankStateAppearing>(tank.state)
         verify(eventManager).fireEvent(PlayerTankFactory.PlayerTankCreated(tank))
     }
@@ -62,7 +62,7 @@ class PlayerTankFactoryTest {
         factory.init(0)
         reset(eventManager)
 
-        val explosion = mockTankExplosion(game, tank = factory.playerTank!!)
+        val explosion = stubTankExplosion(game, tank = factory.playerTank!!)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager).fireEvent(isA<PlayerTankFactory.PlayerTankCreated>())
@@ -75,7 +75,7 @@ class PlayerTankFactoryTest {
         val firstTank = factory.playerTank
         assertNotNull(firstTank)
 
-        factory.notify(TankExplosion.Destroyed(mockTankExplosion(game, tank = firstTank)))
+        factory.notify(TankExplosion.Destroyed(stubTankExplosion(game, tank = firstTank)))
 
         val captor = argumentCaptor<PlayerTankFactory.PlayerTankCreated>()
         verify(eventManager).fireEvent(captor.capture())
@@ -85,8 +85,8 @@ class PlayerTankFactoryTest {
         assertSame(tank, factory.playerTank)
 
         verify(spriteContainer).addSprite(tank)
-        assertEquals(10, tank.x)
-        assertEquals(100, tank.y)
+        assertEquals(px(10), tank.x)
+        assertEquals(px(100), tank.y)
         assertIs<TankStateAppearing>(tank.state)
     }
 
@@ -96,7 +96,7 @@ class PlayerTankFactoryTest {
         reset(eventManager)
 
         factory.notify(Player.OutOfLives(factory.player))
-        val explosion = mockTankExplosion(game, tank = factory.playerTank!!)
+        val explosion = stubTankExplosion(game, tank = factory.playerTank!!)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager, never()).fireEvent(isA<PlayerTankFactory.PlayerTankCreated>())

@@ -18,10 +18,12 @@ class BaseExplosionFactory(
         }
     }
 
-    private fun create(base: Base): BaseExplosion {
-        val explosion = BaseExplosion(game.eventManager, game.imageManager, game.clock)
-        explosion.setPosition(base.center.translate(-explosion.width / 2, -explosion.height / 2))
-
+    private fun create(base: BaseHandle): BaseExplosion {
+        val explosion = BaseExplosion(
+            game,
+            base.x + Base.SIZE / 2 - BaseExplosion.SIZE / 2,
+            base.y + Base.SIZE / 2 - BaseExplosion.SIZE / 2,
+        )
         game.eventManager.fireEvent(SoundManager.Play("explosion_2"))
 
         return explosion

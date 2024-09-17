@@ -2,6 +2,7 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.awt.image.BufferedImage
@@ -9,16 +10,24 @@ import java.awt.image.BufferedImage
 class StageScoreSceneTest {
     private lateinit var fonts: TestFonts
     private lateinit var clock: TestClock
+    private lateinit var game: Game
+    private lateinit var image: BufferedImage
 
     @BeforeEach
     fun beforeEach() {
         fonts = TestFonts()
         clock = TestClock()
+
+        game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
+        whenever(game.screen.createSurface(px(anyInt()), px(anyInt()))).thenAnswer {
+            BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
+        }
+
+        image = BufferedImage(Globals.CANVAS_WIDTH.toInt(), Globals.CANVAS_HEIGHT.toInt(), BufferedImage.TYPE_INT_ARGB)
     }
 
     @Test
     fun `should draw scene correctly`() {
-        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
         val stageManager: StageManager = mock()
         whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
@@ -32,17 +41,19 @@ class StageScoreSceneTest {
         val scene = StageScoreScene(
             game,
             stageManager,
-            mock(),
             listOf(score),
             false,
         )
 
         val stage = Stage(
             StageMapConfig(
-                emptyList(),
-                Point(0, 0),
-                emptyList(),
-                listOf(Point(12, 0), Point(24, 0), Point(0, 0))
+                base = TilePoint(),
+                playerSpawnPoints = emptyList(),
+                enemySpawnPoints = listOf(
+                    TilePoint(t(12), t(0)),
+                    TilePoint(t(24), t(0)),
+                    TilePoint(t(0), t(0))
+                ),
             ),
             1,
             emptyList()
@@ -55,7 +66,6 @@ class StageScoreSceneTest {
             scene.update()
         }
 
-        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("stage_score.png", image)
@@ -63,7 +73,6 @@ class StageScoreSceneTest {
 
     @Test
     fun `should draw two players scene correctly`() {
-        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
         val stageManager: StageManager = mock()
         whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
@@ -85,17 +94,19 @@ class StageScoreSceneTest {
         val scene = StageScoreScene(
             game,
             stageManager,
-            mock(),
             listOf(scoreOne, scoreTwo),
             false,
         )
 
         val stage = Stage(
             StageMapConfig(
-                emptyList(),
-                Point(0, 0),
-                emptyList(),
-                listOf(Point(12, 0), Point(24, 0), Point(0, 0))
+                base = TilePoint(),
+                playerSpawnPoints = emptyList(),
+                enemySpawnPoints = listOf(
+                    TilePoint(t(12), t(0)),
+                    TilePoint(t(24), t(0)),
+                    TilePoint(t(0), t(0))
+                ),
             ),
             1,
             emptyList()
@@ -108,7 +119,6 @@ class StageScoreSceneTest {
             scene.update()
         }
 
-        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("stage_score_two_players.png", image)
@@ -116,7 +126,6 @@ class StageScoreSceneTest {
 
     @Test
     fun `should not draw two players bonus`() {
-        val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
         val stageManager: StageManager = mock()
         whenever(stageManager.highScore).thenReturn(20000)
         whenever(stageManager.stageNumber).thenReturn(7)
@@ -141,17 +150,19 @@ class StageScoreSceneTest {
         val scene = StageScoreScene(
             game,
             stageManager,
-            mock(),
             listOf(scoreOne, scoreTwo),
             false,
         )
 
         val stage = Stage(
             StageMapConfig(
-                emptyList(),
-                Point(0, 0),
-                emptyList(),
-                listOf(Point(12, 0), Point(24, 0), Point(0, 0))
+                base = TilePoint(),
+                playerSpawnPoints = emptyList(),
+                enemySpawnPoints = listOf(
+                    TilePoint(t(12), t(0)),
+                    TilePoint(t(24), t(0)),
+                    TilePoint(t(0), t(0))
+                )
             ),
             1,
             emptyList()
@@ -164,13 +175,12 @@ class StageScoreSceneTest {
             scene.update()
         }
 
-        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("stage_score_no_bonus.png", image)
     }
 
     private fun createTank(type: EnemyTank.EnemyType): EnemyTank {
-        return mockEnemyTank(enemyType = type)
+        return stubEnemyTank(enemyType = type)
     }
 }

@@ -35,12 +35,12 @@ class MoveFn(
         val newValue = ((100 * startValue + percent * (endValue - startValue)) / 100).toInt()
 
         val completed = when (endValue) {
-            in (startValue + 1)..newValue -> {
+            in (startValue + 1) .. newValue -> {
                 property.value = endValue
                 true
             }
 
-            in newValue..<startValue -> {
+            in newValue ..< startValue -> {
                 property.value = endValue
                 true
             }

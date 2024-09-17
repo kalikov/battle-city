@@ -3,13 +3,17 @@ package com.kalikov.game
 class Bullet(
     private val game: Game,
     override val tank: Tank,
-    val speed: Speed
-) : BulletHandle, Sprite(game.eventManager, 0, 0, SIZE, SIZE) {
-    internal companion object {
-        internal const val SIZE = Globals.TILE_SIZE / 2
+    val speed: Speed = Speed.NORMAL,
+    var type: Type = Type.REGULAR,
+    var direction: Direction = Direction.RIGHT,
+    x: Pixel = px(0),
+    y: Pixel = px(0),
+) : BulletHandle, Sprite(game.eventManager, x, y, SIZE, SIZE) {
+    companion object {
+        val SIZE = t(1).toPixel() / 2
     }
 
-    data class Exploded(val bullet: Bullet) : Event()
+    data class Exploded(val bullet: BulletHandle) : Event()
 
     enum class Speed(val value: Int, val frequency: Int) {
         NORMAL(1, 2),
@@ -20,10 +24,6 @@ class Bullet(
         REGULAR,
         ENHANCED
     }
-
-    var type = Type.REGULAR
-
-    var direction = Direction.RIGHT
 
     private val moveCountDown = CountDown(speed.frequency)
 
@@ -70,7 +70,7 @@ class Bullet(
     }
 
     override fun draw(surface: ScreenSurface) {
-        surface.draw(x, y, image, direction.index * width, 0, width, height)
+        surface.draw(x, y, image, direction.index * width, px(0), width, height)
         if (game.config.debug) {
             surface.drawRect(bounds.x, bounds.y, bounds.width, bounds.height, ARGB(0x6600FF00))
         }

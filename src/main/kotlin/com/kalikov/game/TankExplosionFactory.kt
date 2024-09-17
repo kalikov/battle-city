@@ -18,7 +18,7 @@ class TankExplosionFactory(
 
     private fun create(tank: Tank): TankExplosion {
         val explosion = TankExplosion(game, tank)
-        explosion.setPosition(tank.center.translate(-explosion.width / 2, -explosion.height / 2))
+        explosion.setPosition(tank.center - explosion.width / 2, tank.middle - explosion.height / 2)
 
         game.eventManager.fireEvent(SoundManager.Play("explosion_1"))
 

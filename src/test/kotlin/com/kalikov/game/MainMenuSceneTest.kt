@@ -26,7 +26,6 @@ class MainMenuSceneTest {
         scene = MainMenuScene(
             mockGame(eventManager = eventManager, imageManager = TestImageManager(fonts), clock = clock),
             stageManager,
-            mock()
         )
     }
 
@@ -37,7 +36,11 @@ class MainMenuSceneTest {
         whenever(stageManager.players).thenReturn(listOf(player))
         whenever(stageManager.highScore).thenReturn(20000)
 
-        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
+        val image = BufferedImage(
+            Globals.CANVAS_WIDTH.toInt(),
+            Globals.CANVAS_HEIGHT.toInt(),
+            BufferedImage.TYPE_INT_ARGB
+        )
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("main_menu.png", image)
@@ -51,7 +54,11 @@ class MainMenuSceneTest {
         whenever(stageManager.players).thenReturn(listOf(player1, player2))
         whenever(stageManager.highScore).thenReturn(20000)
 
-        val image = BufferedImage(Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT, BufferedImage.TYPE_INT_ARGB)
+        val image = BufferedImage(
+            Globals.CANVAS_WIDTH.toInt(),
+            Globals.CANVAS_HEIGHT.toInt(),
+            BufferedImage.TYPE_INT_ARGB
+        )
         scene.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("main_menu_two_players.png", image)
@@ -80,29 +87,29 @@ class MainMenuSceneTest {
 
     private fun shouldArriveOnKey(key: Keyboard.Key) {
         scene.notify(Keyboard.KeyPressed(key, 0))
-        assertEquals(0, scene.top)
+        assertEquals(px(0), scene.top)
     }
 
     @Test
     fun `should update position when interval elapsed`() {
-        scene.top = 2
+        scene.top = px(2)
         scene.update()
-        assertEquals(2, scene.top)
+        assertEquals(px(2), scene.top)
 
         clock.tick(MainMenuScene.INTERVAL)
         scene.update()
-        assertEquals(1, scene.top)
+        assertEquals(px(1), scene.top)
     }
 
     @Test
     fun `should update position when multiple intervals elapsed`() {
-        scene.top = 4
+        scene.top = px(4)
         scene.update()
-        assertEquals(4, scene.top)
+        assertEquals(px(4), scene.top)
 
         clock.tick(3L * MainMenuScene.INTERVAL)
         scene.update()
-        assertEquals(1, scene.top)
+        assertEquals(px(1), scene.top)
     }
 
     @Test
@@ -118,6 +125,6 @@ class MainMenuSceneTest {
     fun `should arrive on arrived call`() {
         scene.arrived()
 
-        assertEquals(0, scene.top)
+        assertEquals(px(0), scene.top)
     }
 }

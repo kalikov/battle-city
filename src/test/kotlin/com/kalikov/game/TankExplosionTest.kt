@@ -14,7 +14,7 @@ class TankExplosionTest {
     fun beforeEach() {
         eventManager = mock()
         val game = mockGame(eventManager = eventManager)
-        tank = mockPlayerTank(game)
+        tank = stubPlayerTank(game)
         explosion = TankExplosion(game, tank)
     }
 

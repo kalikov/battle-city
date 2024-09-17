@@ -19,8 +19,8 @@ class EnemyTankTest : TankTest<EnemyTank>() {
         return EnemyTank.create(
             game,
             mock(),
-            0,
-            0,
+            px(0),
+            px(0),
             EnemyTank.EnemyType.BASIC
         )
     }
@@ -58,7 +58,7 @@ class EnemyTankTest : TankTest<EnemyTank>() {
 
     @Test
     fun `should fire enemy score event on hit destroy`() {
-        val playerTank = mockPlayerTank()
+        val playerTank = stubPlayerTank()
         val bullet = mock<BulletHandle> {
             on { tank } doReturn playerTank
         }
@@ -103,7 +103,7 @@ class EnemyTankTest : TankTest<EnemyTank>() {
         eventManager = ConcurrentEventManager()
         val pauseListener = PauseListener(eventManager)
         game = mockGame(eventManager = eventManager, clock = clock)
-        tank = mockEnemyTank(game, pauseListener)
+        tank = stubEnemyTank(game, pauseListener)
         val state = TankStateInvincible(game, tank, 10)
         tank.state = state
         tank.color.colors = arrayOf(EnemyFactory.FLASHING_COLORS)

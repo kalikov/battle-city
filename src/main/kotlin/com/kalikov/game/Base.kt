@@ -3,28 +3,38 @@ package com.kalikov.game
 class Base(
     private val eventRouter: EventRouter,
     imageManager: ImageManager,
-    x: Int,
-    y: Int
-) : Sprite(eventRouter, x, y, SIZE, SIZE) {
+    override val x: Pixel = px(0),
+    override val y: Pixel = px(0),
+) : BaseHandle {
     companion object {
-        const val SIZE = Globals.UNIT_SIZE
+        val SIZE = t(2).toPixel()
     }
 
-    data class Hit(val base: Base) : Event()
+    val width = SIZE
+    val height = SIZE
 
-    var isHit = false
+    override val bounds = PixelRect(x, y, width, height)
+    val center = PixelPoint(x + width / 2, y + height / 2)
+
+    data class Hit(val base: BaseHandle) : Event()
+
+    override var isHit = false
         private set
+
+    override var isHidden = false
 
     private val image = imageManager.getImage("base")
 
-    override fun draw(surface: ScreenSurface) {
-        surface.draw(x, y, image, if (isHit) width else 0, 0, width, height)
+    fun draw(surface: ScreenSurface) {
+        if (!isHidden) {
+            surface.draw(x, y, image, if (isHit) width else px(0), px(0), width, height)
+        }
     }
 
-    override fun dispose() {
+    fun dispose() {
     }
 
-    fun hit() {
+    override fun hit() {
         if (isHit) {
             return
         }

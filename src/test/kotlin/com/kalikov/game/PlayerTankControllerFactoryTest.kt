@@ -36,7 +36,7 @@ class PlayerTankControllerFactoryTest {
 
     @Test
     fun `should create controller on player tank creation`() {
-        val tank = mockPlayerTank(game, player = factory.player)
+        val tank = stubPlayerTank(game, player = factory.player)
 
         reset(eventManager)
         factory.notify(PlayerTankFactory.PlayerTankCreated(tank))
@@ -50,12 +50,12 @@ class PlayerTankControllerFactoryTest {
 
     @Test
     fun `should recreate controller on subsequent player tank creation`() {
-        val tank1 = mockPlayerTank(game, player = factory.player)
+        val tank1 = stubPlayerTank(game, player = factory.player)
         factory.notify(PlayerTankFactory.PlayerTankCreated(tank1))
         val controller1 = factory.controller
         assertNotNull(controller1)
 
-        val tank2 = mockPlayerTank(game, player = factory.player)
+        val tank2 = stubPlayerTank(game, player = factory.player)
         reset(eventManager)
 
         factory.notify(PlayerTankFactory.PlayerTankCreated(tank2))

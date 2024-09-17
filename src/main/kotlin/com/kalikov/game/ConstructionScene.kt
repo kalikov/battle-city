@@ -3,90 +3,55 @@ package com.kalikov.game
 class ConstructionScene(
     private val game: Game,
     private val stageManager: StageManager,
-    private val entityFactory: EntityFactory,
 ) : Scene, EventSubscriber {
     private companion object {
         private val subscriptions = setOf(
-            Keyboard.KeyPressed::class,
-            Builder.StructureCreated::class,
+            Keyboard.KeyPressed::class
         )
     }
 
     @Suppress("JoinDeclarationAndAssignment")
-    val spriteContainer: SpriteContainer
+    private val mainContainer: SpriteContainer
 
-    val cursor: Cursor
+    private val overlayContainer: SpriteContainer
+
+    private val cursor: Cursor
 
     private val gameField: GameField
     private val cursorController: CursorController
 
-    private val basePosition: Point
-    private val playerPositions: List<Point>
-    private val enemyPositions: List<Point>
+    private val basePosition: TilePoint
+    private val playerPositions: List<TilePoint>
+    private val enemyPositions: List<TilePoint>
 
     init {
-        spriteContainer = DefaultSpriteContainer(game.eventManager)
-        gameField = GameField(game.eventManager, game.imageManager, entityFactory, spriteContainer)
+        mainContainer = DefaultSpriteContainer(game.eventManager)
+        overlayContainer = DefaultSpriteContainer(game.eventManager)
+        gameField = GameField(game, mainContainer, overlayContainer)
 
         game.eventManager.addSubscriber(this, subscriptions)
 
         cursor = Cursor(
-            game.eventManager,
-            game.imageManager,
-            Builder(game.eventManager, game.imageManager, game.clock),
-            game.clock
+            game,
+            Builder(gameField),
+            gameField.bounds.x,
+            gameField.bounds.y,
         )
-        cursor.setPosition(Point(gameField.bounds.x, gameField.bounds.y))
+        overlayContainer.addSprite(cursor)
 
         cursorController = CursorController(game.eventManager, cursor, gameField.bounds, game.clock)
-
-        spriteContainer.addSprite(cursor)
 
         val map = stageManager.constructionMap
         basePosition = map.base
         playerPositions = map.playerSpawnPoints
         enemyPositions = map.enemySpawnPoints
-        val base = Base(
-            game.eventManager,
-            game.imageManager,
-            gameField.bounds.x + map.base.x * Globals.TILE_SIZE,
-            gameField.bounds.y + map.base.y * Globals.TILE_SIZE
-        )
-        spriteContainer.addSprite(base)
-        for (item in map.objects) {
-            val sprite = entityFactory.create(
-                item.type,
-                gameField.bounds.x + item.x * Globals.TILE_SIZE,
-                gameField.bounds.y + item.y * Globals.TILE_SIZE,
-            )
-            sprite.isStatic = true
-            spriteContainer.addSprite(sprite)
-            if (sprite.bounds.intersects(base.bounds)) {
-                base.destroy()
-            }
-        }
+
+        gameField.load(map, 0)
     }
 
     override fun notify(event: Event) {
         if (event is Keyboard.KeyPressed) {
             keyPressed(event.key)
-        } else if (event is Builder.StructureCreated) {
-            destroySpritesUnderCursor(event.cursor)
-            addStructure(event.sprites)
-        }
-    }
-
-    private fun destroySpritesUnderCursor(cursor: Cursor) {
-        spriteContainer.forEach {
-            if (it != cursor && it.bounds.intersects(cursor.bounds)) {
-                it.destroy()
-            }
-        }
-    }
-
-    private fun addStructure(sprites: List<Sprite>) {
-        sprites.forEach {
-            spriteContainer.addSprite(it)
         }
     }
 
@@ -99,7 +64,7 @@ class ConstructionScene(
             stageManager.constructionMap = createConstructionMapConfig()
             stageManager.curtainBackground = surface
             game.eventManager.fireEvent(Scene.Start {
-                val mainMenu = MainMenuScene(game, stageManager, entityFactory)
+                val mainMenu = MainMenuScene(game, stageManager)
                 mainMenu.setMenuItem(2)
                 mainMenu.arrived()
                 mainMenu
@@ -108,14 +73,10 @@ class ConstructionScene(
     }
 
     private fun createConstructionMapConfig(): StageMapConfig {
-        val objects = ArrayList<StageObject>(spriteContainer.size)
-        spriteContainer.forEach {
-            if (it is Entity) {
-                objects.add(it.toStageObject(gameField.bounds.x, gameField.bounds.y))
-            }
-        }
         return StageMapConfig(
-            objects,
+            gameField.ground.config,
+            gameField.walls.config,
+            gameField.trees.config,
             basePosition,
             playerPositions,
             enemyPositions
@@ -128,6 +89,10 @@ class ConstructionScene(
     }
 
     override fun draw(surface: ScreenSurface) {
+        drawScene(surface)
+    }
+
+    private fun drawScene(surface: ScreenSurface) {
         surface.clear(ARGB.rgb(0x808080))
 
         gameField.draw(surface)
@@ -138,6 +103,8 @@ class ConstructionScene(
 
         game.eventManager.removeSubscriber(this, subscriptions)
 
-        spriteContainer.dispose()
+        gameField.dispose()
+        mainContainer.dispose()
+        overlayContainer.dispose()
     }
 }

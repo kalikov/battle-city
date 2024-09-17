@@ -2,7 +2,9 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -16,70 +18,93 @@ class MovementControllerTest {
     private lateinit var clock: TestClock
     private lateinit var game: Game
     private lateinit var pauseManager: PauseManager
-    private lateinit var spriteContainer: SpriteContainer
+    private lateinit var mainContainer: SpriteContainer
+    private lateinit var overlayContainer: SpriteContainer
+    private lateinit var gameField: GameFieldHandle
     private lateinit var movementController: MovementController
 
     @BeforeEach
     fun beforeEach() {
         clock = TestClock()
-        game = mockGame()
+
+        game = mockGame(clock = clock)
+        whenever(game.screen.createSurface(px(anyInt()), px(anyInt()))).thenReturn(mock())
+        whenever(game.imageManager.getImage(any())).thenReturn(mock())
+        whenever(game.imageManager.getImage("wall_brick")).thenReturn(mock())
+
         pauseManager = mock()
-        spriteContainer = mock()
+        mainContainer = mock()
+        overlayContainer = mock()
+        val baseStub = Base(game.eventManager, game.imageManager, t(2).toPixel(), t(2).toPixel())
+        val treesStub = Trees(game, px(0), px(0), emptySet())
+        val groundStub = Ground(game, px(0), px(0), GroundConfig())
+        val wallsStub = Walls(game, px(0), px(0), WallsConfig())
+        gameField = mock {
+            on { base } doReturn baseStub
+            on { trees } doReturn treesStub
+            on { ground } doReturn groundStub
+            on { walls } doReturn wallsStub
+        }
         movementController = MovementController(
             game.eventManager,
             pauseManager,
-            Rect(0, 0, Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT),
-            spriteContainer,
+            PixelRect(px(0), px(0), Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT),
+            mainContainer,
+            overlayContainer,
+            gameField,
             clock
         )
     }
 
     @Test
     fun `bullet should hit base on bullet movement`() {
-        val tank = mockPlayerTank(game)
-        tank.direction = Direction.RIGHT
-        val bullet = tank.createBullet()
+        val tank = stubPlayerTank(game, pauseManager, px(0), t(2).toPixel())
+        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 
-        val base = Base(game.eventManager, mock(), Globals.UNIT_SIZE, 0)
-
-        mockSprites(listOf(base, tank, bullet))
+        mockMainSprites(listOf(tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
         movementController.update()
 
-        assertTrue(base.isHit)
+        assertTrue(gameField.base.isHit)
         assertTrue(bullet.isDestroyed)
     }
 
     @Test
     fun `bullet should hit wall on bullet movement`() {
-        val tank = mockPlayerTank(game)
-        tank.direction = Direction.RIGHT
-        val bullet = tank.createBullet()
+        val tank = stubPlayerTank(game, pauseManager)
+        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 
-        val wall = mockBrickWall(game.eventManager, x = Globals.UNIT_SIZE, y = 0)
+        gameField.walls.fillBrickTile(t(2), t(0))
+        gameField.walls.fillBrickTile(t(2), t(1))
+        gameField.walls.fillBrickTile(t(2), t(2))
 
-        mockSprites(listOf(wall, tank, bullet))
+        mockMainSprites(listOf(tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
         movementController.update()
 
-        assertTrue(wall.isHitLeft)
+        assertEquals(
+            setOf(
+                BrickTile(t(2), t(0), 0b0110),
+                BrickTile(t(2), t(1), 0b0110),
+                BrickTile(t(2), t(2), 0b1111),
+            ),
+            gameField.walls.config.bricks
+        )
         assertTrue(bullet.isDestroyed)
     }
 
     @Test
     fun `bullet should hit enemy tank on bullet movement`() {
-        val tank = mockPlayerTank(game)
-        tank.direction = Direction.RIGHT
+        val tank = stubPlayerTank(game, pauseManager)
+        val enemyTank = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
 
-        val enemyTank = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
+        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 
-        val bullet = tank.createBullet()
-
-        mockSprites(listOf(enemyTank, tank, bullet))
+        mockMainSprites(listOf(enemyTank, tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -91,16 +116,15 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should hit only one enemy tank on bullet movement`() {
-        val tank = mockPlayerTank(game)
-        tank.direction = Direction.RIGHT
+        val tank = stubPlayerTank(game, pauseManager)
 
-        val enemyTank1 = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
-        val enemyTank2 = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
-        val enemyTank3 = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
+        val enemyTank1 = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
+        val enemyTank2 = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
+        val enemyTank3 = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
 
-        val bullet = tank.createBullet()
+        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 
-        mockSprites(listOf(enemyTank1, enemyTank2, enemyTank3, tank, bullet))
+        mockMainSprites(listOf(enemyTank1, enemyTank2, enemyTank3, tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -114,14 +138,12 @@ class MovementControllerTest {
 
     @Test
     fun `enemy bullet should go through enemy tank on bullet movement`() {
-        val tank1 = mockEnemyTank(game)
-        tank1.direction = Direction.RIGHT
+        val tank1 = stubEnemyTank(game, pauseManager)
+        val tank2 = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
 
-        val tank2 = mockEnemyTank(game, x = Globals.UNIT_SIZE, y = 0)
+        val bullet = stubBullet(game, tank1, x = tank1.right, y = tank1.middle - Bullet.SIZE / 2)
 
-        val bullet = tank1.createBullet()
-
-        mockSprites(listOf(tank1, tank2, bullet))
+        mockMainSprites(listOf(tank1, tank2, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -134,15 +156,14 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should not hit invincible tank on bullet movement`() {
-        val enemyTank = mockEnemyTank(game)
-        enemyTank.direction = Direction.RIGHT
+        val enemyTank = stubEnemyTank(game, pauseManager)
 
-        val playerTank = mockPlayerTank(game, x = Globals.UNIT_SIZE, y = 0)
+        val playerTank = stubPlayerTank(game, pauseManager, t(2).toPixel(), px(0))
         playerTank.state = TankStateInvincible(game, playerTank)
 
-        val bullet = enemyTank.createBullet()
+        val bullet = stubBullet(game, enemyTank, x = enemyTank.right, y = enemyTank.middle - Bullet.SIZE / 2)
 
-        mockSprites(listOf(enemyTank, playerTank, bullet))
+        mockMainSprites(listOf(enemyTank, playerTank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -155,15 +176,14 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should go through appearing tank on bullet movement`() {
-        val enemyTank = mockEnemyTank(game)
-        enemyTank.direction = Direction.RIGHT
+        val enemyTank = stubEnemyTank(game, pauseManager)
 
-        val playerTank = mockPlayerTank(game, x = Globals.UNIT_SIZE, y = 0)
+        val playerTank = stubPlayerTank(game, pauseManager, t(2).toPixel(), px(0))
         playerTank.state = TankStateAppearing(game, playerTank)
 
-        val bullet = enemyTank.createBullet()
+        val bullet = stubBullet(game, enemyTank, x = enemyTank.right, y = enemyTank.middle - Bullet.SIZE / 2)
 
-        mockSprites(listOf(enemyTank, playerTank, bullet))
+        mockMainSprites(listOf(enemyTank, playerTank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -175,14 +195,13 @@ class MovementControllerTest {
 
     @Test
     fun `bullet should hit player tank on bullet movement`() {
-        val enemyTank = mockEnemyTank(game)
-        enemyTank.direction = Direction.RIGHT
+        val enemyTank = stubEnemyTank(game, pauseManager)
 
-        val playerTank = mockPlayerTank(game, x = Globals.UNIT_SIZE, y = 0)
+        val playerTank = stubPlayerTank(game, pauseManager, t(2).toPixel(), px(0))
 
-        val bullet = enemyTank.createBullet()
+        val bullet = stubBullet(game, enemyTank, x = enemyTank.right, y = enemyTank.middle - Bullet.SIZE / 2)
 
-        mockSprites(listOf(playerTank, enemyTank, bullet))
+        mockMainSprites(listOf(playerTank, enemyTank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -194,17 +213,15 @@ class MovementControllerTest {
 
     @Test
     fun `enemy bullet should go through enemy bullet`() {
-        val tank = mockEnemyTank(game)
-        tank.direction = Direction.RIGHT
+        val tank = stubEnemyTank(game, pauseManager)
 
-        val bullet = tank.createBullet()
+        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 
-        val otherTank = mockEnemyTank(game, x = Globals.UNIT_SIZE + Bullet.SIZE, y = 0)
-        otherTank.direction = Direction.LEFT
+        val otherTank = stubEnemyTank(game, pauseManager, t(2).toPixel() + Bullet.SIZE, px(0))
 
-        val otherBullet = otherTank.createBullet()
+        val otherBullet = stubBullet(game, otherTank, x = bullet.x, y = bullet.y)
 
-        mockSprites(listOf(tank, otherTank, bullet, otherBullet))
+        mockMainSprites(listOf(tank, otherTank, bullet, otherBullet))
 
         movementController.notify(SpriteContainer.Added(bullet))
 
@@ -218,40 +235,50 @@ class MovementControllerTest {
 
     @Test
     fun `player bullet should hit enemy bullet`() {
-        val player = mockPlayerTank(game)
-        player.direction = Direction.RIGHT
+        val playerTank = stubPlayerTank(game, pauseManager)
+        val playerBullet = stubBullet(game, playerTank, x = playerTank.right, y = playerTank.middle - Bullet.SIZE / 2)
 
-        val playerBullet = player.createBullet()
+        val enemyTank = stubEnemyTank(game, pauseManager, t(2).toPixel() + Bullet.SIZE, px(0))
+        val enemyBullet = stubBullet(game, enemyTank, x = playerBullet.x, y = playerBullet.y)
 
-        val tank = mockEnemyTank(game, x = Globals.UNIT_SIZE + Bullet.SIZE, y = 0)
-        tank.direction = Direction.LEFT
-
-        val bullet = tank.createBullet()
-
-        mockSprites(listOf(player, tank, playerBullet, bullet))
-
-        movementController.notify(SpriteContainer.Added(bullet))
+        mockMainSprites(listOf(playerTank, enemyTank, playerBullet, enemyBullet))
 
         movementController.update()
         clock.tick(updateInterval)
         movementController.update()
 
         assertTrue(playerBullet.isDestroyed)
-        assertTrue(bullet.isDestroyed)
-        assertFalse(player.isDestroyed)
-        assertFalse(tank.isDestroyed)
+        assertTrue(playerBullet.isDestroyed)
+        assertFalse(playerTank.isDestroyed)
+        assertFalse(enemyTank.isDestroyed)
+    }
+
+    @Test
+    fun `player bullet should hit enemy bullet on appearance`() {
+        val playerTank = stubPlayerTank(game, pauseManager)
+        val playerBullet = stubBullet(game, playerTank, x = playerTank.right, y = playerTank.middle - Bullet.SIZE / 2)
+
+        val enemyTank = stubEnemyTank(game, pauseManager, t(2).toPixel() + Bullet.SIZE, px(0))
+        val enemyBullet = stubBullet(game, enemyTank, x = playerBullet.x, y = playerBullet.y)
+
+        mockMainSprites(listOf(playerTank, enemyTank, playerBullet, enemyBullet))
+
+        movementController.notify(SpriteContainer.Added(playerBullet))
+
+        assertTrue(playerBullet.isDestroyed)
+        assertTrue(playerBullet.isDestroyed)
+        assertFalse(playerTank.isDestroyed)
+        assertFalse(enemyTank.isDestroyed)
     }
 
     @Test
     fun `should move normal bullet`() {
-        val tank = mockPlayerTank(game)
-        tank.direction = Direction.RIGHT
-        tank.bulletSpeed = Bullet.Speed.NORMAL
+        val tank = stubPlayerTank(game, pauseManager)
 
-        val bullet = tank.createBullet()
+        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
         val x = bullet.x
 
-        mockSprites(listOf(tank, bullet))
+        mockMainSprites(listOf(tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -262,14 +289,13 @@ class MovementControllerTest {
 
     @Test
     fun `should move fast bullet`() {
-        val tank = mockPlayerTank(game)
-        tank.direction = Direction.RIGHT
+        val tank = stubPlayerTank(game, pauseManager)
         tank.bulletSpeed = Bullet.Speed.FAST
 
-        val bullet = tank.createBullet()
+        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
         val x = bullet.x
 
-        mockSprites(listOf(tank, bullet))
+        mockMainSprites(listOf(tank, bullet))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -282,15 +308,12 @@ class MovementControllerTest {
     fun `should not move bullet when paused`() {
         whenever(pauseManager.isPaused).thenReturn(true)
 
-        val tank = mockPlayerTank(game)
-        tank.direction = Direction.RIGHT
+        val tank = stubPlayerTank(game, pauseManager)
         tank.bulletSpeed = Bullet.Speed.FAST
 
-        val bullet = tank.createBullet()
+        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
         val x = bullet.x
         val y = bullet.y
-
-        bullet.direction = Direction.DOWN
 
         movementController.update()
         clock.tick(updateInterval)
@@ -302,28 +325,30 @@ class MovementControllerTest {
 
     @Test
     fun `tank should collide wall on tank movement left`() {
-        val tank = mockPlayerTank(game, x = Globals.TILE_SIZE - 2, y = 0)
+        val tank = stubPlayerTank(game, pauseManager, t(1).toPixel() - 2, px(0))
         tank.moveFrequency = 1
         tank.direction = Direction.LEFT
         tank.isIdle = false
-        val wall = mockBrickWall(game.eventManager)
 
-        mockSprites(listOf(wall, tank))
+        gameField.walls.fillBrickTile(t(0), t(0))
+
+        mockMainSprites(listOf(tank))
 
         movementController.update()
         clock.tick(updateInterval)
         movementController.update()
 
-        assertEquals(Point(Globals.TILE_SIZE - 2, 0), Point(tank.x, tank.y))
+        assertEquals(PixelPoint(t(1).toPixel() - 2, px(0)), PixelPoint(tank.x, tank.y))
     }
 
     @Test
     fun `tank should pick power up on tank movement`() {
-        val tank = mockPlayerTank(game)
+        val tank = stubPlayerTank(game, pauseManager)
         tank.isIdle = false
-        val powerUp = mockPowerUp(game.eventManager)
+        val powerUp = stubPowerUp(game)
 
-        mockSprites(listOf(tank, powerUp))
+        mockMainSprites(listOf(tank))
+        mockOverlaySprites(listOf(powerUp))
 
         movementController.update()
         clock.tick(updateInterval)
@@ -335,22 +360,32 @@ class MovementControllerTest {
 
     @Test
     fun `tanks should overlap when one is out of bounds`() {
-        val tank1 = mockPlayerTank(game, x = 0, y = -8)
+        val tank1 = stubPlayerTank(game, pauseManager, px(0), t(-1).toPixel())
         tank1.direction = Direction.DOWN
         tank1.isIdle = false
-        val tank2 = mockPlayerTank(game)
+        val tank2 = stubPlayerTank(game, pauseManager)
 
-        mockSprites(listOf(tank1, tank2))
+        mockMainSprites(listOf(tank1, tank2))
 
         movementController.update()
         clock.tick(updateInterval)
         movementController.update()
 
-        assertEquals(Point(0, -8), tank1.position)
-        assertEquals(Point(0, 0), tank2.position)
+        assertEquals(px(0), tank1.x)
+        assertEquals(t(-1).toPixel(), tank1.y)
+        assertEquals(px(0), tank2.x)
+        assertEquals(px(0), tank2.y)
     }
 
-    private fun mockSprites(sprites: List<Sprite>) {
+    private fun mockMainSprites(sprites: List<Sprite>) {
+        mockSprites(mainContainer, sprites)
+    }
+
+    private fun mockOverlaySprites(sprites: List<Sprite>) {
+        mockSprites(overlayContainer, sprites)
+    }
+
+    private fun mockSprites(spriteContainer: SpriteContainer, sprites: List<Sprite>) {
         whenever(spriteContainer.forEach(any())).thenAnswer {
             sprites.forEach(it.getArgument(0))
         }

@@ -1,13 +1,9 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class HighScoreScene(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val stageManager: StageManager,
     private val nextSceneFactory: () -> Scene,
-    clock: Clock,
 ) : Scene {
     companion object {
         const val BLINK_INTERVAL = 32
@@ -18,7 +14,7 @@ class HighScoreScene(
         private val GRAY = ARGB.rgb(0x636363)
     }
 
-    private val timer = BasicTimer(clock, BLINK_INTERVAL, ::blink)
+    private val timer = BasicTimer(game.clock, BLINK_INTERVAL, ::blink)
 
     private var counter = 0
     // 8 - gray
@@ -36,8 +32,8 @@ class HighScoreScene(
     // 253 - blue
     // 259 - stop
 
-    private val brickBlending = object : TextureBlending(imageManager.getImage("wall_brick")) {
-        override fun blend(dst: ARGB, src: ARGB, x: Int, y: Int): ARGB {
+    private val brickBlending = object : TextureBlending(game.imageManager.getImage("wall_brick")) {
+        override fun blend(dst: ARGB, src: ARGB, x: Pixel, y: Pixel): ARGB {
             val pixel = super.blend(dst, src, x, y)
             if (pixel == ARGB.rgb(0x9c4A00)) {
                 if (counter % 2 == 0) {
@@ -75,16 +71,16 @@ class HighScoreScene(
         counter++
         if (counter == BLINK_COUNT) {
             timer.stop()
-            eventManager.fireEvent(Scene.Start(nextSceneFactory))
+            game.eventManager.fireEvent(Scene.Start(nextSceneFactory))
         }
     }
 
     override fun draw(surface: ScreenSurface) {
         surface.clear(ARGB.BLACK)
 
-        val x = 2 * Globals.TILE_SIZE + Globals.TILE_SIZE / 2
-        val y = 6 * Globals.TILE_SIZE + Globals.TILE_SIZE / 2 + Globals.FONT_BIG_CORRECTION
-        val interval = Globals.FONT_BIG_SIZE + 2 * Globals.TILE_SIZE + Globals.TILE_SIZE / 2
+        val x = t(2).toPixel() + t(1).toPixel() / 2
+        val y = t(6).toPixel() + t(1).toPixel() / 2 + Globals.FONT_BIG_CORRECTION
+        val interval = Globals.FONT_BIG_CORRECTION + t(3).toPixel()
         surface.fillText("HISCORE", x, y, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
         surface.fillText(
             "${stageManager.highScore}".padStart(7, ' '),

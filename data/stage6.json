@@ -1,1029 +1,1278 @@
 {
-  "objects": [
+  "walls": {
+    "steel": [
+      {
+        "x": 5,
+        "y": 3
+      },
+      {
+        "x": 5,
+        "y": 2
+      },
+      {
+        "x": 5,
+        "y": 5
+      },
+      {
+        "x": 5,
+        "y": 4
+      },
+      {
+        "x": 13,
+        "y": 7
+      },
+      {
+        "x": 12,
+        "y": 7
+      },
+      {
+        "x": 13,
+        "y": 6
+      },
+      {
+        "x": 12,
+        "y": 6
+      },
+      {
+        "x": 9,
+        "y": 8
+      },
+      {
+        "x": 8,
+        "y": 8
+      },
+      {
+        "x": 18,
+        "y": 9
+      },
+      {
+        "x": 18,
+        "y": 8
+      },
+      {
+        "x": 1,
+        "y": 15
+      },
+      {
+        "x": 0,
+        "y": 15
+      },
+      {
+        "x": 1,
+        "y": 14
+      },
+      {
+        "x": 0,
+        "y": 14
+      },
+      {
+        "x": 25,
+        "y": 15
+      },
+      {
+        "x": 24,
+        "y": 15
+      },
+      {
+        "x": 25,
+        "y": 14
+      },
+      {
+        "x": 24,
+        "y": 14
+      },
+      {
+        "x": 1,
+        "y": 16
+      },
+      {
+        "x": 0,
+        "y": 16
+      },
+      {
+        "x": 3,
+        "y": 16
+      },
+      {
+        "x": 2,
+        "y": 16
+      },
+      {
+        "x": 5,
+        "y": 16
+      },
+      {
+        "x": 4,
+        "y": 16
+      },
+      {
+        "x": 21,
+        "y": 16
+      },
+      {
+        "x": 20,
+        "y": 16
+      },
+      {
+        "x": 23,
+        "y": 16
+      },
+      {
+        "x": 22,
+        "y": 16
+      },
+      {
+        "x": 25,
+        "y": 16
+      },
+      {
+        "x": 24,
+        "y": 16
+      }
+    ],
+    "bricks": [
+      {
+        "x": 11,
+        "y": 1,
+        "integrity": 15
+      },
+      {
+        "x": 11,
+        "y": 0,
+        "integrity": 15
+      },
+      {
+        "x": 14,
+        "y": 1,
+        "integrity": 15
+      },
+      {
+        "x": 14,
+        "y": 0,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 3,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 3,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 2,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 3,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 2,
+        "integrity": 15
+      },
+      {
+        "x": 20,
+        "y": 3,
+        "integrity": 15
+      },
+      {
+        "x": 20,
+        "y": 2,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 3,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 2,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 5,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 4,
+        "integrity": 15
+      },
+      {
+        "x": 13,
+        "y": 5,
+        "integrity": 15
+      },
+      {
+        "x": 12,
+        "y": 5,
+        "integrity": 15
+      },
+      {
+        "x": 13,
+        "y": 4,
+        "integrity": 15
+      },
+      {
+        "x": 12,
+        "y": 4,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 5,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 4,
+        "integrity": 15
+      },
+      {
+        "x": 20,
+        "y": 5,
+        "integrity": 15
+      },
+      {
+        "x": 20,
+        "y": 4,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 5,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 4,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 7,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 7,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 6,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 6,
+        "integrity": 15
+      },
+      {
+        "x": 9,
+        "y": 7,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 7,
+        "integrity": 15
+      },
+      {
+        "x": 9,
+        "y": 6,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 6,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 7,
+        "integrity": 15
+      },
+      {
+        "x": 16,
+        "y": 7,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 6,
+        "integrity": 15
+      },
+      {
+        "x": 16,
+        "y": 6,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 7,
+        "integrity": 15
+      },
+      {
+        "x": 22,
+        "y": 7,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 6,
+        "integrity": 15
+      },
+      {
+        "x": 22,
+        "y": 6,
+        "integrity": 15
+      },
+      {
+        "x": 7,
+        "y": 9,
+        "integrity": 15
+      },
+      {
+        "x": 7,
+        "y": 8,
+        "integrity": 15
+      },
+      {
+        "x": 13,
+        "y": 9,
+        "integrity": 15
+      },
+      {
+        "x": 12,
+        "y": 9,
+        "integrity": 15
+      },
+      {
+        "x": 13,
+        "y": 8,
+        "integrity": 15
+      },
+      {
+        "x": 12,
+        "y": 8,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 8,
+        "integrity": 15
+      },
+      {
+        "x": 16,
+        "y": 8,
+        "integrity": 15
+      },
+      {
+        "x": 1,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 0,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 1,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 0,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 4,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 4,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 13,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 12,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 13,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 12,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 21,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 21,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 22,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 22,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 25,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 24,
+        "y": 11,
+        "integrity": 15
+      },
+      {
+        "x": 25,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 24,
+        "y": 10,
+        "integrity": 15
+      },
+      {
+        "x": 9,
+        "y": 13,
+        "integrity": 15
+      },
+      {
+        "x": 9,
+        "y": 12,
+        "integrity": 15
+      },
+      {
+        "x": 16,
+        "y": 13,
+        "integrity": 15
+      },
+      {
+        "x": 16,
+        "y": 12,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 15,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 15,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 5,
+        "y": 15,
+        "integrity": 15
+      },
+      {
+        "x": 4,
+        "y": 15,
+        "integrity": 15
+      },
+      {
+        "x": 5,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 4,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 9,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 16,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 19,
+        "y": 15,
+        "integrity": 15
+      },
+      {
+        "x": 19,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 21,
+        "y": 15,
+        "integrity": 15
+      },
+      {
+        "x": 20,
+        "y": 15,
+        "integrity": 15
+      },
+      {
+        "x": 21,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 20,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 15,
+        "integrity": 15
+      },
+      {
+        "x": 22,
+        "y": 15,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 22,
+        "y": 14,
+        "integrity": 15
+      },
+      {
+        "x": 9,
+        "y": 17,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 17,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 17,
+        "integrity": 15
+      },
+      {
+        "x": 16,
+        "y": 17,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 19,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 19,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 18,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 18,
+        "integrity": 15
+      },
+      {
+        "x": 9,
+        "y": 19,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 19,
+        "integrity": 15
+      },
+      {
+        "x": 9,
+        "y": 18,
+        "integrity": 15
+      },
+      {
+        "x": 8,
+        "y": 18,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 19,
+        "integrity": 15
+      },
+      {
+        "x": 16,
+        "y": 19,
+        "integrity": 15
+      },
+      {
+        "x": 17,
+        "y": 18,
+        "integrity": 15
+      },
+      {
+        "x": 16,
+        "y": 18,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 21,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 21,
+        "integrity": 15
+      },
+      {
+        "x": 3,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 2,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 4,
+        "y": 21,
+        "integrity": 15
+      },
+      {
+        "x": 4,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 11,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 10,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 15,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 14,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 21,
+        "y": 21,
+        "integrity": 15
+      },
+      {
+        "x": 21,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 21,
+        "integrity": 15
+      },
+      {
+        "x": 22,
+        "y": 21,
+        "integrity": 15
+      },
+      {
+        "x": 23,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 22,
+        "y": 20,
+        "integrity": 15
+      },
+      {
+        "x": 5,
+        "y": 22,
+        "integrity": 15
+      },
+      {
+        "x": 4,
+        "y": 22,
+        "integrity": 15
+      },
+      {
+        "x": 11,
+        "y": 23,
+        "integrity": 15
+      },
+      {
+        "x": 13,
+        "y": 23,
+        "integrity": 15
+      },
+      {
+        "x": 12,
+        "y": 23,
+        "integrity": 15
+      },
+      {
+        "x": 14,
+        "y": 23,
+        "integrity": 15
+      },
+      {
+        "x": 5,
+        "y": 25,
+        "integrity": 15
+      },
+      {
+        "x": 4,
+        "y": 25,
+        "integrity": 15
+      },
+      {
+        "x": 11,
+        "y": 25,
+        "integrity": 15
+      },
+      {
+        "x": 11,
+        "y": 24,
+        "integrity": 15
+      },
+      {
+        "x": 14,
+        "y": 25,
+        "integrity": 15
+      },
+      {
+        "x": 14,
+        "y": 24,
+        "integrity": 15
+      },
+      {
+        "x": 21,
+        "y": 25,
+        "integrity": 15
+      },
+      {
+        "x": 20,
+        "y": 25,
+        "integrity": 15
+      }
+    ]
+  },
+  "trees": [
     {
-      "type": "BrickWall",
-      "x": 11,
+      "x": 16,
+      "y": 0
+    },
+    {
+      "x": 16,
       "y": 1
     },
     {
-      "type": "BrickWall",
-      "x": 11,
+      "x": 17,
       "y": 0
     },
     {
-      "type": "BrickWall",
-      "x": 14,
+      "x": 17,
       "y": 1
     },
     {
-      "type": "BrickWall",
-      "x": 14,
-      "y": 0
-    },
-    {
-      "type": "Trees",
-      "x": 16,
-      "y": 0
-    },
-    {
-      "type": "Trees",
       "x": 18,
       "y": 0
     },
     {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 3
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 2
-    },
-    {
-      "type": "SteelWall",
-      "x": 5,
-      "y": 3
-    },
-    {
-      "type": "SteelWall",
-      "x": 5,
-      "y": 2
-    },
-    {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 3
-    },
-    {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 2
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 3
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 2
-    },
-    {
-      "type": "Trees",
       "x": 18,
-      "y": 2
+      "y": 1
     },
     {
-      "type": "BrickWall",
-      "x": 20,
-      "y": 3
-    },
-    {
-      "type": "BrickWall",
-      "x": 20,
-      "y": 2
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 3
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 2
-    },
-    {
-      "type": "Trees",
-      "x": 24,
-      "y": 2
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 5
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 4
-    },
-    {
-      "type": "SteelWall",
-      "x": 5,
-      "y": 5
-    },
-    {
-      "type": "SteelWall",
-      "x": 5,
-      "y": 4
-    },
-    {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 5
-    },
-    {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 4
-    },
-    {
-      "type": "BrickWall",
-      "x": 13,
-      "y": 5
-    },
-    {
-      "type": "BrickWall",
-      "x": 12,
-      "y": 5
-    },
-    {
-      "type": "BrickWall",
-      "x": 13,
-      "y": 4
-    },
-    {
-      "type": "BrickWall",
-      "x": 12,
-      "y": 4
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 5
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 4
-    },
-    {
-      "type": "Trees",
-      "x": 18,
-      "y": 4
-    },
-    {
-      "type": "BrickWall",
-      "x": 20,
-      "y": 5
-    },
-    {
-      "type": "BrickWall",
-      "x": 20,
-      "y": 4
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 5
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 4
-    },
-    {
-      "type": "Trees",
-      "x": 24,
-      "y": 4
-    },
-    {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 7
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 7
-    },
-    {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 6
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 6
-    },
-    {
-      "type": "BrickWall",
-      "x": 9,
-      "y": 7
-    },
-    {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 7
-    },
-    {
-      "type": "BrickWall",
-      "x": 9,
-      "y": 6
-    },
-    {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 6
-    },
-    {
-      "type": "SteelWall",
-      "x": 13,
-      "y": 7
-    },
-    {
-      "type": "SteelWall",
-      "x": 12,
-      "y": 7
-    },
-    {
-      "type": "SteelWall",
-      "x": 13,
-      "y": 6
-    },
-    {
-      "type": "SteelWall",
-      "x": 12,
-      "y": 6
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 7
-    },
-    {
-      "type": "BrickWall",
-      "x": 16,
-      "y": 7
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 6
-    },
-    {
-      "type": "BrickWall",
-      "x": 16,
-      "y": 6
-    },
-    {
-      "type": "Trees",
-      "x": 18,
-      "y": 6
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 7
-    },
-    {
-      "type": "BrickWall",
-      "x": 22,
-      "y": 7
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 6
-    },
-    {
-      "type": "BrickWall",
-      "x": 22,
-      "y": 6
-    },
-    {
-      "type": "Trees",
-      "x": 24,
-      "y": 6
-    },
-    {
-      "type": "BrickWall",
-      "x": 7,
-      "y": 9
-    },
-    {
-      "type": "BrickWall",
-      "x": 7,
-      "y": 8
-    },
-    {
-      "type": "SteelWall",
-      "x": 9,
-      "y": 8
-    },
-    {
-      "type": "SteelWall",
-      "x": 8,
-      "y": 8
-    },
-    {
-      "type": "BrickWall",
-      "x": 13,
-      "y": 9
-    },
-    {
-      "type": "BrickWall",
-      "x": 12,
-      "y": 9
-    },
-    {
-      "type": "BrickWall",
-      "x": 13,
-      "y": 8
-    },
-    {
-      "type": "BrickWall",
-      "x": 12,
-      "y": 8
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 8
-    },
-    {
-      "type": "BrickWall",
-      "x": 16,
-      "y": 8
-    },
-    {
-      "type": "SteelWall",
-      "x": 18,
-      "y": 9
-    },
-    {
-      "type": "SteelWall",
-      "x": 18,
-      "y": 8
-    },
-    {
-      "type": "Trees",
-      "x": 22,
-      "y": 8
-    },
-    {
-      "type": "Trees",
-      "x": 24,
-      "y": 8
-    },
-    {
-      "type": "BrickWall",
-      "x": 1,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 0,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 1,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 0,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 4,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 4,
-      "y": 10
-    },
-    {
-      "type": "Trees",
-      "x": 10,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 13,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 12,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 13,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 12,
-      "y": 10
-    },
-    {
-      "type": "Trees",
-      "x": 14,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 21,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 21,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 22,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 22,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 25,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 24,
-      "y": 11
-    },
-    {
-      "type": "BrickWall",
-      "x": 25,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 24,
-      "y": 10
-    },
-    {
-      "type": "BrickWall",
-      "x": 9,
-      "y": 13
-    },
-    {
-      "type": "BrickWall",
-      "x": 9,
-      "y": 12
-    },
-    {
-      "type": "Trees",
-      "x": 10,
-      "y": 12
-    },
-    {
-      "type": "Trees",
-      "x": 12,
-      "y": 12
-    },
-    {
-      "type": "Trees",
-      "x": 14,
-      "y": 12
-    },
-    {
-      "type": "BrickWall",
-      "x": 16,
-      "y": 13
-    },
-    {
-      "type": "BrickWall",
-      "x": 16,
-      "y": 12
-    },
-    {
-      "type": "SteelWall",
-      "x": 1,
-      "y": 15
-    },
-    {
-      "type": "SteelWall",
-      "x": 0,
-      "y": 15
-    },
-    {
-      "type": "SteelWall",
-      "x": 1,
-      "y": 14
-    },
-    {
-      "type": "SteelWall",
-      "x": 0,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 15
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 15
-    },
-    {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
-      "x": 5,
-      "y": 15
-    },
-    {
-      "type": "BrickWall",
-      "x": 4,
-      "y": 15
-    },
-    {
-      "type": "BrickWall",
-      "x": 5,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
-      "x": 4,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
-      "x": 9,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 14
-    },
-    {
-      "type": "Trees",
-      "x": 10,
-      "y": 14
-    },
-    {
-      "type": "Trees",
-      "x": 12,
-      "y": 14
-    },
-    {
-      "type": "Trees",
-      "x": 14,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
-      "x": 16,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
       "x": 19,
-      "y": 15
+      "y": 0
     },
     {
-      "type": "BrickWall",
       "x": 19,
-      "y": 14
+      "y": 1
     },
     {
-      "type": "BrickWall",
-      "x": 21,
-      "y": 15
+      "x": 18,
+      "y": 2
     },
     {
-      "type": "BrickWall",
-      "x": 20,
-      "y": 15
+      "x": 18,
+      "y": 3
     },
     {
-      "type": "BrickWall",
-      "x": 21,
-      "y": 14
+      "x": 19,
+      "y": 2
     },
     {
-      "type": "BrickWall",
-      "x": 20,
-      "y": 14
+      "x": 19,
+      "y": 3
     },
     {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 15
-    },
-    {
-      "type": "BrickWall",
-      "x": 22,
-      "y": 15
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 14
-    },
-    {
-      "type": "BrickWall",
-      "x": 22,
-      "y": 14
-    },
-    {
-      "type": "SteelWall",
-      "x": 25,
-      "y": 15
-    },
-    {
-      "type": "SteelWall",
       "x": 24,
-      "y": 15
+      "y": 2
     },
     {
-      "type": "SteelWall",
-      "x": 25,
-      "y": 14
-    },
-    {
-      "type": "SteelWall",
       "x": 24,
-      "y": 14
+      "y": 3
     },
     {
-      "type": "SteelWall",
-      "x": 1,
-      "y": 16
+      "x": 25,
+      "y": 2
     },
     {
-      "type": "SteelWall",
-      "x": 0,
-      "y": 16
+      "x": 25,
+      "y": 3
     },
     {
-      "type": "SteelWall",
-      "x": 3,
-      "y": 16
+      "x": 18,
+      "y": 4
     },
     {
-      "type": "SteelWall",
-      "x": 2,
-      "y": 16
+      "x": 18,
+      "y": 5
     },
     {
-      "type": "SteelWall",
-      "x": 5,
-      "y": 16
+      "x": 19,
+      "y": 4
     },
     {
-      "type": "SteelWall",
-      "x": 4,
-      "y": 16
+      "x": 19,
+      "y": 5
     },
     {
-      "type": "BrickWall",
-      "x": 9,
-      "y": 17
+      "x": 24,
+      "y": 4
     },
     {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 17
+      "x": 24,
+      "y": 5
     },
     {
-      "type": "Trees",
-      "x": 12,
-      "y": 16
+      "x": 25,
+      "y": 4
     },
     {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 17
+      "x": 25,
+      "y": 5
     },
     {
-      "type": "BrickWall",
-      "x": 16,
-      "y": 17
+      "x": 18,
+      "y": 6
     },
     {
-      "type": "SteelWall",
-      "x": 21,
-      "y": 16
+      "x": 18,
+      "y": 7
     },
     {
-      "type": "SteelWall",
-      "x": 20,
-      "y": 16
+      "x": 19,
+      "y": 6
     },
     {
-      "type": "SteelWall",
-      "x": 23,
-      "y": 16
+      "x": 19,
+      "y": 7
     },
     {
-      "type": "SteelWall",
+      "x": 24,
+      "y": 6
+    },
+    {
+      "x": 24,
+      "y": 7
+    },
+    {
+      "x": 25,
+      "y": 6
+    },
+    {
+      "x": 25,
+      "y": 7
+    },
+    {
       "x": 22,
-      "y": 16
+      "y": 8
     },
     {
-      "type": "SteelWall",
-      "x": 25,
-      "y": 16
+      "x": 22,
+      "y": 9
     },
     {
-      "type": "SteelWall",
+      "x": 23,
+      "y": 8
+    },
+    {
+      "x": 23,
+      "y": 9
+    },
+    {
       "x": 24,
-      "y": 16
+      "y": 8
     },
     {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 19
+      "x": 24,
+      "y": 9
     },
     {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 19
+      "x": 25,
+      "y": 8
     },
     {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 18
+      "x": 25,
+      "y": 9
     },
     {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 18
+      "x": 10,
+      "y": 10
     },
     {
-      "type": "BrickWall",
-      "x": 9,
-      "y": 19
+      "x": 10,
+      "y": 11
     },
     {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 19
-    },
-    {
-      "type": "BrickWall",
-      "x": 9,
-      "y": 18
-    },
-    {
-      "type": "BrickWall",
-      "x": 8,
-      "y": 18
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 19
-    },
-    {
-      "type": "BrickWall",
-      "x": 16,
-      "y": 19
-    },
-    {
-      "type": "BrickWall",
-      "x": 17,
-      "y": 18
-    },
-    {
-      "type": "BrickWall",
-      "x": 16,
-      "y": 18
-    },
-    {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 21
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 21
-    },
-    {
-      "type": "BrickWall",
-      "x": 3,
-      "y": 20
-    },
-    {
-      "type": "BrickWall",
-      "x": 2,
-      "y": 20
-    },
-    {
-      "type": "BrickWall",
-      "x": 4,
-      "y": 21
-    },
-    {
-      "type": "BrickWall",
-      "x": 4,
-      "y": 20
-    },
-    {
-      "type": "BrickWall",
       "x": 11,
-      "y": 20
+      "y": 10
     },
     {
-      "type": "BrickWall",
-      "x": 10,
-      "y": 20
+      "x": 11,
+      "y": 11
     },
     {
-      "type": "BrickWall",
+      "x": 14,
+      "y": 10
+    },
+    {
+      "x": 14,
+      "y": 11
+    },
+    {
       "x": 15,
-      "y": 20
+      "y": 10
     },
     {
-      "type": "BrickWall",
-      "x": 14,
-      "y": 20
+      "x": 15,
+      "y": 11
     },
     {
-      "type": "BrickWall",
-      "x": 21,
-      "y": 21
+      "x": 10,
+      "y": 12
     },
     {
-      "type": "BrickWall",
-      "x": 21,
-      "y": 20
+      "x": 10,
+      "y": 13
     },
     {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 21
-    },
-    {
-      "type": "BrickWall",
-      "x": 22,
-      "y": 21
-    },
-    {
-      "type": "BrickWall",
-      "x": 23,
-      "y": 20
-    },
-    {
-      "type": "BrickWall",
-      "x": 22,
-      "y": 20
-    },
-    {
-      "type": "Trees",
-      "x": 24,
-      "y": 20
-    },
-    {
-      "type": "BrickWall",
-      "x": 5,
-      "y": 22
-    },
-    {
-      "type": "BrickWall",
-      "x": 4,
-      "y": 22
-    },
-    {
-      "type": "BrickWall",
       "x": 11,
-      "y": 23
+      "y": 12
     },
     {
-      "type": "BrickWall",
-      "x": 13,
-      "y": 23
+      "x": 11,
+      "y": 13
     },
     {
-      "type": "BrickWall",
       "x": 12,
-      "y": 23
+      "y": 12
     },
     {
-      "type": "BrickWall",
+      "x": 12,
+      "y": 13
+    },
+    {
+      "x": 13,
+      "y": 12
+    },
+    {
+      "x": 13,
+      "y": 13
+    },
+    {
       "x": 14,
-      "y": 23
+      "y": 12
     },
     {
-      "type": "Trees",
+      "x": 14,
+      "y": 13
+    },
+    {
+      "x": 15,
+      "y": 12
+    },
+    {
+      "x": 15,
+      "y": 13
+    },
+    {
+      "x": 10,
+      "y": 14
+    },
+    {
+      "x": 10,
+      "y": 15
+    },
+    {
+      "x": 11,
+      "y": 14
+    },
+    {
+      "x": 11,
+      "y": 15
+    },
+    {
+      "x": 12,
+      "y": 14
+    },
+    {
+      "x": 12,
+      "y": 15
+    },
+    {
+      "x": 13,
+      "y": 14
+    },
+    {
+      "x": 13,
+      "y": 15
+    },
+    {
+      "x": 14,
+      "y": 14
+    },
+    {
+      "x": 14,
+      "y": 15
+    },
+    {
+      "x": 15,
+      "y": 14
+    },
+    {
+      "x": 15,
+      "y": 15
+    },
+    {
+      "x": 12,
+      "y": 16
+    },
+    {
+      "x": 12,
+      "y": 17
+    },
+    {
+      "x": 13,
+      "y": 16
+    },
+    {
+      "x": 13,
+      "y": 17
+    },
+    {
+      "x": 24,
+      "y": 20
+    },
+    {
+      "x": 24,
+      "y": 21
+    },
+    {
+      "x": 25,
+      "y": 20
+    },
+    {
+      "x": 25,
+      "y": 21
+    },
+    {
       "x": 20,
       "y": 22
     },
     {
-      "type": "Trees",
-      "x": 22,
-      "y": 22
+      "x": 20,
+      "y": 23
     },
     {
-      "type": "Trees",
-      "x": 24,
-      "y": 22
-    },
-    {
-      "type": "BrickWall",
-      "x": 5,
-      "y": 25
-    },
-    {
-      "type": "BrickWall",
-      "x": 4,
-      "y": 25
-    },
-    {
-      "type": "BrickWall",
-      "x": 11,
-      "y": 25
-    },
-    {
-      "type": "BrickWall",
-      "x": 11,
-      "y": 24
-    },
-    {
-      "type": "BrickWall",
-      "x": 14,
-      "y": 25
-    },
-    {
-      "type": "BrickWall",
-      "x": 14,
-      "y": 24
-    },
-    {
-      "type": "BrickWall",
       "x": 21,
-      "y": 25
+      "y": 22
     },
     {
-      "type": "BrickWall",
-      "x": 20,
-      "y": 25
+      "x": 21,
+      "y": 23
     },
     {
-      "type": "Trees",
+      "x": 22,
+      "y": 22
+    },
+    {
+      "x": 22,
+      "y": 23
+    },
+    {
+      "x": 23,
+      "y": 22
+    },
+    {
+      "x": 23,
+      "y": 23
+    },
+    {
+      "x": 24,
+      "y": 22
+    },
+    {
+      "x": 24,
+      "y": 23
+    },
+    {
+      "x": 25,
+      "y": 22
+    },
+    {
+      "x": 25,
+      "y": 23
+    },
+    {
       "x": 22,
       "y": 24
     },
     {
-      "type": "Trees",
+      "x": 22,
+      "y": 25
+    },
+    {
+      "x": 23,
+      "y": 24
+    },
+    {
+      "x": 23,
+      "y": 25
+    },
+    {
       "x": 24,
       "y": 24
+    },
+    {
+      "x": 24,
+      "y": 25
+    },
+    {
+      "x": 25,
+      "y": 24
+    },
+    {
+      "x": 25,
+      "y": 25
     }
   ],
   "base": {

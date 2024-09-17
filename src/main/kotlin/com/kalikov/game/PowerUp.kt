@@ -1,16 +1,13 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class PowerUp(
-    private val eventRouter: EventRouter,
-    imageManager: ImageManager,
-    position: Point,
-    clock: Clock
-) : Sprite(eventRouter, position.x, position.y, SIZE, SIZE) {
+    private val game: Game,
+    position: PixelPoint,
+) : Sprite(game.eventManager, position.x, position.y, SIZE, SIZE) {
     companion object {
-        const val SIZE = Globals.UNIT_SIZE
+        val SIZE = t(2).toPixel()
     }
+
     data class Pick(val powerUp: PowerUp, val tank: PlayerTank) : Event()
 
     enum class Type(val key: String, val index: Int) {
@@ -25,8 +22,8 @@ class PowerUp(
     var type = Type.GRENADE
     var value = 500
 
-    private val blinkTimer = BlinkTimer(clock, 128)
-    private val image = imageManager.getImage("powerup")
+    private val blinkTimer = BlinkTimer(game.clock, 128)
+    private val image = game.imageManager.getImage("powerup")
 
     init {
         LeaksDetector.add(this)
@@ -36,7 +33,7 @@ class PowerUp(
 
     override fun draw(surface: ScreenSurface) {
         if (blinkTimer.isOpaque) {
-            surface.draw(x, y, image, type.index * width, 0, width, height)
+            surface.draw(x, y, image, type.index * width, px(0), width, height)
         }
     }
 
@@ -49,8 +46,8 @@ class PowerUp(
 
     fun pick(tank: PlayerTank) {
         if (!isDestroyed) {
-            eventRouter.fireEvent(Pick(this, tank))
-            eventRouter.fireEvent(Player.Score(tank.player, this.value))
+            game.eventManager.fireEvent(Pick(this, tank))
+            game.eventManager.fireEvent(Player.Score(tank.player, this.value))
             destroy()
         }
     }

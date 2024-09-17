@@ -1,27 +1,29 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class BaseExplosion(
-    private val eventManager: EventManager,
-    imageManager: ImageManager,
-    clock: Clock
+    private val game: Game,
+    x: Pixel = px(0),
+    y: Pixel = px(0),
 ) : Explosion(
-    eventManager,
-    Animation.pauseAware(eventManager, frameSequenceOf(*animationFrames), clock, ANIMATION_INTERVAL),
-    Globals.UNIT_SIZE * 2
+    game.eventManager,
+    Animation.pauseAware(game.eventManager, frameSequenceOf(*animationFrames), game.clock, ANIMATION_INTERVAL),
+    SIZE,
+    x,
+    y,
 ) {
     companion object {
-        private val animationFrames = intArrayOf(1, 2, 3, 4, 5, 3)
+        val SIZE = t(4).toPixel()
 
         const val ANIMATION_INTERVAL = 96
+
+        private val animationFrames = intArrayOf(1, 2, 3, 4, 5, 3)
     }
 
     data class Destroyed(val explosion: BaseExplosion) : Event()
 
-    override val image = imageManager.getImage("big_explosion")
+    override val image = game.imageManager.getImage("big_explosion")
 
     override fun destroyHook() {
-        eventManager.fireEvent(Destroyed(this))
+        game.eventManager.fireEvent(Destroyed(this))
     }
 }

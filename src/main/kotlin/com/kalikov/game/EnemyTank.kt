@@ -3,8 +3,8 @@ package com.kalikov.game
 class EnemyTank private constructor(
     game: Game,
     pauseManager: PauseManager,
-    x: Int,
-    y: Int,
+    x: Pixel,
+    y: Pixel,
     val enemyType: EnemyType,
 ) : Tank(
     game,
@@ -16,8 +16,8 @@ class EnemyTank private constructor(
         fun create(
             game: Game,
             pauseManager: PauseManager,
-            x: Int,
-            y: Int,
+            x: Pixel,
+            y: Pixel,
             enemyType: EnemyType,
         ) = init(EnemyTank(game, pauseManager, x, y, enemyType))
     }

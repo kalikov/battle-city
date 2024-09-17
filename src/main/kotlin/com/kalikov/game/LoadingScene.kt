@@ -5,7 +5,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import java.io.File
 import java.io.FileInputStream
-import java.time.Clock
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -17,7 +16,6 @@ class LoadingScene(
     private val soundManager: SoundManager,
     private val fontManager: FontManager,
     private val stageManager: StageManager,
-    private val entityFactory: EntityFactory,
 ) : Scene {
     private val remainingJobs = AtomicInteger()
     private val failure = AtomicBoolean()
@@ -49,7 +47,7 @@ class LoadingScene(
 
             stageManager.init(getStages(), requireNotNull(constructionMap))
             game.eventManager.fireEvent(Scene.Start {
-                MainMenuScene(game, stageManager, entityFactory)
+                MainMenuScene(game, stageManager)
             })
         }
     }

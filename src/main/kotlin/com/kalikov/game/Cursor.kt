@@ -1,18 +1,15 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class Cursor(
-    eventRouter: EventRouter,
-    imageManager: ImageManager,
-    private val builder: Builder,
-    clock: Clock,
-    x: Int = 0,
-    y: Int = 0
-) : Sprite(eventRouter, x, y, Globals.UNIT_SIZE, Globals.UNIT_SIZE) {
-    private val blinkTimer = BlinkTimer(clock, 320)
+    game: Game,
+    private val builder: BuilderHandler,
+    x: Pixel = px(0),
+    y: Pixel = px(0)
+) : Sprite(game.eventManager, x, y, Tank.SIZE, Tank.SIZE) {
 
-    private val image = imageManager.getImage("tank_player1")
+    private val blinkTimer = BlinkTimer(game.clock, 320)
+
+    private val image = game.imageManager.getImage("tank_player1")
 
     init {
         z = 10000
@@ -20,7 +17,7 @@ class Cursor(
 
     override fun draw(surface: ScreenSurface) {
         if (blinkTimer.isOpaque) {
-            surface.draw(x, y, image, Direction.UP.index * width, 0, width, height)
+            surface.draw(x, y, image, Direction.UP.index * width, px(0), width, height)
         }
     }
 

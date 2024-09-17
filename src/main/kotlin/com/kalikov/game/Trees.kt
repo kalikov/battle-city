@@ -1,35 +1,45 @@
 package com.kalikov.game
 
 class Trees(
-    eventRouter: EventRouter,
-    imageManager: ImageManager,
-    x: Int,
-    y: Int
-) : Sprite(eventRouter, x, y, Globals.UNIT_SIZE, Globals.UNIT_SIZE), Entity {
-    companion object {
-        const val CLASS_NAME = "Trees"
-    }
+    game: Game,
+    private val x: Pixel,
+    private val y: Pixel,
+    config: Set<TilePoint>,
+) : TreesHandle {
+    private val mask = game.screen.createSurface(GameField.SIZE_IN_PIXELS, GameField.SIZE_IN_PIXELS)
 
-    private val image = imageManager.getImage("trees")
+    private val image = game.imageManager.getImage("trees")
+
+    private val tiles = HashSet<TilePoint>(config.size)
+
+    val config: Set<TilePoint> get() = HashSet(tiles)
 
     init {
         LeaksDetector.add(this)
 
-        z = 100
+        mask.clear(ARGB.TRANSPARENT)
+        config.forEach { fillTile(it.x, it.y) }
     }
 
-    override fun toStageObject(stageX: Int, stageY: Int): StageObject {
-        return StageObject(CLASS_NAME, (x - stageX) / Globals.TILE_SIZE, (y - stageY) / Globals.TILE_SIZE)
+    fun draw(surface: ScreenSurface) {
+        surface.draw(x, y, mask)
     }
 
-    override fun draw(surface: ScreenSurface) {
-        surface.draw(x, y, image)
-        surface.draw(x + Globals.TILE_SIZE, y, image)
-        surface.draw(x, y + Globals.TILE_SIZE, image)
-        surface.draw(x + Globals.TILE_SIZE, y + Globals.TILE_SIZE, image)
-    }
-
-    override fun dispose() {
+    fun dispose() {
         LeaksDetector.remove(this)
+    }
+
+    override fun fillTile(x: Tile, y: Tile) {
+        val point = TilePoint(x, y)
+        if (tiles.add(point)) {
+            mask.draw(x.toPixel(), y.toPixel(), image)
+        }
+    }
+
+    override fun clearTile(x: Tile, y: Tile) {
+        val point = TilePoint(x, y)
+        if (tiles.remove(point)) {
+            mask.clear(x.toPixel(), y.toPixel(), Globals.TILE_SIZE, Globals.TILE_SIZE, ARGB.TRANSPARENT)
+        }
     }
 }

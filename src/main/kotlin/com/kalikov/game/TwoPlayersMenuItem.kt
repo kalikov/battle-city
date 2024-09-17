@@ -3,13 +3,12 @@ package com.kalikov.game
 class TwoPlayersMenuItem(
     private val game: Game,
     private val stageManager: StageManager,
-    private val entityFactory: EntityFactory,
 ) : MainMenuItem("2 PLAYERS") {
     override fun execute() {
         stageManager.setPlayersCount(2)
         game.eventManager.fireEvent(
             Scene.Start {
-                StageScene(game, stageManager, entityFactory)
+                StageScene(game, stageManager)
             }
         )
     }

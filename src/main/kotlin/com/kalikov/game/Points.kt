@@ -1,22 +1,18 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class Points(
-    eventManager: EventManager,
-    imageManager: ImageManager,
-    clock: Clock,
+    game: Game,
     val value: Int,
-    x: Int,
-    y: Int,
+    x: Pixel,
+    y: Pixel,
     duration: Int
-) : Sprite(eventManager, x, y, SIZE, SIZE) {
+) : Sprite(game.eventManager, x, y, SIZE, SIZE) {
     companion object {
-        const val SIZE = Globals.UNIT_SIZE
+        val SIZE = t(2).toPixel()
     }
 
-    private val timer = PauseAwareTimer(eventManager, clock, duration, ::destroy)
-    private val image = imageManager.getImage("points")
+    private val timer = PauseAwareTimer(game.eventManager, game.clock, duration, ::destroy)
+    private val image = game.imageManager.getImage("points")
 
     init {
         LeaksDetector.add(this)
@@ -36,7 +32,7 @@ class Points(
     }
 
     override fun draw(surface: ScreenSurface) {
-        surface.draw(x, y, image, (value / 100 - 1) * width, 0, width, height)
+        surface.draw(x, y, image, (value / 100 - 1) * width, px(0), width, height)
     }
 
     override fun destroyHook() {

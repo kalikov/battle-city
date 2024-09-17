@@ -1,7 +1,7 @@
 package com.kalikov.game
 
 interface ShovelWallBuilder {
-    fun destroyWall()
+    fun buildBrickWall()
 
-    fun buildWall(wallFactory: WallFactory)
+    fun buildSteelWall()
 }

@@ -1,19 +1,15 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class PointsFactory(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val spriteContainer: SpriteContainer,
-    private val clock: Clock
 ) : EventSubscriber {
     private companion object {
         private val subscriptions = setOf(TankExplosion.Destroyed::class, PowerUp.Pick::class)
     }
 
     init {
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun notify(event: Event) {
@@ -21,27 +17,25 @@ class PointsFactory(
             val explosion = event.explosion
             val tank = event.explosion.tank
             if (tank.value > 0) {
-                spriteContainer.addSprite(create(explosion.center, tank.value, 200))
+                spriteContainer.addSprite(create(explosion, tank.value, 200))
             }
         } else if (event is PowerUp.Pick) {
             val powerUp = event.powerUp
-            spriteContainer.addSprite(create(powerUp.center, powerUp.value, 800))
+            spriteContainer.addSprite(create(powerUp, powerUp.value, 800))
         }
     }
 
-    private fun create(center: Point, value: Int, duration: Int): Points {
+    private fun create(parent: Sprite, value: Int, duration: Int): Points {
         return Points(
-            eventManager,
-            imageManager,
-            clock,
+            game,
             value,
-            center.x - Points.SIZE / 2,
-            center.y - Points.SIZE / 2,
+            parent.center - Points.SIZE / 2,
+            parent.middle - Points.SIZE / 2,
             duration
         )
     }
 
     fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

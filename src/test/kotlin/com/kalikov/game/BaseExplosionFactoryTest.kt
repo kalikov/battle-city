@@ -3,6 +3,7 @@ package com.kalikov.game
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.isA
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -29,7 +30,7 @@ class BaseExplosionFactoryTest {
 
     @Test
     fun `should create explosion on base hit`() {
-        val base = mockBase()
+        val base = mock<BaseHandle>()
 
         factory.notify(Base.Hit(base))
 
@@ -38,7 +39,10 @@ class BaseExplosionFactoryTest {
 
     @Test
     fun `should position explosion at the base center`() {
-        val base = mockBase(x = 10, y = 100)
+        val base = mock<BaseHandle> {
+            on { x } doReturn px(10)
+            on { y } doReturn px(100)
+        }
 
         factory.notify(Base.Hit(base))
 
@@ -47,9 +51,9 @@ class BaseExplosionFactoryTest {
 
         val explosion = captor.firstValue
         assertEquals(
-            Rect(
-                base.x + -explosion.width / 2 + base.width / 2,
-                base.y + -explosion.height / 2 + base.height / 2,
+            PixelRect(
+                base.x + -explosion.width / 2 + Base.SIZE / 2,
+                base.y + -explosion.height / 2 + Base.SIZE / 2,
                 explosion.width,
                 explosion.height
             ),

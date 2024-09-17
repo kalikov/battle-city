@@ -10,7 +10,6 @@ import kotlin.test.assertTrue
 
 class PowerUpHandlerTest {
     private lateinit var game: Game
-    private lateinit var eventManager: EventManager
     private lateinit var powerUp: PowerUp
     private lateinit var handler: PowerUpHandler
     private lateinit var tank: PlayerTank
@@ -18,16 +17,15 @@ class PowerUpHandlerTest {
     @BeforeEach
     fun beforeEach() {
         game = mockGame()
-        eventManager = game.eventManager
-        powerUp = mockPowerUp(eventManager)
+        powerUp = stubPowerUp(game)
         handler = PowerUpHandler(game)
 
-        tank = mockPlayerTank(game)
+        tank = stubPlayerTank(game)
     }
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(
+        verify(game.eventManager).addSubscriber(
             handler,
             setOf(
                 PowerUp.Pick::class,
@@ -40,7 +38,7 @@ class PowerUpHandlerTest {
     @Test
     fun `should unsubscribe`() {
         handler.dispose()
-        verify(eventManager).removeSubscriber(
+        verify(game.eventManager).removeSubscriber(
             handler,
             setOf(
                 PowerUp.Pick::class,
@@ -52,7 +50,7 @@ class PowerUpHandlerTest {
 
     @Test
     fun `should handle grenade`() {
-        val enemy = mockEnemyTank(game)
+        val enemy = stubEnemyTank(game)
         handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 
         powerUp.type = PowerUp.Type.GRENADE
@@ -64,7 +62,7 @@ class PowerUpHandlerTest {
 
     @Test
     fun `should not explode appearing enemies with grenade`() {
-        val enemy = mockEnemyTank(game)
+        val enemy = stubEnemyTank(game)
         enemy.state = TankStateAppearing(game, enemy)
         handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 
@@ -88,7 +86,7 @@ class PowerUpHandlerTest {
         powerUp.type = PowerUp.Type.TIMER
         handler.notify(PowerUp.Pick(powerUp, tank))
 
-        verify(eventManager).fireEvent(PowerUpHandler.Freeze)
+        verify(game.eventManager).fireEvent(PowerUpHandler.Freeze)
     }
 
     @Test
@@ -96,7 +94,7 @@ class PowerUpHandlerTest {
         powerUp.type = PowerUp.Type.SHOVEL
         handler.notify(PowerUp.Pick(powerUp, tank))
 
-        verify(eventManager).fireEvent(PowerUpHandler.ShovelStart)
+        verify(game.eventManager).fireEvent(PowerUpHandler.ShovelStart)
     }
 
     @Test
@@ -112,6 +110,6 @@ class PowerUpHandlerTest {
         powerUp.type = PowerUp.Type.TANK
         handler.notify(PowerUp.Pick(powerUp, tank))
 
-        verify(eventManager).fireEvent(PowerUpHandler.Life(tank.player))
+        verify(game.eventManager).fireEvent(PowerUpHandler.Life(tank.player))
     }
 }

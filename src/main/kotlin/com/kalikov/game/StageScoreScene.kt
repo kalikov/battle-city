@@ -3,7 +3,6 @@ package com.kalikov.game
 class StageScoreScene(
     private val game: Game,
     private val stageManager: StageManager,
-    private val entityFactory: EntityFactory,
     private val scores: List<StageScore>,
     private val gameOver: Boolean,
 ) : Scene {
@@ -15,38 +14,10 @@ class StageScoreScene(
 
     private val script = Script()
 
-    private val basicTankPoints = StageScorePointsView(
-        game.eventManager,
-        game.imageManager,
-        EnemyTank.EnemyType.BASIC,
-        scores,
-        script,
-        game.clock
-    )
-    private val fastTankPoints = StageScorePointsView(
-        game.eventManager,
-        game.imageManager,
-        EnemyTank.EnemyType.FAST,
-        scores,
-        script,
-        game.clock
-    )
-    private val powerTankPoints = StageScorePointsView(
-        game.eventManager,
-        game.imageManager,
-        EnemyTank.EnemyType.POWER,
-        scores,
-        script,
-        game.clock
-    )
-    private val armorTankPoints = StageScorePointsView(
-        game.eventManager,
-        game.imageManager,
-        EnemyTank.EnemyType.ARMOR,
-        scores,
-        script,
-        game.clock
-    )
+    private val basicTankPoints = StageScorePointsView(game, EnemyTank.EnemyType.BASIC, scores, script)
+    private val fastTankPoints = StageScorePointsView(game, EnemyTank.EnemyType.FAST, scores, script)
+    private val powerTankPoints = StageScorePointsView(game, EnemyTank.EnemyType.POWER, scores, script)
+    private val armorTankPoints = StageScorePointsView(game, EnemyTank.EnemyType.ARMOR, scores, script)
 
     private var drawTotal = false
     private var drawBonusIndex = -1
@@ -81,13 +52,13 @@ class StageScoreScene(
         script.enqueue(Execute {
             if (gameOver) {
                 game.eventManager.fireEvent(Scene.Start {
-                    GameOverScene(game, stageManager, entityFactory)
+                    GameOverScene(game, stageManager)
                 })
             } else {
                 stageManager.next()
                 stageManager.resetConstruction()
                 game.eventManager.fireEvent(Scene.Start {
-                    StageScene(game, stageManager, entityFactory)
+                    StageScene(game, stageManager)
                 })
             }
         })
@@ -100,77 +71,83 @@ class StageScoreScene(
     override fun draw(surface: ScreenSurface) {
         surface.clear(ARGB.BLACK)
 
-        var y = 2 * Globals.UNIT_SIZE
-        surface.fillText("HI-SCORE", 65, y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
+        var y = t(4).toPixel()
+        surface.fillText("HI-SCORE", px(65), y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
         surface.fillText(
             "${stageManager.highScore}".padStart(7, ' '),
-            137,
+            px(137),
             y - 1,
             ARGB.rgb(0xfeac4e),
             Globals.FONT_REGULAR
         )
 
-        y += Globals.UNIT_SIZE
+        y += t(2).toPixel()
         val stage = "STAGE " + "${stageManager.stageNumber}".padStart(2, ' ')
-        surface.fillText(stage, 97, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
+        surface.fillText(stage, px(97), y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
 
-        y += Globals.UNIT_SIZE
-        surface.draw(26, y - Globals.TILE_SIZE, game.imageManager.getImage("roman_one")) { dst, src, _, _ ->
+        y += t(2).toPixel()
+        surface.draw(px(26), y - Globals.TILE_SIZE, game.imageManager.getImage("roman_one")) { dst, src, _, _ ->
             src.and(ARGB.rgb(0xe44437)).over(dst)
         }
         if (stageManager.players.size > 1) {
-            surface.draw(170, y - Globals.TILE_SIZE, game.imageManager.getImage("roman_two")) { dst, src, _, _ ->
+            surface.draw(px(170), y - Globals.TILE_SIZE, game.imageManager.getImage("roman_two")) { dst, src, _, _ ->
                 src.and(ARGB.rgb(0xe44437)).over(dst)
             }
         }
-        surface.fillText("-PLAYER", 33, y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
+        surface.fillText("-PLAYER", px(33), y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
         if (stageManager.players.size > 1) {
-            surface.fillText("-PLAYER", 177, y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
+            surface.fillText("-PLAYER", px(177), y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
 
         }
 
-        y += Globals.UNIT_SIZE
+        y += t(2).toPixel()
         val playerOneScore = "${stageManager.players[0].score}".padStart(7, ' ')
-        surface.fillText(playerOneScore, 33, y - 1, ARGB.rgb(0xfeac4e), Globals.FONT_REGULAR)
+        surface.fillText(playerOneScore, px(33), y - 1, ARGB.rgb(0xfeac4e), Globals.FONT_REGULAR)
 
         if (stageManager.players.size > 1) {
             val playerTwoScore = "${stageManager.players[1].score}".padStart(7, ' ')
-            surface.fillText(playerTwoScore, 177, y - 1, ARGB.rgb(0xfeac4e), Globals.FONT_REGULAR)
+            surface.fillText(playerTwoScore, px(177), y - 1, ARGB.rgb(0xfeac4e), Globals.FONT_REGULAR)
         }
 
-        y += 2 * Globals.UNIT_SIZE
-        basicTankPoints.draw(surface, 17, y - Globals.TILE_SIZE - 1)
-        y += Globals.UNIT_SIZE
-        fastTankPoints.draw(surface, 17, y - 1)
-        y += 2 * Globals.UNIT_SIZE
-        powerTankPoints.draw(surface, 17, y - Globals.TILE_SIZE - 1)
-        y += Globals.UNIT_SIZE
-        armorTankPoints.draw(surface, 17, y - 1)
+        y += t(4).toPixel()
+        basicTankPoints.draw(surface, px(17), y - Globals.TILE_SIZE - 1)
+        y += t(2).toPixel()
+        fastTankPoints.draw(surface, px(17), y - 1)
+        y += t(4).toPixel()
+        powerTankPoints.draw(surface, px(17), y - Globals.TILE_SIZE - 1)
+        y += t(2).toPixel()
+        armorTankPoints.draw(surface, px(17), y - 1)
 
-        y += Globals.UNIT_SIZE
-        surface.fillText("TOTAL", 49, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
-        surface.fillRect(96, y - 3 - Globals.TILE_SIZE, 64, 2, ARGB.WHITE)
+        y += t(2).toPixel()
+        surface.fillText("TOTAL", px(49), y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
+        surface.fillRect(px(96), y - 3 - Globals.TILE_SIZE, px(64), px(2), ARGB.WHITE)
 
         if (drawTotal) {
-            surface.fillText("${scores[0].tanksCount}".padStart(2, ' '), 97, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
+            surface.fillText(
+                "${scores[0].tanksCount}".padStart(2, ' '),
+                px(97),
+                y - 1,
+                ARGB.WHITE,
+                Globals.FONT_REGULAR
+            )
             if (scores.size > 1) {
                 surface.fillText(
                     "${scores[1].tanksCount}".padStart(2, ' '),
-                    145,
+                    px(145),
                     y - 1,
                     ARGB.WHITE,
                     Globals.FONT_REGULAR
                 )
             }
         }
-        y += Globals.UNIT_SIZE
+        y += t(2).toPixel()
         if (drawBonusIndex == 0 || drawBonusIndex == 1) {
-            val x = if (drawBonusIndex == 0) 25 else 169
+            val x = px(if (drawBonusIndex == 0) 25 else 169)
             surface.fillText("BONUS", x, y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
             surface.draw(x + 42, y - Globals.TILE_SIZE, game.imageManager.getImage("exclamation")) { dst, src, _, _ ->
                 src.and(ARGB.rgb(0xe44437)).over(dst)
             }
-            y += Globals.TILE_SIZE
+            y += t(1).toPixel()
             surface.fillText("$BONUS_SCORE PTS", x, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
         }
     }

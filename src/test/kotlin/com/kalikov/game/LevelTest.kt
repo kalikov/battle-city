@@ -2,6 +2,8 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.isA
@@ -20,7 +22,6 @@ class LevelTest {
     private lateinit var game: Game
     private lateinit var eventManager: EventManager
     private lateinit var stageManager: StageManager
-    private lateinit var entityFactory: EntityFactory
 
     private lateinit var clock: TestClock
 
@@ -30,17 +31,20 @@ class LevelTest {
     fun beforeEach() {
         clock = TestClock()
         game = mockGame(clock = clock)
+
         whenever(game.screen.createSurface()).thenReturn(mock())
+        whenever(game.screen.createSurface(px(anyInt()), px(anyInt()))).thenReturn(mock())
+
+        whenever(game.imageManager.getImage(any())).thenReturn(mock())
 
         eventManager = game.eventManager
 
         stageManager = mock()
         val stage = Stage(
             StageMapConfig(
-                emptyList(),
-                Point(),
-                listOf(Point()),
-                listOf(Point())
+                base = TilePoint(),
+                playerSpawnPoints = listOf(TilePoint()),
+                enemySpawnPoints = listOf(TilePoint()),
             ),
             1,
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1))
@@ -49,9 +53,7 @@ class LevelTest {
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.players).thenReturn(listOf(player))
 
-        entityFactory = mock()
-
-        level = Level(game, stageManager, entityFactory)
+        level = Level(game, stageManager)
     }
 
     @Test
@@ -75,7 +77,7 @@ class LevelTest {
         whenever(eventManager.fireEvent(isA<Scene.Start>())).doAnswer { nextSceneCalled = true }
 
         level.start()
-        level.notify(BaseExplosion.Destroyed(mockBaseExplosion()))
+        level.notify(BaseExplosion.Destroyed(stubBaseExplosion()))
 
         while (!nextSceneCalled) {
             level.update()
@@ -93,7 +95,7 @@ class LevelTest {
         level.notify(EnemyFactory.LastEnemyDestroyed)
         clock.tick(100)
         level.update()
-        level.notify(Base.Hit(mockBase()))
+        level.notify(Base.Hit(mock()))
 
         while (!nextSceneCalled) {
             level.update()
@@ -106,10 +108,9 @@ class LevelTest {
     fun `should not create players with zero lives`() {
         val stage = Stage(
             StageMapConfig(
-                emptyList(),
-                Point(),
-                listOf(Point(), Point()),
-                listOf(Point())
+                base = TilePoint(),
+                playerSpawnPoints = listOf(TilePoint(), TilePoint()),
+                enemySpawnPoints = listOf(TilePoint()),
             ),
             1,
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1))
@@ -117,14 +118,14 @@ class LevelTest {
         val playerOne = Player(eventManager)
 
         val playerTwo = Player(eventManager)
-        playerTwo.notify(PlayerTank.PlayerDestroyed(mockPlayerTank(player = playerTwo)))
-        playerTwo.notify(PlayerTank.PlayerDestroyed(mockPlayerTank(player = playerTwo)))
-        playerTwo.notify(PlayerTank.PlayerDestroyed(mockPlayerTank(player = playerTwo)))
+        playerTwo.notify(PlayerTank.PlayerDestroyed(stubPlayerTank(player = playerTwo)))
+        playerTwo.notify(PlayerTank.PlayerDestroyed(stubPlayerTank(player = playerTwo)))
+        playerTwo.notify(PlayerTank.PlayerDestroyed(stubPlayerTank(player = playerTwo)))
         verify(eventManager).fireEvent(Player.OutOfLives(playerTwo))
 
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
-        level = Level(game, stageManager, entityFactory)
+        level = Level(game, stageManager)
 
         reset(eventManager)
         level.start()

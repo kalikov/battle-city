@@ -9,7 +9,7 @@ interface Screen {
 
     fun createSurface(): ScreenSurface
 
-    fun createSurface(width: Int, height: Int): ScreenSurface
+    fun createSurface(width: Pixel, height: Pixel): ScreenSurface
 
     fun createSurface(path: String): ScreenSurface
 }

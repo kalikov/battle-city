@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import kotlin.Unit
+
 interface SpriteContainer {
     val size: Int
 

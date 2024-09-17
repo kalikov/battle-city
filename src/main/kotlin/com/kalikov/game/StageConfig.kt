@@ -1,6 +1,8 @@
 package com.kalikov.game
 
-@kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class StageConfig(
     val map: String,
     val enemies: List<EnemyGroupConfig>,

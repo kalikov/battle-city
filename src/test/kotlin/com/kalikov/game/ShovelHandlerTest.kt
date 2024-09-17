@@ -2,11 +2,11 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.isA
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class ShovelHandlerTest {
     private lateinit var game: Game
@@ -37,8 +37,7 @@ class ShovelHandlerTest {
     fun `should build walls on shovel`() {
         handler.notify(PowerUpHandler.ShovelStart)
 
-        verify(baseWallBuilder).destroyWall()
-        verify(baseWallBuilder).buildWall(isA<SteelWallFactory>())
+        verify(baseWallBuilder).buildSteelWall()
     }
 
     @Test
@@ -48,16 +47,16 @@ class ShovelHandlerTest {
 
         clock.tick(ShovelHandler.SOLID_DURATION / 2)
         handler.update()
-        verify(baseWallBuilder, never()).buildWall(isA<BrickWallFactory>())
+        verify(baseWallBuilder, never()).buildBrickWall()
 
         clock.tick(ShovelHandler.SOLID_DURATION / 2)
         handler.update()
-        verify(baseWallBuilder).buildWall(isA<BrickWallFactory>())
+        verify(baseWallBuilder).buildBrickWall()
     }
 
     @Test
     fun `should not update when paused`() {
-        game = mockGame(clock = clock, eventManager = ConcurrentEventManager())
+        whenever(game.eventManager).thenReturn(ConcurrentEventManager())
         handler = ShovelHandler(game, baseWallBuilder)
         handler.notify(PowerUpHandler.ShovelStart)
         reset(baseWallBuilder)
@@ -66,12 +65,12 @@ class ShovelHandlerTest {
 
         clock.tick(10 * ShovelHandler.SOLID_DURATION)
         handler.update()
-        verify(baseWallBuilder, never()).buildWall(isA<BrickWallFactory>())
+        verify(baseWallBuilder, never()).buildBrickWall()
 
         game.eventManager.fireEvent(PauseManager.End)
 
         clock.tick(ShovelHandler.SOLID_DURATION)
         handler.update()
-        verify(baseWallBuilder).buildWall(isA<BrickWallFactory>())
+        verify(baseWallBuilder).buildBrickWall()
     }
 }

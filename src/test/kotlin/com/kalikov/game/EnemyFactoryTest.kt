@@ -40,9 +40,9 @@ class EnemyFactoryTest {
 
     @Test
     fun `should iterate over positions in a loop`() {
-        val position1 = Point(0, 0)
-        val position2 = Point(10, 20)
-        val position3 = Point(40, 100)
+        val position1 = PixelPoint(px(0), px(0))
+        val position2 = PixelPoint(px(10), px(20))
+        val position3 = PixelPoint(px(40), px(100))
         val factory = createFactory(
             listOf(position1, position2, position3),
             emptyList()
@@ -72,7 +72,7 @@ class EnemyFactoryTest {
     @Test
     fun `should spawn no more than limit respecting interval`() {
         val factory = createFactory(
-            listOf(Point()),
+            listOf(PixelPoint()),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 4)),
             4,
         )
@@ -128,7 +128,7 @@ class EnemyFactoryTest {
         whenever(pauseManager.isPaused).thenReturn(true)
 
         val factory = createFactory(
-            listOf(Point()),
+            listOf(PixelPoint()),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 4)),
             1
         )
@@ -147,7 +147,7 @@ class EnemyFactoryTest {
 
     @Test
     fun `should stop creation when no more enemies left`() {
-        val positions = listOf(Point(0, 0), Point(10, 20), Point(40, 100))
+        val positions = listOf(PixelPoint(px(0), px(0)), PixelPoint(px(10), px(20)), PixelPoint(px(40), px(100)))
         val group1 = EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1)
         val group2 = EnemyGroupConfig(EnemyTank.EnemyType.FAST, 2)
         val group3 = EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1)
@@ -184,7 +184,7 @@ class EnemyFactoryTest {
 
     @Test
     fun `should create enemy`() {
-        val position = Point(1, 2)
+        val position = PixelPoint(px(1), px(2))
         val factory = createFactory(
             listOf(position),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 4))
@@ -200,7 +200,7 @@ class EnemyFactoryTest {
 
     @Test
     fun `should create flashing enemies in order`() {
-        val position = Point()
+        val position = PixelPoint()
         val factory = createFactory(
             listOf(position),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 7)),
@@ -246,7 +246,7 @@ class EnemyFactoryTest {
     @Test
     fun `should track destroyed enemies`() {
         val factory = createFactory(
-            listOf(Point(1, 2)),
+            listOf(PixelPoint(px(1), px(2))),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1))
         )
 
@@ -255,7 +255,7 @@ class EnemyFactoryTest {
 
         val tank = verifyEnemyCreated()
 
-        val explosion = mockTankExplosion(game, tank = tank)
+        val explosion = stubTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         assertEquals(0, factory.enemyCount)
@@ -264,7 +264,7 @@ class EnemyFactoryTest {
     @Test
     fun `should notify when last enemy is destroyed`() {
         val factory = createFactory(
-            listOf(Point()),
+            listOf(PixelPoint()),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1))
         )
 
@@ -272,7 +272,7 @@ class EnemyFactoryTest {
         assertEquals(1, factory.enemyCount)
         val tank = verifyEnemyCreated()
 
-        val explosion = mockTankExplosion(game, tank = tank)
+        val explosion = stubTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager).fireEvent(EnemyFactory.LastEnemyDestroyed)
@@ -281,14 +281,14 @@ class EnemyFactoryTest {
     @Test
     fun `should not notify when destroyed enemy is not the last due to more to create`() {
         val factory = createFactory(
-            listOf(Point()),
+            listOf(PixelPoint()),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 2))
         )
 
         factory.update()
         val tank = verifyEnemyCreated()
 
-        val explosion = mockTankExplosion(game, tank = tank)
+        val explosion = stubTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager, never()).fireEvent(EnemyFactory.LastEnemyDestroyed)
@@ -297,7 +297,7 @@ class EnemyFactoryTest {
     @Test
     fun `should not notify when destroyed enemy is not the last due to left on the field`() {
         val factory = createFactory(
-            listOf(Point()),
+            listOf(PixelPoint()),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 2)),
             1
         )
@@ -310,7 +310,7 @@ class EnemyFactoryTest {
 
         assertEquals(0, factory.enemiesToCreateCount)
 
-        val explosion = mockTankExplosion(game, tank = tank)
+        val explosion = stubTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         verify(eventManager, never()).fireEvent(EnemyFactory.LastEnemyDestroyed)
@@ -319,7 +319,7 @@ class EnemyFactoryTest {
     @Test
     fun `should return enemiesToCreateCount correctly`() {
         val factory = createFactory(
-            listOf(Point()),
+            listOf(PixelPoint()),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 3)),
             1
         )
@@ -341,7 +341,7 @@ class EnemyFactoryTest {
     @Test
     fun `should spawn new tank immediately after tank is destroyed`() {
         val factory = createFactory(
-            listOf(Point()),
+            listOf(PixelPoint()),
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 3)),
             10000
         )
@@ -358,7 +358,7 @@ class EnemyFactoryTest {
         clock.tick(5000)
         factory.update()
 
-        val explosion = mockTankExplosion(game, tank = tank)
+        val explosion = stubTankExplosion(game, tank = tank)
         factory.notify(TankExplosion.Destroyed(explosion))
 
         factory.update()
@@ -367,13 +367,14 @@ class EnemyFactoryTest {
 
     private fun verifyEnemyCreated(
         type: EnemyTank.EnemyType,
-        position: Point,
+        position: PixelPoint,
         flashing: Boolean = false
     ): Tank {
         val event = captureEnemyCreated()
         val tank = event.enemy
         assertEquals(type, tank.enemyType)
-        assertEquals(position, tank.position)
+        assertEquals(position.x, tank.x)
+        assertEquals(position.y, tank.y)
         assertIs<TankStateAppearing>(tank.state)
         assertEquals(flashing, event.isFlashing)
         return tank
@@ -391,16 +392,15 @@ class EnemyFactoryTest {
     }
 
     private fun createFactory(
-        positions: List<Point>,
+        positions: List<PixelPoint>,
         enemies: List<EnemyGroupConfig>,
         interval: Int = 3000
     ): EnemyFactory {
         return EnemyFactory(
-            mockGame(eventManager = eventManager),
+            game,
             pauseManager,
             spriteContainer,
             positions,
-            clock,
             enemies,
             interval
         )

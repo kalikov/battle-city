@@ -31,9 +31,14 @@ class PlayerTankController(
     }
 
     fun update() {
-        targetDirection?.let {
-            if (tank.canMove) {
-                setDirection(it)
+        if (isActive) {
+            targetDirection?.let {
+                if (tank.canMove) {
+                    setDirection(it)
+                }
+            }
+            if (tank.isIdle && tank.canMove && (horzPressed != 0 || vertPressed != 0) && (horzPressed != FLAG_BOTH || vertPressed != FLAG_BOTH)) {
+                tank.isIdle = false
             }
         }
     }
@@ -137,6 +142,7 @@ class PlayerTankController(
             tank.isIdle = false
         } else {
             tank.isIdle = true
+            targetDirection = direction
         }
     }
 

@@ -12,6 +12,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.time.Clock
 import javax.swing.JFrame
+import kotlin.Unit
 
 class Main {
     private companion object {
@@ -30,15 +31,15 @@ class Main {
                 }
             }
             frame.background = AwtScreen.SCREEN_BG_COLOR
-            frame.setSize(config.resolution.width, config.resolution.height)
+            frame.setSize(config.resolution.width.toInt(), config.resolution.height.toInt())
             frame.ignoreRepaint = true
             frame.isVisible = true
             frame.focusTraversalKeysEnabled = false
 
             val insets = frame.insets
             frame.setSize(
-                config.resolution.width + insets.horizontal,
-                config.resolution.height + insets.vertical
+                config.resolution.width.toInt() + insets.horizontal,
+                config.resolution.height.toInt() + insets.vertical
             )
             frame.createBufferStrategy(2)
 
@@ -50,7 +51,6 @@ class Main {
             val game = BasicGame(config, Clock.systemUTC(), screen, input, audio)
 
             val stageManager = DefaultStageManager(game.eventManager)
-            val entityFactory = DefaultEntityFactory(game.eventManager, game.imageManager, game.clock)
 
             game.sceneManager.setScene {
                 LoadingScene(
@@ -59,7 +59,6 @@ class Main {
                     game.soundManager,
                     fontManager,
                     stageManager,
-                    entityFactory,
                 )
             }
 

@@ -20,7 +20,7 @@ class TankStateAppearingTest {
         pauseManager = mock()
         clock = TestClock()
         val game = mockGame(eventManager = eventManager, clock = clock)
-        tank = mockPlayerTank(game, pauseManager)
+        tank = stubPlayerTank(game, pauseManager)
         state = TankStateAppearing(game, tank)
         tank.state = state
     }
@@ -44,7 +44,7 @@ class TankStateAppearingTest {
         val pauseListener = PauseListener(eventManager)
         pauseManager = pauseListener
         val game = mockGame(eventManager = eventManager, clock = clock)
-        tank = mockPlayerTank(game, pauseManager)
+        tank = stubPlayerTank(game, pauseManager)
         state = TankStateAppearing(game, tank)
         tank.state = state
         tank.update()

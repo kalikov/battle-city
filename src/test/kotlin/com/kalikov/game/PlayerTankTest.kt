@@ -13,8 +13,8 @@ class PlayerTankTest : TankTest<PlayerTank>() {
         return PlayerTank.create(
             game,
             mock(),
-            0,
-            0,
+            px(0),
+            px(0),
             Player(eventManager)
         )
     }
@@ -145,7 +145,7 @@ class PlayerTankTest : TankTest<PlayerTank>() {
     }
 
     private fun shouldDrawTank(direction: Direction, imageName: String) {
-        val image = BufferedImage(Globals.UNIT_SIZE, Globals.UNIT_SIZE, BufferedImage.TYPE_INT_ARGB)
+        val image = BufferedImage(Tank.SIZE.toInt(), Tank.SIZE.toInt(), BufferedImage.TYPE_INT_ARGB)
         tank.direction = direction
         tank.draw(AwtScreenSurface(mock(), image))
 

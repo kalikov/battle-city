@@ -67,20 +67,20 @@ class BasicGame(
         if (config.debug) {
             screen.surface.fillText(
                 "${duration / 1000000}.".padStart(4, ' ') + "${duration % 1000000 / 1000}ms".padStart(5, '0'),
-                0,
-                Globals.UNIT_SIZE,
+                px(0),
+                t(2).toPixel(),
                 ARGB.WHITE,
-                "${Font.MONOSPACED}-${Globals.UNIT_SIZE}"
+                "${Font.MONOSPACED}-${t(2).toPixel().toInt()}"
             )
 
             val lastKeyPressed = input.lastKeyPressed
             if (lastKeyPressed != 0) {
                 screen.surface.fillText(
                     "$lastKeyPressed".padStart(3, ' '),
-                    screen.surface.width - 3 * Globals.UNIT_SIZE,
-                    Globals.UNIT_SIZE,
+                    screen.surface.width - t(6).toPixel(),
+                    t(2).toPixel(),
                     ARGB.WHITE,
-                    "${Font.MONOSPACED}-${Globals.UNIT_SIZE}"
+                    "${Font.MONOSPACED}-${t(2).toPixel().toInt()}"
                 )
             }
         }

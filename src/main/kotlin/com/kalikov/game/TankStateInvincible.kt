@@ -37,7 +37,7 @@ class TankStateInvincible(
             tank.y,
             game.imageManager.getImage("shield"),
             tank.width * (shieldAnimation.frame - 1),
-            0,
+            px(0),
             tank.width,
             tank.height
         )

@@ -3,6 +3,7 @@ package com.kalikov.game
 @JvmInline
 value class ARGB(val value: Int) {
     companion object {
+        val TRANSPARENT = ARGB(0)
         val WHITE = rgb(0xFFFFFF)
         val BLACK = rgb(0x000000)
 

@@ -1,19 +1,15 @@
 package com.kalikov.game
 
-import java.time.Clock
-
 class BulletExplosionFactory(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val spriteContainer: SpriteContainer,
-    private val clock: Clock
 ) : EventSubscriber {
     private companion object {
         private val subscriptions = setOf(Bullet.Exploded::class)
     }
 
     init {
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun notify(event: Event) {
@@ -22,13 +18,11 @@ class BulletExplosionFactory(
         }
     }
 
-    private fun create(bullet: Bullet): BulletExplosion {
-        val explosion = BulletExplosion(eventManager, imageManager, clock, bullet)
-        explosion.setPosition(bullet.center.translate(-explosion.width / 2, -explosion.height / 2))
-        return explosion
+    private fun create(bullet: BulletHandle): BulletExplosion {
+        return BulletExplosion(game, bullet)
     }
 
     fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

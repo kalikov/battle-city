@@ -17,9 +17,6 @@ class ShovelHandler(
     private val solidTimer = PauseAwareTimer(game.eventManager, game.clock, solidDuration, ::end)
     private val blinkTimer = PauseAwareTimer(game.eventManager, game.clock, blinkDuration, ::blink)
 
-    private val steelWallFactory = SteelWallFactory(game.eventManager, game.imageManager)
-    private val brickWallFactory = BrickWallFactory(game.eventManager, game.imageManager)
-
     private var blinkFrame = 0
 
     init {
@@ -36,31 +33,26 @@ class ShovelHandler(
         blinkTimer.stop()
         solidTimer.restart()
         blinkFrame = 0
-        rebuildWall(steelWallFactory)
+        baseWallBuilder.buildSteelWall()
     }
 
     private fun end() {
         solidTimer.stop()
         blinkTimer.restart()
-        rebuildWall(brickWallFactory)
+        baseWallBuilder.buildBrickWall()
     }
 
     private fun blink() {
         if (blinkFrame % 2 == 0) {
-            rebuildWall(steelWallFactory)
+            baseWallBuilder.buildSteelWall()
         } else {
-            rebuildWall(brickWallFactory)
+            baseWallBuilder.buildBrickWall()
         }
         blinkFrame++
         if (blinkFrame == blinkCount * 2) {
             blinkTimer.stop()
             blinkFrame = 0
         }
-    }
-
-    private fun rebuildWall(wallFactory: WallFactory) {
-        baseWallBuilder.destroyWall()
-        baseWallBuilder.buildWall(wallFactory)
     }
 
     fun update() {

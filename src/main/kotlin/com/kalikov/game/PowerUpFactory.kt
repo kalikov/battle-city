@@ -1,14 +1,11 @@
 package com.kalikov.game
 
-import java.time.Clock
 import kotlin.random.Random
 
 class PowerUpFactory(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
+    private val game: Game,
     private val spriteContainer: SpriteContainer,
-    private val clock: Clock,
-    private val bounds: Rect,
+    private val bounds: PixelRect,
     private val random: Random = Random.Default,
 ) : EventSubscriber {
     private companion object {
@@ -18,7 +15,7 @@ class PowerUpFactory(
     private var powerUp: PowerUp? = null
 
     init {
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun notify(event: Event) {
@@ -35,19 +32,19 @@ class PowerUpFactory(
     }
 
     private fun create(): PowerUp {
-        val position = Point(
-            bounds.x + random.nextInt(bounds.width - PowerUp.SIZE),
-            bounds.y + random.nextInt(bounds.height - PowerUp.SIZE),
+        val position = PixelPoint(
+            bounds.x + random.nextInt((bounds.width - PowerUp.SIZE).toInt()),
+            bounds.y + random.nextInt((bounds.height - PowerUp.SIZE).toInt()),
         )
-        val powerUp = PowerUp(eventManager, imageManager, position, clock)
+        val powerUp = PowerUp(game, position)
         powerUp.type = PowerUp.Type.entries.random()
 
-        eventManager.fireEvent(SoundManager.Play("powerup_appear"))
+        game.eventManager.fireEvent(SoundManager.Play("powerup_appear"))
 
         return powerUp
     }
 
     fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

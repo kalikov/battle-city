@@ -3,8 +3,10 @@ package com.kalikov.game
 abstract class Explosion(
     eventRouter: EventRouter,
     private val animation: Animation,
-    explosionSize: Int
-) : Sprite(eventRouter, 0, 0, explosionSize, explosionSize) {
+    explosionSize: Pixel,
+    x: Pixel = px(0),
+    y: Pixel = px(0),
+) : Sprite(eventRouter, x, y, explosionSize, explosionSize) {
     init {
         z = 200
     }
@@ -22,7 +24,7 @@ abstract class Explosion(
     }
 
     override fun draw(surface: ScreenSurface) {
-        surface.draw(x, y, image, (animation.frame - 1) * width, 0, width, height)
+        surface.draw(x, y, image, (animation.frame - 1) * width, px(0), width, height)
     }
 
     override fun dispose() {

@@ -12,7 +12,7 @@ class PauseMessageViewTest {
     @BeforeEach
     fun beforeEach() {
         eventManager = mock()
-        pauseMessageView = PauseMessageView(eventManager, 0, 0, mock())
+        pauseMessageView = PauseMessageView(eventManager, px(0), px(0), mock())
     }
 
     @Test

@@ -7,7 +7,7 @@ class MainMenuCursorView(
     clock: Clock
 ) {
     companion object {
-        const val SIZE = Tank.SIZE
+        val SIZE = Tank.SIZE
     }
 
     var visible = false
@@ -23,7 +23,7 @@ class MainMenuCursorView(
         trackAnimation.update()
     }
 
-    fun draw(surface: ScreenSurface, x: Int, y: Int) {
+    fun draw(surface: ScreenSurface, x: Pixel, y: Pixel) {
         if (!visible) {
             return
         }
@@ -31,8 +31,8 @@ class MainMenuCursorView(
             x,
             y,
             image,
-            Globals.UNIT_SIZE * (5 + trackAnimation.frame),
-            0,
+            Tank.SIZE * (5 + trackAnimation.frame),
+            px(0),
             SIZE,
             SIZE
         )

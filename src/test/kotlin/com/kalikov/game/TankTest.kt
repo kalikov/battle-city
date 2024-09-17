@@ -3,13 +3,17 @@ package com.kalikov.game
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.isA
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
+import java.awt.image.BufferedImage
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertIsNot
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 abstract class TankTest<T : Tank> {
@@ -34,7 +38,10 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should fire event on shoot`() {
         tank.shoot()
-        verify(eventManager).fireEvent(Tank.Shoot(tank))
+
+        val shootCaptor = argumentCaptor<Tank.Shoot>()
+        verify(eventManager).fireEvent(shootCaptor.capture())
+        assertSame(tank, shootCaptor.firstValue.bullet.tank)
     }
 
     @Test
@@ -53,7 +60,8 @@ abstract class TankTest<T : Tank> {
         clock.tick(Tank.COOLDOWN_INTERVAL)
         tank.update()
         tank.shoot()
-        verify(eventManager).fireEvent(Tank.Shoot(tank))
+
+        verify(eventManager).fireEvent(isA<Tank.Shoot>())
     }
 
     @Test
@@ -65,7 +73,7 @@ abstract class TankTest<T : Tank> {
         clock.tick(Tank.COOLDOWN_INTERVAL)
         tank.update()
         tank.shoot()
-        verify(eventManager).fireEvent(Tank.Shoot(tank))
+        verify(eventManager).fireEvent(isA<Tank.Shoot>())
 
         reset(eventManager)
 
@@ -79,7 +87,8 @@ abstract class TankTest<T : Tank> {
         clock.tick(Tank.COOLDOWN_INTERVAL)
         tank.update()
         tank.shoot()
-        verify(eventManager).fireEvent(Tank.Shoot(tank))
+        verify(eventManager).fireEvent(isA<Tank.Shoot>())
+        verify(eventManager).fireEvent(isA<Tank.Shoot>())
 
         reset(eventManager)
 
@@ -101,100 +110,100 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should smooth turn right-up rounding using direction`() {
         tank.direction = Direction.RIGHT
-        tank.setPosition(Point(12, 7))
+        tank.setPosition(PixelPoint(px(12), px(7)))
         tank.direction = Direction.UP
-        assertEquals(16, tank.x)
-        assertEquals(7, tank.y)
+        assertEquals(px(16), tank.x)
+        assertEquals(px(7), tank.y)
     }
 
     @Test
     fun `should smooth turn left-up rounding using direction`() {
         tank.direction = Direction.LEFT
-        tank.setPosition(Point(12, 7))
+        tank.setPosition(PixelPoint(px(12), px(7)))
         tank.direction = Direction.UP
-        assertEquals(8, tank.x)
-        assertEquals(7, tank.y)
+        assertEquals(px(8), tank.x)
+        assertEquals(px(7), tank.y)
     }
 
     @Test
     fun `should smooth turn right-up`() {
         tank.direction = Direction.RIGHT
-        tank.setPosition(Point(6, 7))
+        tank.setPosition(PixelPoint(px(6), px(7)))
         tank.direction = Direction.UP
-        assertEquals(8, tank.x)
-        assertEquals(7, tank.y)
+        assertEquals(px(8), tank.x)
+        assertEquals(px(7), tank.y)
     }
 
     @Test
     fun `should smooth turn right-down`() {
         tank.direction = Direction.RIGHT
-        tank.setPosition(Point(5, 0))
+        tank.setPosition(PixelPoint(px(5), px(0)))
         tank.direction = Direction.DOWN
-        assertEquals(8, tank.x)
-        assertEquals(0, tank.y)
+        assertEquals(px(8), tank.x)
+        assertEquals(px(0), tank.y)
     }
 
     @Test
     fun `should smooth turn left-down`() {
         tank.direction = Direction.LEFT
-        tank.setPosition(Point(3, 1))
+        tank.setPosition(PixelPoint(px(3), px(1)))
         tank.direction = Direction.DOWN
-        assertEquals(0, tank.x)
-        assertEquals(1, tank.y)
+        assertEquals(px(0), tank.x)
+        assertEquals(px(1), tank.y)
     }
 
     @Test
     fun `should smooth turn left-up`() {
         tank.direction = Direction.LEFT
-        tank.setPosition(Point(6, 2))
+        tank.setPosition(PixelPoint(px(6), px(2)))
         tank.direction = Direction.UP
-        assertEquals(8, tank.x)
-        assertEquals(2, tank.y)
+        assertEquals(px(8), tank.x)
+        assertEquals(px(2), tank.y)
     }
 
     @Test
     fun `should smooth turn down-right`() {
         tank.direction = Direction.DOWN
-        tank.setPosition(Point(0, 3))
+        tank.setPosition(PixelPoint(px(0), px(3)))
         tank.direction = Direction.RIGHT
-        assertEquals(0, tank.x)
-        assertEquals(0, tank.y)
+        assertEquals(px(0), tank.x)
+        assertEquals(px(0), tank.y)
     }
 
     @Test
     fun `should smooth turn down-left`() {
         tank.direction = Direction.DOWN
-        tank.setPosition(Point(0, 3))
+        tank.setPosition(PixelPoint(px(0), px(3)))
         tank.direction = Direction.LEFT
-        assertEquals(0, tank.x)
-        assertEquals(0, tank.y)
+        assertEquals(px(0), tank.x)
+        assertEquals(px(0), tank.y)
     }
 
     @Test
     fun `should smooth turn up-left`() {
         tank.direction = Direction.UP
-        tank.setPosition(Point(3, 3))
+        tank.setPosition(PixelPoint(px(3), px(3)))
         tank.direction = Direction.LEFT
-        assertEquals(3, tank.x)
-        assertEquals(0, tank.y)
+        assertEquals(px(3), tank.x)
+        assertEquals(px(0), tank.y)
     }
 
     @Test
     fun `should smooth turn up-right`() {
         tank.direction = Direction.UP
-        tank.setPosition(Point(3, 3))
+        tank.setPosition(PixelPoint(px(3), px(3)))
         tank.direction = Direction.RIGHT
-        assertEquals(3, tank.x)
-        assertEquals(0, tank.y)
+        assertEquals(px(3), tank.x)
+        assertEquals(px(0), tank.y)
     }
 
     @Test
     fun `should smooth turn left-right`() {
         tank.direction = Direction.LEFT
-        tank.setPosition(Point(3, 3))
+        tank.setPosition(PixelPoint(px(3), px(3)))
         tank.direction = Direction.RIGHT
-        assertEquals(3, tank.x)
-        assertEquals(3, tank.y)
+        assertEquals(px(3), tank.x)
+        assertEquals(px(3), tank.y)
     }
 
     @Test
@@ -230,5 +239,163 @@ abstract class TankTest<T : Tank> {
                 TankStateFrozen.End::class,
             )
         )
+    }
+
+
+    @Test
+    fun `should draw tank shooting right`() {
+        shouldDrawShootingTank(
+            PixelPoint(),
+            Direction.RIGHT,
+            PixelSize(t(3).toPixel(), t(2).toPixel()),
+            "tank_shooting_right.png"
+        )
+    }
+
+    @Test
+    fun `should draw tank shooting left`() {
+        shouldDrawShootingTank(
+            PixelPoint(t(1).toPixel(), px(0)),
+            Direction.LEFT,
+            PixelSize(t(3).toPixel(), t(2).toPixel()),
+            "tank_shooting_left.png"
+        )
+    }
+
+    @Test
+    fun `should draw tank shooting up`() {
+        shouldDrawShootingTank(
+            PixelPoint(px(0), t(1).toPixel()),
+            Direction.UP,
+            PixelSize(t(2).toPixel(), t(3).toPixel()),
+            "tank_shooting_up.png"
+        )
+    }
+
+    @Test
+    fun `should draw tank shooting down`() {
+        shouldDrawShootingTank(
+            PixelPoint(),
+            Direction.DOWN,
+            PixelSize(t(2).toPixel(), t(3).toPixel()),
+            "tank_shooting_down.png"
+        )
+    }
+
+    private fun shouldDrawShootingTank(
+        tankPosition: PixelPoint,
+        direction: Direction,
+        imageSize: PixelSize,
+        imageName: String
+    ) {
+        val fonts = TestFonts()
+        val imageManager = TestImageManager(fonts)
+        val game = mockGame(imageManager = imageManager)
+
+        val tank = stubPlayerTank(game, x = tankPosition.x, y = tankPosition.y)
+        tank.direction = direction
+
+        tank.shoot()
+
+        val captor = argumentCaptor<Tank.Shoot>()
+        verify(game.eventManager).fireEvent(captor.capture())
+
+        val bullet = captor.firstValue.bullet
+
+        val image = BufferedImage(imageSize.width.toInt(), imageSize.height.toInt(), BufferedImage.TYPE_INT_ARGB)
+        tank.draw(AwtScreenSurface(fonts, image))
+        bullet.draw(AwtScreenSurface(fonts, image))
+
+        assertImageEquals(imageName, image)
+    }
+
+    @Test
+    fun `should create bullet facing right direction`() {
+        shouldCreateBulletWithCorrectDirection(
+            PixelPoint(px(0), px(0)),
+            Direction.RIGHT,
+            PixelPoint(t(2).toPixel(), t(1).toPixel() - Bullet.SIZE / 2)
+        )
+    }
+
+    @Test
+    fun `should create bullet facing left direction`() {
+        shouldCreateBulletWithCorrectDirection(
+            PixelPoint(t(2).toPixel(), px(0)),
+            Direction.LEFT,
+            PixelPoint(
+                t(2).toPixel() - Bullet.SIZE,
+                t(1).toPixel() - Bullet.SIZE / 2
+            )
+        )
+    }
+
+    @Test
+    fun `should create bullet facing up direction`() {
+        shouldCreateBulletWithCorrectDirection(
+            PixelPoint(px(0), t(2).toPixel()),
+            Direction.UP,
+            PixelPoint(
+                t(1).toPixel() - Bullet.SIZE / 2,
+                t(2).toPixel() - Bullet.SIZE
+            )
+        )
+    }
+
+    @Test
+    fun `should create bullet facing down direction`() {
+        shouldCreateBulletWithCorrectDirection(
+            PixelPoint(px(0), px(0)),
+            Direction.DOWN,
+            PixelPoint(t(1).toPixel() - Bullet.SIZE / 2, t(2).toPixel())
+        )
+    }
+
+    private fun shouldCreateBulletWithCorrectDirection(
+        tankPosition: PixelPoint,
+        direction: Direction,
+        bulletPosition: PixelPoint
+    ) {
+        val game = mockGame()
+
+        val tank = stubPlayerTank(game)
+        tank.setPosition(tankPosition)
+        tank.direction = direction
+
+        tank.shoot()
+
+        val captor = argumentCaptor<Tank.Shoot>()
+        verify(game.eventManager).fireEvent(captor.capture())
+
+        val event = captor.firstValue
+        val bullet = event.bullet
+        assertEquals(bulletPosition, PixelPoint(bullet.x, bullet.y))
+        assertEquals(direction, bullet.direction)
+        assertEquals(tank.bulletSpeed, bullet.speed)
+    }
+
+    @Test
+    fun `should create regular bullet`() {
+        shouldCreateBulletWithCorrectType(Bullet.Type.REGULAR)
+    }
+
+    @Test
+    fun `should create enhanced bullet`() {
+        shouldCreateBulletWithCorrectType(Bullet.Type.ENHANCED)
+    }
+
+    private fun shouldCreateBulletWithCorrectType(type: Bullet.Type) {
+        val game = mockGame()
+        val tank = stubPlayerTank(game)
+        tank.bulletType = type
+
+        tank.shoot()
+
+        val captor = argumentCaptor<Tank.Shoot>()
+        verify(game.eventManager).fireEvent(captor.capture())
+
+        val event = captor.firstValue
+        val bullet = event.bullet
+        assertEquals(type, bullet.type)
     }
 }

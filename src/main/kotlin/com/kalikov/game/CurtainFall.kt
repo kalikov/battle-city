@@ -1,14 +1,13 @@
 package com.kalikov.game
 
 import java.time.Clock
-import kotlin.math.max
 
 class CurtainFall(
     private val curtain: Curtain,
     private val script: ScriptCallback,
     clock: Clock
 ) : ScriptNode {
-    private val timer = BasicTimer(clock, max(1, 32 / Globals.UNIT_SIZE), this::fall)
+    private val timer = BasicTimer(clock, 2, this::fall)
 
     override val isDisposable get() = false
 

@@ -7,41 +7,26 @@ import java.io.InputStream
 import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import javax.imageio.ImageIO
-import kotlin.math.min
 
-class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
-    private val fonts: AwtFonts
-
-    override val width: Int
-    override val height: Int
-
+class AwtScreenSurface(
+    private val fonts: AwtFonts,
     val image: BufferedImage
+) : ScreenSurface, MutableScreenSurfaceData {
+
+    override val width: Pixel = px(image.width)
+
+    override val height: Pixel = px(image.height)
 
     private val lock: ReadWriteLock = ReentrantReadWriteLock()
 
-    constructor(fonts: AwtFonts, width: Int, height: Int) {
-        image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
-        this.fonts = fonts
-        this.width = width
-        this.height = height
-    }
+    constructor(fonts: AwtFonts, width: Pixel, height: Pixel)
+            : this(fonts, BufferedImage(width.toInt(), height.toInt(), BufferedImage.TYPE_INT_ARGB))
 
-    constructor(fonts: AwtFonts, stream: InputStream) {
-        this.fonts = fonts
-        image = ImageIO.read(stream)
-        width = image.width
-        height = image.height
-    }
+    constructor(fonts: AwtFonts, stream: InputStream)
+            : this(fonts, ImageIO.read(stream))
 
-    constructor(fonts: AwtFonts, image: BufferedImage) {
-        this.fonts = fonts
-        this.image = image
-        width = image.width
-        height = image.height
-    }
-
-    override fun getFragment(x: Int, y: Int, width: Int, height: Int): ScreenSurface {
-        return AwtScreenSurface(fonts, image.getSubimage(x, y, width, height))
+    override fun getFragment(x: Pixel, y: Pixel, width: Pixel, height: Pixel): ScreenSurface {
+        return AwtScreenSurface(fonts, image.getSubimage(x.toInt(), y.toInt(), width.toInt(), height.toInt()))
     }
 
     override fun lock(): MutableScreenSurfaceData {
@@ -54,16 +39,16 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
     }
 
     override fun clear(color: ARGB) {
-        clear(0, 0, width, height, color)
+        clear(px(0), px(0), width, height, color)
     }
 
-    override fun clear(x: Int, y: Int, width: Int, height: Int, color: ARGB) {
+    override fun clear(x: Pixel, y: Pixel, width: Pixel, height: Pixel, color: ARGB) {
         lock.writeLock().lock()
         try {
             val gfx = image.createGraphics()
             try {
                 gfx.background = Color(color.value, true)
-                gfx.clearRect(x, y, width, height)
+                gfx.clearRect(x.toInt(), y.toInt(), width.toInt(), height.toInt())
             } finally {
                 gfx.dispose()
             }
@@ -72,7 +57,7 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
         }
     }
 
-    override fun draw(x: Int, y: Int, surface: ScreenSurface, quadrants: Int) {
+    override fun draw(x: Pixel, y: Pixel, surface: ScreenSurface, quadrants: Int) {
         val gfx = image.createGraphics()
         try {
             val transform = AffineTransform.getQuadrantRotateInstance(
@@ -84,9 +69,9 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
             if (surface is AwtScreenSurface) {
                 gfx.drawImage(surface.image, transform, null)
             } else {
-                val pixels = surface.getPixels(0, 0, surface.width, surface.height)
-                val srcImage = BufferedImage(surface.width, surface.height, BufferedImage.TYPE_INT_ARGB)
-                srcImage.setRGB(0, 0, surface.width, surface.height, pixels, 0, surface.width)
+                val pixels = surface.getPixels(px(0), px(0), surface.width, surface.height)
+                val srcImage = BufferedImage(surface.width.toInt(), surface.height.toInt(), BufferedImage.TYPE_INT_ARGB)
+                srcImage.setRGB(0, 0, surface.width.toInt(), surface.height.toInt(), pixels, 0, surface.width.toInt())
                 gfx.drawImage(srcImage, transform, null)
             }
         } finally {
@@ -94,17 +79,17 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
         }
     }
 
-    override fun draw(x: Int, y: Int, surface: ScreenSurface, blending: Blending?) {
+    override fun draw(x: Pixel, y: Pixel, surface: ScreenSurface, blending: Blending?) {
         if (x >= width || y >= height) {
             return
         }
-        val surfaceWidth: Int = surface.width
-        val surfaceHeight: Int = surface.height
+        val surfaceWidth: Pixel = surface.width
+        val surfaceHeight: Pixel = surface.height
         if (x + surfaceWidth <= 0 || y + surfaceHeight <= 0) {
             return
         }
-        val dx = if (x >= 0) 0 else -x
-        val dy = if (y >= 0) 0 else -y
+        val dx = if (x >= 0) px(0) else -x
+        val dy = if (y >= 0) px(0) else -y
         val w = min(surfaceWidth - dx, width - (x + dx))
         val h = min(surfaceHeight - dy, height - (y + dy))
         if (surface !is AwtScreenSurface) {
@@ -115,28 +100,28 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
     }
 
     override fun draw(
-        dstX: Int,
-        dstY: Int,
+        dstX: Pixel,
+        dstY: Pixel,
         surface: ScreenSurface,
-        srcX: Int,
-        srcY: Int,
-        width: Int,
-        height: Int,
+        srcX: Pixel,
+        srcY: Pixel,
+        width: Pixel,
+        height: Pixel,
         blending: Blending?
     ) {
         if (dstX >= this.width || dstY >= this.height) {
             return
         }
-        val surfaceWidth: Int = surface.width
-        val surfaceHeight: Int = surface.height
+        val surfaceWidth: Pixel = surface.width
+        val surfaceHeight: Pixel = surface.height
         if (dstX + width <= 0 || dstY + height <= 0 || srcX >= surfaceWidth || srcY >= surfaceHeight || srcX + width <= 0 || srcY + height <= 0) {
             return
         }
         if (surface !is AwtScreenSurface) {
-            val dstDx = if (dstX >= 0) 0 else -dstX
-            val dstDy = if (dstY >= 0) 0 else -dstY
-            val srcDx = if (srcX >= 0) 0 else -srcX
-            val srcDy = if (srcY >= 0) 0 else -srcY
+            val dstDx = if (dstX >= 0) px(0) else -dstX
+            val dstDy = if (dstY >= 0) px(0) else -dstY
+            val srcDx = if (srcX >= 0) px(0) else -srcX
+            val srcDy = if (srcY >= 0) px(0) else -srcY
             val newW = min(surfaceWidth - dstDx + srcDx, this.width - (dstX + dstDx))
             val newH = min(surfaceHeight - dstDy + srcDy, this.height - (dstY + dstDy))
             drawCompatible(
@@ -155,12 +140,12 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
     }
 
     private fun drawImage(
-        dstX: Int,
-        dstY: Int,
-        srcX: Int,
-        srcY: Int,
-        w: Int,
-        h: Int,
+        dstX: Pixel,
+        dstY: Pixel,
+        srcX: Pixel,
+        srcY: Pixel,
+        w: Pixel,
+        h: Pixel,
         srcImage: BufferedImage,
         blending: Blending?
     ) {
@@ -173,14 +158,14 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
                 }
                 gfx.drawImage(
                     srcImage,
-                    dstX,
-                    dstY,
-                    dstX + w,
-                    dstY + h,
-                    srcX,
-                    srcY,
-                    srcX + w,
-                    srcY + h,
+                    dstX.toInt(),
+                    dstY.toInt(),
+                    (dstX + w).toInt(),
+                    (dstY + h).toInt(),
+                    srcX.toInt(),
+                    srcY.toInt(),
+                    (srcX + w).toInt(),
+                    (srcY + h).toInt(),
                     null
                 )
             } finally {
@@ -192,28 +177,28 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
     }
 
     private fun drawCompatible(
-        dstX: Int,
-        dstY: Int,
-        srcX: Int,
-        srcY: Int,
-        w: Int,
-        h: Int,
+        dstX: Pixel,
+        dstY: Pixel,
+        srcX: Pixel,
+        srcY: Pixel,
+        w: Pixel,
+        h: Pixel,
         surface: ScreenSurface,
         blending: Blending?
     ) {
         val pixels = surface.getPixels(srcX, srcY, w, h)
-        val srcImage = BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB)
-        srcImage.setRGB(0, 0, w, h, pixels, 0, w)
-        drawImage(dstX, dstY, 0, 0, w, h, srcImage, blending)
+        val srcImage = BufferedImage(w.toInt(), h.toInt(), BufferedImage.TYPE_INT_ARGB)
+        srcImage.setRGB(0, 0, w.toInt(), h.toInt(), pixels, 0, w.toInt())
+        drawImage(dstX, dstY, px(0), px(0), w, h, srcImage, blending)
     }
 
-    override fun drawRect(x: Int, y: Int, w: Int, h: Int, color: ARGB) {
+    override fun drawRect(x: Pixel, y: Pixel, w: Pixel, h: Pixel, color: ARGB) {
         lock.writeLock().lock()
         try {
             val gfx = image.createGraphics()
             try {
                 gfx.color = Color(color.value, true)
-                gfx.drawRect(x, y, w - 1, h - 1)
+                gfx.drawRect(x.toInt(), y.toInt(), (w - 1).toInt(), (h - 1).toInt())
             } finally {
                 gfx.dispose()
             }
@@ -222,13 +207,13 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
         }
     }
 
-    override fun fillRect(x: Int, y: Int, w: Int, h: Int, color: ARGB) {
+    override fun fillRect(x: Pixel, y: Pixel, w: Pixel, h: Pixel, color: ARGB) {
         lock.writeLock().lock()
         try {
             val gfx = image.createGraphics()
             try {
                 gfx.color = Color(color.value, true)
-                gfx.fillRect(x, y, w, h)
+                gfx.fillRect(x.toInt(), y.toInt(), w.toInt(), h.toInt())
             } finally {
                 gfx.dispose()
             }
@@ -237,13 +222,13 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
         }
     }
 
-    override fun drawLine(x1: Int, y1: Int, x2: Int, y2: Int, color: ARGB) {
+    override fun drawLine(x1: Pixel, y1: Pixel, x2: Pixel, y2: Pixel, color: ARGB) {
         lock.writeLock().lock()
         try {
             val gfx = image.createGraphics()
             try {
                 gfx.color = Color(color.value, true)
-                gfx.drawLine(x1, y1, x2, y2)
+                gfx.drawLine(x1.toInt(), y1.toInt(), x2.toInt(), y2.toInt())
             } finally {
                 gfx.dispose()
             }
@@ -252,7 +237,7 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
         }
     }
 
-    override fun fillText(text: String, x: Int, y: Int, color: ARGB, font: String, blending: Blending?) {
+    override fun fillText(text: String, x: Pixel, y: Pixel, color: ARGB, font: String, blending: Blending?) {
         lock.writeLock().lock()
         try {
             val gfx = image.createGraphics()
@@ -262,7 +247,7 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
                 if (blending != null) {
                     gfx.composite = BlendingComposite(blending)
                 }
-                gfx.drawString(text, x, y)
+                gfx.drawString(text, x.toInt(), y.toInt())
             } finally {
                 gfx.dispose()
             }
@@ -271,33 +256,33 @@ class AwtScreenSurface : ScreenSurface, MutableScreenSurfaceData {
         }
     }
 
-    override fun getPixel(x: Int, y: Int): ARGB {
+    override fun getPixel(x: Pixel, y: Pixel): ARGB {
         lock.readLock().lock()
         try {
-            return ARGB(image.getRGB(x, y))
+            return ARGB(image.getRGB(x.toInt(), y.toInt()))
         } finally {
             lock.readLock().unlock()
         }
     }
 
-    override val pixels: IntArray get() = getPixels(0, 0, image.width, image.height)
+    override val pixels: IntArray get() = getPixels(px(0), px(0), px(image.width), px(image.height))
 
-    override fun getPixels(x: Int, y: Int, width: Int, height: Int): IntArray {
+    override fun getPixels(x: Pixel, y: Pixel, width: Pixel, height: Pixel): IntArray {
         lock.readLock().lock()
         try {
             val pixels = IntArray(width * height)
-            image.getRGB(x, y, width, height, pixels, 0, width)
+            image.getRGB(x.toInt(), y.toInt(), width.toInt(), height.toInt(), pixels, 0, width.toInt())
             return pixels
         } finally {
             lock.readLock().unlock()
         }
     }
 
-    override fun setPixel(x: Int, y: Int, color: ARGB) {
-        image.setRGB(x, y, color.value)
+    override fun setPixel(x: Pixel, y: Pixel, color: ARGB) {
+        image.setRGB(x.toInt(), y.toInt(), color.value)
     }
 
-    override fun setPixels(x: Int, y: Int, width: Int, height: Int, colors: IntArray) {
-        image.setRGB(x, y, width, height, colors, 0, width)
+    override fun setPixels(x: Pixel, y: Pixel, width: Pixel, height: Pixel, colors: IntArray) {
+        image.setRGB(x.toInt(), y.toInt(), width.toInt(), height.toInt(), colors, 0, width.toInt())
     }
 }

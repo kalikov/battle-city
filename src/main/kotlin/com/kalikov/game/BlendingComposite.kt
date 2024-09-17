@@ -52,8 +52,8 @@ internal class BlendingComposite(private val blending: Blending) : Composite {
                     val dstOutRgb = blending.blend(
                         ARGB(dstInRgb),
                         ARGB(srcRgb),
-                        x - dstIn.sampleModelTranslateX,
-                        y - dstIn.sampleModelTranslateY
+                        px(x - dstIn.sampleModelTranslateX),
+                        px(y - dstIn.sampleModelTranslateY),
                     ).value
                     dstData = dstColorModel.getDataElements(dstOutRgb, dstData)
                     dstOut.setDataElements(x + dstOutX, y + dstOutY, dstData)
@@ -83,8 +83,8 @@ internal class BlendingComposite(private val blending: Blending) : Composite {
                 dstData[i] = blending.blend(
                     ARGB(dstData[i]),
                     ARGB(srcData[i]),
-                    x - dstIn.sampleModelTranslateX,
-                    y - dstIn.sampleModelTranslateY
+                    px(x - dstIn.sampleModelTranslateX),
+                    px(y - dstIn.sampleModelTranslateY),
                 ).value
                 x++
                 if (x >= w) {
@@ -96,6 +96,7 @@ internal class BlendingComposite(private val blending: Blending) : Composite {
         }
 
         companion object {
+            @JvmStatic
             fun isSupported(srcColorModel: ColorModel, dstColorModel: ColorModel): Boolean {
                 val transferType = srcColorModel.transferType
                 return transferType == dstColorModel.transferType && transferType == DataBuffer.TYPE_INT

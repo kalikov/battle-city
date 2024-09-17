@@ -34,7 +34,7 @@ class TankExplosionFactoryTest {
 
     @Test
     fun `should create explosion when tank is destroyed`() {
-        val tank = mockPlayerTank(game)
+        val tank = stubPlayerTank(game)
         factory.notify(Tank.Destroyed(tank))
 
         verify(spriteContainer).addSprite(isA<TankExplosion>())
@@ -42,7 +42,7 @@ class TankExplosionFactoryTest {
 
     @Test
     fun `should correctly place created explosion`() {
-        val tank = mockPlayerTank(game, x = 5, y = 6)
+        val tank = stubPlayerTank(game, x = px(5), y = px(6))
         factory.notify(Tank.Destroyed(tank))
 
         val captor = argumentCaptor<TankExplosion>()
@@ -50,11 +50,11 @@ class TankExplosionFactoryTest {
 
         val explosion = captor.firstValue
         assertEquals(
-            Rect(
-                5 - Globals.UNIT_SIZE / 2,
-                6 - Globals.UNIT_SIZE / 2,
-                2 * Globals.UNIT_SIZE,
-                2 * Globals.UNIT_SIZE
+            PixelRect(
+                px(5) - t(1).toPixel(),
+                px(6) - t(1).toPixel(),
+                t(4).toPixel(),
+                t(4).toPixel(),
             ),
             explosion.bounds
         )

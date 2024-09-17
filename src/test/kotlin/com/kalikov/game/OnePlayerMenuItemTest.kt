@@ -16,10 +16,9 @@ class OnePlayerMenuItemTest {
         whenever(stageManager.stage).thenReturn(
             Stage(
                 StageMapConfig(
-                    emptyList(),
-                    Point(12, 24),
-                    emptyList(),
-                    emptyList()
+                    base = TilePoint(t(12), t(24)),
+                    playerSpawnPoints = emptyList(),
+                    enemySpawnPoints = emptyList(),
                 ),
                 1,
                 emptyList()
@@ -28,7 +27,7 @@ class OnePlayerMenuItemTest {
         val player = Player(game.eventManager)
         whenever(stageManager.players).thenReturn(listOf(player))
 
-        val item = OnePlayerMenuItem(game, stageManager, mock())
+        val item = OnePlayerMenuItem(game, stageManager)
         item.execute()
 
         val captor = argumentCaptor<Scene.Start>()

@@ -1,46 +1,48 @@
 {
-  "objects": [
-    {
-      "type": "BrickWall",
-      "x": 11,
-      "y": 25
-    },
-    {
-      "type": "BrickWall",
-      "x": 11,
-      "y": 24
-    },
-    {
-      "type": "BrickWall",
-      "x": 11,
-      "y": 23
-    },
-    {
-      "type": "BrickWall",
-      "x": 12,
-      "y": 23
-    },
-    {
-      "type": "BrickWall",
-      "x": 13,
-      "y": 23
-    },
-    {
-      "type": "BrickWall",
-      "x": 14,
-      "y": 23
-    },
-    {
-      "type": "BrickWall",
-      "x": 14,
-      "y": 24
-    },
-    {
-      "type": "BrickWall",
-      "x": 14,
-      "y": 25
-    }
-  ],
+  "walls": {
+    "bricks": [
+      {
+        "x": 11,
+        "y": 25,
+        "integrity": 15
+      },
+      {
+        "x": 11,
+        "y": 24,
+        "integrity": 15
+      },
+      {
+        "x": 11,
+        "y": 23,
+        "integrity": 15
+      },
+      {
+        "x": 12,
+        "y": 23,
+        "integrity": 15
+      },
+      {
+        "x": 13,
+        "y": 23,
+        "integrity": 15
+      },
+      {
+        "x": 14,
+        "y": 23,
+        "integrity": 15
+      },
+      {
+        "x": 14,
+        "y": 24,
+        "integrity": 15
+      },
+      {
+        "x": 14,
+        "y": 25,
+        "integrity": 15
+      }
+    ]
+  },
   "base": {
     "x": 12,
     "y": 24

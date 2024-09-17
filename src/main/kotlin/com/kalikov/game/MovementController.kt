@@ -7,8 +7,10 @@ import kotlin.contracts.contract
 class MovementController(
     private val eventManager: EventManager,
     private val pauseManager: PauseManager,
-    private val bounds: Rect,
-    private val spriteContainer: SpriteContainer,
+    private val bounds: PixelRect,
+    private val mainContainer: SpriteContainer,
+    private val overlayContainer: SpriteContainer,
+    private val gameField: GameFieldHandle,
     clock: Clock
 ) : EventSubscriber {
     companion object {
@@ -38,7 +40,7 @@ class MovementController(
     }
 
     private fun moveBullets() {
-        spriteContainer.forEach { sprite ->
+        mainContainer.forEach { sprite ->
             if (sprite is Bullet && !sprite.isDestroyed) {
                 if (sprite.move()) {
                     detectCollisionsForBullet(sprite)
@@ -54,17 +56,18 @@ class MovementController(
         }
         var explode: Boolean? = null
         var tankHit = false
-        spriteContainer.forEach { sprite ->
+        if (gameField.walls.hit(bullet)) {
+            explode = true
+        }
+        if (gameField.base.bounds.intersects(bullet.bounds)) {
+            if (!gameField.base.isHit) {
+                gameField.base.hit()
+                explode = true
+            }
+        }
+        mainContainer.forEach { sprite ->
             if (bullet !== sprite && !sprite.isDestroyed) {
-                if (sprite is Base && bullet.bounds.intersects(sprite.bounds)) {
-                    if (!sprite.isHit) {
-                        sprite.hit()
-                        explode = true
-                    }
-                } else if (sprite is Wall && bullet.bounds.intersects(sprite.hitRect)) {
-                    sprite.hit(bullet)
-                    explode = true
-                } else if (sprite is Tank && bullet.bounds.intersects(sprite.hitRect) && !tankHit) {
+                if (sprite is Tank && bullet.bounds.intersects(sprite.hitRect) && !tankHit) {
                     if (isBulletCollidable(bullet, sprite)) {
                         explode = if (sprite.canBeDestroyed) {
                             sprite.hit(bullet)
@@ -97,7 +100,7 @@ class MovementController(
     }
 
     private fun moveTanks() {
-        spriteContainer.forEach { sprite ->
+        mainContainer.forEach { sprite ->
             if (sprite is Tank && !sprite.isDestroyed) {
                 move(sprite)
             }
@@ -135,7 +138,7 @@ class MovementController(
     }
 
     private fun detectPowerUpCollisionForTank(tank: PlayerTank) {
-        spriteContainer.iterateWhile { sprite ->
+        overlayContainer.iterateWhile { sprite ->
             if (sprite is PowerUp) {
                 if (sprite.bounds.intersects(tank.hitRect)) {
                     sprite.pick(tank)
@@ -147,7 +150,7 @@ class MovementController(
     }
 
     private fun detectBulletCollisionForTank(tank: Tank) {
-        spriteContainer.iterateWhile { sprite ->
+        mainContainer.iterateWhile { sprite ->
             if (sprite is Bullet && isBulletCollision(sprite, tank) && tank.hitRect.intersects(sprite.bounds)) {
                 if (tank.canBeDestroyed) {
                     tank.hit(sprite)
@@ -167,93 +170,63 @@ class MovementController(
                 if (tank.y - 1 < bounds.top) {
                     return true
                 }
-                return !spriteContainer.iterateWhile { sprite ->
-                    if (tank !== sprite && !sprite.isDestroyed && sprite.y < tank.y) {
-                        if (isCollisionForTank(tank, sprite, 0, -1)) {
-                            return@iterateWhile false
-                        }
-                    }
-                    true
-                }
+                return isCollisionForTank(tank, px(0), px(-1))
             }
 
             Direction.LEFT -> {
                 if (tank.x - 1 < bounds.left) {
                     return true
                 }
-                return !spriteContainer.iterateWhile { sprite ->
-                    if (tank !== sprite && !sprite.isDestroyed && sprite.x < tank.x) {
-                        if (isCollisionForTank(tank, sprite, -1, 0)) {
-                            return@iterateWhile false
-                        }
-                    }
-                    true
-                }
+                return isCollisionForTank(tank, px(-1), px(0))
             }
 
             Direction.DOWN -> {
                 if (tank.bottom + 1 > bounds.bottom) {
                     return true
                 }
-                return !spriteContainer.iterateWhile { sprite ->
-                    if (tank !== sprite && !sprite.isDestroyed && sprite.bottom > tank.bottom) {
-                        if (isCollisionForTank(tank, sprite, 0, 1)) {
-                            return@iterateWhile false
-                        }
-                    }
-                    true
-                }
+                return isCollisionForTank(tank, px(0), px(1))
             }
 
             Direction.RIGHT -> {
                 if (tank.right + 1 > bounds.right) {
                     return true
                 }
-                return !spriteContainer.iterateWhile { sprite ->
-                    if (tank !== sprite && !sprite.isDestroyed && sprite.right > tank.right) {
-                        if (isCollisionForTank(tank, sprite, 1, 0)) {
-                            return@iterateWhile false
-                        }
-                    }
-                    true
-                }
+                return isCollisionForTank(tank, px(1), px(0))
             }
         }
     }
 
     private fun isTankOnIce(tank: Tank): Boolean {
-        val area = tank.bounds.area
-        var firmArea = area
-        spriteContainer.forEach { sprite ->
-            if (tank !== sprite && !sprite.isDestroyed && sprite is Ice) {
-                firmArea -= sprite.bounds.intersection(tank.bounds)?.area ?: 0
-            }
+        return gameField.ground.isTankOnIce(tank)
+    }
+
+    private fun isCollisionForTank(tank: Tank, dx: Pixel, dy: Pixel): Boolean {
+        if (gameField.walls.collides(tank, dx, dy) ||
+            gameField.ground.collides(tank, dx, dy) ||
+            intersects(tank.bounds, gameField.base.bounds, dx, dy)
+        ) {
+            return true
         }
-        return firmArea <= area / 2
+        return !mainContainer.iterateWhile { sprite ->
+            if (tank !== sprite && !sprite.isDestroyed) {
+                if (tank.direction == Direction.DOWN && sprite.bottom > tank.bottom ||
+                    tank.direction == Direction.UP && sprite.top < tank.top ||
+                    tank.direction == Direction.LEFT && sprite.left < tank.left ||
+                    tank.direction == Direction.RIGHT && sprite.right > tank.right
+                ) {
+                    if (isTankCollision(sprite) && intersects(tank.bounds, sprite.hitRect, dx, dy)) {
+                        return@iterateWhile false
+                    }
+                }
+            }
+            true
+        }
     }
 
-    private fun isCollisionForTank(tank: Tank, sprite: Sprite, dx: Int, dy: Int): Boolean {
-        val isStaticCollision = isWallCollision(sprite) || isBaseCollision(sprite) || isWaterCollision(sprite)
-        return isStaticCollision && intersects(tank.bounds, sprite.bounds, dx, dy)
-                || isTankCollision(sprite) && intersects(
-            tank.bounds,
-            sprite.hitRect,
-            dx,
-            dy
-        )
-    }
-
-    private fun intersects(rect1: Rect, rect2: Rect, dx: Int, dy: Int): Boolean {
+    private fun intersects(rect1: PixelRect, rect2: PixelRect, dx: Pixel, dy: Pixel): Boolean {
         return rect1.left + dx <= rect2.right && rect1.right + dx >= rect2.left &&
                 rect1.top + dy <= rect2.bottom && rect1.bottom + dy >= rect2.top
     }
-
-    private fun isWallCollision(target: Sprite) = target is Wall
-
-    private fun isBaseCollision(target: Sprite) = target is Base
-
-    private fun isWaterCollision(target: Sprite) = target is Water
-
 
     @OptIn(ExperimentalContracts::class)
     private fun isTankCollision(target: Sprite): Boolean {
@@ -269,7 +242,7 @@ class MovementController(
     }
 
     private fun detectCollisionsForPowerUp(powerUp: PowerUp) {
-        spriteContainer.iterateWhile { sprite ->
+        mainContainer.iterateWhile { sprite ->
             if (powerUp !== sprite) {
                 if (sprite is PlayerTank && powerUp.bounds.intersects(sprite.bounds)) {
                     powerUp.pick(sprite)

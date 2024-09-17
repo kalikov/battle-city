@@ -1,6 +1,7 @@
 package com.kalikov.game
 
 import java.util.TreeSet
+import kotlin.Unit
 
 class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteContainer, EventSubscriber {
     private val ordering = Comparator<Sprite> { a, b ->
@@ -61,8 +62,6 @@ class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteCon
         }
         if (sprites.remove(sprite)) {
             eventManager.fireEvent(SpriteContainer.Removed(sprite))
-        } else {
-            println("Sprite $sprite was not removed")
         }
     }
 

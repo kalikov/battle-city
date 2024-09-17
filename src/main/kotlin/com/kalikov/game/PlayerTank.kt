@@ -3,8 +3,8 @@ package com.kalikov.game
 class PlayerTank private constructor(
     game: Game,
     pauseManager: PauseManager,
-    x: Int,
-    y: Int,
+    x: Pixel,
+    y: Pixel,
     override val player: Player,
 ) : Tank(
     game,
@@ -16,8 +16,8 @@ class PlayerTank private constructor(
         fun create(
             game: Game,
             pauseManager: PauseManager,
-            x: Int,
-            y: Int,
+            x: Pixel,
+            y: Pixel,
             player: Player,
         ) = init(PlayerTank(game, pauseManager, x, y, player))
     }

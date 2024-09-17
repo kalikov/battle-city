@@ -9,19 +9,19 @@ import java.awt.image.BufferedImage
 
 class BaseTest {
     private lateinit var fonts: TestFonts
-    private lateinit var eventManager: EventManager
+    private lateinit var eventRouter: EventRouter
     private lateinit var base: Base
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        eventRouter = mock()
         fonts = TestFonts()
-        base = Base(eventManager, TestImageManager(fonts), 0, 0)
+        base = Base(eventRouter, TestImageManager(fonts))
     }
 
     @Test
     fun `should draw base`() {
-        val image = BufferedImage(Globals.UNIT_SIZE, Globals.UNIT_SIZE, BufferedImage.TYPE_INT_ARGB)
+        val image = BufferedImage(Base.SIZE.toInt(), Base.SIZE.toInt(), BufferedImage.TYPE_INT_ARGB)
         base.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("base.png", image)
@@ -29,7 +29,7 @@ class BaseTest {
 
     @Test
     fun `should draw destroyed base`() {
-        val image = BufferedImage(Globals.UNIT_SIZE, Globals.UNIT_SIZE, BufferedImage.TYPE_INT_ARGB)
+        val image = BufferedImage(Base.SIZE.toInt(), Base.SIZE.toInt(), BufferedImage.TYPE_INT_ARGB)
         base.hit()
         base.draw(AwtScreenSurface(fonts, image))
 
@@ -39,9 +39,9 @@ class BaseTest {
     @Test
     fun `should be hit only once`() {
         base.hit()
-        verify(eventManager).fireEvent(Base.Hit(base))
+        verify(eventRouter).fireEvent(Base.Hit(base))
 
         base.hit()
-        verifyNoMoreInteractions(eventManager)
+        verifyNoMoreInteractions(eventRouter)
     }
 }

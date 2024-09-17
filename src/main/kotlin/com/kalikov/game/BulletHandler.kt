@@ -1,6 +1,6 @@
 package com.kalikov.game
 
-class BulletFactory(
+class BulletHandler(
     private val eventManager: EventManager,
     private val spriteContainer: SpriteContainer
 ) : EventSubscriber {
@@ -14,18 +14,11 @@ class BulletFactory(
 
     override fun notify(event: Event) {
         if (event is Tank.Shoot) {
-            spriteContainer.addSprite(createBullet(event.tank))
+            if (event.bullet.tank is PlayerTank) {
+                eventManager.fireEvent(SoundManager.Play("bullet_shot"))
+            }
+            spriteContainer.addSprite(event.bullet)
         }
-    }
-
-    private fun createBullet(tank: Tank): Bullet {
-        val bullet = tank.createBullet()
-
-        if (tank is PlayerTank) {
-            eventManager.fireEvent(SoundManager.Play("bullet_shot"))
-        }
-
-        return bullet
     }
 
     fun dispose() {

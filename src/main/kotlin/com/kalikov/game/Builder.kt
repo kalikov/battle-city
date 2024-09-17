@@ -1,14 +1,8 @@
 package com.kalikov.game
 
-import java.time.Clock
+import kotlin.Unit
 
-class Builder(
-    private val eventManager: EventManager,
-    private val imageManager: ImageManager,
-    private val clock: Clock
-) {
-    data class StructureCreated(val sprites: List<Sprite>, val cursor: Cursor) : Event()
-
+class Builder(private val gameField: GameFieldHandle) : BuilderHandler {
     enum class Structure {
         BRICK_WALL_RIGHT,
         BRICK_WALL_BOTTOM,
@@ -30,13 +24,10 @@ class Builder(
     }
 
     var structure = Structure.BRICK_WALL_RIGHT
-        private set
 
-    private val brickWallFactory = BrickWallFactory(eventManager, imageManager)
-    private val steelWallFactory = SteelWallFactory(eventManager, imageManager)
-
-    fun build(cursor: Cursor) {
-        val structure = when (structure) {
+    override fun build(cursor: Cursor) {
+        clear(cursor)
+        when (structure) {
             Structure.BRICK_WALL_RIGHT -> buildBrickWallRight(cursor)
             Structure.BRICK_WALL_BOTTOM -> buildBrickWallBottom(cursor)
             Structure.BRICK_WALL_LEFT -> buildBrickWallLeft(cursor)
@@ -50,113 +41,129 @@ class Builder(
             Structure.WATER -> buildWater(cursor)
             Structure.TREES -> buildTrees(cursor)
             Structure.ICE -> buildIce(cursor)
-            Structure.CLEAR -> emptyList()
+            Structure.CLEAR -> {}
         }
-        eventManager.fireEvent(StructureCreated(structure, cursor))
     }
 
 
-    private fun buildBrickWallRight(cursor: Cursor): List<Sprite> {
-        return buildWallRight(cursor, brickWallFactory)
+    private fun buildBrickWallRight(cursor: Cursor) {
+        buildWallRight(cursor, WallsHandle::fillBrickTile)
     }
 
-    private fun buildBrickWallBottom(cursor: Cursor): List<Sprite> {
-        return buildWallBottom(cursor, brickWallFactory)
+    private fun buildBrickWallBottom(cursor: Cursor) {
+        buildWallBottom(cursor, WallsHandle::fillBrickTile)
     }
 
-    private fun buildBrickWallLeft(cursor: Cursor): List<Sprite> {
-        return buildWallLeft(cursor, brickWallFactory)
+    private fun buildBrickWallLeft(cursor: Cursor) {
+        buildWallLeft(cursor, WallsHandle::fillBrickTile)
     }
 
-    private fun buildBrickWallTop(cursor: Cursor): List<Sprite> {
-        return buildWallTop(cursor, brickWallFactory)
+    private fun buildBrickWallTop(cursor: Cursor) {
+        buildWallTop(cursor, WallsHandle::fillBrickTile)
     }
 
-    private fun buildBrickWallFull(cursor: Cursor): List<Sprite> {
-        return buildWallFull(cursor, brickWallFactory)
+    private fun buildBrickWallFull(cursor: Cursor) {
+        buildWallFull(cursor, WallsHandle::fillBrickTile)
     }
 
-    private fun buildSteelWallRight(cursor: Cursor): List<Sprite> {
-        return buildWallRight(cursor, steelWallFactory)
+    private fun buildSteelWallRight(cursor: Cursor) {
+        buildWallRight(cursor, WallsHandle::fillSteelTile)
     }
 
-    private fun buildSteelWallBottom(cursor: Cursor): List<Sprite> {
-        return buildWallBottom(cursor, steelWallFactory)
+    private fun buildSteelWallBottom(cursor: Cursor) {
+        buildWallBottom(cursor, WallsHandle::fillSteelTile)
     }
 
-    private fun buildSteelWallLeft(cursor: Cursor): List<Sprite> {
-        return buildWallLeft(cursor, steelWallFactory)
+    private fun buildSteelWallLeft(cursor: Cursor) {
+        buildWallLeft(cursor, WallsHandle::fillSteelTile)
     }
 
-    private fun buildSteelWallTop(cursor: Cursor): List<Sprite> {
-        return buildWallTop(cursor, steelWallFactory)
+    private fun buildSteelWallTop(cursor: Cursor) {
+        buildWallTop(cursor, WallsHandle::fillSteelTile)
     }
 
-    private fun buildSteelWallFull(cursor: Cursor): List<Sprite> {
-        return buildWallFull(cursor, steelWallFactory)
+    private fun buildSteelWallFull(cursor: Cursor) {
+        buildWallFull(cursor, WallsHandle::fillSteelTile)
     }
 
-    private fun buildWater(cursor: Cursor): List<Sprite> {
-        val water = Water(eventManager, imageManager, clock, cursor.x, cursor.y)
-        water.isStatic = true
-        return listOf(water)
+    private fun buildWater(cursor: Cursor) {
+        gameField.ground.fillWaterTile(cursor.tileX, cursor.tileY)
+        gameField.ground.fillWaterTile(cursor.tileX, cursor.tileY + 1)
+        gameField.ground.fillWaterTile(cursor.tileX + 1, cursor.tileY)
+        gameField.ground.fillWaterTile(cursor.tileX + 1, cursor.tileY + 1)
     }
 
-    private fun buildTrees(cursor: Cursor): List<Sprite> {
-        val trees = Trees(eventManager, imageManager, cursor.x, cursor.y)
-        return listOf(trees)
+    private fun buildTrees(cursor: Cursor) {
+        gameField.trees.fillTile(cursor.tileX, cursor.tileY)
+        gameField.trees.fillTile(cursor.tileX, cursor.tileY + 1)
+        gameField.trees.fillTile(cursor.tileX + 1, cursor.tileY)
+        gameField.trees.fillTile(cursor.tileX + 1, cursor.tileY + 1)
     }
 
-    private fun buildIce(cursor: Cursor): List<Sprite> {
-        val ice = Ice(eventManager, imageManager, cursor.x, cursor.y)
-        return listOf(ice)
+    private fun buildIce(cursor: Cursor) {
+        gameField.ground.fillIceTile(cursor.tileX, cursor.tileY)
+        gameField.ground.fillIceTile(cursor.tileX, cursor.tileY + 1)
+        gameField.ground.fillIceTile(cursor.tileX + 1, cursor.tileY)
+        gameField.ground.fillIceTile(cursor.tileX + 1, cursor.tileY + 1)
     }
 
-    private fun buildWallRight(cursor: Cursor, factory: WallFactory): List<Sprite> {
-        val wallTop = factory.create(cursor.x + Globals.TILE_SIZE, cursor.y)
-
-        val wallBottom = factory.create(cursor.x + Globals.TILE_SIZE, cursor.y + Globals.TILE_SIZE)
-
-        return listOf(wallTop, wallBottom)
+    private fun buildWallRight(cursor: Cursor, setter: WallsHandle.(Tile, Tile) -> Unit) {
+        gameField.walls.clearTile(cursor.tileX, cursor.tileY)
+        gameField.walls.clearTile(cursor.tileX, cursor.tileY + 1)
+        gameField.walls.setter(cursor.tileX + 1, cursor.tileY)
+        gameField.walls.setter(cursor.tileX + 1, cursor.tileY + 1)
     }
 
-    private fun buildWallBottom(cursor: Cursor, factory: WallFactory): List<Sprite> {
-        val wallLeft = factory.create(cursor.x, cursor.y + Globals.TILE_SIZE)
-
-        val wallRight = factory.create(cursor.x + Globals.TILE_SIZE, cursor.y + Globals.TILE_SIZE)
-
-        return listOf(wallLeft, wallRight)
+    private fun buildWallBottom(cursor: Cursor, setter: WallsHandle.(Tile, Tile) -> Unit) {
+        gameField.walls.setter(cursor.tileX, cursor.tileY + 1)
+        gameField.walls.setter(cursor.tileX + 1, cursor.tileY + 1)
+        gameField.walls.clearTile(cursor.tileX, cursor.tileY)
+        gameField.walls.clearTile(cursor.tileX + 1, cursor.tileY)
     }
 
-    private fun buildWallLeft(cursor: Cursor, factory: WallFactory): List<Sprite> {
-        val wallTop = factory.create(cursor.x, cursor.y)
-
-        val wallBottom = factory.create(cursor.x, cursor.y + Globals.TILE_SIZE)
-
-        return listOf(wallTop, wallBottom)
+    private fun buildWallLeft(cursor: Cursor, setter: WallsHandle.(Tile, Tile) -> Unit) {
+        gameField.walls.setter(cursor.tileX, cursor.tileY)
+        gameField.walls.setter(cursor.tileX, cursor.tileY + 1)
+        gameField.walls.clearTile(cursor.tileX + 1, cursor.tileY)
+        gameField.walls.clearTile(cursor.tileX + 1, cursor.tileY + 1)
     }
 
-    private fun buildWallTop(cursor: Cursor, factory: WallFactory): List<Sprite> {
-        val wallLeft = factory.create(cursor.x, cursor.y)
-
-        val wallRight = factory.create(cursor.x + Globals.TILE_SIZE, cursor.y)
-
-        return listOf(wallLeft, wallRight)
+    private fun buildWallTop(cursor: Cursor, setter: WallsHandle.(Tile, Tile) -> Unit) {
+        gameField.walls.setter(cursor.tileX, cursor.tileY)
+        gameField.walls.setter(cursor.tileX + 1, cursor.tileY)
+        gameField.walls.clearTile(cursor.tileX, cursor.tileY + 1)
+        gameField.walls.clearTile(cursor.tileX + 1, cursor.tileY + 1)
     }
 
-    private fun buildWallFull(cursor: Cursor, factory: WallFactory): List<Sprite> {
-        val wallTopLeft = factory.create(cursor.x, cursor.y)
-
-        val wallTopRight = factory.create(cursor.x + Globals.TILE_SIZE, cursor.y)
-
-        val wallBottomLeft = factory.create(cursor.x, cursor.y + Globals.TILE_SIZE)
-
-        val wallBottomRight = factory.create(cursor.x + Globals.TILE_SIZE, cursor.y + Globals.TILE_SIZE)
-
-        return listOf(wallTopLeft, wallTopRight, wallBottomLeft, wallBottomRight)
+    private fun buildWallFull(cursor: Cursor, setter: WallsHandle.(Tile, Tile) -> Unit) {
+        gameField.walls.setter(cursor.tileX, cursor.tileY)
+        gameField.walls.setter(cursor.tileX + 1, cursor.tileY)
+        gameField.walls.setter(cursor.tileX, cursor.tileY + 1)
+        gameField.walls.setter(cursor.tileX + 1, cursor.tileY + 1)
     }
 
-    fun nextStructure() {
+    private fun clear(cursor: Cursor) {
+        gameField.walls.clearTile(cursor.tileX, cursor.tileY)
+        gameField.walls.clearTile(cursor.tileX, cursor.tileY + 1)
+        gameField.walls.clearTile(cursor.tileX + 1, cursor.tileY)
+        gameField.walls.clearTile(cursor.tileX + 1, cursor.tileY + 1)
+        gameField.trees.clearTile(cursor.tileX, cursor.tileY)
+        gameField.trees.clearTile(cursor.tileX, cursor.tileY + 1)
+        gameField.trees.clearTile(cursor.tileX + 1, cursor.tileY)
+        gameField.trees.clearTile(cursor.tileX + 1, cursor.tileY + 1)
+        gameField.ground.clearTile(cursor.tileX, cursor.tileY)
+        gameField.ground.clearTile(cursor.tileX, cursor.tileY + 1)
+        gameField.ground.clearTile(cursor.tileX + 1, cursor.tileY)
+        gameField.ground.clearTile(cursor.tileX + 1, cursor.tileY + 1)
+        if (!gameField.base.isHidden && gameField.base.bounds.intersects(cursor.bounds)) {
+            gameField.base.isHidden = true
+        }
+    }
+
+    private val Cursor.tileX get() = (x - gameField.bounds.x).toTile()
+    private val Cursor.tileY get() = (y - gameField.bounds.y).toTile()
+
+    override fun nextStructure() {
         structure = Structure.entries[(structure.ordinal + 1) % Structure.entries.size]
     }
 

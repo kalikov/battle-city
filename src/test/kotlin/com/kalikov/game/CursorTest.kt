@@ -2,36 +2,33 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertSame
 
 class CursorTest {
-    private lateinit var eventManager: EventManager
+    private lateinit var builder: BuilderHandler
     private lateinit var cursor: Cursor
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
-        cursor = Cursor(eventManager, mock(), Builder(eventManager, mock(), mock()), mock())
+        builder = mock()
+        cursor = Cursor(mockGame(), builder)
     }
 
     @Test
-    fun `should fire StructureCreated event`() {
+    fun `should build`() {
         cursor.build()
 
-        val captor = argumentCaptor<Builder.StructureCreated>()
-        verify(eventManager).fireEvent(captor.capture())
+        verify(builder).build(cursor)
+    }
 
-        val event = captor.firstValue
-        assertSame(cursor, event.cursor)
-        assertEquals(2, event.sprites.size)
-        assertIs<BrickWall>(event.sprites[0])
-        assertEquals(Point(Globals.TILE_SIZE, 0), event.sprites[0].position)
-        assertIs<BrickWall>(event.sprites[1])
-        assertEquals(Point(Globals.TILE_SIZE, Globals.TILE_SIZE), event.sprites[1].position)
+    @Test
+    fun `should build next`() {
+        cursor.buildNext()
+
+        val order = inOrder(builder)
+        order.verify(builder).nextStructure()
+        order.verify(builder).build(cursor)
     }
 }
