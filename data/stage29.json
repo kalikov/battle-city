@@ -537,323 +537,259 @@
     "bricks": [
       {
         "x": 21,
-        "y": 1,
-        "integrity": 15
+        "y": 1
       },
       {
         "x": 20,
-        "y": 1,
-        "integrity": 15
+        "y": 1
       },
       {
         "x": 21,
-        "y": 0,
-        "integrity": 15
+        "y": 0
       },
       {
         "x": 20,
-        "y": 0,
-        "integrity": 15
+        "y": 0
       },
       {
         "x": 3,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 2,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 3,
-        "y": 2,
-        "integrity": 15
+        "y": 2
       },
       {
         "x": 2,
-        "y": 2,
-        "integrity": 15
+        "y": 2
       },
       {
         "x": 15,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 14,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 15,
-        "y": 2,
-        "integrity": 15
+        "y": 2
       },
       {
         "x": 14,
-        "y": 2,
-        "integrity": 15
+        "y": 2
       },
       {
         "x": 9,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 8,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 9,
-        "y": 4,
-        "integrity": 15
+        "y": 4
       },
       {
         "x": 8,
-        "y": 4,
-        "integrity": 15
+        "y": 4
       },
       {
         "x": 21,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 20,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 21,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 20,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 5,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 4,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 5,
-        "y": 10,
-        "integrity": 15
+        "y": 10
       },
       {
         "x": 4,
-        "y": 10,
-        "integrity": 15
+        "y": 10
       },
       {
         "x": 23,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 22,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 23,
-        "y": 10,
-        "integrity": 15
+        "y": 10
       },
       {
         "x": 22,
-        "y": 10,
-        "integrity": 15
+        "y": 10
       },
       {
         "x": 3,
-        "y": 15,
-        "integrity": 15
+        "y": 15
       },
       {
         "x": 2,
-        "y": 15,
-        "integrity": 15
+        "y": 15
       },
       {
         "x": 3,
-        "y": 14,
-        "integrity": 15
+        "y": 14
       },
       {
         "x": 2,
-        "y": 14,
-        "integrity": 15
+        "y": 14
       },
       {
         "x": 11,
-        "y": 15,
-        "integrity": 15
+        "y": 15
       },
       {
         "x": 10,
-        "y": 15,
-        "integrity": 15
+        "y": 15
       },
       {
         "x": 11,
-        "y": 14,
-        "integrity": 15
+        "y": 14
       },
       {
         "x": 10,
-        "y": 14,
-        "integrity": 15
+        "y": 14
       },
       {
         "x": 23,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 22,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 23,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 22,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 5,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 4,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 5,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 4,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 9,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 8,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 9,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 8,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 11,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 13,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 12,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 14,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 1,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 0,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 1,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 0,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 11,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 11,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 14,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 14,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 19,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 18,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 19,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 18,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       }
     ]
   },

@@ -111,6 +111,19 @@
     "arrows": "images/arrows.png"
   },
   "construction": "data/construction.json",
+  "demo": {
+    "map": "data/demo.json",
+    "enemies": [
+      {
+        "type": "BASIC",
+        "count": 18
+      },
+      {
+        "type": "FAST",
+        "count": 2
+      }
+    ]
+  },
   "stages": [
     {
       "map": "data/stage1.json",

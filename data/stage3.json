@@ -109,663 +109,531 @@
     "bricks": [
       {
         "x": 9,
-        "y": 1,
-        "integrity": 15
+        "y": 1
       },
       {
         "x": 8,
-        "y": 1,
-        "integrity": 15
+        "y": 1
       },
       {
         "x": 9,
-        "y": 0,
-        "integrity": 15
+        "y": 0
       },
       {
         "x": 8,
-        "y": 0,
-        "integrity": 15
+        "y": 0
       },
       {
         "x": 17,
-        "y": 1,
-        "integrity": 15
+        "y": 1
       },
       {
         "x": 16,
-        "y": 1,
-        "integrity": 15
+        "y": 1
       },
       {
         "x": 17,
-        "y": 0,
-        "integrity": 15
+        "y": 0
       },
       {
         "x": 16,
-        "y": 0,
-        "integrity": 15
+        "y": 0
       },
       {
         "x": 9,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 8,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 9,
-        "y": 2,
-        "integrity": 15
+        "y": 2
       },
       {
         "x": 8,
-        "y": 2,
-        "integrity": 15
+        "y": 2
       },
       {
         "x": 1,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 0,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 1,
-        "y": 4,
-        "integrity": 15
+        "y": 4
       },
       {
         "x": 0,
-        "y": 4,
-        "integrity": 15
+        "y": 4
       },
       {
         "x": 15,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 14,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 15,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 14,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 19,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 18,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 19,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 18,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 21,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 20,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 21,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 20,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 23,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 22,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 23,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 22,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 24,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 24,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 9,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 8,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 9,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 8,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 11,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 10,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 11,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 10,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 13,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 12,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 13,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 12,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 15,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 14,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 19,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 18,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 19,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 18,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 23,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 23,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 13,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 12,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 13,
-        "y": 10,
-        "integrity": 15
+        "y": 10
       },
       {
         "x": 12,
-        "y": 10,
-        "integrity": 15
+        "y": 10
       },
       {
         "x": 23,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 23,
-        "y": 10,
-        "integrity": 15
+        "y": 10
       },
       {
         "x": 3,
-        "y": 15,
-        "integrity": 15
+        "y": 15
       },
       {
         "x": 2,
-        "y": 15,
-        "integrity": 15
+        "y": 15
       },
       {
         "x": 7,
-        "y": 15,
-        "integrity": 15
+        "y": 15
       },
       {
         "x": 6,
-        "y": 15,
-        "integrity": 15
+        "y": 15
       },
       {
         "x": 7,
-        "y": 14,
-        "integrity": 15
+        "y": 14
       },
       {
         "x": 6,
-        "y": 14,
-        "integrity": 15
+        "y": 14
       },
       {
         "x": 1,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 0,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 1,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 0,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 2,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 2,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 5,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 5,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 7,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 6,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 7,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 6,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 8,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 8,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 11,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 10,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 13,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 12,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 15,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 14,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 17,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 16,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 11,
-        "y": 19,
-        "integrity": 15
+        "y": 19
       },
       {
         "x": 10,
-        "y": 19,
-        "integrity": 15
+        "y": 19
       },
       {
         "x": 11,
-        "y": 18,
-        "integrity": 15
+        "y": 18
       },
       {
         "x": 10,
-        "y": 18,
-        "integrity": 15
+        "y": 18
       },
       {
         "x": 15,
-        "y": 19,
-        "integrity": 15
+        "y": 19
       },
       {
         "x": 14,
-        "y": 19,
-        "integrity": 15
+        "y": 19
       },
       {
         "x": 17,
-        "y": 19,
-        "integrity": 15
+        "y": 19
       },
       {
         "x": 16,
-        "y": 19,
-        "integrity": 15
+        "y": 19
       },
       {
         "x": 1,
-        "y": 21,
-        "integrity": 15
+        "y": 21
       },
       {
         "x": 0,
-        "y": 21,
-        "integrity": 15
+        "y": 21
       },
       {
         "x": 1,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 0,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 15,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 14,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 17,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 16,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 1,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 0,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 1,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 0,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 3,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 2,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 3,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 2,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 11,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 13,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 12,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 14,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 3,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 2,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 3,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 2,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 5,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 4,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 5,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 4,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 11,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 11,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 14,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 14,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 19,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 18,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 19,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 18,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       }
     ]
   },

@@ -5,6 +5,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.awt.image.BufferedImage
 import java.io.File
@@ -32,7 +33,7 @@ class DemoStageSceneTest {
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 19))
         )
 
-        val scene = DemoStageScene(game, stage)
+        val scene = DemoStageScene(game, mock(), 0, stage)
 
 //        while (!scene.isReady) {
 //            clock.tick(1)
