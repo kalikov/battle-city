@@ -29,8 +29,8 @@ class DemoStageSceneTest {
         }
         val stage = Stage(
             map,
-            1,
-            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 19))
+            3000,
+            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 20))
         )
 
         val scene = DemoStageScene(game, mock(), 0, stage)

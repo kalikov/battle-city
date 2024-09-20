@@ -11,7 +11,7 @@ class PlayerTank private constructor(
     pauseManager,
     x,
     y
-), PlayerTankHandle {
+), PlayerTankHandles {
     companion object {
         fun create(
             game: Game,
