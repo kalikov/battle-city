@@ -6,6 +6,9 @@ value class ARGB(val value: Int) {
         val TRANSPARENT = ARGB(0)
         val WHITE = rgb(0xFFFFFF)
         val BLACK = rgb(0x000000)
+        val RED = rgb(0xFF0000)
+        val GREEN = rgb(0x00FF00)
+        val BLUE = rgb(0x0000FF)
 
         fun rgb(value: Int): ARGB {
             return ARGB(0xFF000000.toInt() or value)

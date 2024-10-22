@@ -21,27 +21,13 @@ class Level(
     private val playersTankControllers: List<PlayerTankController>
     private val playersTankFactories: List<PlayerTankFactory>
 
-    private val bulletHandler: BulletHandler
-    private val bulletExplosionFactory: BulletExplosionFactory
-    private val tankExplosionFactory: TankExplosionFactory
-    private val baseExplosionFactory: BaseExplosionFactory
-    private val pointsFactory: PointsFactory
-
-    private val freezeHandler: FreezeHandler
-
-    private val aiControllersContainer: AITankControllerContainer
-
     private val enemyFactory: EnemyFactory
     private val enemyFactoryView: EnemyFactoryView
-
-    private val powerUpFactory: PowerUpFactory
-
-    private val powerUpHandler: PowerUpHandler
-    private val shovelHandler: ShovelHandler
 
     private val pauseMessageView: PauseMessageView
 
     private val livesView: LivesView
+    private val stageNumberView: StageNumberView
 
     private val gameOverMessage: GameOverMessage
 
@@ -55,8 +41,7 @@ class Level(
     private val mainContainer: SpriteContainer
     private val overlayContainer: SpriteContainer
     private val gameField: GameField
-
-    private val movementController: MovementController
+    private val gameFieldController: GameFieldCommonController
 
     var gameOver = false
         private set
@@ -70,24 +55,22 @@ class Level(
 
         mainContainer = DefaultSpriteContainer(game.eventManager)
         overlayContainer = DefaultSpriteContainer(game.eventManager)
-        gameField = GameField(game, mainContainer, overlayContainer)
 
-        movementController = MovementController(
-            game.eventManager,
+        val stage = stageManager.stage
+
+        gameField = GameField(game, mainContainer, overlayContainer)
+        gameFieldController = GameFieldCommonController(
+            game,
+            gameField,
             pauseListener,
-            gameField.bounds,
             mainContainer,
             overlayContainer,
-            gameField,
-            game.clock
+            stage.map.base,
         )
 
         playersTankControllers = stageManager.players.map { player ->
             PlayerTankController(game.eventManager, pauseListener, player)
         }
-
-        val stage = stageManager.stage
-
         playersTankFactories = stageManager.players.mapIndexed { index, player ->
             PlayerTankFactory(
                 game,
@@ -97,21 +80,6 @@ class Level(
                 player,
             )
         }
-
-        bulletHandler = BulletHandler(game.eventManager, mainContainer)
-        bulletExplosionFactory = BulletExplosionFactory(game, overlayContainer)
-        tankExplosionFactory = TankExplosionFactory(game, overlayContainer)
-        baseExplosionFactory = BaseExplosionFactory(game, overlayContainer)
-        pointsFactory = PointsFactory(game, overlayContainer)
-        freezeHandler = FreezeHandler(game.eventManager, game.clock)
-
-        val basePosition = stage.map.base.toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y)
-
-        aiControllersContainer = AITankControllerContainer(
-            game.eventManager,
-            pauseListener,
-            basePosition,
-        )
 
         enemyFactory = EnemyFactory(
             game,
@@ -132,12 +100,6 @@ class Level(
             gameField.bounds.y + Globals.TILE_SIZE
         )
 
-        powerUpFactory = PowerUpFactory(game, overlayContainer, gameField.bounds)
-
-        powerUpHandler = PowerUpHandler(game)
-
-        shovelHandler = ShovelHandler(game, gameField)
-
         pauseMessageView = PauseMessageView(
             game.eventManager,
             gameField.bounds.x + gameField.bounds.width / 2,
@@ -150,6 +112,13 @@ class Level(
             stageManager.players,
             gameField.bounds.right + 1 + t(1).toPixel(),
             gameField.bounds.bottom + 1 - t(11).toPixel()
+        )
+
+        stageNumberView = StageNumberView(
+            game.imageManager,
+            stageManager.stageNumber,
+            gameField.bounds.right + 1 + t(1).toPixel(),
+            gameField.bounds.bottom + 1 - t(5).toPixel()
         )
 
         gameOverMessage = GameOverMessage()
@@ -239,13 +208,13 @@ class Level(
     }
 
     fun update() {
-        gameField.update()
-        movementController.update()
         playersTankControllers.forEach { it.update() }
+
+        gameField.update()
+        gameFieldController.update()
+
         enemyFactory.update()
-        aiControllersContainer.update()
-        freezeHandler.update()
-        shovelHandler.update()
+
         pauseMessageView.update()
         gameOverScript.update()
         nextStageScript.update()
@@ -262,7 +231,7 @@ class Level(
         enemyFactoryView.draw(surface)
         pauseMessageView.draw(surface)
         livesView.draw(surface)
-        drawFlag(surface)
+        stageNumberView.draw(surface)
         gameOverMessage.draw(surface)
     }
 
@@ -333,39 +302,15 @@ class Level(
         )
     }
 
-    private fun drawFlag(surface: ScreenSurface) {
-        val flag = game.imageManager.getImage("flag")
-        val x = gameField.bounds.right + 1 + t(1).toPixel()
-        val y = gameField.bounds.bottom + 1 - t(5).toPixel()
-        surface.draw(x, y, flag)
-
-        val stageNumber = "${stageManager.stageNumber}".padStart(2, ' ')
-        surface.fillText(stageNumber, x + 1, y + flag.height + Globals.TILE_SIZE - 1, ARGB.BLACK, Globals.FONT_REGULAR)
-    }
-
     fun dispose() {
         pauseMessageView.dispose()
 
-        shovelHandler.dispose()
-        powerUpHandler.dispose()
-
-        powerUpFactory.dispose()
-
         enemyFactory.dispose()
-
-        aiControllersContainer.dispose()
-
-        freezeHandler.dispose()
-        pointsFactory.dispose()
-        baseExplosionFactory.dispose()
-        tankExplosionFactory.dispose()
-        bulletExplosionFactory.dispose()
-        bulletHandler.dispose()
 
         playersTankFactories.forEach { it.dispose() }
         playersTankControllers.forEach { it.dispose() }
 
-        movementController.dispose()
+        gameFieldController.dispose()
 
         gameField.dispose()
         mainContainer.dispose()

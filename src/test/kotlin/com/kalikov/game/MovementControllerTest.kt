@@ -40,19 +40,18 @@ class MovementControllerTest {
         val groundStub = Ground(game, px(0), px(0), GroundConfig())
         val wallsStub = Walls(game, px(0), px(0), WallsConfig())
         gameField = mock {
+            on { bounds } doReturn PixelRect(px(0), px(0), Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT)
             on { base } doReturn baseStub
             on { trees } doReturn treesStub
             on { ground } doReturn groundStub
             on { walls } doReturn wallsStub
         }
         movementController = MovementController(
-            game.eventManager,
+            game,
+            gameField,
             pauseManager,
-            PixelRect(px(0), px(0), Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT),
             mainContainer,
             overlayContainer,
-            gameField,
-            clock
         )
     }
 

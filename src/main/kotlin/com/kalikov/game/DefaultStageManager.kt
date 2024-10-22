@@ -10,6 +10,8 @@ class DefaultStageManager(
     private lateinit var defaultConstructionMap: StageMapConfig
     private lateinit var currentConstructionMap: StageMapConfig
     private lateinit var constructionStage: Stage
+    override var demoStage: Stage? = null
+        private set
 
     override lateinit var players: List<Player>
 
@@ -38,13 +40,16 @@ class DefaultStageManager(
 
     override val stageNumber get() = index + 1
 
-    override fun init(stages: List<Stage>, defaultConstructionMap: StageMapConfig) {
+    override fun init(stages: List<Stage>, defaultConstructionMap: StageMapConfig, demoStage: Stage?) {
         require(stages.isNotEmpty())
         this.stages = stages
+
         this.defaultConstructionMap = defaultConstructionMap
         players = listOf(Player(eventManager))
         constructionStage = Stage(defaultConstructionMap, stages[0].enemySpawnDelay, stages[0].enemies)
         constructionMap = defaultConstructionMap
+
+        this.demoStage = demoStage
     }
 
     override fun setPlayersCount(playersCount: Int) {

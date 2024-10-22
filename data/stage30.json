@@ -281,223 +281,179 @@
     "bricks": [
       {
         "x": 11,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 10,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 13,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 12,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 9,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 8,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 19,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 18,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 23,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 22,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 1,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 0,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 7,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 6,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 17,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 16,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 25,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 24,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 11,
-        "y": 18,
-        "integrity": 15
+        "y": 18
       },
       {
         "x": 10,
-        "y": 18,
-        "integrity": 15
+        "y": 18
       },
       {
         "x": 13,
-        "y": 18,
-        "integrity": 15
+        "y": 18
       },
       {
         "x": 12,
-        "y": 18,
-        "integrity": 15
+        "y": 18
       },
       {
         "x": 9,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 8,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 15,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 14,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 5,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 4,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 7,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 6,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 11,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 13,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 12,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 14,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 17,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 16,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 19,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 18,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 21,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 20,
-        "y": 22,
-        "integrity": 15
+        "y": 22
       },
       {
         "x": 11,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 11,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 14,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 14,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       }
     ]
   },

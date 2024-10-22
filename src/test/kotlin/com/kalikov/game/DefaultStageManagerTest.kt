@@ -22,7 +22,7 @@ class DefaultStageManagerTest {
             playerSpawnPoints = emptyList(),
             enemySpawnPoints = emptyList(),
         )
-        stageManager.init(listOf(Stage(stageMapConfig, 0, emptyList())), stageMapConfig)
+        stageManager.init(listOf(Stage(stageMapConfig, 0, emptyList())), stageMapConfig, null)
 
         stageManager.players[0].notify(Player.Score(stageManager.players[0], 40000))
 

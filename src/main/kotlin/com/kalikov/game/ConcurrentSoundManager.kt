@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 class ConcurrentSoundManager(
     private val audio: Audio,
     private val eventManager: EventManager
-) : SoundManager, EventSubscriber {
+) : LoadingSoundManager, EventSubscriber {
     private companion object {
         private val subscriptions = setOf(
             SoundManager.Play::class,
@@ -29,6 +29,12 @@ class ConcurrentSoundManager(
         eventManager.addSubscriber(this, subscriptions)
     }
 
+    override var enabled: Boolean = true
+        set(value) {
+            field = value
+            stopAll()
+        }
+
     override fun load(name: String, path: String) {
         val sound = audio.load(path)
         sounds[name] = sound
@@ -46,6 +52,10 @@ class ConcurrentSoundManager(
 
     private fun play(name: String) {
         val sound = sounds[name] ?: throw SoundNotFoundException(name)
+
+        if (!enabled) {
+            return
+        }
 
         playbacks.compute(name) { _, value ->
             value?.cancel(true)
@@ -74,17 +84,21 @@ class ConcurrentSoundManager(
         }
     }
 
-    override fun destroy() {
-        eventManager.removeSubscriber(this, subscriptions)
-
-        executor.shutdown()
-
+    private fun stopAll() {
         playbacks.values.forEach {
             it.cancel(true)
         }
         playbacks.clear()
 
         sounds.values.forEach { it.stop() }
+    }
+
+    fun destroy() {
+        eventManager.removeSubscriber(this, subscriptions)
+
+        executor.shutdown()
+
+        stopAll()
         sounds.clear()
 
         executor.awaitTermination(1, TimeUnit.MINUTES)

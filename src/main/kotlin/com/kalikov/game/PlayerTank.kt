@@ -1,11 +1,14 @@
 package com.kalikov.game
 
+import java.util.EnumSet
+
 class PlayerTank private constructor(
     game: Game,
     pauseManager: PauseManager,
     x: Pixel,
     y: Pixel,
     override val player: Player,
+    private val options: EnumSet<PlayerTankOption> = EnumSet.noneOf(PlayerTankOption::class.java)
 ) : Tank(
     game,
     pauseManager,
@@ -19,10 +22,12 @@ class PlayerTank private constructor(
             x: Pixel,
             y: Pixel,
             player: Player,
-        ) = init(PlayerTank(game, pauseManager, x, y, player))
+            options: EnumSet<PlayerTankOption> = EnumSet.noneOf(PlayerTankOption::class.java)
+        ) = init(PlayerTank(game, pauseManager, x, y, player, options))
     }
 
     data class PlayerDestroyed(val tank: PlayerTank) : Event()
+    data class PlayerMoved(val tank: PlayerTank) : Event()
 
     var upgradeLevel = 0
         private set
@@ -52,15 +57,23 @@ class PlayerTank private constructor(
 
     override fun hitHook(bullet: BulletHandle) {
         if (bullet.tank is PlayerTank) {
-            if (state is TankStateFrozen) {
-                (state as TankStateFrozen).restartTimer()
-            } else {
-                state = TankStateFrozen(game.eventManager, game.imageManager, this, game.clock)
-                isIdle = true
+            if (!options.contains(PlayerTankOption.FRIENDLY_FIRE_INVINCIBLE)) {
+                if (state is TankStateFrozen) {
+                    (state as TankStateFrozen).restartTimer()
+                } else {
+                    state = TankStateFrozen(game.eventManager, game.imageManager, this, game.clock)
+                    isIdle = true
+                }
             }
         } else {
             destroy()
         }
+    }
+
+    override fun hitRectHook() {
+        super.hitRectHook()
+
+        game.eventManager.fireEvent(PlayerMoved(this))
     }
 
     override fun startShooting() {

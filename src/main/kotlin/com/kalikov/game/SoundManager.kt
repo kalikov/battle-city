@@ -6,7 +6,5 @@ interface SoundManager {
     data object Pause: Event()
     data object Resume: Event()
 
-    fun load(name: String, path: String)
-
-    fun destroy()
+    var enabled: Boolean
 }

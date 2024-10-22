@@ -5,7 +5,8 @@ class MainMenuScene(
     private val stageManager: StageManager,
 ) : Scene, EventSubscriber {
     companion object {
-        const val INTERVAL = 16
+        const val MOVE_INTERVAL = 16
+        const val DEMO_INTERVAL = 10000
 
         const val NAMCO_LTD = "1980 1985 NAMCO LTD"
 
@@ -22,7 +23,9 @@ class MainMenuScene(
 
     private val cursorView: MainMenuCursorView
 
-    private val arriveTimer = BasicTimer(game.clock, INTERVAL, this::updatePosition)
+    private val arriveTimer = BasicTimer(game.clock, MOVE_INTERVAL, this::updatePosition)
+
+    private val demoTimer = BasicTimer(game.clock, DEMO_INTERVAL, this::startDemo)
 
     private val brickBlending = object : TextureBlending(game.imageManager.getImage("wall_brick")) {
         override fun blend(dst: ARGB, src: ARGB, x: Pixel, y: Pixel): ARGB {
@@ -70,10 +73,12 @@ class MainMenuScene(
         top = px(0)
         cursorView.visible = true
         arriveTimer.stop()
+        demoTimer.restart()
     }
 
     override fun update() {
         arriveTimer.update()
+        demoTimer.update()
         cursorView.update()
         if (top == px(0)) {
             mainMenuController.isActive = true
@@ -176,6 +181,9 @@ class MainMenuScene(
         if (key == Keyboard.Key.START || key == Keyboard.Key.SELECT) {
             arrived()
         }
+        if (!demoTimer.isStopped) {
+            demoTimer.restart()
+        }
     }
 
     fun setMenuItem(index: Int) {
@@ -184,6 +192,15 @@ class MainMenuScene(
 
     private fun clearCanvas(surface: ScreenSurface) {
         surface.clear(ARGB.BLACK)
+    }
+
+    private fun startDemo() {
+        demoTimer.stop()
+        stageManager.demoStage?.let { demoStage ->
+            game.eventManager.fireEvent(Scene.Start {
+                DemoStageScene(game, stageManager, mainMenu.item, demoStage)
+            })
+        }
     }
 
     override fun destroy() {

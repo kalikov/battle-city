@@ -8,6 +8,7 @@ fun mockGame(
     screen: Screen = mock(),
     eventManager: EventManager = mock(),
     imageManager: ImageManager = mock(),
+    soundManager: SoundManager = mock(),
     config: GameConfig = GameConfig(),
     clock: Clock = mock(),
 ): Game {
@@ -15,6 +16,7 @@ fun mockGame(
         on { this.screen } doReturn screen
         on { this.eventManager } doReturn eventManager
         on { this.imageManager } doReturn imageManager
+        on { this.soundManager } doReturn soundManager
         on { this.config } doReturn config
         on { this.clock } doReturn clock
     }

@@ -13,6 +13,8 @@ class Walls(
         private val SIZE_IN_BRICKS = GameField.SIZE_IN_TILES.bricksCount()
     }
 
+    data object Hit : Event()
+
     private val collisionMatrix = Array(SIZE_IN_TILES.toInt()) { Array(SIZE_IN_TILES.toInt()) { false } }
     private val brickMatrix = Array(SIZE_IN_BRICKS) { Array<ScreenSurface?>(SIZE_IN_BRICKS) { null } }
 
@@ -112,6 +114,10 @@ class Walls(
         return false
     }
 
+    override fun occupied(x: Tile, y: Tile): Boolean {
+        return collisionMatrix[x.toInt()][y.toInt()]
+    }
+
     override fun hit(bullet: Bullet): Boolean {
         val bricksTop = (bullet.bounds.top - y) / BRICK_SIZE
         val bricksLeft = (bullet.bounds.left - x) / BRICK_SIZE
@@ -166,6 +172,7 @@ class Walls(
                     game.eventManager.fireEvent(SoundManager.Play("bullet_hit_2"))
                 }
             }
+            game.eventManager.fireEvent(Hit)
             return true
         }
         return false

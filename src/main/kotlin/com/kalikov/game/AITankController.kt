@@ -48,33 +48,33 @@ class AITankController(
             if (base.y > tank.y) {
                 direction = Direction.DOWN
                 if (n < directionRetreatProbability) {
-                    direction = arrayOf(Direction.UP, Direction.LEFT, Direction.RIGHT).random(random)
+                    direction = randomOf(Direction.UP, Direction.LEFT, Direction.RIGHT)
                 }
             } else if (base.y == tank.y) {
                 if (base.x < tank.x) {
                     direction = Direction.LEFT
                     if (n < directionRetreatProbability) {
-                        direction = arrayOf(Direction.UP, Direction.DOWN, Direction.RIGHT).random(random)
+                        direction = randomOf(Direction.UP, Direction.DOWN, Direction.RIGHT)
                     }
                 } else if (base.x > tank.x) {
                     direction = Direction.RIGHT
                     if (n < directionRetreatProbability) {
-                        direction = arrayOf(
-                            Direction.UP,
-                            Direction.LEFT,
-                            Direction.DOWN
-                        ).random(random)
+                        direction = randomOf(Direction.UP, Direction.LEFT, Direction.DOWN)
                     }
                 }
             } else {
                 direction = Direction.UP
                 if (n < directionRetreatProbability) {
-                    direction = arrayOf(Direction.DOWN, Direction.LEFT, Direction.RIGHT).random(random)
+                    direction = randomOf(Direction.DOWN, Direction.LEFT, Direction.RIGHT)
                 }
             }
 
             tank.direction = direction
         }
+    }
+
+    private fun <T: Any> randomOf(vararg items: T): T {
+        return items.random(random)
     }
 
     fun update() {

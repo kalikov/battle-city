@@ -457,203 +457,163 @@
     "bricks": [
       {
         "x": 12,
-        "y": 3,
-        "integrity": 15
+        "y": 3
       },
       {
         "x": 12,
-        "y": 2,
-        "integrity": 15
+        "y": 2
       },
       {
         "x": 16,
-        "y": 5,
-        "integrity": 15
+        "y": 5
       },
       {
         "x": 16,
-        "y": 4,
-        "integrity": 15
+        "y": 4
       },
       {
         "x": 9,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 8,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 11,
-        "y": 7,
-        "integrity": 15
+        "y": 7
       },
       {
         "x": 11,
-        "y": 6,
-        "integrity": 15
+        "y": 6
       },
       {
         "x": 13,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 12,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 15,
-        "y": 9,
-        "integrity": 15
+        "y": 9
       },
       {
         "x": 15,
-        "y": 8,
-        "integrity": 15
+        "y": 8
       },
       {
         "x": 11,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 11,
-        "y": 10,
-        "integrity": 15
+        "y": 10
       },
       {
         "x": 17,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 16,
-        "y": 11,
-        "integrity": 15
+        "y": 11
       },
       {
         "x": 9,
-        "y": 12,
-        "integrity": 15
+        "y": 12
       },
       {
         "x": 8,
-        "y": 12,
-        "integrity": 15
+        "y": 12
       },
       {
         "x": 15,
-        "y": 13,
-        "integrity": 15
+        "y": 13
       },
       {
         "x": 15,
-        "y": 12,
-        "integrity": 15
+        "y": 12
       },
       {
         "x": 10,
-        "y": 15,
-        "integrity": 15
+        "y": 15
       },
       {
         "x": 10,
-        "y": 14,
-        "integrity": 15
+        "y": 14
       },
       {
         "x": 13,
-        "y": 14,
-        "integrity": 15
+        "y": 14
       },
       {
         "x": 12,
-        "y": 14,
-        "integrity": 15
+        "y": 14
       },
       {
         "x": 14,
-        "y": 17,
-        "integrity": 15
+        "y": 17
       },
       {
         "x": 14,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 17,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 16,
-        "y": 16,
-        "integrity": 15
+        "y": 16
       },
       {
         "x": 9,
-        "y": 19,
-        "integrity": 15
+        "y": 19
       },
       {
         "x": 9,
-        "y": 18,
-        "integrity": 15
+        "y": 18
       },
       {
         "x": 13,
-        "y": 21,
-        "integrity": 15
+        "y": 21
       },
       {
         "x": 13,
-        "y": 20,
-        "integrity": 15
+        "y": 20
       },
       {
         "x": 11,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 13,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 12,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 14,
-        "y": 23,
-        "integrity": 15
+        "y": 23
       },
       {
         "x": 11,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 11,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       },
       {
         "x": 14,
-        "y": 25,
-        "integrity": 15
+        "y": 25
       },
       {
         "x": 14,
-        "y": 24,
-        "integrity": 15
+        "y": 24
       }
     ]
   },

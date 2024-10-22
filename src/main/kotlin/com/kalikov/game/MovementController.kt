@@ -1,26 +1,23 @@
 package com.kalikov.game
 
-import java.time.Clock
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 class MovementController(
-    private val eventManager: EventManager,
+    private val game: Game,
+    private val gameField: GameFieldHandle,
     private val pauseManager: PauseManager,
-    private val bounds: PixelRect,
     private val mainContainer: SpriteContainer,
     private val overlayContainer: SpriteContainer,
-    private val gameField: GameFieldHandle,
-    clock: Clock
 ) : EventSubscriber {
     companion object {
         const val UPDATE_INTERVAL = 4
     }
 
-    private val timer = BasicTimer(clock, UPDATE_INTERVAL, ::move)
+    private val timer = BasicTimer(game.clock, UPDATE_INTERVAL, ::move)
 
     init {
-        eventManager.addSubscriber(this, setOf(SpriteContainer.Added::class))
+        game.eventManager.addSubscriber(this, setOf(SpriteContainer.Added::class))
     }
 
     fun update() {
@@ -50,7 +47,7 @@ class MovementController(
     }
 
     private fun detectCollisionsForBullet(bullet: Bullet) {
-        if (!bounds.contains(bullet.bounds)) {
+        if (!gameField.bounds.contains(bullet.bounds)) {
             bullet.outOfBounds()
             return
         }
@@ -167,28 +164,28 @@ class MovementController(
     private fun hasCollisionForTank(tank: Tank): Boolean {
         when (tank.direction) {
             Direction.UP -> {
-                if (tank.y - 1 < bounds.top) {
+                if (tank.y - 1 < gameField.bounds.top) {
                     return true
                 }
                 return isCollisionForTank(tank, px(0), px(-1))
             }
 
             Direction.LEFT -> {
-                if (tank.x - 1 < bounds.left) {
+                if (tank.x - 1 < gameField.bounds.left) {
                     return true
                 }
                 return isCollisionForTank(tank, px(-1), px(0))
             }
 
             Direction.DOWN -> {
-                if (tank.bottom + 1 > bounds.bottom) {
+                if (tank.bottom + 1 > gameField.bounds.bottom) {
                     return true
                 }
                 return isCollisionForTank(tank, px(0), px(1))
             }
 
             Direction.RIGHT -> {
-                if (tank.right + 1 > bounds.right) {
+                if (tank.right + 1 > gameField.bounds.right) {
                     return true
                 }
                 return isCollisionForTank(tank, px(1), px(0))
@@ -276,6 +273,6 @@ class MovementController(
     fun dispose() {
         timer.stop()
 
-        eventManager.removeSubscriber(this, setOf(SpriteContainer.Added::class))
+        game.eventManager.removeSubscriber(this, setOf(SpriteContainer.Added::class))
     }
 }

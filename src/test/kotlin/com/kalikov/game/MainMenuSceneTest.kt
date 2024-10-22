@@ -96,7 +96,7 @@ class MainMenuSceneTest {
         scene.update()
         assertEquals(px(2), scene.top)
 
-        clock.tick(MainMenuScene.INTERVAL)
+        clock.tick(MainMenuScene.MOVE_INTERVAL)
         scene.update()
         assertEquals(px(1), scene.top)
     }
@@ -107,7 +107,7 @@ class MainMenuSceneTest {
         scene.update()
         assertEquals(px(4), scene.top)
 
-        clock.tick(3L * MainMenuScene.INTERVAL)
+        clock.tick(3L * MainMenuScene.MOVE_INTERVAL)
         scene.update()
         assertEquals(px(1), scene.top)
     }

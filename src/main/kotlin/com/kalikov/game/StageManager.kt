@@ -6,13 +6,15 @@ interface StageManager {
     val stage: Stage
     val stageNumber: Int
 
+    val demoStage: Stage?
+
     var constructionMap: StageMapConfig
 
     var curtainBackground: ScreenSurface?
 
     val highScore: Int
 
-    fun init(stages: List<Stage>, defaultConstructionMap: StageMapConfig)
+    fun init(stages: List<Stage>, defaultConstructionMap: StageMapConfig, demoStage: Stage?)
 
     fun setPlayersCount(playersCount: Int)
 
