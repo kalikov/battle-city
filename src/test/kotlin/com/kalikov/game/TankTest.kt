@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.clearInvocations
 import org.mockito.kotlin.isA
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
@@ -295,6 +296,7 @@ abstract class TankTest<T : Tank> {
         val tank = stubPlayerTank(game, x = tankPosition.x, y = tankPosition.y)
         tank.direction = direction
 
+        clearInvocations(game.eventManager)
         tank.shoot()
 
         val captor = argumentCaptor<Tank.Shoot>()
@@ -362,6 +364,7 @@ abstract class TankTest<T : Tank> {
         tank.setPosition(tankPosition)
         tank.direction = direction
 
+        clearInvocations(game.eventManager)
         tank.shoot()
 
         val captor = argumentCaptor<Tank.Shoot>()
