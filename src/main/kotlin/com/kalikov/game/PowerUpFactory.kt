@@ -12,6 +12,8 @@ class PowerUpFactory(
         private val subscriptions = setOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
     }
 
+    data class PowerUpCreated(val powerUp: PowerUp) : Event()
+
     private var powerUp: PowerUp? = null
 
     init {
@@ -24,6 +26,7 @@ class PowerUpFactory(
             val newPowerUp = create()
             spriteContainer.addSprite(newPowerUp)
             powerUp = newPowerUp
+            game.eventManager.fireEvent(PowerUpCreated(newPowerUp))
         } else if (event is EnemyFactory.EnemyCreated) {
             if (event.isFlashing) {
                 powerUp?.destroy()

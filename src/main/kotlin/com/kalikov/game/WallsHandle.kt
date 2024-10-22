@@ -8,5 +8,7 @@ interface WallsHandle {
     fun fillSteelTile(x: Tile, y: Tile)
 
     fun hit(bullet: Bullet): Boolean
+
     fun collides(tank: Tank, dx: Pixel, dy: Pixel): Boolean
+    fun occupied(x: Tile, y: Tile): Boolean
 }

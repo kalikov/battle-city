@@ -11,4 +11,5 @@ interface Game {
 
     val eventManager: EventManager
     val imageManager: ImageManager
+    val soundManager: SoundManager
 }

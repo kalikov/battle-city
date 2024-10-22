@@ -137,7 +137,10 @@ sealed class Tank(
 
     private fun updateHitRect() {
         hitRect = calculateHitRect(bounds)
+        hitRectHook()
     }
+
+    protected open fun hitRectHook() = Unit
 
     private fun moved() {
         moveDistance++

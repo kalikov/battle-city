@@ -16,7 +16,7 @@ class BasicGame(
 
     override val eventManager = ConcurrentEventManager()
 
-    val soundManager = ConcurrentSoundManager(audio, eventManager)
+    override val soundManager = ConcurrentSoundManager(audio, eventManager)
     override val imageManager = ConcurrentImageManager(screen)
     val sceneManager = SceneManager(eventManager)
 

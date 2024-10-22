@@ -115,12 +115,16 @@
     "map": "data/demo.json",
     "enemies": [
       {
-        "type": "BASIC",
-        "count": 18
+        "type": "POWER",
+        "count": 4
       },
       {
         "type": "FAST",
-        "count": 2
+        "count": 6
+      },
+      {
+        "type": "ARMOR",
+        "count": 10
       }
     ]
   },

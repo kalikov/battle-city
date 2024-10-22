@@ -1,13 +1,16 @@
 package com.kalikov.game
 
+import java.util.EnumSet
+
 class PlayerTankFactory(
     private val game: Game,
     private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
     val appearPosition: PixelPoint,
     val player: Player,
+    private val options: EnumSet<PlayerTankOption> = EnumSet.noneOf(PlayerTankOption::class.java)
 ) : EventSubscriber {
-    data class PlayerTankCreated(val tank: PlayerTankHandles) : Event()
+    data class PlayerTankCreated(val tank: PlayerTankHandle) : Event()
 
     private companion object {
         private val subscriptions = setOf(TankExplosion.Destroyed::class, Player.OutOfLives::class)
@@ -52,6 +55,7 @@ class PlayerTankFactory(
             appearPosition.x,
             appearPosition.y,
             player,
+            options,
         )
         spriteContainer.addSprite(tank)
         tank.state = TankStateAppearing(game, tank, 48)

@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import java.util.EnumSet
+
 class DemoStageScene(
     private val game: Game,
     private val stageManager: StageManager,
@@ -28,15 +30,18 @@ class DemoStageScene(
 
     private val stageNumberView: StageNumberView
 
+    private val players: List<Player>
     private val playersTankControllers: List<AIPlayerTankController>
     private val playersTankFactories: List<PlayerTankFactory>
 
     init {
         LeaksDetector.add(this)
 
+        game.soundManager.enabled = false
+
         game.eventManager.addSubscriber(this, subscriptions)
 
-        val players = List(2) { i ->
+        players = List(2) { i ->
             Player(game.eventManager, index = i)
         }
 
@@ -68,7 +73,7 @@ class DemoStageScene(
         )
 
         playersTankControllers = players.map { player ->
-            AIPlayerTankController(game.eventManager, player)
+            AIPlayerTankController(game, player, gameField)
         }
         playersTankFactories = players.mapIndexed { index, player ->
             val factory = PlayerTankFactory(
@@ -77,6 +82,7 @@ class DemoStageScene(
                 mainContainer,
                 demoStage.map.playerSpawnPoints[index].toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y),
                 player,
+                EnumSet.of(PlayerTankOption.FRIENDLY_FIRE_INVINCIBLE)
             )
             factory.init(player.upgradeLevel)
             factory
@@ -118,6 +124,8 @@ class DemoStageScene(
 
         gameField.draw(surface)
 
+        playersTankControllers.forEach { it.draw(surface) }
+
         enemyFactoryView.draw(surface)
 
         livesView.draw(surface)
@@ -130,23 +138,25 @@ class DemoStageScene(
                 keyPressed(event.key)
             }
 
-            is BaseExplosion.Destroyed -> stopDemo()
-            is EnemyFactory.LastEnemyDestroyed -> stopDemo()
+            is BaseExplosion.Destroyed -> stopDemo(false)
+            is EnemyFactory.LastEnemyDestroyed -> stopDemo(false)
             else -> Unit
         }
     }
 
     private fun keyPressed(key: Keyboard.Key) {
         if (key == Keyboard.Key.START || key == Keyboard.Key.SELECT) {
-            stopDemo()
+            stopDemo(true)
         }
     }
 
-    private fun stopDemo() {
+    private fun stopDemo(arrived: Boolean) {
         game.eventManager.fireEvent(Scene.Start {
             val mainMenu = MainMenuScene(game, stageManager)
             mainMenu.setMenuItem(mainMenuItem)
-            mainMenu.arrived()
+            if (arrived) {
+                mainMenu.arrived()
+            }
             mainMenu
         })
     }
@@ -154,6 +164,8 @@ class DemoStageScene(
     override fun destroy() {
         playersTankFactories.forEach { it.dispose() }
         playersTankControllers.forEach { it.dispose() }
+
+        players.forEach { it.dispose() }
 
         enemyFactory.dispose()
 
@@ -164,6 +176,8 @@ class DemoStageScene(
         overlayContainer.dispose()
 
         game.eventManager.removeSubscriber(this, subscriptions)
+
+        game.soundManager.enabled = true
 
         LeaksDetector.remove(this)
     }

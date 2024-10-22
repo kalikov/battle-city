@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger
 class LoadingScene(
     private val game: Game,
     private val imageManager: LoadingImageManager,
-    private val soundManager: SoundManager,
+    private val soundManager: LoadingSoundManager,
     private val fontManager: FontManager,
     private val stageManager: StageManager,
 ) : Scene {

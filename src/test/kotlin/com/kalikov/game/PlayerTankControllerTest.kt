@@ -17,7 +17,7 @@ class PlayerTankControllerTest {
     )
 
     private lateinit var eventManager: EventManager
-    private lateinit var tank: PlayerTankHandles
+    private lateinit var tank: PlayerTankHandle
     private lateinit var controller: PlayerTankController
 
     @BeforeEach

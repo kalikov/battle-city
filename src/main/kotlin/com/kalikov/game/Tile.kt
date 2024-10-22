@@ -21,12 +21,20 @@ value class Tile(private val value: Int) {
         return Tile(value + v)
     }
 
+    operator fun minus(v: Tile): Tile {
+        return Tile(value - v.value)
+    }
+
     operator fun minus(v: Int): Tile {
         return Tile(value - v)
     }
 
     operator fun div(n: Int): Tile {
         return Tile(value / n)
+    }
+
+    operator fun inc(): Tile {
+        return Tile(value + 1)
     }
 
     operator fun compareTo(v: Int): Int {
