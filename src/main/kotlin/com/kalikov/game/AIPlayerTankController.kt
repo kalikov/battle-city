@@ -1,12 +1,11 @@
 package com.kalikov.game
 
-import kotlin.random.Random
+import kotlin.math.abs
 
 class AIPlayerTankController(
     private val game: Game,
     private val player: Player,
     private val gameField: GameField,
-    private val random: Random = Random.Default,
     params: AIPlayerTankControllerParams = AIPlayerTankControllerParams(),
 ) : EventSubscriber {
     private companion object {
@@ -25,10 +24,11 @@ class AIPlayerTankController(
         )
 
         private const val STUCK_LIMIT = 4
+
+        private val CRITICAL_DISTANCE = Globals.TILE_SIZE.toInt() * 8
     }
 
-    private val strategyTimer =
-        PauseAwareTimer(game.eventManager, game.clock, params.strategyUpdateInterval, ::updateStrategy)
+    private val strategyTimer = PauseAwareTimer(game.eventManager, game.clock, params.strategyUpdateInterval, ::updateStrategy)
 
     private var tank: PlayerTankHandle? = null
     private var prevX = px(0)
@@ -44,6 +44,8 @@ class AIPlayerTankController(
 
     private val enemies = mutableSetOf<EnemyTank>()
     private var powerUp: PowerUp? = null
+
+    private var partner: PlayerTankHandle? = null
 
     private var target: Sprite? = null
 
@@ -68,12 +70,17 @@ class AIPlayerTankController(
                     prevX = event.tank.x
                     prevY = event.tank.y
                     updateLineOfSight()
+                } else {
+                    partner = event.tank
                 }
             }
 
             is PlayerTank.PlayerDestroyed -> {
                 if (event.tank === tank) {
                     tank = null
+                }
+                if (event.tank === partner) {
+                    partner = null
                 }
             }
 
@@ -137,7 +144,7 @@ class AIPlayerTankController(
         }
         strategyTimer.update()
         tank?.let {
-            if (!it.isIdle && !isBaseInLineOfSight()) {
+            if (!it.isIdle && !isInLineOfSight(baseRect)) {
                 it.startShooting()
             } else {
                 it.stopShooting()
@@ -248,9 +255,56 @@ class AIPlayerTankController(
     }
 
     private fun updateTarget() {
-        if (target == null && (enemies.isNotEmpty() || powerUp != null)) {
-            target = if (powerUp != null) powerUp else enemies.random()
+        val enemiesNearBase = enemies.filter { enemy -> isNearBase(enemy) }
+        if (enemiesNearBase.isNotEmpty()) {
+            target = enemiesNearBase.filter { !isBehindPartner(it) }.minByOrNull { distanceToBase(it) }
+            return
         }
+
+        if (powerUp != null) {
+            target = powerUp
+            return
+        }
+
+        if (enemies.isNotEmpty()) {
+            target = enemies.filter { !isBehindPartner(it) }.minByOrNull { distanceToMe(it) }
+        }
+    }
+
+    private fun isBehindPartner(enemy: EnemyTank): Boolean {
+        return partner?.let { partnerHandle ->
+            tank?.let { tankHandle ->
+                val top = min(tankHandle.hitRect.top, enemy.top)
+                val left = min(tankHandle.hitRect.left, enemy.left)
+                val right = max(tankHandle.hitRect.right, enemy.right)
+                val bottom = max(tankHandle.hitRect.bottom, enemy.bottom)
+
+                val partnerRect = partnerHandle.hitRect
+                if (left <= partnerRect.right && right >= partnerRect.left && top <= partnerRect.bottom && bottom >= partnerRect.top) {
+                    isInLineOfSight(partnerRect)
+                } else {
+                    false
+                }
+            }
+        } ?: false
+    }
+
+    private fun isNearBase(enemy: EnemyTank): Boolean {
+        return distance(gameField.base.center.x, gameField.base.center.y, enemy.center, enemy.middle) < CRITICAL_DISTANCE
+    }
+
+    private fun distanceToBase(enemy: EnemyTank): Int {
+        return distance(gameField.base.center.x, gameField.base.center.y, enemy.center, enemy.middle)
+    }
+
+    private fun distanceToMe(enemy: EnemyTank): Int {
+        return tank?.let {
+            distance(it.x, it.y, enemy.x, enemy.y)
+        } ?: Int.MAX_VALUE
+    }
+
+    private fun distance(x1: Pixel, y1: Pixel, x2: Pixel, y2: Pixel): Int {
+        return abs(x2.toInt() - x1.toInt()) + abs(y2.toInt() - y1.toInt())
     }
 
     fun draw(surface: ScreenSurface) {
@@ -302,6 +356,8 @@ class AIPlayerTankController(
 
     private fun updateStrategy() {
         tank?.let {
+            updateTarget()
+
             target?.let { t ->
                 if (stuckCounter / it.moveFrequency > STUCK_LIMIT) {
                     adjustDirection(it)
@@ -350,14 +406,26 @@ class AIPlayerTankController(
             targetTop > tankBottom -> Direction.DOWN
             targetRight < tankLeft -> Direction.LEFT
             targetLeft > tankRight -> Direction.RIGHT
-            else -> Direction.entries.random(random)
+            else -> if (abs(targetTop.toInt() - tankBottom.toInt()) < abs(targetLeft.toInt() - tankRight.toInt())) {
+                Direction.UP
+            } else {
+                Direction.LEFT
+            }
         }
         tankHandle.direction = direction
         tankHandle.isIdle = false
     }
 
-    private fun isBaseInLineOfSight(): Boolean {
-        return lineOfSight.any { it.intersects(baseRect) }
+    private fun isInLineOfSight(rect: TileRect): Boolean {
+        return lineOfSight.any { it.intersects(rect) }
+    }
+
+    private fun isInLineOfSight(rect: PixelRect): Boolean {
+        val top = (rect.y - gameField.bounds.y).toTile()
+        val left = (rect.x - gameField.bounds.x).toTile()
+        val right = left + rect.width.toTile()
+        val bottom = top + rect.height.toTile()
+        return lineOfSight.any { it.intersects(left, right, top, bottom) }
     }
 
     fun dispose() {

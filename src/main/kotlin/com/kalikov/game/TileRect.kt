@@ -21,10 +21,14 @@ data class TileRect(
     }
 
     fun contains(x: Tile, y: Tile): Boolean {
-        return x.toInt() in left.toInt()..right.toInt() && y.toInt() in top.toInt()..bottom.toInt()
+        return x.toInt() in left.toInt() .. right.toInt() && y.toInt() in top.toInt() .. bottom.toInt()
     }
 
     fun intersects(other: TileRect): Boolean {
-        return left <= other.right && right >= other.left && top <= other.bottom && bottom >= other.top
+        return intersects(other.left, other.right, other.top, other.bottom)
+    }
+
+    fun intersects(left: Tile, right: Tile, top: Tile, bottom: Tile): Boolean {
+        return this.left <= right && this.right >= left && this.top <= bottom && this.bottom >= top
     }
 }

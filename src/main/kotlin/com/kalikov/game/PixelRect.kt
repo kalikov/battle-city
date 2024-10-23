@@ -27,7 +27,7 @@ data class PixelRect(
     }
 
     fun contains(x: Pixel, y: Pixel): Boolean {
-        return x.toInt() in left.toInt()..right.toInt() && y.toInt() in top.toInt()..bottom.toInt()
+        return x.toInt() in left.toInt() .. right.toInt() && y.toInt() in top.toInt() .. bottom.toInt()
     }
 
     fun intersects(other: PixelRect): Boolean {

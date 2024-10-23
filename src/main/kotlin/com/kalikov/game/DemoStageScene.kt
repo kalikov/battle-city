@@ -12,6 +12,7 @@ class DemoStageScene(
         private val subscriptions = setOf(
             Keyboard.KeyPressed::class,
             BaseExplosion.Destroyed::class,
+            Player.OutOfLives::class,
             EnemyFactory.LastEnemyDestroyed::class,
         )
     }
@@ -138,9 +139,16 @@ class DemoStageScene(
                 keyPressed(event.key)
             }
 
+            is Player.OutOfLives -> onPlayerOutOfLives()
             is BaseExplosion.Destroyed -> stopDemo(false)
             is EnemyFactory.LastEnemyDestroyed -> stopDemo(false)
             else -> Unit
+        }
+    }
+
+    private fun onPlayerOutOfLives() {
+        if (players.none { it.lives > 0 }) {
+            stopDemo(false)
         }
     }
 
