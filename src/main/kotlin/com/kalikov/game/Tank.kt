@@ -13,7 +13,8 @@ sealed class Tank(
     SIZE,
 ), AITankHandle, EventSubscriber {
     companion object {
-        const val COOLDOWN_INTERVAL = 200
+        const val LONG_COOLDOWN_INTERVAL = 200
+        const val SHORT_COOLDOWN_INTERVAL = 64
 
         val SIZE = t(2).toPixel()
 
@@ -75,7 +76,7 @@ sealed class Tank(
 
     val isCollidable get() = state.isCollidable
 
-    var moveFrequency = 6
+    final override var moveFrequency = 6
         set(value) {
             field = value
             moveCountDown = CountDown(value, ::moved)
@@ -118,14 +119,15 @@ sealed class Tank(
 
     var bulletType = Bullet.Type.REGULAR
 
-    private val cooldownTimer = PauseAwareTimer(game.eventManager, game.clock, COOLDOWN_INTERVAL, ::resetCooldown)
+    private val longCooldownTimer = PauseAwareTimer(game.eventManager, game.clock, LONG_COOLDOWN_INTERVAL, ::resetLongCooldown)
+    private val shortCooldownTimer = PauseAwareTimer(game.eventManager, game.clock, SHORT_COOLDOWN_INTERVAL, ::resetShortCooldown)
 
     private val turnRoundTo = Globals.TILE_SIZE
 
     private var moveCountDown = CountDown(moveFrequency, ::moved)
     private var slipCountDown = CountDown(slipDuration)
 
-    var hitRect = calculateHitRect(bounds)
+    final override var hitRect = calculateHitRect(bounds)
         private set
 
     var moveDistance = 0
@@ -217,21 +219,29 @@ sealed class Tank(
         if (bullets >= bulletsLimit) {
             return
         }
-        if (cooldownTimer.isStopped) {
+        if (shortCooldownTimer.isStopped && bullets > 0 || longCooldownTimer.isStopped) {
             bullets++
             val bullet = createBullet()
             game.eventManager.fireEvent(Shoot(bullet))
-            cooldownTimer.restart()
+            shortCooldownTimer.restart()
+            if (bullets == 1) {
+                longCooldownTimer.restart()
+            }
         }
     }
 
-    private fun resetCooldown() {
-        cooldownTimer.stop()
+    private fun resetLongCooldown() {
+        longCooldownTimer.stop()
+    }
+
+    private fun resetShortCooldown() {
+        shortCooldownTimer.stop()
     }
 
     override fun updateHook() {
         state.update()
-        cooldownTimer.update()
+        longCooldownTimer.update()
+        shortCooldownTimer.update()
     }
 
     override fun boundsHook() {
@@ -267,7 +277,8 @@ sealed class Tank(
     }
 
     override fun dispose() {
-        cooldownTimer.dispose()
+        longCooldownTimer.dispose()
+        shortCooldownTimer.dispose()
 
         state.dispose()
 

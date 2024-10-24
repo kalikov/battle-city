@@ -4,17 +4,15 @@ import kotlin.math.abs
 import kotlin.random.Random
 
 class AITankController(
-    private val eventManager: EventManager,
+    eventManager: EventManager,
     private val tank: AITankHandle,
     private val base: PixelPoint,
+    private val players: Set<PlayerTankHandle>,
     private val random: Random,
     params: AITankControllerParams = AITankControllerParams(),
-) : EventSubscriber {
+) {
     private companion object {
-        private val subscriptions = setOf(
-            PlayerTankFactory.PlayerTankCreated::class,
-            PlayerTank.PlayerDestroyed::class,
-        )
+        private const val STUCK_LIMIT = 4
     }
 
     private val shootTimer = PauseAwareTimer(eventManager, params.clock, params.shootInterval, ::shoot)
@@ -24,10 +22,11 @@ class AITankController(
     private val directionUpdateProbability = params.directionUpdateProbability
     private val directionRetreatProbability = params.directionRetreatProbability
 
-    private val players = mutableSetOf<PlayerTankHandle>()
+    private var stuckCounter = 0
+    private var prevX = tank.x
+    private var prevY = tank.y
 
     init {
-        eventManager.addSubscriber(this, subscriptions)
         tank.isIdle = false
     }
 
@@ -52,11 +51,23 @@ class AITankController(
     }
 
     private fun changeDirection() {
-        if (random.nextDouble() < directionUpdateProbability) {
+        if (stuckCounter / tank.moveFrequency > STUCK_LIMIT) {
+            adjustDirection()
+        } else if (random.nextDouble() < directionUpdateProbability) {
             val direction = calculateDirectionToClosestTarget()
 
             tank.direction = direction
         }
+    }
+
+    private fun adjustDirection() {
+        tank.direction = when (tank.direction) {
+            Direction.UP -> Direction.RIGHT
+            Direction.RIGHT -> Direction.DOWN
+            Direction.DOWN -> Direction.LEFT
+            Direction.LEFT -> Direction.UP
+        }
+        stuckCounter = 0
     }
 
     private fun calculateDirectionToClosestTarget(): Direction {
@@ -64,37 +75,43 @@ class AITankController(
         var direction = Direction.DOWN
 
         val closestPlayer = players.minByOrNull { distanceToMe(it.x, it.y) }
-        val targetX: Pixel
-        val targetY: Pixel
+        val targetTop: Pixel
+        val targetLeft: Pixel
+        val targetRight: Pixel
+        val targetBottom: Pixel
         if (closestPlayer == null || distanceToMe(base.x, base.y) < distanceToMe(closestPlayer.x, closestPlayer.y)) {
-            targetX = base.x
-            targetY = base.y
+            targetLeft = base.x
+            targetTop = base.y
+            targetRight = targetLeft + Base.SIZE
+            targetBottom = targetTop + Base.SIZE
         } else {
-            targetX = closestPlayer.x
-            targetY = closestPlayer.y
+            targetTop = closestPlayer.hitRect.top
+            targetLeft = closestPlayer.hitRect.left
+            targetRight = closestPlayer.hitRect.right
+            targetBottom = closestPlayer.hitRect.bottom
         }
 
-        if (targetY > tank.y) {
+        if (targetTop > tank.hitRect.bottom) {
             direction = Direction.DOWN
             if (n < directionRetreatProbability) {
                 direction = randomOf(Direction.UP, Direction.LEFT, Direction.RIGHT)
             }
-        } else if (targetY == tank.y) {
-            if (targetX < tank.x) {
+        } else if (targetBottom < tank.hitRect.top) {
+            direction = Direction.UP
+            if (n < directionRetreatProbability) {
+                direction = randomOf(Direction.DOWN, Direction.LEFT, Direction.RIGHT)
+            }
+        } else {
+            if (targetRight < tank.hitRect.left) {
                 direction = Direction.LEFT
                 if (n < directionRetreatProbability) {
                     direction = randomOf(Direction.UP, Direction.DOWN, Direction.RIGHT)
                 }
-            } else if (targetX > tank.x) {
+            } else if (targetLeft > tank.hitRect.right) {
                 direction = Direction.RIGHT
                 if (n < directionRetreatProbability) {
                     direction = randomOf(Direction.UP, Direction.LEFT, Direction.DOWN)
                 }
-            }
-        } else {
-            direction = Direction.UP
-            if (n < directionRetreatProbability) {
-                direction = randomOf(Direction.DOWN, Direction.LEFT, Direction.RIGHT)
             }
         }
         return direction
@@ -111,19 +128,24 @@ class AITankController(
     fun update() {
         updateShoot()
         updateDirection()
+        updateStuckCounter()
+        prevX = tank.x
+        prevY = tank.y
     }
 
-    override fun notify(event: Event) {
-        when (event) {
-            is PlayerTankFactory.PlayerTankCreated -> players.add(event.tank)
-            is PlayerTank.PlayerDestroyed -> players.remove(event.tank)
-            else -> Unit
+    private fun updateStuckCounter() {
+        if (!tank.isIdle) {
+            if (tank.x == prevX && tank.y == prevY) {
+                stuckCounter++
+            } else {
+                stuckCounter = 0
+            }
+        } else {
+            stuckCounter = 0
         }
     }
 
     fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
-
         shootTimer.dispose()
         directionTimer.dispose()
     }
