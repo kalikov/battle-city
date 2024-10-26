@@ -5,7 +5,7 @@
     "height": 600
   },
   "fpsLimit": 125,
-  "debug": false,
+  "debug": true,
   "keyboard": {
     "0x26": {
       "key": "UP",
@@ -71,17 +71,24 @@
     }
   },
   "sounds": {
-    "stage_start": "sounds/stage_start.au",
-    "game_over": "sounds/game_over.au",
-    "bullet_shot": "sounds/bullet_shot.au",
-    "bullet_hit_1": "sounds/bullet_hit_1.au",
-    "bullet_hit_2": "sounds/bullet_hit_2.au",
-    "explosion_1": "sounds/explosion_1.au",
-    "explosion_2": "sounds/explosion_2.au",
-    "pause": "sounds/pause.au",
-    "powerup_appear": "sounds/powerup_appear.au",
-    "powerup_pick": "sounds/powerup_pick.au",
-    "statistics_1": "sounds/statistics_1.au"
+    "stage_start": "sounds/stage_start.wav",
+    "high_score": "sounds/high_score.wav",
+    "game_over": "sounds/game_over.wav",
+    "pause": "sounds/pause.wav",
+    "increment_life": "sounds/increment_life.wav",
+    "powerup_appear": "sounds/powerup_appear.wav",
+    "powerup_pick": "sounds/powerup_pick.wav",
+    "explosion_player": "sounds/explosion_player.wav",
+    "explosion_enemy": "sounds/explosion_enemy.wav",
+    "bullet_hit_brick": "sounds/bullet_hit_brick.wav",
+    "bullet_hit_steel": "sounds/bullet_hit_steel.wav",
+    "bullet_hit_enemy": "sounds/bullet_hit_enemy.wav",
+    "bullet_shot": "sounds/bullet_shot.wav",
+    "slip": "sounds/slip.wav",
+    "movement_player": "sounds/movement_player.wav",
+    "movement_enemy": "sounds/movement_enemy.wav",
+    "statistics": "sounds/statistics.wav",
+    "bonus": "sounds/bonus.wav"
   },
   "images": {
     "tank_player1": "images/tank_player1.png",

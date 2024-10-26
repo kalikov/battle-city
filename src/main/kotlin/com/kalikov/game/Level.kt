@@ -4,6 +4,8 @@ class Level(
     private val game: Game,
     private val stageManager: StageManager,
 ) : EventSubscriber {
+    data object GameOver : Event()
+
     private companion object {
         private val subscriptions = setOf(
             Base.Hit::class,
@@ -157,6 +159,9 @@ class Level(
 
         gameOverScript = Script()
         gameOverScript.isActive = false
+        gameOverScript.enqueue(Execute {
+            game.eventManager.fireEvent(Level.GameOver)
+        })
         gameOverScript.enqueue(Delay(gameOverScript, 640, game.clock))
         gameOverScript.enqueue(Execute {
             playerGameOverScripts.values.forEach {

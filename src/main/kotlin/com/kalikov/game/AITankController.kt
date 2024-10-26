@@ -72,7 +72,6 @@ class AITankController(
 
     private fun calculateDirectionToClosestTarget(): Direction {
         val n = random.nextDouble()
-        var direction = Direction.DOWN
 
         val closestPlayer = players.minByOrNull { distanceToMe(it.x, it.y) }
         val targetTop: Pixel
@@ -91,6 +90,7 @@ class AITankController(
             targetBottom = closestPlayer.hitRect.bottom
         }
 
+        var direction: Direction
         if (targetTop > tank.hitRect.bottom) {
             direction = Direction.DOWN
             if (n < directionRetreatProbability) {
@@ -101,18 +101,18 @@ class AITankController(
             if (n < directionRetreatProbability) {
                 direction = randomOf(Direction.DOWN, Direction.LEFT, Direction.RIGHT)
             }
-        } else {
-            if (targetRight < tank.hitRect.left) {
-                direction = Direction.LEFT
-                if (n < directionRetreatProbability) {
-                    direction = randomOf(Direction.UP, Direction.DOWN, Direction.RIGHT)
-                }
-            } else if (targetLeft > tank.hitRect.right) {
-                direction = Direction.RIGHT
-                if (n < directionRetreatProbability) {
-                    direction = randomOf(Direction.UP, Direction.LEFT, Direction.DOWN)
-                }
+        } else if (targetRight < tank.hitRect.left) {
+            direction = Direction.LEFT
+            if (n < directionRetreatProbability) {
+                direction = randomOf(Direction.UP, Direction.DOWN, Direction.RIGHT)
             }
+        } else if (targetLeft > tank.hitRect.right) {
+            direction = Direction.RIGHT
+            if (n < directionRetreatProbability) {
+                direction = randomOf(Direction.UP, Direction.LEFT, Direction.DOWN)
+            }
+        } else {
+            direction = if (tank.hitRect.left - targetLeft >= targetRight - tank.hitRect.right) Direction.LEFT else Direction.RIGHT
         }
         return direction
     }

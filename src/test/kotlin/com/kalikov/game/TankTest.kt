@@ -51,14 +51,14 @@ abstract class TankTest<T : Tank> {
         tank.shoot()
         reset(eventManager)
 
-        clock.tick(Tank.COOLDOWN_INTERVAL)
+        clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
         tank.shoot()
         verify(eventManager, never()).fireEvent(any())
 
         tank.notify(Tank.Reload(tank))
 
-        clock.tick(Tank.COOLDOWN_INTERVAL)
+        clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
         tank.shoot()
 
@@ -71,21 +71,21 @@ abstract class TankTest<T : Tank> {
         tank.shoot()
         reset(eventManager)
 
-        clock.tick(Tank.COOLDOWN_INTERVAL)
+        clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
         tank.shoot()
         verify(eventManager).fireEvent(isA<Tank.Shoot>())
 
         reset(eventManager)
 
-        clock.tick(Tank.COOLDOWN_INTERVAL)
+        clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
         tank.shoot()
         verify(eventManager, never()).fireEvent(any())
 
         tank.notify(Tank.Reload(tank))
 
-        clock.tick(Tank.COOLDOWN_INTERVAL)
+        clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
         tank.shoot()
         verify(eventManager).fireEvent(isA<Tank.Shoot>())
@@ -93,7 +93,7 @@ abstract class TankTest<T : Tank> {
 
         reset(eventManager)
 
-        clock.tick(Tank.COOLDOWN_INTERVAL)
+        clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
         tank.shoot()
         verify(eventManager, never()).fireEvent(any())

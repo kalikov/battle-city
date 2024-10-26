@@ -3,9 +3,9 @@ package com.kalikov.game
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.clearInvocations
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
-import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import kotlin.random.Random
@@ -19,7 +19,9 @@ class AITankControllerTest {
     fun beforeEach() {
         clock = TestClock()
         tank = mock()
-        whenever(tank.y).thenReturn(px(-1))
+        whenever(tank.y).thenReturn(-Tank.SIZE)
+        whenever(tank.moveFrequency).thenReturn(8)
+        whenever(tank.hitRect).thenReturn(PixelRect(px(0), -Tank.SIZE, Tank.SIZE, Tank.SIZE))
         random = mock()
     }
 
@@ -73,7 +75,7 @@ class AITankControllerTest {
         controller.update()
         verify(tank).shoot()
 
-        reset(tank)
+        clearInvocations(tank)
 
         clock.tick(1)
         controller.update()
@@ -190,7 +192,7 @@ class AITankControllerTest {
         controller.update()
         verify(tank).direction = Direction.DOWN
 
-        reset(tank)
+        clearInvocations(tank)
 
         clock.tick(1)
         controller.update()

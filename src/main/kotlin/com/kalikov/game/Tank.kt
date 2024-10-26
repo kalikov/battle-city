@@ -127,6 +127,8 @@ sealed class Tank(
     private var moveCountDown = CountDown(moveFrequency, ::moved)
     private var slipCountDown = CountDown(slipDuration)
 
+    private var slipped = false
+
     final override var hitRect = calculateHitRect(bounds)
         private set
 
@@ -150,6 +152,7 @@ sealed class Tank(
 
     fun startSlipping() {
         if (slipCountDown.isStopped) {
+            slipped = false
             slipCountDown.restart()
         }
     }
@@ -164,6 +167,10 @@ sealed class Tank(
             moveCountDown.restart()
             if (movePrecondition()) {
                 slipCountDown.update()
+                if (!slipCountDown.isStopped && !slipped && isIdle) {
+                    game.eventManager.fireEvent(SoundManager.Play("slip"))
+                    slipped = true
+                }
                 when (direction) {
                     Direction.RIGHT -> setPosition(x + 1, y)
                     Direction.LEFT -> setPosition(x - 1, y)

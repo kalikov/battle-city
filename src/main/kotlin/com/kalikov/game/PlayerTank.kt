@@ -53,6 +53,8 @@ class PlayerTank private constructor(
         super.destroyHook()
 
         game.eventManager.fireEvent(PlayerDestroyed(this))
+
+        game.eventManager.fireEvent(SoundManager.Play("explosion_player"))
     }
 
     override fun hitHook(bullet: BulletHandle) {

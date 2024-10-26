@@ -13,6 +13,7 @@ class ConcurrentSoundManager(
     private companion object {
         private val subscriptions = setOf(
             SoundManager.Play::class,
+            SoundManager.Loop::class,
             SoundManager.Stop::class,
             SoundManager.Pause::class,
             SoundManager.Resume::class
@@ -40,9 +41,16 @@ class ConcurrentSoundManager(
         sounds[name] = sound
     }
 
+    override fun isPlaying(name: String): Boolean {
+        return playbacks[name]?.let {
+            !it.isDone
+        } ?: false
+    }
+
     override fun notify(event: Event) {
         when (event) {
-            is SoundManager.Play -> play(event.name)
+            is SoundManager.Play -> play(event.name, Sound::play)
+            is SoundManager.Loop -> play(event.name, Sound::loop)
             is SoundManager.Stop -> stop(event.name)
             is SoundManager.Pause -> pause()
             is SoundManager.Resume -> resume()
@@ -50,7 +58,7 @@ class ConcurrentSoundManager(
         }
     }
 
-    private fun play(name: String) {
+    private fun play(name: String, playback: (Sound) -> Unit) {
         val sound = sounds[name] ?: throw SoundNotFoundException(name)
 
         if (!enabled) {
@@ -60,7 +68,7 @@ class ConcurrentSoundManager(
         playbacks.compute(name) { _, value ->
             value?.cancel(true)
             executor.submit {
-                sound.play()
+                playback(sound)
             }
         }
     }
@@ -69,6 +77,11 @@ class ConcurrentSoundManager(
         playbacks.compute(name) { _, value ->
             value?.cancel(true)
             null
+        }
+        sounds[name]?.let {
+            executor.submit {
+                it.stop()
+            }
         }
     }
 

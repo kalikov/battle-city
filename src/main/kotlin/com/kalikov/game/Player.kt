@@ -3,7 +3,7 @@ package com.kalikov.game
 class Player(
     private val eventManager: EventManager,
     private val bonusLifeScore: Int = 20000,
-    initialScore: Int = 0,
+    initialScore: Int = 19990,
     val index: Int = 0,
 ) : EventSubscriber {
     data class Score(val player: Player, val points: Int) : Event()
@@ -77,6 +77,7 @@ class Player(
 
     private fun incrementLife() {
         lives++
+        eventManager.fireEvent(SoundManager.Play("increment_life"))
     }
 
     fun dispose() {

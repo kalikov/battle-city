@@ -52,7 +52,7 @@ class Main {
 
             val stageManager = DefaultStageManager(game.eventManager)
 
-            game.sceneManager.setScene {
+            game.sceneManager.setNextScene {
                 LoadingScene(
                     game,
                     game.imageManager,

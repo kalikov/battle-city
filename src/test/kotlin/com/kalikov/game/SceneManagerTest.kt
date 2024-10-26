@@ -3,6 +3,7 @@ package com.kalikov.game
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import kotlin.test.assertNull
 
@@ -20,19 +21,19 @@ class SceneManagerTest {
     fun `should update scene on update`() {
         val scene: Scene = mock()
 
-        sceneManager.setScene { scene }
+        sceneManager.setNextScene { scene }
         sceneManager.update()
         verify(scene).update()
     }
 
     @Test
-    fun `should draw scene on draw`() {
+    fun `should not update scene on draw`() {
         val scene: Scene = mock()
         val screenSurface: ScreenSurface = mock()
 
-        sceneManager.setScene { scene }
+        sceneManager.setNextScene { scene }
         sceneManager.draw(screenSurface)
-        verify(scene).draw(screenSurface)
+        verify(scene, never()).draw(screenSurface)
     }
 
     @Test
@@ -45,8 +46,8 @@ class SceneManagerTest {
         val scene1: Scene = mock()
         val scene2: Scene = mock()
 
-        sceneManager.setScene { scene1 }
-        sceneManager.setScene { scene2 }
+        sceneManager.setNextScene { scene1 }
+        sceneManager.setNextScene { scene2 }
 
         verify(scene1).destroy()
     }
