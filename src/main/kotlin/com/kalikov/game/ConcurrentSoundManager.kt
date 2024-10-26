@@ -8,27 +8,12 @@ import java.util.concurrent.TimeUnit
 
 class ConcurrentSoundManager(
     private val audio: Audio,
-    private val eventManager: EventManager
-) : LoadingSoundManager, EventSubscriber {
-    private companion object {
-        private val subscriptions = setOf(
-            SoundManager.Play::class,
-            SoundManager.Loop::class,
-            SoundManager.Stop::class,
-            SoundManager.Pause::class,
-            SoundManager.Resume::class
-        )
-    }
-
+) : LoadingSoundManager {
     private val sounds: MutableMap<String, Sound> = ConcurrentHashMap()
 
     private val executor: ExecutorService = Executors.newFixedThreadPool(8)
 
     private val playbacks: MutableMap<String, Future<*>> = ConcurrentHashMap()
-
-    init {
-        eventManager.addSubscriber(this, subscriptions)
-    }
 
     override var enabled: Boolean = true
         set(value) {
@@ -41,21 +26,18 @@ class ConcurrentSoundManager(
         sounds[name] = sound
     }
 
+    override fun play(name: String) {
+        play(name, Sound::play)
+    }
+
+    override fun loop(name: String) {
+        play(name, Sound::loop)
+    }
+
     override fun isPlaying(name: String): Boolean {
         return playbacks[name]?.let {
             !it.isDone
         } ?: false
-    }
-
-    override fun notify(event: Event) {
-        when (event) {
-            is SoundManager.Play -> play(event.name, Sound::play)
-            is SoundManager.Loop -> play(event.name, Sound::loop)
-            is SoundManager.Stop -> stop(event.name)
-            is SoundManager.Pause -> pause()
-            is SoundManager.Resume -> resume()
-            else -> {}
-        }
     }
 
     private fun play(name: String, playback: (Sound) -> Unit) {
@@ -68,32 +50,43 @@ class ConcurrentSoundManager(
         playbacks.compute(name) { _, value ->
             value?.cancel(true)
             executor.submit {
+                sound.stop()
                 playback(sound)
             }
         }
     }
 
-    private fun stop(name: String) {
-        playbacks.compute(name) { _, value ->
-            value?.cancel(true)
+    override fun stop(name: String) {
+        playbacks.computeIfPresent(name) { _, value ->
+            value.cancel(true)
             null
         }
         sounds[name]?.let {
-            executor.submit {
-                it.stop()
+            if (it.state != Sound.State.STOPPED) {
+                executor.submit {
+                    it.stop()
+                }
             }
         }
     }
 
-    private fun pause() {
+    override fun pauseAll() {
         for (key in playbacks.keys) {
-            sounds[key]?.pause()
+            sounds[key]?.let {
+                if (it.state == Sound.State.PLAYING) {
+                    it.pause()
+                }
+            }
         }
     }
 
-    private fun resume() {
+    override fun resumeAll() {
         for (key in playbacks.keys) {
-            sounds[key]?.resume()
+            sounds[key]?.let {
+                if (it.state == Sound.State.PAUSED) {
+                    it.resume()
+                }
+            }
         }
     }
 
@@ -107,8 +100,6 @@ class ConcurrentSoundManager(
     }
 
     fun destroy() {
-        eventManager.removeSubscriber(this, subscriptions)
-
         executor.shutdown()
 
         stopAll()

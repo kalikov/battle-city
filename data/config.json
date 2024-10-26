@@ -5,7 +5,7 @@
     "height": 600
   },
   "fpsLimit": 125,
-  "debug": true,
+  "debug": false,
   "keyboard": {
     "0x26": {
       "key": "UP",

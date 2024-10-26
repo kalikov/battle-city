@@ -20,8 +20,8 @@ class FreezeHandlerTest {
     @BeforeEach
     fun beforeEach() {
         eventManager = ConcurrentEventManager()
-        pauseListener = PauseListener(eventManager)
         clock = TestClock()
+        pauseListener = PauseListener(mockGame(eventManager = eventManager, clock = clock))
         timer = FreezeHandler(eventManager, clock)
 
         unfreezeListener = mock()

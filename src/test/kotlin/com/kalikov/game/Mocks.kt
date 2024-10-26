@@ -38,7 +38,7 @@ fun stubPlayerTank(
     pauseManager: PauseManager = mock(),
     x: Pixel = px(0),
     y: Pixel = px(0),
-    player: Player = Player(game.eventManager),
+    player: Player = Player(game),
 ): PlayerTank {
     return PlayerTank.create(game, pauseManager, x, y, player)
 }

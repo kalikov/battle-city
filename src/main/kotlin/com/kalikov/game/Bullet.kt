@@ -78,7 +78,7 @@ class Bullet(
 
     fun outOfBounds() {
         if (tank is PlayerTank) {
-            game.eventManager.fireEvent(SoundManager.Play("bullet_hit_steel"))
+            game.soundManager.play("bullet_hit_steel")
         }
         destroy()
     }

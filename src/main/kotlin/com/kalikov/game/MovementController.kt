@@ -121,22 +121,18 @@ class MovementController(
         }
         if (isPlayerMovement && !gameOver) {
             if (!game.soundManager.isPlaying("stage_start") && !game.soundManager.isPlaying("movement_player")) {
-                game.eventManager.fireEvent(SoundManager.Loop("movement_player"))
-                game.eventManager.fireEvent(SoundManager.Stop("movement_enemy"))
+                game.soundManager.play("movement_player")
+                game.soundManager.stop("movement_enemy")
             }
         } else {
             if (isEnemyMovement && !gameOver) {
                 if (!game.soundManager.isPlaying("stage_start") && !game.soundManager.isPlaying("movement_enemy")) {
-                    game.eventManager.fireEvent(SoundManager.Loop("movement_enemy"))
+                    game.soundManager.loop("movement_enemy")
                 }
             } else {
-                if (game.soundManager.isPlaying("movement_enemy")) {
-                    game.eventManager.fireEvent(SoundManager.Stop("movement_enemy"))
-                }
+                game.soundManager.stop("movement_enemy")
             }
-            if (game.soundManager.isPlaying("movement_player")) {
-                game.eventManager.fireEvent(SoundManager.Stop("movement_player"))
-            }
+            game.soundManager.stop("movement_player")
         }
     }
 
@@ -312,8 +308,8 @@ class MovementController(
     }
 
     private fun stopMovementSound() {
-        game.eventManager.fireEvent(SoundManager.Stop("movement_player"))
-        game.eventManager.fireEvent(SoundManager.Stop("movement_enemy"))
+        game.soundManager.stop("movement_player")
+        game.soundManager.stop("movement_enemy")
     }
 
     fun dispose() {

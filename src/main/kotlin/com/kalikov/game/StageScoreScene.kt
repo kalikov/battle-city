@@ -45,7 +45,7 @@ class StageScoreScene(
                 script.enqueue(Execute {
                     drawBonusIndex = maxTanksIndex
                     game.eventManager.fireEvent(Player.Score(stageManager.players[maxTanksIndex], BONUS_SCORE))
-                    game.eventManager.fireEvent(SoundManager.Play("bonus"))
+                    game.soundManager.play("bonus")
                 })
             }
         }

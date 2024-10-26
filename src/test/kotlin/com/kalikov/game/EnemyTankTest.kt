@@ -101,8 +101,8 @@ class EnemyTankTest : TankTest<EnemyTank>() {
     @Test
     fun `should not pause flashing`() {
         eventManager = ConcurrentEventManager()
-        val pauseListener = PauseListener(eventManager)
         game = mockGame(eventManager = eventManager, clock = clock)
+        val pauseListener = PauseListener(game)
         tank = stubEnemyTank(game, pauseListener)
         val state = TankStateInvincible(game, tank, 10)
         tank.state = state

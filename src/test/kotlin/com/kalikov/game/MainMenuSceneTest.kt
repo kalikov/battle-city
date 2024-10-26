@@ -14,6 +14,7 @@ class MainMenuSceneTest {
     private lateinit var fonts: TestFonts
     private lateinit var clock: TestClock
     private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var stageManager: StageManager
     private lateinit var scene: MainMenuScene
 
@@ -23,16 +24,14 @@ class MainMenuSceneTest {
         clock = TestClock()
         eventManager = mock()
         stageManager = mock()
-        scene = MainMenuScene(
-            mockGame(eventManager = eventManager, imageManager = TestImageManager(fonts), clock = clock),
-            stageManager,
-        )
+        game = mockGame(eventManager = eventManager, imageManager = TestImageManager(fonts), clock = clock)
+        scene = MainMenuScene(game, stageManager)
     }
 
     @Test
     fun `should draw main menu scene`() {
         scene.arrived()
-        val player = Player(eventManager)
+        val player = Player(game)
         whenever(stageManager.players).thenReturn(listOf(player))
         whenever(stageManager.highScore).thenReturn(20000)
 
@@ -49,8 +48,8 @@ class MainMenuSceneTest {
     @Test
     fun `should draw main menu scene with two players`() {
         scene.arrived()
-        val player1 = Player(eventManager)
-        val player2 = Player(eventManager)
+        val player1 = Player(game)
+        val player2 = Player(game)
         whenever(stageManager.players).thenReturn(listOf(player1, player2))
         whenever(stageManager.highScore).thenReturn(20000)
 

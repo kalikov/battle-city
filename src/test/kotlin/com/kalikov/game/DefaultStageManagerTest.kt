@@ -12,7 +12,7 @@ class DefaultStageManagerTest {
     @BeforeEach
     fun beforeEach() {
         eventManager = mock()
-        stageManager = DefaultStageManager(eventManager)
+        stageManager = DefaultStageManager(mockGame(eventManager = eventManager))
     }
 
     @Test

@@ -24,7 +24,7 @@ class OnePlayerMenuItemTest {
                 emptyList()
             )
         )
-        val player = Player(game.eventManager)
+        val player = Player(game)
         whenever(stageManager.players).thenReturn(listOf(player))
 
         val item = OnePlayerMenuItem(game, stageManager)

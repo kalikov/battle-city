@@ -34,7 +34,7 @@ class PowerUpHandler(
     }
 
     private fun handle(powerUp: PowerUp, playerTank: PlayerTank) {
-        game.eventManager.fireEvent(SoundManager.Play("powerup_pick"))
+        game.soundManager.play("powerup_pick")
 
         when (powerUp.type) {
             PowerUp.Type.GRENADE -> handleGrenade()

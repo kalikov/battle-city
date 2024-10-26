@@ -40,7 +40,7 @@ class PointsTest {
     @Test
     fun `should respect pause in the points duration`() {
         whenever(game.eventManager).thenReturn(ConcurrentEventManager())
-        val pauseListener = PauseListener(game.eventManager)
+        val pauseListener = PauseListener(game)
         pauseManager = pauseListener
         val points = createPoints(3)
         points.update()
@@ -81,7 +81,7 @@ class PointsTest {
     @Test
     fun `should not destroy points when paused`() {
         whenever(game.eventManager).thenReturn(ConcurrentEventManager())
-        pauseManager = PauseListener(game.eventManager)
+        pauseManager = PauseListener(game)
 
         val points = createPoints(1)
 

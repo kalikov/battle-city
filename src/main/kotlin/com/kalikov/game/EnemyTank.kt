@@ -65,7 +65,7 @@ class EnemyTank private constructor(
         hit++
         color.hit()
         if (hit < hitLimit) {
-            game.eventManager.fireEvent(SoundManager.Play("bullet_hit_enemy"))
+            game.soundManager.play("bullet_hit_enemy")
         } else {
             destroy()
             val bulletTank = bullet.tank
@@ -78,7 +78,7 @@ class EnemyTank private constructor(
 
     override fun destroyHook() {
         super.destroyHook()
-        game.eventManager.fireEvent(SoundManager.Play("explosion_enemy"))
+        game.soundManager.play("explosion_enemy")
     }
 
     private fun updateColor() {

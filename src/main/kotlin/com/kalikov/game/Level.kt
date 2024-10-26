@@ -18,7 +18,7 @@ class Level(
 
     private var visible = false
 
-    private val pauseListener = PauseListener(game.eventManager)
+    private val pauseListener = PauseListener(game)
 
     private val playersTankControllers: List<PlayerTankController>
     private val playersTankFactories: List<PlayerTankFactory>
@@ -160,7 +160,7 @@ class Level(
         gameOverScript = Script()
         gameOverScript.isActive = false
         gameOverScript.enqueue(Execute {
-            game.eventManager.fireEvent(Level.GameOver)
+            game.eventManager.fireEvent(GameOver)
         })
         gameOverScript.enqueue(Delay(gameOverScript, 640, game.clock))
         gameOverScript.enqueue(Execute {

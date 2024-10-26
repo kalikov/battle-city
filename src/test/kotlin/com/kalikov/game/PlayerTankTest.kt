@@ -15,7 +15,7 @@ class PlayerTankTest : TankTest<PlayerTank>() {
             mock(),
             px(0),
             px(0),
-            Player(eventManager)
+            Player(game)
         )
     }
 

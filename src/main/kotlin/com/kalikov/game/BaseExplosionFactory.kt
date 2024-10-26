@@ -24,7 +24,7 @@ class BaseExplosionFactory(
             base.x + Base.SIZE / 2 - BaseExplosion.SIZE / 2,
             base.y + Base.SIZE / 2 - BaseExplosion.SIZE / 2,
         )
-        game.eventManager.fireEvent(SoundManager.Play("explosion_player"))
+        game.soundManager.play("explosion_player")
 
         return explosion
     }

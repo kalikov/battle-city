@@ -63,7 +63,7 @@ class HighScoreScene(
     override fun update() {
         if (timer.isStopped) {
             timer.restart()
-            game.eventManager.fireEvent(SoundManager.Play("high_score"))
+            game.soundManager.play("high_score")
         }
         timer.update()
     }
@@ -72,7 +72,6 @@ class HighScoreScene(
         counter++
         if (counter == BLINK_COUNT) {
             timer.stop()
-//            game.eventManager.fireEvent(SoundManager.Stop("high_score"))
             game.eventManager.fireEvent(Scene.Start(nextSceneFactory))
         }
     }

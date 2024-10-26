@@ -4,7 +4,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 class DefaultStageManager(
-    private val eventManager: EventManager
+    private val game: Game
 ) : StageManager {
     private lateinit var stages: List<Stage>
     private lateinit var defaultConstructionMap: StageMapConfig
@@ -45,7 +45,7 @@ class DefaultStageManager(
         this.stages = stages
 
         this.defaultConstructionMap = defaultConstructionMap
-        players = listOf(Player(eventManager))
+        players = listOf(Player(game))
         constructionStage = Stage(defaultConstructionMap, stages[0].enemySpawnDelay, stages[0].enemies)
         constructionMap = defaultConstructionMap
 
@@ -57,7 +57,7 @@ class DefaultStageManager(
             return
         }
         players = List(playersCount) { i ->
-            if (i < players.size) players[i] else Player(eventManager, index = i)
+            if (i < players.size) players[i] else Player(game, index = i)
         }
     }
 

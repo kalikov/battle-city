@@ -358,8 +358,6 @@ abstract class TankTest<T : Tank> {
         direction: Direction,
         bulletPosition: PixelPoint
     ) {
-        val game = mockGame()
-
         val tank = stubPlayerTank(game)
         tank.setPosition(tankPosition)
         tank.direction = direction
@@ -388,7 +386,6 @@ abstract class TankTest<T : Tank> {
     }
 
     private fun shouldCreateBulletWithCorrectType(type: Bullet.Type) {
-        val game = mockGame()
         val tank = stubPlayerTank(game)
         tank.bulletType = type
 

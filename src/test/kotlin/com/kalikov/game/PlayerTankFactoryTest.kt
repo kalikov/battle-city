@@ -31,7 +31,7 @@ class PlayerTankFactoryTest {
             mock(),
             spriteContainer,
             PixelPoint(px(10), px(100)),
-            Player(eventManager)
+            Player(game)
         )
     }
 

@@ -41,7 +41,7 @@ class StageSceneTest {
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun `should draw scene correctly`() {
-        val player = Player(game.eventManager, initialScore = 100)
+        val player = Player(game, initialScore = 100)
         whenever(stageManager.players).thenReturn(listOf(player))
 
         val json = Json { ignoreUnknownKeys = true }
@@ -71,8 +71,8 @@ class StageSceneTest {
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun `should draw two players scene correctly`() {
-        val playerOne = Player(game.eventManager, initialScore = 100)
-        val playerTwo = Player(game.eventManager, initialScore = 6000)
+        val playerOne = Player(game, initialScore = 100)
+        val playerTwo = Player(game, initialScore = 6000)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
 
         val json = Json { ignoreUnknownKeys = true }
@@ -101,7 +101,7 @@ class StageSceneTest {
 
     @Test
     fun `should draw game over message correctly`() {
-        val player = Player(game.eventManager, initialScore = 100)
+        val player = Player(game, initialScore = 100)
         whenever(stageManager.players).thenReturn(listOf(player))
 
         val map = StageMapConfig(
