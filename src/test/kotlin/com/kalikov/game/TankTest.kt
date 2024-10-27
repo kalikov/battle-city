@@ -9,6 +9,7 @@ import org.mockito.kotlin.isA
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import java.awt.image.BufferedImage
 import kotlin.test.assertEquals
@@ -383,6 +384,83 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should create enhanced bullet`() {
         shouldCreateBulletWithCorrectType(Bullet.Type.ENHANCED)
+    }
+
+    @Test
+    fun `should not shoot during long cooldown`() {
+        val tank = stubPlayerTank(game)
+        tank.shoot()
+
+        verify(game.eventManager).fireEvent(isA<Tank.Shoot>())
+        clearInvocations(game.eventManager)
+
+        tank.notify(Tank.Reload(tank))
+
+        for (i in 1 until Tank.LONG_COOLDOWN_INTERVAL) {
+            clock.tick(1)
+            tank.update()
+            tank.shoot()
+            verify(game.eventManager, never()).fireEvent(isA<Tank.Shoot>())
+        }
+
+        clock.tick(1)
+        tank.update()
+        tank.shoot()
+        verify(game.eventManager).fireEvent(isA<Tank.Shoot>())
+    }
+
+    @Test
+    fun `should not shoot during short cooldown`() {
+        val tank = stubPlayerTank(game)
+        tank.bulletsLimit = 2
+        tank.shoot()
+
+        verify(game.eventManager).fireEvent(isA<Tank.Shoot>())
+        clearInvocations(game.eventManager)
+
+        tank.notify(Tank.Reload(tank))
+
+        for (i in 1 until Tank.SHORT_COOLDOWN_INTERVAL) {
+            clock.tick(1)
+            tank.update()
+            tank.shoot()
+            verify(game.eventManager, never()).fireEvent(isA<Tank.Shoot>())
+        }
+
+        clock.tick(1)
+        tank.update()
+        tank.shoot()
+        verify(game.eventManager).fireEvent(isA<Tank.Shoot>())
+    }
+
+    @Test
+    fun `should not shoot next first bullet during long cooldown`() {
+        val tank = stubPlayerTank(game)
+        tank.bulletsLimit = 2
+        tank.shoot()
+
+        clock.tick(Tank.SHORT_COOLDOWN_INTERVAL)
+
+        tank.update()
+        tank.shoot()
+
+        verify(game.eventManager, times(2)).fireEvent(isA<Tank.Shoot>())
+        clearInvocations(game.eventManager)
+
+        tank.notify(Tank.Reload(tank))
+        tank.notify(Tank.Reload(tank))
+
+        for (i in Tank.SHORT_COOLDOWN_INTERVAL + 1 until Tank.LONG_COOLDOWN_INTERVAL) {
+            clock.tick(1)
+            tank.update()
+            tank.shoot()
+            verify(game.eventManager, never()).fireEvent(isA<Tank.Shoot>())
+        }
+
+        clock.tick(1)
+        tank.update()
+        tank.shoot()
+        verify(game.eventManager).fireEvent(isA<Tank.Shoot>())
     }
 
     private fun shouldCreateBulletWithCorrectType(type: Bullet.Type) {

@@ -116,6 +116,7 @@ sealed class Tank(
     var bulletSpeed = Bullet.Speed.NORMAL
     var bulletsLimit = 1
     private var bullets = 0
+    private var totalBulletsFired = 0
 
     var bulletType = Bullet.Type.REGULAR
 
@@ -226,12 +227,14 @@ sealed class Tank(
         if (bullets >= bulletsLimit) {
             return
         }
-        if (shortCooldownTimer.isStopped && bullets > 0 || longCooldownTimer.isStopped) {
+        val isFirstBulletFromClip = totalBulletsFired % bulletsLimit == 0
+        if (shortCooldownTimer.isStopped && (!isFirstBulletFromClip || longCooldownTimer.isStopped)) {
             bullets++
+            totalBulletsFired++
             val bullet = createBullet()
             game.eventManager.fireEvent(Shoot(bullet))
             shortCooldownTimer.restart()
-            if (bullets == 1) {
+            if (isFirstBulletFromClip) {
                 longCooldownTimer.restart()
             }
         }
