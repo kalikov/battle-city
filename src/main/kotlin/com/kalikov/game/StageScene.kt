@@ -5,8 +5,9 @@ class StageScene(
     private val stageManager: StageManager,
 ) : Scene {
     private val curtain = Curtain()
-    private val stageMessage = StageMessage(stageManager)
     private val script = Script()
+    private val stageMessage = StageMessage(stageManager)
+    private val stageSelect = StageSelect(game.eventManager, stageManager, script)
 
     private var level: Level? = null
 
@@ -22,7 +23,7 @@ class StageScene(
             stageMessage.isVisible = true
         })
         if (isFirstStage) {
-            script.enqueue(StageSelect(game.eventManager, stageManager, script))
+            script.enqueue(stageSelect)
         }
         script.enqueue(Execute {
             game.soundManager.stageStart.play()
@@ -62,6 +63,8 @@ class StageScene(
 
     override fun destroy() {
         level?.dispose()
+
+        stageSelect.dispose()
 
         LeaksDetector.remove(this)
     }

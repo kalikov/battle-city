@@ -47,6 +47,9 @@ class StageSelect(
     }
 
     fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
+        if (subscribed) {
+            eventManager.removeSubscriber(this, subscriptions)
+            subscribed = false
+        }
     }
 }
