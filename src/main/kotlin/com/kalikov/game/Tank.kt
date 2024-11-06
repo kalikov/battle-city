@@ -69,8 +69,6 @@ sealed class Tank(
     abstract val image: String
     abstract val imageMod: Int
 
-    val isSlipping get() = !slipCountDown.isStopped
-
     val canMove get() = state.canMove
     val canBeDestroyed get() = state.canBeDestroyed
 
@@ -82,21 +80,15 @@ sealed class Tank(
             moveCountDown = CountDown(value, ::moved)
         }
 
-    var slipDuration = 28
-        set(value) {
-            field = value
-            slipCountDown = CountDown(value)
-        }
-
     override var direction = Direction.RIGHT
         set(value) {
             if (value == field) {
                 return
             }
-            if (!slipCountDown.isStopped && isSmoothTurnRequired(value)) {
+            if (!state.canMove) {
                 return
             }
-            if (!state.canMove) {
+            if (!canChangeDirection(value)) {
                 return
             }
             smoothTurn(value)
@@ -123,12 +115,9 @@ sealed class Tank(
     private val longCooldownTimer = PauseAwareTimer(game.eventManager, game.clock, LONG_COOLDOWN_INTERVAL, ::resetLongCooldown)
     private val shortCooldownTimer = PauseAwareTimer(game.eventManager, game.clock, SHORT_COOLDOWN_INTERVAL, ::resetShortCooldown)
 
-    private val turnRoundTo = Globals.TILE_SIZE
+    protected val turnRoundTo = Globals.TILE_SIZE
 
     private var moveCountDown = CountDown(moveFrequency, ::moved)
-    private var slipCountDown = CountDown(slipDuration)
-
-    private var slipped = false
 
     final override var hitRect = calculateHitRect(bounds)
         private set
@@ -151,38 +140,29 @@ sealed class Tank(
         moveDistance++
     }
 
-    fun startSlipping() {
-        if (slipCountDown.isStopped) {
-            slipped = false
-            slipCountDown.restart()
-        }
-    }
-
-    fun stopSlipping() {
-        slipCountDown.stop()
-    }
-
     fun move(movePrecondition: () -> Boolean): Boolean {
         moveCountDown.update()
         if (moveCountDown.isStopped) {
             moveCountDown.restart()
             if (movePrecondition()) {
-                slipCountDown.update()
-                if (!slipCountDown.isStopped && !slipped && isIdle) {
-                    game.soundManager.slip.play()
-                    slipped = true
-                }
                 when (direction) {
                     Direction.RIGHT -> setPosition(x + 1, y)
                     Direction.LEFT -> setPosition(x - 1, y)
                     Direction.UP -> setPosition(x, y - 1)
                     Direction.DOWN -> setPosition(x, y + 1)
                 }
+                moveHook(true)
                 return true
             }
-            slipCountDown.stop()
+            moveHook(false)
         }
         return false
+    }
+
+    protected open fun moveHook(moved: Boolean) = Unit
+
+    protected open fun canChangeDirection(target: Direction): Boolean {
+       return true
     }
 
     private fun createBullet(): Bullet {
@@ -295,15 +275,6 @@ sealed class Tank(
         game.eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
-    }
-
-    private fun isSmoothTurnRequired(newDirection: Direction): Boolean {
-        val prevDirection = direction
-        return if (newDirection.isVertical) {
-            prevDirection.isHorizontal && (x % turnRoundTo) > 0
-        } else {
-            prevDirection.isVertical && (y % turnRoundTo) > 0
-        }
     }
 
     private fun smoothTurn(newDirection: Direction) {

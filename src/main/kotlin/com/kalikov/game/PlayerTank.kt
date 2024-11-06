@@ -32,10 +32,58 @@ class PlayerTank private constructor(
     var upgradeLevel = 0
         private set
 
+    val isSlipping get() = !slipCountDown.isStopped
+
+    var slipDuration = 28
+        set(value) {
+            field = value
+            slipCountDown = CountDown(value)
+        }
+
     private var shooting = false
 
     override val image = "tank_player${player.index + 1}"
     override val imageMod get() = upgradeLevel
+
+    private var slipCountDown = CountDown(slipDuration)
+
+    private var slipped = false
+
+    fun startSlipping() {
+        if (slipCountDown.isStopped) {
+            slipped = false
+            slipCountDown.restart()
+        }
+    }
+
+    fun stopSlipping() {
+        slipCountDown.stop()
+    }
+
+    override fun canChangeDirection(target: Direction): Boolean {
+        return (slipCountDown.isStopped || !isSmoothTurnRequired(target)) && super.canChangeDirection(target)
+    }
+
+    override fun moveHook(moved: Boolean) {
+        if (!moved) {
+            slipCountDown.stop()
+        } else {
+            slipCountDown.update()
+            if (!slipCountDown.isStopped && !slipped && isIdle) {
+                game.soundManager.slip.play()
+                slipped = true
+            }
+        }
+    }
+
+    private fun isSmoothTurnRequired(newDirection: Direction): Boolean {
+        val prevDirection = direction
+        return if (newDirection.isVertical) {
+            prevDirection.isHorizontal && (x % turnRoundTo) > 0
+        } else {
+            prevDirection.isVertical && (y % turnRoundTo) > 0
+        }
+    }
 
     override fun stateAppearingEnd() {
         state = TankStateInvincible(game, this)

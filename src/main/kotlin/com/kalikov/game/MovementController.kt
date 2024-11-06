@@ -118,7 +118,7 @@ class MovementController(
         }
         if (isPlayerMovement && !gameOver) {
             if (!game.soundManager.stageStart.isPlaying && !game.soundManager.playerMovement.isPlaying) {
-                game.soundManager.playerMovement.play()
+                game.soundManager.playerMovement.loop()
                 game.soundManager.enemyMovement.stop()
             }
         } else {
@@ -137,26 +137,24 @@ class MovementController(
         if (!tank.canMove) {
             return
         }
-        val isSlippingMove = tank.isSlipping
-        if (!tank.isIdle || isSlippingMove) {
-            when (tank) {
-                is EnemyTank -> {
-                    if (tank.move { !hasCollisionForTank(tank) }) {
-                        detectBulletCollisionForTank(tank)
-                    }
+        when (tank) {
+            is EnemyTank -> {
+                if (!tank.isIdle && tank.move { !hasCollisionForTank(tank) }) {
+                    detectBulletCollisionForTank(tank)
                 }
+            }
 
-                is PlayerTank -> {
-                    if (tank.move { !hasCollisionForTank(tank) }) {
-                        detectPowerUpCollisionForTank(tank)
-                        detectBulletCollisionForTank(tank)
-                        if (isTankOnIce(tank)) {
-                            if (!isSlippingMove) {
-                                tank.startSlipping()
-                            }
-                        } else {
-                            tank.stopSlipping()
+            is PlayerTank -> {
+                val isSlippingMove = tank.isSlipping
+                if ((!tank.isIdle || isSlippingMove) && tank.move { !hasCollisionForTank(tank) }) {
+                    detectPowerUpCollisionForTank(tank)
+                    detectBulletCollisionForTank(tank)
+                    if (isTankOnIce(tank)) {
+                        if (!isSlippingMove) {
+                            tank.startSlipping()
                         }
+                    } else {
+                        tank.stopSlipping()
                     }
                 }
             }
