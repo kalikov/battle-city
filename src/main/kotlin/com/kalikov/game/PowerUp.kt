@@ -3,9 +3,10 @@ package com.kalikov.game
 class PowerUp(
     private val game: Game,
     position: PixelPoint,
-) : Sprite(game.eventManager, position.x, position.y, SIZE, SIZE) {
+) : Sprite(game.eventManager, position.x, position.y, SIZE_IN_PIXELS, SIZE_IN_PIXELS) {
     companion object {
-        val SIZE = t(2).toPixel()
+        val SIZE_IN_TILES = t(2)
+        val SIZE_IN_PIXELS = SIZE_IN_TILES.toPixel()
     }
 
     data class Pick(val powerUp: PowerUp, val tank: PlayerTank) : Event()
