@@ -34,7 +34,7 @@ class PowerUpHandler(
     }
 
     private fun handle(powerUp: PowerUp, playerTank: PlayerTank) {
-        game.soundManager.play("powerup_pick")
+        game.soundManager.powerUpPick.play()
 
         when (powerUp.type) {
             PowerUp.Type.GRENADE -> handleGrenade()
@@ -53,6 +53,7 @@ class PowerUpHandler(
                 tank.destroy()
             }
         }
+        game.soundManager.enemyExplosion.play()
     }
 
     private fun handleHelmet(playerTank: Tank) {

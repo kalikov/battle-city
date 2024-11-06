@@ -63,7 +63,7 @@ class HighScoreScene(
     override fun update() {
         if (timer.isStopped) {
             timer.restart()
-            game.soundManager.play("high_score")
+            game.soundManager.highScore.play()
         }
         timer.update()
     }

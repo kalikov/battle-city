@@ -15,7 +15,7 @@ class BulletHandler(
     override fun notify(event: Event) {
         if (event is Tank.Shoot) {
             if (event.bullet.tank is PlayerTank) {
-                game.soundManager.play("bullet_shot")
+                game.soundManager.bulletShot.play()
             }
             spriteContainer.addSprite(event.bullet)
         }

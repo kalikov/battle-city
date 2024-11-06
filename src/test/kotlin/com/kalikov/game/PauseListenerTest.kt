@@ -15,7 +15,7 @@ class PauseListenerTest {
     @BeforeEach
     fun beforeEach() {
         eventManager = mock()
-        soundManager = mock()
+        soundManager = mockSoundManager()
 
         listener = PauseListener(mockGame(eventManager = eventManager, soundManager = soundManager))
     }
@@ -61,7 +61,7 @@ class PauseListenerTest {
     @Test
     fun `should play sound on pause start`() {
         listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
-        verify(soundManager).play("pause")
+        verify(soundManager.pause).play()
     }
 
     @Test

@@ -169,7 +169,7 @@ sealed class Tank(
             if (movePrecondition()) {
                 slipCountDown.update()
                 if (!slipCountDown.isStopped && !slipped && isIdle) {
-                    game.soundManager.play("slip")
+                    game.soundManager.slip.play()
                     slipped = true
                 }
                 when (direction) {

@@ -12,7 +12,7 @@ This is a recreation of the classic game implemented using the Kotlin programmin
 * Single-player and cooperative multiplayer modes.
 * A variety of enemy tanks with different behaviors and abilities.
 * Power-ups and obstacles to enhance gameplay.
-* ~~Sound and visual effects faithful to the original game.~~
+* Sound and visual effects faithful to the original game.
 * Customizable controls for an improved gaming experience.
 
 ## Credits

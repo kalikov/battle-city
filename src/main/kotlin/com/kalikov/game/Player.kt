@@ -77,7 +77,7 @@ class Player(
 
     private fun incrementLife() {
         lives++
-        game.soundManager.play("increment_life")
+        game.soundManager.incrementLife.play()
     }
 
     fun dispose() {

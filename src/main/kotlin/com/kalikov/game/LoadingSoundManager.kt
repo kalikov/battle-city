@@ -1,5 +1,7 @@
 package com.kalikov.game
 
 interface LoadingSoundManager : SoundManager {
-    fun load(name: String, path: String)
+    fun loadSound(name: String, path: String)
+
+    fun loadMusic(name: String, path: String)
 }

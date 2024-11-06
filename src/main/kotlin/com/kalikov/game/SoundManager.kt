@@ -1,14 +1,13 @@
 package com.kalikov.game
 
 interface SoundManager {
-    fun isPlaying(name: String): Boolean
+    fun sound(name: String): Sound
 
-    fun play(name: String)
-    fun loop(name: String)
-    fun stop(name: String)
+    fun music(name: String): Music
 
-    fun pauseAll()
-    fun resumeAll()
+    fun pause()
+
+    fun resume()
 
     var enabled: Boolean
 }

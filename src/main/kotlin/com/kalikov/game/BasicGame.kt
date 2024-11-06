@@ -97,9 +97,9 @@ class BasicGame(
     fun destroy() {
         eventManager.removeSubscriber(this, setOf(Quit::class, Keyboard.KeyPressed::class))
 
-        soundManager.destroy()
         sceneManager.destroy()
         eventManager.destroy()
+        soundManager.destroy()
     }
 
     override fun notify(event: Event) {

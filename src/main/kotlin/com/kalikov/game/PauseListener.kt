@@ -31,11 +31,11 @@ class PauseListener(private val game: Game) : EventSubscriber, PauseManager {
 
             if (isPaused) {
                 game.eventManager.fireEvent(PauseManager.Start)
-                game.soundManager.pauseAll()
-                game.soundManager.play("pause")
+                game.soundManager.pause()
+                game.soundManager.pause.play()
             } else {
                 game.eventManager.fireEvent(PauseManager.End)
-                game.soundManager.resumeAll()
+                game.soundManager.resume()
             }
         }
     }

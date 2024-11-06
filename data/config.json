@@ -70,8 +70,12 @@
       "size": 32
     }
   },
-  "sounds": {
+  "music": {
     "stage_start": "sounds/stage_start.wav",
+    "movement_player": "sounds/movement_player.wav",
+    "movement_enemy": "sounds/movement_enemy.wav"
+  },
+  "sounds": {
     "high_score": "sounds/high_score.wav",
     "game_over": "sounds/game_over.wav",
     "pause": "sounds/pause.wav",
@@ -85,8 +89,6 @@
     "bullet_hit_enemy": "sounds/bullet_hit_enemy.wav",
     "bullet_shot": "sounds/bullet_shot.wav",
     "slip": "sounds/slip.wav",
-    "movement_player": "sounds/movement_player.wav",
-    "movement_enemy": "sounds/movement_enemy.wav",
     "statistics": "sounds/statistics.wav",
     "bonus": "sounds/bonus.wav"
   },

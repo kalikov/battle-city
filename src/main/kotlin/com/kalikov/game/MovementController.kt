@@ -14,6 +14,8 @@ class MovementController(
         const val UPDATE_INTERVAL = 4
 
         private val subscriptions = setOf(
+            EnemyFactory.EnemyCreated::class,
+            EnemyFactory.LastEnemyDestroyed::class,
             SpriteContainer.Added::class,
             Level.GameOver::class,
         )
@@ -22,6 +24,7 @@ class MovementController(
     private val timer = BasicTimer(game.clock, UPDATE_INTERVAL, ::move)
 
     private var gameOver = false
+    private var isEnemyMovement = false
 
     init {
         game.eventManager.addSubscriber(this, subscriptions)
@@ -105,34 +108,28 @@ class MovementController(
 
     private fun moveTanks() {
         var isPlayerMovement = false
-        var isEnemyMovement = false
         mainContainer.forEach { sprite ->
             if (sprite is Tank && !sprite.isDestroyed) {
                 move(sprite)
-                if (sprite.canMove && !sprite.isIdle) {
-                    if (sprite is PlayerTank) {
-                        isPlayerMovement = true
-                    }
-                    if (sprite is EnemyTank) {
-                        isEnemyMovement = true
-                    }
+                if (sprite.canMove && !sprite.isIdle && sprite is PlayerTank) {
+                    isPlayerMovement = true
                 }
             }
         }
         if (isPlayerMovement && !gameOver) {
-            if (!game.soundManager.isPlaying("stage_start") && !game.soundManager.isPlaying("movement_player")) {
-                game.soundManager.play("movement_player")
-                game.soundManager.stop("movement_enemy")
+            if (!game.soundManager.stageStart.isPlaying && !game.soundManager.playerMovement.isPlaying) {
+                game.soundManager.playerMovement.play()
+                game.soundManager.enemyMovement.stop()
             }
         } else {
             if (isEnemyMovement && !gameOver) {
-                if (!game.soundManager.isPlaying("stage_start") && !game.soundManager.isPlaying("movement_enemy")) {
-                    game.soundManager.loop("movement_enemy")
+                if (!game.soundManager.stageStart.isPlaying && !game.soundManager.enemyMovement.isPlaying) {
+                    game.soundManager.enemyMovement.loop()
                 }
             } else {
-                game.soundManager.stop("movement_enemy")
+                game.soundManager.enemyMovement.stop()
             }
-            game.soundManager.stop("movement_player")
+            game.soundManager.playerMovement.stop()
         }
     }
 
@@ -303,13 +300,21 @@ class MovementController(
                 stopMovementSound()
             }
 
+            is EnemyFactory.EnemyCreated -> {
+                isEnemyMovement = true
+            }
+
+            is EnemyFactory.LastEnemyDestroyed -> {
+                isEnemyMovement = false
+            }
+
             else -> Unit
         }
     }
 
     private fun stopMovementSound() {
-        game.soundManager.stop("movement_player")
-        game.soundManager.stop("movement_enemy")
+        game.soundManager.playerMovement.stop()
+        game.soundManager.enemyMovement.stop()
     }
 
     fun dispose() {

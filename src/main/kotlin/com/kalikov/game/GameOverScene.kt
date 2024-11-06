@@ -10,7 +10,7 @@ class GameOverScene(
 
     init {
         script.enqueue(Delay(script, 320, game.clock))
-        script.enqueue(Execute { game.soundManager.play("game_over") })
+        script.enqueue(Execute { game.soundManager.gameOver.play() })
         script.enqueue(Delay(script, 1800, game.clock))
         script.enqueue(Execute {
             val highScore = stageManager.highScore

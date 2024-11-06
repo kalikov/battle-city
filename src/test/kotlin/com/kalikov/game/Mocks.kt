@@ -1,14 +1,31 @@
 package com.kalikov.game
 
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import java.time.Clock
+
+fun mockSoundManager(): SoundManager {
+    val sound = HashMap<String, ManagedSound>()
+    val music = HashMap<String, ManagedMusic>()
+    val soundManager: SoundManager = mock {
+        on { this.sound(any()) } doAnswer {
+            sound.computeIfAbsent(it.getArgument(0)) { mock() }
+        }
+        on { this.music(any()) } doAnswer {
+            music.computeIfAbsent(it.getArgument(0)) { mock() }
+        }
+    }
+    return soundManager
+}
+
 
 fun mockGame(
     screen: Screen = mock(),
     eventManager: EventManager = mock(),
     imageManager: ImageManager = mock(),
-    soundManager: SoundManager = mock(),
+    soundManager: SoundManager = mockSoundManager(),
     config: GameConfig = GameConfig(),
     clock: Clock = mock(),
 ): Game {

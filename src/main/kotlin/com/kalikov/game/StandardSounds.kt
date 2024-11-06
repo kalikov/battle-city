@@ -1,0 +1,21 @@
+package com.kalikov.game
+
+val SoundManager.stageStart get() = this.music("stage_start")
+val SoundManager.playerMovement get() = this.music("movement_player")
+val SoundManager.enemyMovement get() = this.music("movement_enemy")
+
+val SoundManager.pause get() = this.sound("pause")
+val SoundManager.bulletShot get() = this.sound("bullet_shot")
+val SoundManager.playerExplosion get() = this.sound("explosion_player")
+val SoundManager.enemyExplosion get() = this.sound("explosion_enemy")
+val SoundManager.bulletHitSteel get() = this.sound("bullet_hit_steel")
+val SoundManager.bulletHitBrick get() = this.sound("bullet_hit_brick")
+val SoundManager.bulletHitEnemy get() = this.sound("bullet_hit_enemy")
+val SoundManager.gameOver get() = this.sound("game_over")
+val SoundManager.highScore get() = this.sound("high_score")
+val SoundManager.incrementLife get() = this.sound("increment_life")
+val SoundManager.powerUpPick get() = this.sound("powerup_pick")
+val SoundManager.powerUpAppear get() = this.sound("powerup_appear")
+val SoundManager.statistics get() = this.sound("statistics")
+val SoundManager.bonus get() = this.sound("bonus")
+val SoundManager.slip get() = this.sound("slip")

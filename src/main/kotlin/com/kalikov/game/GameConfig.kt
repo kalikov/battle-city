@@ -10,6 +10,7 @@ data class GameConfig(
     val debug: Boolean = false,
     val keyboard: Map<String, KeyEventConfig> = emptyMap(),
     val fonts: Map<String, FontConfig> = emptyMap(),
+    val music: Map<String, String> = emptyMap(),
     val sounds: Map<String, String> = emptyMap(),
     val images: Map<String, String> = emptyMap(),
     val construction: String = "data/construction.json",
