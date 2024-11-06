@@ -1,6 +1,6 @@
 package com.kalikov.game
 
-class PauseListener(private val eventManager: EventManager) : EventSubscriber, PauseManager {
+class PauseListener(private val game: Game) : EventSubscriber, PauseManager {
     private companion object {
         private val subscriptions = setOf(Keyboard.KeyPressed::class)
     }
@@ -13,7 +13,7 @@ class PauseListener(private val eventManager: EventManager) : EventSubscriber, P
     init {
         LeaksDetector.add(this)
 
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun notify(event: Event) {
@@ -30,18 +30,18 @@ class PauseListener(private val eventManager: EventManager) : EventSubscriber, P
             isPaused = !isPaused
 
             if (isPaused) {
-                eventManager.fireEvent(PauseManager.Start)
-                eventManager.fireEvent(SoundManager.Pause)
-                eventManager.fireEvent(SoundManager.Play("pause"))
+                game.eventManager.fireEvent(PauseManager.Start)
+                game.soundManager.pause()
+                game.soundManager.pause.play()
             } else {
-                eventManager.fireEvent(PauseManager.End)
-                eventManager.fireEvent(SoundManager.Resume)
+                game.eventManager.fireEvent(PauseManager.End)
+                game.soundManager.resume()
             }
         }
     }
 
     fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
     }

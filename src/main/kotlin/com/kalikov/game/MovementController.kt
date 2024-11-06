@@ -12,12 +12,22 @@ class MovementController(
 ) : EventSubscriber {
     companion object {
         const val UPDATE_INTERVAL = 4
+
+        private val subscriptions = setOf(
+            EnemyFactory.EnemyCreated::class,
+            EnemyFactory.LastEnemyDestroyed::class,
+            SpriteContainer.Added::class,
+            Level.GameOver::class,
+        )
     }
 
     private val timer = BasicTimer(game.clock, UPDATE_INTERVAL, ::move)
 
+    private var gameOver = false
+    private var isEnemyMovement = false
+
     init {
-        game.eventManager.addSubscriber(this, setOf(SpriteContainer.Added::class))
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     fun update() {
@@ -97,10 +107,29 @@ class MovementController(
     }
 
     private fun moveTanks() {
+        var isPlayerMovement = false
         mainContainer.forEach { sprite ->
             if (sprite is Tank && !sprite.isDestroyed) {
                 move(sprite)
+                if (sprite.canMove && !sprite.isIdle && sprite is PlayerTank) {
+                    isPlayerMovement = true
+                }
             }
+        }
+        if (isPlayerMovement && !gameOver) {
+            if (!game.soundManager.stageStart.isPlaying && !game.soundManager.playerMovement.isPlaying) {
+                game.soundManager.playerMovement.play()
+                game.soundManager.enemyMovement.stop()
+            }
+        } else {
+            if (isEnemyMovement && !gameOver) {
+                if (!game.soundManager.stageStart.isPlaying && !game.soundManager.enemyMovement.isPlaying) {
+                    game.soundManager.enemyMovement.loop()
+                }
+            } else {
+                game.soundManager.enemyMovement.stop()
+            }
+            game.soundManager.playerMovement.stop()
         }
     }
 
@@ -266,13 +295,33 @@ class MovementController(
                 }
             }
 
+            is Level.GameOver -> {
+                gameOver = true
+                stopMovementSound()
+            }
+
+            is EnemyFactory.EnemyCreated -> {
+                isEnemyMovement = true
+            }
+
+            is EnemyFactory.LastEnemyDestroyed -> {
+                isEnemyMovement = false
+            }
+
             else -> Unit
         }
+    }
+
+    private fun stopMovementSound() {
+        game.soundManager.playerMovement.stop()
+        game.soundManager.enemyMovement.stop()
     }
 
     fun dispose() {
         timer.stop()
 
-        game.eventManager.removeSubscriber(this, setOf(SpriteContainer.Added::class))
+        stopMovementSound()
+
+        game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

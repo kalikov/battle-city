@@ -41,9 +41,9 @@ class TankStateAppearingTest {
     @Test
     fun `should pause tank appearing animation`() {
         eventManager = ConcurrentEventManager()
-        val pauseListener = PauseListener(eventManager)
-        pauseManager = pauseListener
         val game = mockGame(eventManager = eventManager, clock = clock)
+        val pauseListener = PauseListener(game)
+        pauseManager = pauseListener
         tank = stubPlayerTank(game, pauseManager)
         state = TankStateAppearing(game, tank)
         tank.state = state

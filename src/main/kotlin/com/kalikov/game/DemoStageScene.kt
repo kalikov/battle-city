@@ -43,7 +43,7 @@ class DemoStageScene(
         game.eventManager.addSubscriber(this, subscriptions)
 
         players = List(2) { i ->
-            Player(game.eventManager, index = i)
+            Player(game, index = i)
         }
 
         mainContainer = DefaultSpriteContainer(game.eventManager)

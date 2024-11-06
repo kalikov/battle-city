@@ -48,9 +48,9 @@ class TankStateInvincibleTest {
     @Test
     fun `should pause invincible state duration`() {
         eventManager = ConcurrentEventManager()
-        val pauseListener = PauseListener(eventManager)
-        pauseManager = pauseListener
         val game = mockGame(eventManager = eventManager, clock = clock)
+        val pauseListener = PauseListener(game)
+        pauseManager = pauseListener
         tank = stubPlayerTank(game, pauseManager)
         state = TankStateInvincible(game, tank, 10)
         tank.state = state

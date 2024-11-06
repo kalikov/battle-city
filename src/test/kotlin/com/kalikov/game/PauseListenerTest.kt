@@ -9,13 +9,15 @@ import kotlin.test.assertTrue
 
 class PauseListenerTest {
     private lateinit var eventManager: EventManager
+    private lateinit var soundManager: SoundManager
     private lateinit var listener: PauseListener
 
     @BeforeEach
     fun beforeEach() {
         eventManager = mock()
+        soundManager = mockSoundManager()
 
-        listener = PauseListener(eventManager)
+        listener = PauseListener(mockGame(eventManager = eventManager, soundManager = soundManager))
     }
 
     @Test
@@ -59,7 +61,7 @@ class PauseListenerTest {
     @Test
     fun `should play sound on pause start`() {
         listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
-        verify(eventManager).fireEvent(SoundManager.Play("pause"))
+        verify(soundManager.pause).play()
     }
 
     @Test

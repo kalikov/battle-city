@@ -50,9 +50,9 @@ class Main {
             val audio = JavaAudio()
             val game = BasicGame(config, Clock.systemUTC(), screen, input, audio)
 
-            val stageManager = DefaultStageManager(game.eventManager)
+            val stageManager = DefaultStageManager(game)
 
-            game.sceneManager.setScene {
+            game.sceneManager.setNextScene {
                 LoadingScene(
                     game,
                     game.imageManager,

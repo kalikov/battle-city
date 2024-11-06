@@ -1,10 +1,13 @@
 package com.kalikov.game
 
 interface SoundManager {
-    data class Play(val name: String): Event()
-    data class Stop(val name: String): Event()
-    data object Pause: Event()
-    data object Resume: Event()
+    fun sound(name: String): Sound
+
+    fun music(name: String): Music
+
+    fun pause()
+
+    fun resume()
 
     var enabled: Boolean
 }

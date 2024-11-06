@@ -48,4 +48,10 @@ class TankStateFrozen(
         blinkTimer.stop()
         eventManager.fireEvent(End(tank))
     }
+
+    override fun dispose() {
+        super.dispose()
+
+        timeoutTimer.dispose()
+    }
 }

@@ -4,6 +4,8 @@ class Level(
     private val game: Game,
     private val stageManager: StageManager,
 ) : EventSubscriber {
+    data object GameOver : Event()
+
     private companion object {
         private val subscriptions = setOf(
             Base.Hit::class,
@@ -16,7 +18,7 @@ class Level(
 
     private var visible = false
 
-    private val pauseListener = PauseListener(game.eventManager)
+    private val pauseListener = PauseListener(game)
 
     private val playersTankControllers: List<PlayerTankController>
     private val playersTankFactories: List<PlayerTankFactory>
@@ -157,6 +159,9 @@ class Level(
 
         gameOverScript = Script()
         gameOverScript.isActive = false
+        gameOverScript.enqueue(Execute {
+            game.eventManager.fireEvent(GameOver)
+        })
         gameOverScript.enqueue(Delay(gameOverScript, 640, game.clock))
         gameOverScript.enqueue(Execute {
             playerGameOverScripts.values.forEach {

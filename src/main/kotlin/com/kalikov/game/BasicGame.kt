@@ -16,7 +16,7 @@ class BasicGame(
 
     override val eventManager = ConcurrentEventManager()
 
-    override val soundManager = ConcurrentSoundManager(audio, eventManager)
+    override val soundManager = ConcurrentSoundManager(audio)
     override val imageManager = ConcurrentImageManager(screen)
     val sceneManager = SceneManager(eventManager)
 
@@ -97,9 +97,9 @@ class BasicGame(
     fun destroy() {
         eventManager.removeSubscriber(this, setOf(Quit::class, Keyboard.KeyPressed::class))
 
-        soundManager.destroy()
         sceneManager.destroy()
         eventManager.destroy()
+        soundManager.destroy()
     }
 
     override fun notify(event: Event) {

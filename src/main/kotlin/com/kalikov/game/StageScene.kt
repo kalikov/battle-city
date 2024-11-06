@@ -25,7 +25,7 @@ class StageScene(
             script.enqueue(StageSelect(game.eventManager, stageManager, script))
         }
         script.enqueue(Execute {
-            game.eventManager.fireEvent(SoundManager.Play("stage_start"))
+            game.soundManager.stageStart.play()
             stageManager.curtainBackground = null
         })
         if (!isFirstStage) {

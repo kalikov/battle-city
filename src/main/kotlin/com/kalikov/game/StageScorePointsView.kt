@@ -20,14 +20,14 @@ class StageScorePointsView(
         script.enqueue(Execute { isScoreVisible = true })
         if (counterBound > 0) {
             script.enqueue(Execute {
-                game.eventManager.fireEvent(SoundManager.Play("statistics_1"))
+                game.soundManager.statistics.play()
             })
             script.enqueue(Delay(script, 160, game.clock))
         }
         for (i in 1 until counterBound) {
             script.enqueue(Execute {
                 counter++
-                game.eventManager.fireEvent(SoundManager.Play("statistics_1"))
+                game.soundManager.statistics.play()
             })
             script.enqueue(Delay(script, 160, game.clock))
         }

@@ -42,7 +42,7 @@ class PowerUpFactory(
         val powerUp = PowerUp(game, position)
         powerUp.type = PowerUp.Type.entries.random()
 
-        game.eventManager.fireEvent(SoundManager.Play("powerup_appear"))
+        game.soundManager.powerUpAppear.play()
 
         return powerUp
     }

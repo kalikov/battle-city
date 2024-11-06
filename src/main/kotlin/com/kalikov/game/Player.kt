@@ -1,7 +1,7 @@
 package com.kalikov.game
 
 class Player(
-    private val eventManager: EventManager,
+    private val game: Game,
     private val bonusLifeScore: Int = 20000,
     initialScore: Int = 0,
     val index: Int = 0,
@@ -31,7 +31,7 @@ class Player(
     init {
         LeaksDetector.add(this)
 
-        eventManager.addSubscriber(this, subscriptions)
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     data class OutOfLives(val player: Player) : Event()
@@ -52,7 +52,7 @@ class Player(
                 if (event.tank.player === this) {
                     lives--
                     if (lives == 0) {
-                        eventManager.fireEvent(OutOfLives(this))
+                        game.eventManager.fireEvent(OutOfLives(this))
                     }
                 }
             }
@@ -77,10 +77,11 @@ class Player(
 
     private fun incrementLife() {
         lives++
+        game.soundManager.incrementLife.play()
     }
 
     fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
+        game.eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
     }

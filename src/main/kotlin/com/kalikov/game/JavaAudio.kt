@@ -8,23 +8,48 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 class JavaAudio : Audio {
-    private val sounds = HashSet<Sound>()
+    private val sounds = HashSet<JavaSound>()
+    private val musics = HashSet<JavaMusic>()
     private val lock = ReentrantReadWriteLock()
     private var destroyed = false
 
-    override fun load(path: String): Sound {
+    override fun loadSound(path: String): ManagedSound {
         return FileInputStream(File(path)).use {
-            load(it)
+            loadSound(it)
         }
     }
 
-    override fun load(stream: InputStream): Sound {
+    override fun loadSound(stream: InputStream): ManagedSound {
+        val bytes = stream.readAllBytes()
+        return loadSound { JavaSound(bytes) }
+    }
+
+    private fun loadSound(soundFactory: () -> JavaSound): ManagedSound {
         return lock.read {
             check(!destroyed)
-            val bytes = stream.readAllBytes()
-            val sound = JavaSound(bytes)
+            val sound = soundFactory()
             sounds.add(sound)
             sound
+        }
+    }
+
+    override fun loadMusic(path: String): ManagedMusic {
+        return FileInputStream(File(path)).use {
+            loadMusic(it)
+        }
+    }
+
+    override fun loadMusic(stream: InputStream): ManagedMusic {
+        val bytes = stream.readAllBytes()
+        return loadMusic { JavaMusic(bytes) }
+    }
+
+    private fun loadMusic(musicFactory: () -> JavaMusic): ManagedMusic {
+        return lock.read {
+            check(!destroyed)
+            val music = musicFactory()
+            musics.add(music)
+            music
         }
     }
 
@@ -33,8 +58,11 @@ class JavaAudio : Audio {
             check(!destroyed)
             destroyed = true
 
-            sounds.forEach { it.stop() }
+            sounds.forEach { it.destroy() }
             sounds.clear()
+
+            musics.forEach { it.destroy() }
+            musics.clear()
         }
     }
 }

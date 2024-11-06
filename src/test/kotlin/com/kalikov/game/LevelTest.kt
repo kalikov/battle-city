@@ -49,7 +49,7 @@ class LevelTest {
             1,
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1))
         )
-        val player = Player(eventManager)
+        val player = Player(game)
         whenever(stageManager.stage).thenReturn(stage)
         whenever(stageManager.players).thenReturn(listOf(player))
 
@@ -115,9 +115,9 @@ class LevelTest {
             1,
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1))
         )
-        val playerOne = Player(eventManager)
+        val playerOne = Player(game)
 
-        val playerTwo = Player(eventManager)
+        val playerTwo = Player(game)
         playerTwo.notify(PlayerTank.PlayerDestroyed(stubPlayerTank(player = playerTwo)))
         playerTwo.notify(PlayerTank.PlayerDestroyed(stubPlayerTank(player = playerTwo)))
         playerTwo.notify(PlayerTank.PlayerDestroyed(stubPlayerTank(player = playerTwo)))

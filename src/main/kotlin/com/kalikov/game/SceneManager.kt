@@ -6,21 +6,28 @@ class SceneManager(
     var scene: Scene? = null
         private set
 
+    private var nextScene: Scene? = null
+
     init {
         LeaksDetector.add(this)
 
         eventManager.addSubscriber(this, setOf(Scene.Start::class))
     }
 
-    fun <T : Scene> setScene(sceneFactory: () -> T): T {
-        scene?.destroy()
+    fun <T : Scene> setNextScene(sceneFactory: () -> T): T {
+        nextScene?.destroy()
 
         val newScene = sceneFactory()
-        scene = newScene
+        nextScene = newScene
         return newScene
     }
 
     fun update() {
+        nextScene?.let {
+            scene?.destroy()
+            scene = it
+        }
+        nextScene = null
         scene?.update()
     }
 
@@ -29,6 +36,9 @@ class SceneManager(
     }
 
     fun destroy() {
+        nextScene?.destroy()
+        nextScene = null
+
         scene?.destroy()
         scene = null
 
@@ -39,7 +49,7 @@ class SceneManager(
 
     override fun notify(event: Event) {
         if (event is Scene.Start) {
-            setScene(event.sceneFactory)
+            setNextScene(event.sceneFactory)
         }
     }
 }

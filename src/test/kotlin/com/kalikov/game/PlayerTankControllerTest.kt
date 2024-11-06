@@ -16,22 +16,22 @@ class PlayerTankControllerTest {
         Keyboard.KeyReleased::class
     )
 
-    private lateinit var eventManager: EventManager
+    private lateinit var game: Game
     private lateinit var tank: PlayerTankHandle
     private lateinit var controller: PlayerTankController
 
     @BeforeEach
     fun beforeEach() {
-        eventManager = mock()
+        game = mockGame()
         tank = mock()
-        doReturn(Player(eventManager)).whenever(tank).player
+        doReturn(Player(game)).whenever(tank).player
 
-        controller = PlayerTankController(eventManager, mock(), tank.player)
+        controller = PlayerTankController(game.eventManager, mock(), tank.player)
     }
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(controller, controllerSubscriptions)
+        verify(game.eventManager).addSubscriber(controller, controllerSubscriptions)
     }
 
     @Test
@@ -44,7 +44,7 @@ class PlayerTankControllerTest {
 
     @Test
     fun `should create controller on player tank creation`() {
-        val tank = stubPlayerTank(mockGame(eventManager = eventManager), player = tank.player)
+        val tank = stubPlayerTank(game, player = tank.player)
 
         controller.notify(PlayerTankFactory.PlayerTankCreated(tank))
 
@@ -53,7 +53,6 @@ class PlayerTankControllerTest {
 
     @Test
     fun `should recreate controller on subsequent player tank creation`() {
-        val game = mockGame(eventManager = eventManager)
         val tank1 = stubPlayerTank(game, player = tank.player)
         controller.notify(PlayerTankFactory.PlayerTankCreated(tank1))
 

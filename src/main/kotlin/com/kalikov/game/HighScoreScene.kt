@@ -8,7 +8,7 @@ class HighScoreScene(
     companion object {
         const val BLINK_INTERVAL = 32
 
-        const val BLINK_COUNT = 259
+        const val BLINK_COUNT = 239
 
         private val BLUE = ARGB.rgb(0x234af7)
         private val GRAY = ARGB.rgb(0x636363)
@@ -40,7 +40,7 @@ class HighScoreScene(
                     if (counter < 8 || counter == 14) {
                         return BLUE
                     }
-                    if (counter >= 236) {
+                    if (counter >= 206) {
                         return ARGB.WHITE
                     }
                     return GRAY
@@ -48,10 +48,10 @@ class HighScoreScene(
                 if (counter < 11) {
                     return ARGB.WHITE
                 }
-                if (counter == 41 || counter == 71 || counter == 101 || counter == 131 || counter == 161 || counter == 191 || counter == 211 || counter == 221 || counter in 237..249 || counter >= 253) {
+                if (counter == 41 || counter == 71 || counter == 101 || counter == 111 || counter == 141 || counter == 171 || counter == 191 || counter == 201 || counter in 207..229 || counter >= 233) {
                     return BLUE
                 }
-                if (counter == 251) {
+                if (counter == 231) {
                     return GRAY
                 }
                 return ARGB.BLACK
@@ -63,6 +63,7 @@ class HighScoreScene(
     override fun update() {
         if (timer.isStopped) {
             timer.restart()
+            game.soundManager.highScore.play()
         }
         timer.update()
     }

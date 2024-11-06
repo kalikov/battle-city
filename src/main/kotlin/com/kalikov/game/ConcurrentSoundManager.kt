@@ -3,105 +3,136 @@ package com.kalikov.game
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 class ConcurrentSoundManager(
     private val audio: Audio,
-    private val eventManager: EventManager
-) : LoadingSoundManager, EventSubscriber {
-    private companion object {
-        private val subscriptions = setOf(
-            SoundManager.Play::class,
-            SoundManager.Stop::class,
-            SoundManager.Pause::class,
-            SoundManager.Resume::class
-        )
-    }
+) : LoadingSoundManager {
+    private val sounds: MutableMap<String, ManagedSound> = ConcurrentHashMap()
+    private val musics: MutableMap<String, MusicWrapper> = ConcurrentHashMap()
 
-    private val sounds: MutableMap<String, Sound> = ConcurrentHashMap()
-
-    private val executor: ExecutorService = Executors.newFixedThreadPool(8)
-
-    private val playbacks: MutableMap<String, Future<*>> = ConcurrentHashMap()
-
-    init {
-        eventManager.addSubscriber(this, subscriptions)
-    }
+    private val executor: ExecutorService = Executors.newSingleThreadExecutor()
 
     override var enabled: Boolean = true
         set(value) {
             field = value
-            stopAll()
+            stop()
         }
 
-    override fun load(name: String, path: String) {
-        val sound = audio.load(path)
-        sounds[name] = sound
+    override fun loadSound(name: String, path: String) {
+        val sound = audio.loadSound(path)
+        sounds[name] = SoundWrapper(sound)
     }
 
-    override fun notify(event: Event) {
-        when (event) {
-            is SoundManager.Play -> play(event.name)
-            is SoundManager.Stop -> stop(event.name)
-            is SoundManager.Pause -> pause()
-            is SoundManager.Resume -> resume()
-            else -> {}
-        }
+    override fun loadMusic(name: String, path: String) {
+        val music = audio.loadMusic(path)
+        musics[name] = MusicWrapper(music)
     }
 
-    private fun play(name: String) {
-        val sound = sounds[name] ?: throw SoundNotFoundException(name)
+    override fun sound(name: String): Sound {
+        return sounds[name] ?: throw SoundNotFoundException(name)
+    }
 
-        if (!enabled) {
-            return
-        }
+    override fun music(name: String): Music {
+        return musics[name] ?: throw SoundNotFoundException(name)
+    }
 
-        playbacks.compute(name) { _, value ->
-            value?.cancel(true)
+    override fun pause() {
+        sounds.values.forEach { it.pause() }
+        musics.values.forEach { it.pause() }
+    }
+
+    override fun resume() {
+        sounds.values.forEach { it.resume() }
+        musics.values.forEach { it.resume() }
+    }
+
+    private fun stop() {
+        sounds.values.forEach { it.stop() }
+        musics.values.forEach { it.stop() }
+    }
+
+    fun destroy() {
+        stop()
+        executor.shutdown()
+        executor.awaitTermination(1, TimeUnit.MINUTES)
+        executor.shutdownNow()
+        sounds.clear()
+        musics.clear()
+    }
+
+    private inner class MusicWrapper(private val music: ManagedMusic) : ManagedMusic {
+        override val state get() = music.state
+
+        override fun loop() {
+            if (!enabled) {
+                return
+            }
             executor.submit {
-                sound.play()
+                music.loop()
+            }
+        }
+
+        override fun pause() {
+            if (!enabled) {
+                return
+            }
+            executor.submit {
+                music.pause()
+            }
+        }
+
+        override fun resume() {
+            if (!enabled) {
+                return
+            }
+            executor.submit {
+                music.resume()
+            }
+        }
+
+        override fun play() {
+            if (!enabled) {
+                return
+            }
+            executor.submit {
+                music.play()
+            }
+        }
+
+        override fun stop() {
+            executor.submit {
+                music.stop()
             }
         }
     }
 
-    private fun stop(name: String) {
-        playbacks.compute(name) { _, value ->
-            value?.cancel(true)
-            null
+    private inner class SoundWrapper(private val sound: ManagedSound) : ManagedSound {
+        override val playingCount get() = sound.playingCount
+
+        override fun pause() {
+            if (!enabled) {
+                return
+            }
+            sound.pause()
         }
-    }
 
-    private fun pause() {
-        for (key in playbacks.keys) {
-            sounds[key]?.pause()
+        override fun resume() {
+            if (!enabled) {
+                return
+            }
+            sound.resume()
         }
-    }
 
-    private fun resume() {
-        for (key in playbacks.keys) {
-            sounds[key]?.resume()
+        override fun play() {
+            if (!enabled) {
+                return
+            }
+            sound.play()
         }
-    }
 
-    private fun stopAll() {
-        playbacks.values.forEach {
-            it.cancel(true)
+        override fun stop() {
+            sound.stop()
         }
-        playbacks.clear()
-
-        sounds.values.forEach { it.stop() }
-    }
-
-    fun destroy() {
-        eventManager.removeSubscriber(this, subscriptions)
-
-        executor.shutdown()
-
-        stopAll()
-        sounds.clear()
-
-        executor.awaitTermination(1, TimeUnit.MINUTES)
-        executor.shutdownNow()
     }
 }

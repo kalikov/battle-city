@@ -29,6 +29,7 @@ class LoadingScene(
     init {
         LeaksDetector.add(this)
 
+        loadMusic()
         loadSounds()
 
         loadImages()
@@ -71,6 +72,29 @@ class LoadingScene(
         LeaksDetector.remove(this)
     }
 
+    private fun loadMusic() {
+        remainingJobs.incrementAndGet()
+        executor.submit {
+            game.config.music.forEach { (name, path) ->
+                loadMusic(name, path)
+            }
+            remainingJobs.decrementAndGet()
+        }
+    }
+
+    private fun loadMusic(name: String, path: String) {
+        remainingJobs.incrementAndGet()
+        executor.submit {
+            try {
+                soundManager.loadMusic(name, path)
+            } catch (e: Throwable) {
+                e.printStackTrace(System.err)
+                failure.set(true)
+            }
+            remainingJobs.decrementAndGet()
+        }
+    }
+
     private fun loadSounds() {
         remainingJobs.incrementAndGet()
         executor.submit {
@@ -85,7 +109,7 @@ class LoadingScene(
         remainingJobs.incrementAndGet()
         executor.submit {
             try {
-                soundManager.load(name, path)
+                soundManager.loadSound(name, path)
             } catch (e: Throwable) {
                 e.printStackTrace(System.err)
                 failure.set(true)

@@ -14,7 +14,7 @@ class CursorController(
             Keyboard.KeyReleased::class
         )
         private const val LONG_MOVE_INTERVAL = 480
-        private const val SHORT_MOVE_INTERVAL = 160
+        private const val SHORT_MOVE_INTERVAL = 120
     }
 
     private var prevBuildStart: PixelPoint? = null

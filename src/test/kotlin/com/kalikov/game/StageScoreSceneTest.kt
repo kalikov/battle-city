@@ -36,7 +36,7 @@ class StageScoreSceneTest {
         score.increment(createTank(EnemyTank.EnemyType.BASIC))
         score.increment(createTank(EnemyTank.EnemyType.FAST))
 
-        val player = Player(game.eventManager, initialScore = 25200)
+        val player = Player(game, initialScore = 25200)
         whenever(stageManager.players).thenReturn(listOf(player))
         val scene = StageScoreScene(
             game,
@@ -88,8 +88,8 @@ class StageScoreSceneTest {
         scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
         scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
 
-        val playerOne = Player(game.eventManager, initialScore = 25200)
-        val playerTwo = Player(game.eventManager, initialScore = 5600)
+        val playerOne = Player(game, initialScore = 25200)
+        val playerTwo = Player(game, initialScore = 5600)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
             game,
@@ -144,8 +144,8 @@ class StageScoreSceneTest {
         scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
         scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
 
-        val playerOne = Player(game.eventManager, initialScore = 25200)
-        val playerTwo = Player(game.eventManager, initialScore = 5600)
+        val playerOne = Player(game, initialScore = 25200)
+        val playerTwo = Player(game, initialScore = 5600)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
             game,

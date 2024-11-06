@@ -15,6 +15,8 @@ class AITankControllerContainer(
             EnemyFactory.EnemyCreated::class,
             PowerUpHandler.Freeze::class,
             FreezeHandler.Unfreeze::class,
+            PlayerTankFactory.PlayerTankCreated::class,
+            PlayerTank.PlayerDestroyed::class,
         )
     }
 
@@ -23,30 +25,27 @@ class AITankControllerContainer(
 
     private val controllers = LinkedHashMap<Tank, AITankController>()
 
+    private val players = mutableSetOf<PlayerTankHandle>()
+
     init {
         eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun notify(event: Event) {
         when (event) {
-            is EnemyFactory.EnemyCreated -> {
-                controllers[event.enemy] = createController(event.enemy)
-            }
+            is EnemyFactory.EnemyCreated -> controllers[event.enemy] = createController(event.enemy)
 
-            is PowerUpHandler.Freeze -> {
-                freeze()
-            }
+            is PowerUpHandler.Freeze -> freeze()
 
-            is FreezeHandler.Unfreeze -> {
-                unfreeze()
-            }
+            is FreezeHandler.Unfreeze -> unfreeze()
 
-            is Tank.Destroyed -> {
-                controllers.remove(event.tank)?.dispose()
-            }
+            is Tank.Destroyed -> controllers.remove(event.tank)?.dispose()
 
-            else -> {
-            }
+            is PlayerTankFactory.PlayerTankCreated -> players.add(event.tank)
+
+            is PlayerTank.PlayerDestroyed -> players.remove(event.tank)
+
+            else -> Unit
         }
     }
 
@@ -64,7 +63,7 @@ class AITankControllerContainer(
     }
 
     private fun createController(tank: Tank): AITankController {
-        val controller = AITankController(eventManager, tank, base, random, params)
+        val controller = AITankController(eventManager, tank, base, players, random, params)
         if (isFrozen) {
             tank.isIdle = true
         }

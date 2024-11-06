@@ -12,7 +12,7 @@ This is a recreation of the classic game implemented using the Kotlin programmin
 * Single-player and cooperative multiplayer modes.
 * A variety of enemy tanks with different behaviors and abilities.
 * Power-ups and obstacles to enhance gameplay.
-* ~~Sound and visual effects faithful to the original game.~~
+* Sound and visual effects faithful to the original game.
 * Customizable controls for an improved gaming experience.
 
 ## Credits
@@ -20,7 +20,7 @@ This is a recreation of the classic game implemented using the Kotlin programmin
 * "Battle City" - The original game was developed by Namco and is a copyrighted property of Namco. I am deeply grateful to Namco for creating this classic game, which has inspired this recreation project.
 ### Inspirations and Tools
 * The work done by the [newagebegins/BattleCity](https://github.com/newagebegins/BattleCity) team for providing a solid reference for a starting point.
-* The work done by the [orangelando/nsf](https://github.com/orangelando/nsf) team that with some tweaks was used to recreate sounds of the original game.
+* The work done by the [Gnzdream/NsfPlayer](https://github.com/Gnzdream/NsfPlayer) team that with some tweaks was used to recreate sounds of the original game.
 
 ## License
 This project is licensed under the [MIT License](LICENSE).

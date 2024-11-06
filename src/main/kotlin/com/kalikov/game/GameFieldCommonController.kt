@@ -43,7 +43,7 @@ class GameFieldCommonController(
 
         pointsFactory = PointsFactory(game, overlayContainer)
 
-        bulletHandler = BulletHandler(game.eventManager, mainContainer)
+        bulletHandler = BulletHandler(game, mainContainer)
         bulletExplosionFactory = BulletExplosionFactory(game, overlayContainer)
         tankExplosionFactory = TankExplosionFactory(game, overlayContainer)
         baseExplosionFactory = BaseExplosionFactory(game, overlayContainer)

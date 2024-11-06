@@ -166,10 +166,10 @@ class Walls(
         if (intersectsSteel || intersectsBrick) {
             if (bullet.tank is PlayerTank) {
                 if (intersectsSteel) {
-                    game.eventManager.fireEvent(SoundManager.Play("bullet_hit_1"))
+                    game.soundManager.bulletHitSteel.play()
                 }
                 if (intersectsBrick) {
-                    game.eventManager.fireEvent(SoundManager.Play("bullet_hit_2"))
+                    game.soundManager.bulletHitBrick.play()
                 }
             }
             game.eventManager.fireEvent(Hit)

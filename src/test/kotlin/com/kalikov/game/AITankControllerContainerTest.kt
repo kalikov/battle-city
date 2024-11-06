@@ -36,7 +36,9 @@ class AITankControllerContainerTest {
                 Tank.Destroyed::class,
                 EnemyFactory.EnemyCreated::class,
                 PowerUpHandler.Freeze::class,
-                FreezeHandler.Unfreeze::class
+                FreezeHandler.Unfreeze::class,
+                PlayerTankFactory.PlayerTankCreated::class,
+                PlayerTank.PlayerDestroyed::class,
             )
         )
     }
@@ -155,7 +157,7 @@ class AITankControllerContainerTest {
         container = AITankControllerContainer(
             eventManager,
             mock(),
-            PixelPoint(),
+            PixelPoint(px(0), Tank.SIZE),
             mock(),
             AITankControllerParams(
                 clock = clock,
@@ -236,7 +238,9 @@ class AITankControllerContainerTest {
                 Tank.Destroyed::class,
                 EnemyFactory.EnemyCreated::class,
                 PowerUpHandler.Freeze::class,
-                FreezeHandler.Unfreeze::class
+                FreezeHandler.Unfreeze::class,
+                PlayerTankFactory.PlayerTankCreated::class,
+                PlayerTank.PlayerDestroyed::class,
             )
         )
     }
