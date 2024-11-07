@@ -11,11 +11,11 @@ class JavaAudioTest {
     @BeforeEach
     fun beforeEach() {
         val audio = JavaAudio()
-        sound = ClassLoader.getSystemResourceAsStream("silent.wav").use {
+        sound = ClassLoader.getSystemResourceAsStream("silent.au").use {
             requireNotNull(it)
             audio.loadSound(it)
         }
-        music = ClassLoader.getSystemResourceAsStream("silent.wav").use {
+        music = ClassLoader.getSystemResourceAsStream("silent.au").use {
             requireNotNull(it)
             audio.loadMusic(it)
         }
