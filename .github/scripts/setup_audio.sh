@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#set -xeo pipefail
-
 sudo apt-get update
 sudo apt-get install -y pulseaudio libportaudio2 dbus-x11 libasound-dev
 systemctl --user restart pulseaudio.service
