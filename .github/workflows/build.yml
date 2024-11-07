@@ -18,6 +18,8 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - run: sudo apt-get update
+    - run: sudo apt-get install -y pulseaudio libportaudio2 dbus-x11 libasound-dev
     - name: Set up sound
       run: .github/scripts/setup_audio.sh
     - name: Build with Maven
