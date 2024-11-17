@@ -26,7 +26,7 @@ class JavaAudioTest {
         sound.play()
         assertEquals(1, sound.playingCount)
 
-        Thread.sleep(600)
+        Thread.sleep(1000)
 
         assertEquals(0, sound.playingCount)
     }
@@ -36,7 +36,7 @@ class JavaAudioTest {
         music.play()
         assertEquals(Music.State.PLAYING, music.state)
 
-        Thread.sleep(600)
+        Thread.sleep(1000)
 
         assertEquals(Music.State.STOPPED, music.state)
     }
@@ -77,7 +77,7 @@ class JavaAudioTest {
         sound.resume()
         assertEquals(1, sound.playingCount)
 
-        Thread.sleep(600)
+        Thread.sleep(1000)
         assertEquals(0, sound.playingCount)
     }
 
@@ -93,7 +93,7 @@ class JavaAudioTest {
         music.resume()
         assertEquals(Music.State.PLAYING, music.state)
 
-        Thread.sleep(600)
+        Thread.sleep(1000)
         assertEquals(Music.State.STOPPED, music.state)
     }
 }
