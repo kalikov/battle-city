@@ -10,6 +10,9 @@ sudo apt-get install -y linux-modules-extra-`uname -r`
 #systemctl --user restart pulseaudio.socket
 #pactl list
 
+sudo ls /lib/modules/`uname -r`/
+sudo ls /lib/modules/`uname -r`/kernel/
+sudo ls /lib/modules/`uname -r`/kernel/sound/
 sudo ls /lib/modules/`uname -r`/kernel/sound/drivers/
 sudo modprobe snd-dummy
 #pactl list
