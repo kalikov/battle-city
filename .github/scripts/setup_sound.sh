@@ -13,7 +13,11 @@ sudo apt-get install -y linux-modules-extra-`uname -r`
 sudo ls /lib/modules/`uname -r`/
 sudo ls /lib/modules/`uname -r`/kernel/
 sudo ls /lib/modules/`uname -r`/kernel/sound/
-sudo ls /lib/modules/`uname -r`/kernel/sound/drivers/
+echo 'drivers'
+sudo ls /lib/modules/`uname -r`/kernel/drivers/
+sudo ls /lib/modules/`uname -r`/kernel/drivers/sound/
+echo 'find'
+find / snd-dummy | grep snd-dummy
 sudo modprobe snd-dummy
 #pactl list
 aplay -l
