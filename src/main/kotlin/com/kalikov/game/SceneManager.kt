@@ -3,6 +3,9 @@ package com.kalikov.game
 class SceneManager(
     private val eventManager: EventManager
 ) : EventSubscriber {
+    private companion object {
+        private val subscriptions = setOf(Scene.Start::class)
+    }
     var scene: Scene? = null
         private set
 
@@ -11,7 +14,7 @@ class SceneManager(
     init {
         LeaksDetector.add(this)
 
-        eventManager.addSubscriber(this, setOf(Scene.Start::class))
+        eventManager.addSubscriber(this, subscriptions)
     }
 
     fun <T : Scene> setNextScene(sceneFactory: () -> T): T {
@@ -42,7 +45,7 @@ class SceneManager(
         scene?.destroy()
         scene = null
 
-        eventManager.removeSubscriber(this, setOf(Scene.Start::class))
+        eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
     }

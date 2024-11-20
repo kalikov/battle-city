@@ -12,6 +12,10 @@ class BasicGame(
     private val input: Input,
     audio: Audio
 ) : Game, EventSubscriber {
+    private companion object {
+        private val subscriptions = setOf(Quit::class, Keyboard.KeyPressed::class)
+    }
+
     data object Quit : Event()
 
     override val eventManager = ConcurrentEventManager()
@@ -28,7 +32,7 @@ class BasicGame(
 
     init {
         require(config.fpsLimit > 0)
-        eventManager.addSubscriber(this, setOf(Quit::class, Keyboard.KeyPressed::class))
+        eventManager.addSubscriber(this, subscriptions)
     }
 
     fun loop() {
@@ -95,7 +99,7 @@ class BasicGame(
     }
 
     fun destroy() {
-        eventManager.removeSubscriber(this, setOf(Quit::class, Keyboard.KeyPressed::class))
+        eventManager.removeSubscriber(this, subscriptions)
 
         sceneManager.destroy()
         eventManager.destroy()

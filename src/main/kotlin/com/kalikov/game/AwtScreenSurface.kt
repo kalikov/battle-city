@@ -1,23 +1,22 @@
 package com.kalikov.game
 
 import java.awt.Color
-import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
 import java.io.InputStream
-import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import javax.imageio.ImageIO
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 class AwtScreenSurface(
     private val fonts: AwtFonts,
     val image: BufferedImage
-) : ScreenSurface, MutableScreenSurfaceData {
+) : ScreenSurface {
 
-    override val width: Pixel = px(image.width)
+    override val width = px(image.width)
+    override val height = px(image.height)
 
-    override val height: Pixel = px(image.height)
-
-    private val lock: ReadWriteLock = ReentrantReadWriteLock()
+    private val lock = ReentrantReadWriteLock()
 
     constructor(fonts: AwtFonts, width: Pixel, height: Pixel)
             : this(fonts, BufferedImage(width.toInt(), height.toInt(), BufferedImage.TYPE_INT_ARGB))
@@ -25,26 +24,12 @@ class AwtScreenSurface(
     constructor(fonts: AwtFonts, stream: InputStream)
             : this(fonts, ImageIO.read(stream))
 
-    override fun getFragment(x: Pixel, y: Pixel, width: Pixel, height: Pixel): ScreenSurface {
-        return AwtScreenSurface(fonts, image.getSubimage(x.toInt(), y.toInt(), width.toInt(), height.toInt()))
-    }
-
-    override fun lock(): MutableScreenSurfaceData {
-        lock.writeLock().lock()
-        return this
-    }
-
-    override fun unlock() {
-        lock.writeLock().unlock()
-    }
-
     override fun clear(color: ARGB) {
         clear(px(0), px(0), width, height, color)
     }
 
     override fun clear(x: Pixel, y: Pixel, width: Pixel, height: Pixel, color: ARGB) {
-        lock.writeLock().lock()
-        try {
+        lock.write {
             val gfx = image.createGraphics()
             try {
                 gfx.background = Color(color.value, true)
@@ -52,30 +37,6 @@ class AwtScreenSurface(
             } finally {
                 gfx.dispose()
             }
-        } finally {
-            lock.writeLock().unlock()
-        }
-    }
-
-    override fun draw(x: Pixel, y: Pixel, surface: ScreenSurface, quadrants: Int) {
-        val gfx = image.createGraphics()
-        try {
-            val transform = AffineTransform.getQuadrantRotateInstance(
-                quadrants,
-                (x + surface.width / 2).toDouble(),
-                (y + surface.height / 2).toDouble()
-            )
-            transform.translate(x.toDouble(), y.toDouble())
-            if (surface is AwtScreenSurface) {
-                gfx.drawImage(surface.image, transform, null)
-            } else {
-                val pixels = surface.getPixels(px(0), px(0), surface.width, surface.height)
-                val srcImage = BufferedImage(surface.width.toInt(), surface.height.toInt(), BufferedImage.TYPE_INT_ARGB)
-                srcImage.setRGB(0, 0, surface.width.toInt(), surface.height.toInt(), pixels, 0, surface.width.toInt())
-                gfx.drawImage(srcImage, transform, null)
-            }
-        } finally {
-            gfx.dispose()
         }
     }
 
@@ -149,8 +110,7 @@ class AwtScreenSurface(
         srcImage: BufferedImage,
         blending: Blending?
     ) {
-        lock.writeLock().lock()
-        try {
+        lock.write {
             val gfx = image.createGraphics()
             try {
                 if (blending != null) {
@@ -171,8 +131,6 @@ class AwtScreenSurface(
             } finally {
                 gfx.dispose()
             }
-        } finally {
-            lock.writeLock().unlock()
         }
     }
 
@@ -193,8 +151,7 @@ class AwtScreenSurface(
     }
 
     override fun drawRect(x: Pixel, y: Pixel, w: Pixel, h: Pixel, color: ARGB) {
-        lock.writeLock().lock()
-        try {
+        lock.write {
             val gfx = image.createGraphics()
             try {
                 gfx.color = Color(color.value, true)
@@ -202,14 +159,11 @@ class AwtScreenSurface(
             } finally {
                 gfx.dispose()
             }
-        } finally {
-            lock.writeLock().unlock()
         }
     }
 
     override fun fillRect(x: Pixel, y: Pixel, w: Pixel, h: Pixel, color: ARGB) {
-        lock.writeLock().lock()
-        try {
+        lock.write {
             val gfx = image.createGraphics()
             try {
                 gfx.color = Color(color.value, true)
@@ -217,14 +171,11 @@ class AwtScreenSurface(
             } finally {
                 gfx.dispose()
             }
-        } finally {
-            lock.writeLock().unlock()
         }
     }
 
     override fun drawLine(x1: Pixel, y1: Pixel, x2: Pixel, y2: Pixel, color: ARGB) {
-        lock.writeLock().lock()
-        try {
+        lock.write {
             val gfx = image.createGraphics()
             try {
                 gfx.color = Color(color.value, true)
@@ -232,14 +183,11 @@ class AwtScreenSurface(
             } finally {
                 gfx.dispose()
             }
-        } finally {
-            lock.writeLock().unlock()
         }
     }
 
     override fun fillText(text: String, x: Pixel, y: Pixel, color: ARGB, font: String, blending: Blending?) {
-        lock.writeLock().lock()
-        try {
+        lock.write {
             val gfx = image.createGraphics()
             try {
                 gfx.color = Color(color.value)
@@ -251,38 +199,22 @@ class AwtScreenSurface(
             } finally {
                 gfx.dispose()
             }
-        } finally {
-            lock.writeLock().unlock()
         }
     }
 
     override fun getPixel(x: Pixel, y: Pixel): ARGB {
-        lock.readLock().lock()
-        try {
-            return ARGB(image.getRGB(x.toInt(), y.toInt()))
-        } finally {
-            lock.readLock().unlock()
+        return lock.read {
+            ARGB(image.getRGB(x.toInt(), y.toInt()))
         }
     }
 
     override val pixels: IntArray get() = getPixels(px(0), px(0), px(image.width), px(image.height))
 
     override fun getPixels(x: Pixel, y: Pixel, width: Pixel, height: Pixel): IntArray {
-        lock.readLock().lock()
-        try {
+        return lock.read {
             val pixels = IntArray(width * height)
             image.getRGB(x.toInt(), y.toInt(), width.toInt(), height.toInt(), pixels, 0, width.toInt())
-            return pixels
-        } finally {
-            lock.readLock().unlock()
+            pixels
         }
-    }
-
-    override fun setPixel(x: Pixel, y: Pixel, color: ARGB) {
-        image.setRGB(x.toInt(), y.toInt(), color.value)
-    }
-
-    override fun setPixels(x: Pixel, y: Pixel, width: Pixel, height: Pixel, colors: IntArray) {
-        image.setRGB(x.toInt(), y.toInt(), width.toInt(), height.toInt(), colors, 0, width.toInt())
     }
 }

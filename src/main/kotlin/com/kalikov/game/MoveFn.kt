@@ -40,7 +40,7 @@ class MoveFn(
                 true
             }
 
-            in newValue ..< startValue -> {
+            in newValue until startValue -> {
                 property.value = endValue
                 true
             }

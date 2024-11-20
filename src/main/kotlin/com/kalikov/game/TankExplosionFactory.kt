@@ -4,10 +4,14 @@ class TankExplosionFactory(
     private val game: Game,
     private val spriteContainer: SpriteContainer
 ) : EventSubscriber {
+    private companion object {
+        private val subscriptions = setOf(Tank.Destroyed::class)
+    }
+
     init {
         LeaksDetector.add(this)
 
-        game.eventManager.addSubscriber(this, setOf(Tank.Destroyed::class))
+        game.eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun notify(event: Event) {
@@ -24,7 +28,7 @@ class TankExplosionFactory(
     }
 
     fun dispose() {
-        game.eventManager.removeSubscriber(this, setOf(Tank.Destroyed::class))
+        game.eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
     }

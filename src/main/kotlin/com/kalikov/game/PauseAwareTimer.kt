@@ -21,12 +21,16 @@ class PauseAwareTimer private constructor(
         callback: () -> Unit
     ) : this(eventManager, BasicTimer(clock, interval, callback))
 
+    private companion object {
+        private val subscriptions = setOf(PauseManager.Start::class, PauseManager.End::class)
+    }
+
     override val isStopped get() = timer.isStopped
 
     private var isPaused = false
 
     init {
-        eventManager.addSubscriber(this, setOf(PauseManager.Start::class, PauseManager.End::class))
+        eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun restart() {
@@ -52,6 +56,6 @@ class PauseAwareTimer private constructor(
 
     override fun dispose() {
         timer.stop()
-        eventManager.removeSubscriber(this, setOf(PauseManager.Start::class, PauseManager.End::class))
+        eventManager.removeSubscriber(this, subscriptions)
     }
 }

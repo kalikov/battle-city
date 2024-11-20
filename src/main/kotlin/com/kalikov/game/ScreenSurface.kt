@@ -1,7 +1,13 @@
 package com.kalikov.game
 
-interface ScreenSurface : ScreenSurfaceData {
-    fun getFragment(x: Pixel, y: Pixel, width: Pixel, height: Pixel): ScreenSurface
+interface ScreenSurface : Render {
+    val width: Pixel
 
-    fun lock(): MutableScreenSurfaceData
+    val height: Pixel
+
+    val pixels: IntArray
+
+    fun getPixel(x: Pixel, y: Pixel): ARGB
+
+    fun getPixels(x: Pixel, y: Pixel, width: Pixel, height: Pixel): IntArray
 }

@@ -20,7 +20,7 @@ class BulletTest {
         fonts = TestFonts()
         imageManager = TestImageManager(fonts)
         eventManager = mock()
-        bullet = Bullet(mockGame(mock(), eventManager, imageManager), mock())
+        bullet = Bullet(mockGame(mock(), eventManager, imageManager), stubEnemyTank())
     }
 
     @Test

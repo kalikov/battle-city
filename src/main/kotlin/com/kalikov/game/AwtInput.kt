@@ -1,17 +1,15 @@
 package com.kalikov.game
 
+import java.awt.Component
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
-import java.util.Queue
-import java.util.concurrent.ConcurrentLinkedQueue
-import javax.swing.JFrame
 
-class AwtInput(private val frame: JFrame, config: Map<String, KeyEventConfig>) : KeyAdapter(), Input {
-    private val eventQueue: Queue<Event> = ConcurrentLinkedQueue()
+class AwtInput(private val frame: Component, config: Map<String, KeyEventConfig>) : KeyAdapter(), Input {
+    private val eventQueue: SimpleQueue<Event> = ConcurrentArraySimpleQueue()
 
-    private val pressed = HashSet<Int>()
+    private val pressed = IntSet()
 
-    private val codes: Map<Int, KeyEventConfig>
+    private val codes: Map<Int, CodeItem>
 
     override var lastKeyPressed: Int = 0
         private set
@@ -19,7 +17,7 @@ class AwtInput(private val frame: JFrame, config: Map<String, KeyEventConfig>) :
     init {
         frame.addKeyListener(this)
 
-        codes = config.asSequence().associateBy({ parseCode(it.key) }, { it.value })
+        codes = config.asSequence().associateBy({ parseCode(it.key) }, { CodeItem(it.value) })
     }
 
     private fun parseCode(key: String): Int {
@@ -39,13 +37,14 @@ class AwtInput(private val frame: JFrame, config: Map<String, KeyEventConfig>) :
 
     override fun keyReleased(e: KeyEvent) {
         if (e.keyCode != KeyEvent.VK_UNDEFINED) {
-            createKeyboardEvent(e, Keyboard::KeyReleased)?.let { pushEvent(it) }
-            pressed.remove(e.keyCode)
+            if (pressed.remove(e.keyCode)) {
+                createKeyboardEvent(e, Keyboard::KeyReleased)?.let { pushEvent(it) }
+            }
         }
     }
 
     private fun createKeyboardEvent(e: KeyEvent, constructor: (key: Keyboard.Key, playerIndex: Int) -> Event): Event? {
-        return codes[e.keyCode]?.let { constructor(it.key, it.player - 1) }
+        return codes[e.keyCode]?.getOrCreateEvent(constructor)
     }
 
     private fun pushEvent(event: Event) {
@@ -58,5 +57,22 @@ class AwtInput(private val frame: JFrame, config: Map<String, KeyEventConfig>) :
 
     override fun destroy() {
         frame.removeKeyListener(this)
+    }
+
+    private class CodeItem(
+        val config: KeyEventConfig,
+        var event: Event? = null
+    ) {
+        fun getOrCreateEvent(constructor: (key: Keyboard.Key, playerIndex: Int) -> Event): Event {
+            return event.let {
+                if (it != null) {
+                    it
+                } else {
+                    val newEvent = constructor(config.key, config.player)
+                    event = newEvent
+                    newEvent
+                }
+            }
+        }
     }
 }

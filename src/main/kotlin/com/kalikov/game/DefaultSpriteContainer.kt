@@ -4,12 +4,16 @@ import java.util.TreeSet
 import kotlin.Unit
 
 class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteContainer, EventSubscriber {
-    private val ordering = Comparator<Sprite> { a, b ->
-        val cmp = a.z - b.z
-        if (cmp != 0) {
-            cmp
-        } else {
-            a.id - b.id
+    private companion object {
+        private val subscriptions = setOf(Sprite.Destroyed::class)
+
+        private val ordering = Comparator<Sprite> { a, b ->
+            val cmp = a.z - b.z
+            if (cmp != 0) {
+                cmp
+            } else {
+                a.id - b.id
+            }
         }
     }
 
@@ -17,7 +21,7 @@ class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteCon
     private var copyOnWrite = false
 
     init {
-        eventManager.addSubscriber(this, setOf(Sprite.Destroyed::class))
+        eventManager.addSubscriber(this, subscriptions)
     }
 
     override val size get() = sprites.size
@@ -80,6 +84,6 @@ class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteCon
             it.dispose()
         }
 
-        eventManager.removeSubscriber(this, setOf(Sprite.Destroyed::class))
+        eventManager.removeSubscriber(this, subscriptions)
     }
 }

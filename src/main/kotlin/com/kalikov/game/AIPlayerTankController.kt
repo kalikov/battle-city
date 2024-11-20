@@ -195,7 +195,7 @@ class AIPlayerTankController(
         val rects = mutableListOf<TileRect>()
         for (x in hitLeft.toInt() .. hitRight.toInt()) {
             var height = t(0)
-            for (y in hitBottom.toInt() + 1 ..< GameField.SIZE_IN_TILES.toInt()) {
+            for (y in hitBottom.toInt() + 1 until GameField.SIZE_IN_TILES.toInt()) {
                 if (gameField.walls.occupied(t(x), t(y))) {
                     height++
                     break
@@ -237,7 +237,7 @@ class AIPlayerTankController(
         val rects = mutableListOf<TileRect>()
         for (y in hitTop.toInt() .. hitBottom.toInt()) {
             var width = t(0)
-            for (x in hitRight.toInt() + 1 ..< GameField.SIZE_IN_TILES.toInt()) {
+            for (x in hitRight.toInt() + 1 until GameField.SIZE_IN_TILES.toInt()) {
                 if (gameField.walls.occupied(t(x), t(y))) {
                     width++
                     break

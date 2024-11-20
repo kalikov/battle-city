@@ -5,8 +5,6 @@ interface Render {
 
     fun clear(x: Pixel, y: Pixel, width: Pixel, height: Pixel, color: ARGB)
 
-    fun draw(x: Pixel, y: Pixel, surface: ScreenSurface, quadrants: Int)
-
     fun draw(x: Pixel, y: Pixel, surface: ScreenSurface, blending: Blending? = null)
 
     fun draw(

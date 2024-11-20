@@ -1,0 +1,5 @@
+- Introduce events for "target in sight" instead of checking continuously during update(), reducing unnecessary computations.
+- Implementing a lightweight pathfinding algorithm (e.g., A*) would make enemy movement more purposeful.
+- For performance, reuse event instances to reduce garbage collection overhead during high-frequency events like movement updates.
+- Implement pooling for bullets to reduce the overhead of frequent instantiation and garbage collection.
+- If explosions are frequently created, use object pooling to reduce instantiation overhead.
