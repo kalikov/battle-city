@@ -73,6 +73,8 @@ class AwtScreen(private val frame: JFrame, private val fonts: AwtFonts) : Screen
     fun destroy() {
         bufferStrategy.dispose()
         frame.dispose()
+
+        surface.dispose()
     }
 
     override fun clear() {

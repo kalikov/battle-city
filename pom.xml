@@ -17,9 +17,9 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
         <kotlin.compiler.jvmTarget>${maven.compiler.target}</kotlin.compiler.jvmTarget>
-        <kotlin.compiler.languageVersion>2.2</kotlin.compiler.languageVersion>
-        <kotlin.compiler.apiVersion>2.2</kotlin.compiler.apiVersion>
-        <kotlin.version>2.1.0-RC2</kotlin.version>
+        <kotlin.compiler.languageVersion>2.0</kotlin.compiler.languageVersion>
+        <kotlin.compiler.apiVersion>2.0</kotlin.compiler.apiVersion>
+        <kotlin.version>2.0.0</kotlin.version>
         <jmh.version>1.37</jmh.version>
     </properties>
 
@@ -56,7 +56,6 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
-                <!--suppress DifferentKotlinMavenVersion -->
                 <version>${kotlin.version}</version>
                 <executions>
                     <execution>
@@ -93,9 +92,6 @@
                     <compilerPlugins>
                         <plugin>kotlinx-serialization</plugin>
                     </compilerPlugins>
-                    <args>
-                        <arg>-Xnon-local-break-continue</arg>
-                    </args>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -151,7 +147,6 @@
                 <executions>
                     <execution>
                         <id>exec-jmh</id>
-<!--                        <phase>test</phase>-->
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -160,6 +155,7 @@
                 <configuration>
                     <executable>java</executable>
                     <arguments>
+<!--                        <argument>-Xlog:all=trace:file=./gc.log</argument>-->
                         <argument>-classpath</argument>
                         <classpath/>
                         <argument>org.openjdk.jmh.Main</argument>
@@ -167,6 +163,7 @@
                         <argument>-wi=5</argument>
                         <argument>-f=1</argument>
                         <argument>-prof=gc</argument>
+                        <argument>MainMenuSceneBenchmark</argument>
                     </arguments>
                     <classpathScope>test</classpathScope>
                 </configuration>

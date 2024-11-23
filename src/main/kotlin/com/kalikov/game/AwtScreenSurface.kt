@@ -1,6 +1,8 @@
 package com.kalikov.game
 
+import java.awt.AlphaComposite
 import java.awt.Color
+import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.io.InputStream
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -12,11 +14,20 @@ class AwtScreenSurface(
     private val fonts: AwtFonts,
     val image: BufferedImage
 ) : ScreenSurface {
+    private companion object {
+        private val colorCache = ColorCache()
+    }
 
     override val width = px(image.width)
     override val height = px(image.height)
 
-    private val lock = ReentrantReadWriteLock()
+    private val gfx: Graphics2D = image.createGraphics()
+
+//    private val lock = ReentrantReadWriteLock()
+
+    init {
+        LeaksDetector.add(this)
+    }
 
     constructor(fonts: AwtFonts, width: Pixel, height: Pixel)
             : this(fonts, BufferedImage(width.toInt(), height.toInt(), BufferedImage.TYPE_INT_ARGB))
@@ -29,15 +40,15 @@ class AwtScreenSurface(
     }
 
     override fun clear(x: Pixel, y: Pixel, width: Pixel, height: Pixel, color: ARGB) {
-        lock.write {
-            val gfx = image.createGraphics()
-            try {
-                gfx.background = Color(color.value, true)
+//        lock.write {
+//            val gfx = image.createGraphics()
+//            try {
+                gfx.background = colorCache.getColor(color.value, true)
                 gfx.clearRect(x.toInt(), y.toInt(), width.toInt(), height.toInt())
-            } finally {
-                gfx.dispose()
-            }
-        }
+//            } finally {
+//                gfx.dispose()
+//            }
+//        }
     }
 
     override fun draw(x: Pixel, y: Pixel, surface: ScreenSurface, blending: Blending?) {
@@ -110,12 +121,13 @@ class AwtScreenSurface(
         srcImage: BufferedImage,
         blending: Blending?
     ) {
-        lock.write {
-            val gfx = image.createGraphics()
-            try {
+//        lock.write {
+//            val gfx = image.createGraphics()
+//            try {
                 if (blending != null) {
-                    gfx.composite = BlendingComposite(blending)
+                    gfx.composite = BlendingComposite.getComposite(blending)
                 }
+        try {
                 gfx.drawImage(
                     srcImage,
                     dstX.toInt(),
@@ -129,9 +141,10 @@ class AwtScreenSurface(
                     null
                 )
             } finally {
-                gfx.dispose()
+                gfx.composite = AlphaComposite.SrcOver
+//                gfx.dispose()
             }
-        }
+//        }
     }
 
     private fun drawCompatible(
@@ -151,70 +164,78 @@ class AwtScreenSurface(
     }
 
     override fun drawRect(x: Pixel, y: Pixel, w: Pixel, h: Pixel, color: ARGB) {
-        lock.write {
-            val gfx = image.createGraphics()
-            try {
-                gfx.color = Color(color.value, true)
+//        lock.write {
+//            val gfx = image.createGraphics()
+//            try {
+                gfx.color = colorCache.getColor(color.value, true)
                 gfx.drawRect(x.toInt(), y.toInt(), (w - 1).toInt(), (h - 1).toInt())
-            } finally {
-                gfx.dispose()
-            }
-        }
+//            } finally {
+//                gfx.dispose()
+//            }
+//        }
     }
 
     override fun fillRect(x: Pixel, y: Pixel, w: Pixel, h: Pixel, color: ARGB) {
-        lock.write {
-            val gfx = image.createGraphics()
-            try {
-                gfx.color = Color(color.value, true)
+//        lock.write {
+//            val gfx = image.createGraphics()
+//            try {
+                gfx.color = colorCache.getColor(color.value, true)
                 gfx.fillRect(x.toInt(), y.toInt(), w.toInt(), h.toInt())
-            } finally {
-                gfx.dispose()
-            }
-        }
+//            } finally {
+//                gfx.dispose()
+//            }
+//        }
     }
 
     override fun drawLine(x1: Pixel, y1: Pixel, x2: Pixel, y2: Pixel, color: ARGB) {
-        lock.write {
-            val gfx = image.createGraphics()
-            try {
-                gfx.color = Color(color.value, true)
+//        lock.write {
+//            val gfx = image.createGraphics()
+//            try {
+                gfx.color = colorCache.getColor(color.value, true)
                 gfx.drawLine(x1.toInt(), y1.toInt(), x2.toInt(), y2.toInt())
-            } finally {
-                gfx.dispose()
-            }
-        }
+//            } finally {
+//                gfx.dispose()
+//            }
+//        }
     }
 
     override fun fillText(text: String, x: Pixel, y: Pixel, color: ARGB, font: String, blending: Blending?) {
-        lock.write {
-            val gfx = image.createGraphics()
-            try {
-                gfx.color = Color(color.value)
+//        lock.write {
+//            val gfx = image.createGraphics()
+//            try {
+                gfx.color = colorCache.getColor(color.value)
                 gfx.font = fonts.getFont(font)
                 if (blending != null) {
-                    gfx.composite = BlendingComposite(blending)
+                    gfx.composite = BlendingComposite.getComposite(blending)
                 }
+        try {
                 gfx.drawString(text, x.toInt(), y.toInt())
             } finally {
-                gfx.dispose()
+                gfx.composite = AlphaComposite.SrcOver
+//                gfx.dispose()
             }
-        }
+//        }
     }
 
     override fun getPixel(x: Pixel, y: Pixel): ARGB {
-        return lock.read {
-            ARGB(image.getRGB(x.toInt(), y.toInt()))
-        }
+//        return lock.read {
+          return  ARGB(image.getRGB(x.toInt(), y.toInt()))
+//        }
     }
 
     override val pixels: IntArray get() = getPixels(px(0), px(0), px(image.width), px(image.height))
 
     override fun getPixels(x: Pixel, y: Pixel, width: Pixel, height: Pixel): IntArray {
-        return lock.read {
+//        return lock.read {
             val pixels = IntArray(width * height)
             image.getRGB(x.toInt(), y.toInt(), width.toInt(), height.toInt(), pixels, 0, width.toInt())
-            pixels
-        }
+            return pixels
+//        }
+    }
+
+    override fun dispose() {
+        gfx.dispose()
+
+        LeaksDetector.remove(this)
     }
 }

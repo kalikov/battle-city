@@ -8,6 +8,8 @@ class StageScoreScene(
 ) : Scene {
     private companion object {
         const val BONUS_SCORE = 1000
+
+        private val blending = Blending { dst, src, _, _ -> src.and(ARGB.rgb(0xe44437)).over(dst) }
     }
 
     val isComplete get() = script.isEmpty
@@ -87,13 +89,9 @@ class StageScoreScene(
         surface.fillText(stage, px(97), y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
 
         y += t(2).toPixel()
-        surface.draw(px(26), y - Globals.TILE_SIZE, game.imageManager.getImage("roman_one")) { dst, src, _, _ ->
-            src.and(ARGB.rgb(0xe44437)).over(dst)
-        }
+        surface.draw(px(26), y - Globals.TILE_SIZE, game.imageManager.getImage("roman_one"), blending)
         if (stageManager.players.size > 1) {
-            surface.draw(px(170), y - Globals.TILE_SIZE, game.imageManager.getImage("roman_two")) { dst, src, _, _ ->
-                src.and(ARGB.rgb(0xe44437)).over(dst)
-            }
+            surface.draw(px(170), y - Globals.TILE_SIZE, game.imageManager.getImage("roman_two"), blending)
         }
         surface.fillText("-PLAYER", px(33), y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
         if (stageManager.players.size > 1) {
@@ -145,9 +143,7 @@ class StageScoreScene(
         if (drawBonusIndex == 0 || drawBonusIndex == 1) {
             val x = px(if (drawBonusIndex == 0) 25 else 169)
             surface.fillText("BONUS", x, y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
-            surface.draw(x + 42, y - Globals.TILE_SIZE, game.imageManager.getImage("exclamation")) { dst, src, _, _ ->
-                src.and(ARGB.rgb(0xe44437)).over(dst)
-            }
+            surface.draw(x + 42, y - Globals.TILE_SIZE, game.imageManager.getImage("exclamation"), blending)
             y += t(1).toPixel()
             surface.fillText("$BONUS_SCORE PTS", x, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
         }

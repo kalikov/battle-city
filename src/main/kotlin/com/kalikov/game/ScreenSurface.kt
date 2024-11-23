@@ -10,4 +10,6 @@ interface ScreenSurface : Render {
     fun getPixel(x: Pixel, y: Pixel): ARGB
 
     fun getPixels(x: Pixel, y: Pixel, width: Pixel, height: Pixel): IntArray
+
+    fun dispose()
 }

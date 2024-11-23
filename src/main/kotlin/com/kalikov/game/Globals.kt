@@ -13,6 +13,7 @@ object Globals {
 
     const val FONT_BIG = "prstart-32"
     val FONT_BIG_CORRECTION = 4 * FONT_REGULAR_CORRECTION
+    val FONT_BIG_SIZE = 4 * TILE_SIZE
 
     const val DATA_DIR = "data"
 }

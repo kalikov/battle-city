@@ -29,6 +29,10 @@ class DefaultStageManager(
         }
 
     override var curtainBackground: ScreenSurface? = null
+        set(value) {
+            field?.dispose()
+            field = value
+        }
 
     override val stage: Stage
         get() {

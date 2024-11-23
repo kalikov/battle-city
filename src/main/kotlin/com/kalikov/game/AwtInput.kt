@@ -5,11 +5,11 @@ import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 
 class AwtInput(private val frame: Component, config: Map<String, KeyEventConfig>) : KeyAdapter(), Input {
-    private val eventQueue: SimpleQueue<Event> = ConcurrentArraySimpleQueue()
+    private val eventQueue: SimpleQueue<Event> = BlockingArraySimpleQueue(32)
 
     private val pressed = IntSet()
 
-    private val codes: Map<Int, CodeItem>
+    private val codes: IntMap<CodeItem>
 
     override var lastKeyPressed: Int = 0
         private set
@@ -17,7 +17,10 @@ class AwtInput(private val frame: Component, config: Map<String, KeyEventConfig>
     init {
         frame.addKeyListener(this)
 
-        codes = config.asSequence().associateBy({ parseCode(it.key) }, { CodeItem(it.value) })
+        codes = IntMap(config.size)
+        config.forEach { (key, value) ->
+            codes.put(parseCode(key), CodeItem(value))
+        }
     }
 
     private fun parseCode(key: String): Int {
@@ -36,15 +39,13 @@ class AwtInput(private val frame: Component, config: Map<String, KeyEventConfig>
     }
 
     override fun keyReleased(e: KeyEvent) {
-        if (e.keyCode != KeyEvent.VK_UNDEFINED) {
-            if (pressed.remove(e.keyCode)) {
-                createKeyboardEvent(e, Keyboard::KeyReleased)?.let { pushEvent(it) }
-            }
+        if (e.keyCode != KeyEvent.VK_UNDEFINED && pressed.remove(e.keyCode)) {
+            createKeyboardEvent(e, Keyboard::KeyReleased)?.let { pushEvent(it) }
         }
     }
 
     private fun createKeyboardEvent(e: KeyEvent, constructor: (key: Keyboard.Key, playerIndex: Int) -> Event): Event? {
-        return codes[e.keyCode]?.getOrCreateEvent(constructor)
+        return codes.get(e.keyCode)?.getOrCreateEvent(constructor)
     }
 
     private fun pushEvent(event: Event) {
@@ -61,17 +62,11 @@ class AwtInput(private val frame: Component, config: Map<String, KeyEventConfig>
 
     private class CodeItem(
         val config: KeyEventConfig,
-        var event: Event? = null
+        val events: MutableMap<(key: Keyboard.Key, playerIndex: Int) -> Event, Event> = HashMap()
     ) {
         fun getOrCreateEvent(constructor: (key: Keyboard.Key, playerIndex: Int) -> Event): Event {
-            return event.let {
-                if (it != null) {
-                    it
-                } else {
-                    val newEvent = constructor(config.key, config.player)
-                    event = newEvent
-                    newEvent
-                }
+            return events.computeIfAbsent(constructor) {
+                it(config.key, config.player - 1)
             }
         }
     }

@@ -2,6 +2,8 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -24,7 +26,13 @@ class MainMenuSceneTest {
         clock = TestClock()
         eventManager = mock()
         stageManager = mock()
-        game = mockGame(eventManager = eventManager, imageManager = TestImageManager(fonts), clock = clock)
+        val screen: Screen = mock {
+            on { createSurface(px(anyInt()), px(anyInt())) } doAnswer {
+                val image = BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
+                AwtScreenSurface(fonts, image)
+            }
+        }
+        game = mockGame(screen = screen, eventManager = eventManager, imageManager = TestImageManager(fonts), clock = clock)
         scene = MainMenuScene(game, stageManager)
     }
 
@@ -34,6 +42,8 @@ class MainMenuSceneTest {
         val player = Player(game)
         whenever(stageManager.players).thenReturn(listOf(player))
         whenever(stageManager.highScore).thenReturn(20000)
+        scene = MainMenuScene(game, stageManager)
+        scene.arrived()
 
         val image = BufferedImage(
             Globals.CANVAS_WIDTH.toInt(),
@@ -52,6 +62,8 @@ class MainMenuSceneTest {
         val player2 = Player(game)
         whenever(stageManager.players).thenReturn(listOf(player1, player2))
         whenever(stageManager.highScore).thenReturn(20000)
+        scene = MainMenuScene(game, stageManager)
+        scene.arrived()
 
         val image = BufferedImage(
             Globals.CANVAS_WIDTH.toInt(),

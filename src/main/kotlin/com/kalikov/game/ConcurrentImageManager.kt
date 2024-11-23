@@ -12,4 +12,13 @@ class ConcurrentImageManager(private val screen: Screen) : LoadingImageManager {
     override fun getImage(name: String): ScreenSurface {
         return images[name] ?: throw ImageNotFoundException(name)
     }
+
+    fun destroy() {
+        val iterator = images.iterator()
+        while (iterator.hasNext()) {
+            val entry = iterator.next()
+            iterator.remove()
+            entry.value.dispose()
+        }
+    }
 }

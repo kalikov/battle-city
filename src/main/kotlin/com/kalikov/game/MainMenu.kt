@@ -7,6 +7,10 @@ class MainMenu(private vararg var items: MainMenuItem = emptyArray()) {
             field = value
         }
 
+    fun getItemsCount() = items.size
+
+    fun getItem(index: Int) = items[index]
+
     fun getCurrentItem(): MainMenuItem {
         return items[item]
     }
@@ -21,9 +25,5 @@ class MainMenu(private vararg var items: MainMenuItem = emptyArray()) {
 
     fun executeCurrentItem() {
         getCurrentItem().execute()
-    }
-
-    fun getItemsInfo(): Array<MainMenuItemInfo> {
-        return Array(items.size) { i -> MainMenuItemInfo(items[i].name, isCurrent(items[i])) }
     }
 }

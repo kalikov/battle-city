@@ -1,6 +1,5 @@
 package com.kalikov.game
 
-import org.mockito.kotlin.mock
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.BenchmarkMode
 import org.openjdk.jmh.annotations.Level
@@ -25,7 +24,7 @@ open class AwtInputBenchmark {
 
     @Setup(Level.Iteration)
     fun setup() {
-        component = mock()
+        component = object : Component() {}
         input = AwtInput(component, mapOf(KeyEvent.VK_SPACE.toString() to KeyEventConfig(Keyboard.Key.START, 0)))
         spacePressed = KeyEvent(component, KeyEvent.KEY_PRESSED, 1704063600, 0, KeyEvent.VK_SPACE, ' ')
         spaceReleased = KeyEvent(component, KeyEvent.KEY_RELEASED, 1704063600, 0, KeyEvent.VK_SPACE, ' ')
@@ -35,5 +34,7 @@ open class AwtInputBenchmark {
     fun benchmarkInput() {
         input.keyPressed(spacePressed)
         input.keyReleased(spaceReleased)
+        input.pollEvent()
+        input.pollEvent()
     }
 }

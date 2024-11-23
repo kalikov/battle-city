@@ -104,6 +104,7 @@ class BasicGame(
         sceneManager.destroy()
         eventManager.destroy()
         soundManager.destroy()
+        imageManager.destroy()
     }
 
     override fun notify(event: Event) {

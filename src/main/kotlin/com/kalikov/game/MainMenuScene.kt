@@ -10,6 +10,9 @@ class MainMenuScene(
 
         const val NAMCO_LTD = "1980 1985 NAMCO LTD"
 
+        const val BATTLE = "BATTLE"
+        const val CITY = "CITY"
+
         private val subscriptions = setOf(Keyboard.KeyPressed::class)
     }
 
@@ -23,13 +26,13 @@ class MainMenuScene(
 
     private val cursorView: MainMenuCursorView
 
-    private val arriveTimer = BasicTimer(game.clock, MOVE_INTERVAL, this::updatePosition)
+    private val arriveTimer = BasicTimer(game.clock, MOVE_INTERVAL, ::updatePosition)
 
-    private val demoTimer = BasicTimer(game.clock, DEMO_INTERVAL, this::startDemo)
+    private val demoTimer = BasicTimer(game.clock, DEMO_INTERVAL, ::startDemo)
 
     private val brickBlending = object : TextureBlending(game.imageManager.getImage("wall_brick")) {
         override fun blend(dst: ARGB, src: ARGB, x: Pixel, y: Pixel): ARGB {
-            val pixel = super.blend(dst, src, x, y - top)
+            val pixel = super.blend(dst, src, x, y)
             if (pixel == ARGB.rgb(0x636363)) {
                 return ARGB.WHITE
             }
@@ -37,7 +40,11 @@ class MainMenuScene(
         }
     }
 
-    private val namco = game.imageManager.getImage("namco")
+    private val namcoBlending = Blending { dst, src, _, _ ->
+        ARGB.rgb(0xB53121).and(src).over(dst)
+    }
+
+    private val mainMenuLazyImage = LazyImage.Custom(game.screen, t(27).toPixel(), t(26).toPixel(), ::drawCache)
 
     init {
         LeaksDetector.add(this)
@@ -88,87 +95,94 @@ class MainMenuScene(
     override fun draw(surface: ScreenSurface) {
         clearCanvas(surface)
 
-        val nameTop = top + t(6).toPixel() + Globals.FONT_BIG_CORRECTION
+        surface.draw(t(2).toPixel(), top + t(2).toPixel(), mainMenuLazyImage.target)
+
+        mainMenuView.draw(surface, top)
+    }
+
+    private fun drawCache(surface: ScreenSurface) {
+        val nameTop = t(4).toPixel()
         surface.fillText(
-            "BATTLE",
-            t(3).toPixel() + t(1).toPixel() / 2,
-            nameTop,
+            BATTLE,
+            t(1).toPixel() + t(1).toPixel() / 2,
+            nameTop + Globals.FONT_BIG_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_BIG,
             brickBlending
         )
         surface.fillText(
-            "CITY",
-            t(8).toPixel(),
-            nameTop + Globals.FONT_BIG_CORRECTION + t(3).toPixel() / 2,
+            CITY,
+            t(6).toPixel(),
+            nameTop + 2 * Globals.FONT_BIG_CORRECTION + t(3).toPixel() / 2,
             ARGB.WHITE,
             Globals.FONT_BIG,
             brickBlending
         )
 
-        surface.draw(t(2).toPixel() + 2, top + t(3).toPixel(), game.imageManager.getImage("roman_one"))
-        surface.fillRect(t(3).toPixel() + 1, top + t(3).toPixel() + 3, px(6), px(2), ARGB.WHITE)
+        surface.draw(px(2), t(1).toPixel(), game.imageManager.getImage("roman_one"))
+        surface.fillRect(t(1).toPixel() + 1, t(1).toPixel() + 3, px(6), px(2), ARGB.WHITE)
+
         surface.fillText(
-            "${stageManager.players[0].previousScore / 10}".padStart(6, ' ') + "0",
-            t(3).toPixel() + 1,
-            top + t(3).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            formatScore(stageManager.players[0].previousScore),
+            t(1).toPixel() + 1,
+            t(1).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
 
         if (stageManager.players.size > 1) {
             surface.draw(
-                t(21).toPixel() + 2,
-                top + t(3).toPixel(),
+                t(19).toPixel() + 2,
+                t(1).toPixel(),
                 game.imageManager.getImage("roman_two")
             )
-            surface.fillRect(t(22).toPixel() + 1, top + t(3).toPixel() + 3, px(6), px(2), ARGB.WHITE)
+            surface.fillRect(t(20).toPixel() + 1, t(1).toPixel() + 3, px(6), px(2), ARGB.WHITE)
             surface.fillText(
-                "${stageManager.players[1].previousScore / 10}".padStart(6, ' ') + "0",
-                t(22).toPixel() + 1,
-                top + t(3).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+                formatScore(stageManager.players[1].previousScore),
+                t(20).toPixel() + 1,
+                t(1).toPixel() + Globals.FONT_REGULAR_CORRECTION,
                 ARGB.WHITE,
                 Globals.FONT_REGULAR
             )
         }
 
         surface.fillText(
-            "HI" + "${stageManager.highScore / 10}".padStart(6, ' ') + "0",
-            t(11).toPixel() + 1,
-            top + t(3).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            "HI" + formatScore(stageManager.highScore),
+            t(9).toPixel() + 1,
+            t(1).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
-        surface.fillRect(t(13).toPixel() + 1, top + t(3).toPixel() + 3, px(6), px(2), ARGB.WHITE)
+        surface.fillRect(t(11).toPixel() + 1, t(1).toPixel() + 3, px(6), px(2), ARGB.WHITE)
 
-        surface.draw(t(11).toPixel(), top + t(23).toPixel(), namco) { dst, src, _, _ ->
-            ARGB.rgb(0xB53121).and(src).over(dst)
-        }
+        surface.draw(t(9).toPixel(), t(21).toPixel(), game.imageManager.getImage("namco"), namcoBlending)
 
-        surface.draw(t(4).toPixel(), top + t(25).toPixel(), game.imageManager.getImage("copyright"))
+        surface.draw(t(2).toPixel(), t(23).toPixel(), game.imageManager.getImage("copyright"))
         surface.fillText(
             NAMCO_LTD,
-            t(6).toPixel() + 1,
-            top + t(25).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            t(4).toPixel() + 1,
+            t(23).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
         surface.fillText(
             ".",
-            t(6).toPixel() + 1 + NAMCO_LTD.length * Globals.FONT_REGULAR_SIZE - 1,
-            top + t(25).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            t(4).toPixel() + 1 + NAMCO_LTD.length * Globals.FONT_REGULAR_SIZE - 1,
+            t(23).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
         surface.fillText(
             "ALL RIGHTS RESERVED",
-            t(6).toPixel() + 1,
-            top + t(27).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            t(4).toPixel() + 1,
+            t(25).toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
+    }
 
-        mainMenuView.draw(surface, top)
+    private fun formatScore(score: Int): String {
+        return "${score / 10}".padStart(6, ' ') + "0"
     }
 
     override fun notify(event: Event) {
@@ -204,6 +218,8 @@ class MainMenuScene(
     }
 
     override fun destroy() {
+        mainMenuLazyImage.dispose()
+
         mainMenuController.dispose()
         cursorView.dispose()
 

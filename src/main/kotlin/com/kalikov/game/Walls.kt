@@ -183,6 +183,8 @@ class Walls(
     }
 
     fun dispose() {
+        mask.dispose()
+
         LeaksDetector.remove(this)
     }
 

@@ -9,14 +9,27 @@ import java.awt.image.Raster
 import java.awt.image.WritableRaster
 import kotlin.math.min
 
-internal class BlendingComposite(private val blending: Blending) : Composite {
+internal class BlendingComposite private constructor(private val blending: Blending) : Composite {
+    companion object {
+        private val srcData = IntArray(Globals.CANVAS_WIDTH * Globals.CANVAS_HEIGHT)
+        private val dstData = IntArray(Globals.CANVAS_WIDTH * Globals.CANVAS_HEIGHT)
+
+        private val cache = HashMap<Blending, BlendingComposite>()
+
+        fun getComposite(blending: Blending): BlendingComposite {
+            return cache.computeIfAbsent(blending) { BlendingComposite(it) }
+        }
+    }
+
+    private val intContext = IntContext(blending)
+
     override fun createContext(
         srcColorModel: ColorModel,
         dstColorModel: ColorModel,
         hints: RenderingHints
     ): CompositeContext {
         return if (IntContext.isSupported(srcColorModel, dstColorModel)) {
-            IntContext(blending)
+            intContext
         } else {
             GeneralContext(srcColorModel, dstColorModel, blending)
         }
@@ -73,8 +86,6 @@ internal class BlendingComposite(private val blending: Blending) : Composite {
                 return
             }
             val n = w * h
-            val srcData = IntArray(n)
-            val dstData = IntArray(n)
             src.getDataElements(src.minX, src.minY, w, h, srcData)
             dstIn.getDataElements(dstIn.minX, dstIn.minY, w, h, dstData)
             var x = 0

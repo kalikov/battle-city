@@ -26,6 +26,8 @@ class Trees(
     }
 
     fun dispose() {
+        mask.dispose()
+
         LeaksDetector.remove(this)
     }
 

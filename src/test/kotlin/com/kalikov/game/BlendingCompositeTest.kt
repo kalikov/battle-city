@@ -5,11 +5,15 @@ import java.awt.Color
 import java.awt.image.BufferedImage
 
 class BlendingCompositeTest {
+    private companion object {
+        private val blending = Blending { _, _, _, _ -> ARGB.rgb(0xFF0000) }
+    }
+
     @Test
     fun `should blend using IntContext`() {
         val image = BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB)
         image.createGraphics().use {
-            it.composite = BlendingComposite { _, _, _, _ -> ARGB.rgb(0xFF0000) }
+            it.composite = BlendingComposite.getComposite(blending)
             it.color = Color.WHITE
             it.fillRect(4, 4, 8, 8)
         }
@@ -20,7 +24,7 @@ class BlendingCompositeTest {
     fun `should blend using GeneralContext`() {
         val image = BufferedImage(16, 16, BufferedImage.TYPE_BYTE_INDEXED)
         image.createGraphics().use {
-            it.composite = BlendingComposite { _, _, _, _ -> ARGB.rgb(0xFF0000) }
+            it.composite = BlendingComposite.getComposite(blending)
             it.color = Color.WHITE
             it.fillRect(4, 4, 8, 8)
         }

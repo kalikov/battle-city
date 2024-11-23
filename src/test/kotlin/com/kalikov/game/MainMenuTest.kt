@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.kotlin.UseConstructor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -45,12 +45,10 @@ class MainMenuTest {
         val item1 = mock<MainMenuItem>(useConstructor = UseConstructor.withArguments("item1"))
         val item2 = mock<MainMenuItem>(useConstructor = UseConstructor.withArguments("item2"))
         val menu = MainMenu(item1, item2)
-        assertContentEquals(
-            arrayOf(
-                MainMenuItemInfo("item1", true),
-                MainMenuItemInfo("item2", false),
-            ),
-            menu.getItemsInfo()
-        )
+        assertEquals(2, menu.getItemsCount())
+        assertSame(item1, menu.getItem(0))
+        assertSame(item2, menu.getItem(1))
+        assertTrue(menu.isCurrent(item1))
+        assertFalse(menu.isCurrent(item2))
     }
 }

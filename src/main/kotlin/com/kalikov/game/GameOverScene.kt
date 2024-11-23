@@ -4,9 +4,24 @@ class GameOverScene(
     private val game: Game,
     private val stageManager: StageManager,
 ) : Scene {
+    private companion object {
+        const val GAME = "GAME"
+        const val OVER = "OVER"
+    }
+
     private val script = Script()
 
     private val brickBlending = TextureBlending(game.imageManager.getImage("wall_brick"))
+
+    private val messageLazyBlender = LazyImage.Custom(
+        game.screen,
+        GAME.length * Globals.FONT_BIG_SIZE,
+        2 * Globals.FONT_BIG_CORRECTION + t(3).toPixel()
+    ) {
+        val interval = t(3).toPixel()
+        it.fillText(GAME, px(0), Globals.FONT_BIG_CORRECTION, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
+        it.fillText(OVER, px(0), 2 * Globals.FONT_BIG_CORRECTION + interval, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
+    }
 
     init {
         script.enqueue(Delay(script, 320, game.clock))
@@ -40,12 +55,12 @@ class GameOverScene(
         surface.clear(ARGB.BLACK)
 
         val x = t(8).toPixel()
-        val y = t(9).toPixel() + Globals.FONT_BIG_CORRECTION
-        val interval = Globals.FONT_BIG_CORRECTION + t(3).toPixel()
-        surface.fillText("GAME", x, y, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
-        surface.fillText("OVER", x, y + interval, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
+        val y = t(9).toPixel()
+
+        surface.draw(x, y, messageLazyBlender.target)
     }
 
     override fun destroy() {
+        messageLazyBlender.dispose()
     }
 }

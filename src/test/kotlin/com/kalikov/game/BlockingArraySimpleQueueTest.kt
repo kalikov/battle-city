@@ -4,16 +4,18 @@ import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class ConcurrentArraySimpleQueueTest {
+class BlockingArraySimpleQueueTest {
     @Test
     fun `should add and poll in the same thread`() {
-        val queue = ConcurrentArraySimpleQueue<Int>(4)
+        val queue = BlockingArraySimpleQueue<Int>(4)
 
         queue.add(1)
         queue.add(2)
@@ -27,20 +29,29 @@ class ConcurrentArraySimpleQueueTest {
 
     @Test
     fun `should poll from empty queue`() {
-        val queue = ConcurrentArraySimpleQueue<String>(4)
+        val queue = BlockingArraySimpleQueue<String>(4)
         assertNull(queue.poll(), "Polling from an empty queue should return null")
     }
 
     @Test
-    fun `should grow queue dynamically`() {
+    fun `should block when queue is full`() {
         val initialCapacity = 4
-        val queue = ConcurrentArraySimpleQueue<Int>(initialCapacity)
+        val queue = BlockingArraySimpleQueue<Int>(initialCapacity)
 
-        for (i in 1 .. 10) {
+        for (i in 1 .. 4) {
             queue.add(i)
         }
 
-        for (i in 1 .. 10) {
+        val executor = Executors.newSingleThreadExecutor()
+        val future = executor.submit {
+            queue.add(5)
+        }
+        Thread.sleep(1000)
+        assertFalse(future.isDone)
+
+        assertEquals(1, queue.poll())
+        future.get(1, TimeUnit.SECONDS)
+        for (i in 2 .. 5) {
             assertEquals(i, queue.poll(), "Queue should grow dynamically and preserve order")
         }
 
@@ -49,9 +60,9 @@ class ConcurrentArraySimpleQueueTest {
 
     @RepeatedTest(value = 100)
     fun `should add concurrently`() {
-        val queue = ConcurrentArraySimpleQueue<Int>(8)
         val executor = Executors.newFixedThreadPool(4)
         val productionSize = 5000
+        val queue = BlockingArraySimpleQueue<Int>(productionSize * 4)
 
         repeat(4) { producerId ->
             executor.submit {
@@ -82,8 +93,8 @@ class ConcurrentArraySimpleQueueTest {
 
     @RepeatedTest(value = 100)
     fun `should poll concurrently`() {
-        val queue = ConcurrentArraySimpleQueue<Int>(8)
         val totalCount = 40000
+        val queue = BlockingArraySimpleQueue<Int>(totalCount)
         for (i in 1 .. totalCount) {
             queue.add(i)
         }
@@ -114,23 +125,24 @@ class ConcurrentArraySimpleQueueTest {
 
     @RepeatedTest(value = 100)
     fun `should add and poll concurrently`() {
-        val queue = ConcurrentArraySimpleQueue<Int>(8)
+        val queue = BlockingArraySimpleQueue<Int>(8)
         val executor = Executors.newFixedThreadPool(4)
         val produced = AtomicInteger()
         val productionSize = 10000
+        val futures = mutableListOf<Future<*>>()
 
         repeat(2) { producerId ->
-            executor.submit {
+            futures.add(executor.submit {
                 for (i in 1 .. productionSize) {
                     queue.add(producerId * productionSize + i)
                 }
                 produced.incrementAndGet()
-            }
+            })
         }
 
         val elements = ConcurrentHashMap<Int, Unit>()
         repeat(2) {
-            executor.submit {
+            futures.add(executor.submit {
                 while (produced.get() < 2) {
                     queue.poll()?.let { element ->
                         assertNull(elements.put(element, Unit), "Duplicated element $element")
@@ -141,8 +153,10 @@ class ConcurrentArraySimpleQueueTest {
                     assertNull(elements.put(element, Unit), "Duplicated element $element")
                     element = queue.poll()
                 }
-            }
+            })
         }
+
+        futures.forEach { it.get() }
 
         executor.shutdown()
         executor.awaitTermination(10, TimeUnit.SECONDS)
@@ -156,23 +170,24 @@ class ConcurrentArraySimpleQueueTest {
 
     @RepeatedTest(value = 100)
     fun `should add and poll concurrently same value`() {
-        val queue = ConcurrentArraySimpleQueue<Int>(8)
+        val queue = BlockingArraySimpleQueue<Int>(8)
         val executor = Executors.newFixedThreadPool(4)
         val produced = AtomicInteger()
         val productionSize = 10000
+        val futures = mutableListOf<Future<*>>()
 
         repeat(2) {
-            executor.submit {
+            futures.add(executor.submit {
                 for (i in 1 .. productionSize) {
                     queue.add(100)
                 }
                 produced.incrementAndGet()
-            }
+            })
         }
 
         val polled = AtomicInteger()
         repeat(2) {
-            executor.submit {
+            futures.add(executor.submit {
                 while (produced.get() < 2) {
                     queue.poll()?.let {
                         polled.incrementAndGet()
@@ -183,8 +198,10 @@ class ConcurrentArraySimpleQueueTest {
                     polled.incrementAndGet()
                     element = queue.poll()
                 }
-            }
+            })
         }
+
+        futures.forEach { it.get()}
 
         executor.shutdown()
         executor.awaitTermination(10, TimeUnit.SECONDS)
@@ -195,7 +212,7 @@ class ConcurrentArraySimpleQueueTest {
 
     @RepeatedTest(value = 100)
     fun `stress test`() {
-        val queue = ConcurrentArraySimpleQueue<Int>(16)
+        val queue = BlockingArraySimpleQueue<Int>(16)
         val executor = Executors.newFixedThreadPool(8)
 
         val producerCount = 4
@@ -237,7 +254,7 @@ class ConcurrentArraySimpleQueueTest {
 
     @RepeatedTest(value = 100)
     fun `should poll concurrently from empty queue`() {
-        val queue = ConcurrentArraySimpleQueue<String>(4)
+        val queue = BlockingArraySimpleQueue<String>(4)
         val executor = Executors.newFixedThreadPool(4)
 
         val results = ArrayList<String?>(400)

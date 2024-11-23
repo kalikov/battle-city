@@ -112,6 +112,8 @@ class Ground(
     }
 
     fun dispose() {
+        masks.forEach { it.dispose() }
+
         waterAnimation.dispose()
 
         LeaksDetector.remove(this)
