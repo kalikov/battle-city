@@ -1,7 +1,11 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+
 class PowerUpHandler(
-    private val game: Game,
+    private val game: BattleCityGame,
+    private val pauseManager: PauseManager,
 ) : EventSubscriber {
     data class Life(val player: Player) : Event()
     data object Freeze : Event()
@@ -10,7 +14,7 @@ class PowerUpHandler(
     private companion object {
         const val HELMET_DURATION = 9000
 
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             PowerUp.Pick::class,
             EnemyFactory.EnemyCreated::class,
             Tank.Destroyed::class,
@@ -18,6 +22,8 @@ class PowerUpHandler(
     }
 
     private val enemies = HashSet<EnemyTank>()
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     init {
         game.eventManager.addSubscriber(this, subscriptions)
@@ -57,7 +63,7 @@ class PowerUpHandler(
     }
 
     private fun handleHelmet(playerTank: Tank) {
-        val state = TankStateInvincible(game, playerTank, HELMET_DURATION)
+        val state = TankStateInvincible(game, pauseManager, playerTank, HELMET_DURATION)
         playerTank.state = state
     }
 

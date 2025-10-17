@@ -1,12 +1,19 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Animation
+import com.kalikov.engine.Event
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.frameSequenceOf
+import com.kalikov.engine.px
+
 class BaseExplosion(
-    private val game: Game,
+    private val game: BattleCityGame,
+    pauseManager: PauseManager,
     x: Pixel = px(0),
     y: Pixel = px(0),
 ) : Explosion(
     game.eventManager,
-    Animation.pauseAware(game.eventManager, frameSequenceOf(*animationFrames), game.clock, ANIMATION_INTERVAL),
+    Animation.pauseAware(pauseManager, frameSequenceOf(*animationFrames), game.clock, ANIMATION_INTERVAL),
     SIZE,
     x,
     y,

@@ -1,5 +1,10 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+
 class GameOverMessage(
     override var x: Pixel = px(0),
     override var y: Pixel = px(0),

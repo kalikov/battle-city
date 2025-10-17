@@ -1,7 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Event
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+import com.kalikov.engine.times
+
 class Bullet(
-    private val game: Game,
+    private val game: BattleCityGame,
     override val tank: Tank,
     val speed: Speed = Speed.NORMAL,
     var type: Type = Type.REGULAR,

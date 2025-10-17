@@ -1,7 +1,11 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.LeaksDetector
+
 class Player(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val bonusLifeScore: Int = 20000,
     initialScore: Int = 0,
     val index: Int = 0,
@@ -11,7 +15,7 @@ class Player(
     private companion object {
         const val DEFAULT_LIVES_COUNT = 3
 
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             Score::class,
             PlayerTank.PlayerDestroyed::class,
             PowerUpHandler.Life::class
@@ -27,12 +31,8 @@ class Player(
         private set
 
     var upgradeLevel = 0
-
-    init {
-        LeaksDetector.add(this)
-
-        game.eventManager.addSubscriber(this, subscriptions)
-    }
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     data class OutOfLives(val player: Player) : Event()
 
@@ -42,7 +42,7 @@ class Player(
                 if (event.player === this) {
                     val previousValue = score
                     score += event.points
-                    if (bonusLifeScore in (previousValue + 1)..score) {
+                    if (bonusLifeScore in (previousValue + 1) .. score) {
                         incrementLife()
                     }
                 }
@@ -80,9 +80,11 @@ class Player(
         game.soundManager.incrementLife.play()
     }
 
-    fun dispose() {
-        game.eventManager.removeSubscriber(this, subscriptions)
+    fun activate() {
+        game.eventManager.addSubscriber(this, subscriptions)
+    }
 
-        LeaksDetector.remove(this)
+    fun deactivate() {
+        game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

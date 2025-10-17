@@ -1,10 +1,13 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import kotlin.test.assertFalse
 
 class TankStateAppearingTest {
@@ -21,7 +24,7 @@ class TankStateAppearingTest {
         clock = TestClock()
         val game = mockGame(eventManager = eventManager, clock = clock)
         tank = stubPlayerTank(game, pauseManager)
-        state = TankStateAppearing(game, tank)
+        state = TankStateAppearing(game, pauseManager, tank)
         tank.state = state
     }
 
@@ -40,36 +43,28 @@ class TankStateAppearingTest {
 
     @Test
     fun `should pause tank appearing animation`() {
-        eventManager = ConcurrentEventManager()
-        val game = mockGame(eventManager = eventManager, clock = clock)
-        val pauseListener = PauseListener(game)
-        pauseManager = pauseListener
-        tank = stubPlayerTank(game, pauseManager)
-        state = TankStateAppearing(game, tank)
-        tank.state = state
         tank.update()
-
-        val appearingEndSubscriber: EventSubscriber = mock()
-        eventManager.addSubscriber(appearingEndSubscriber, setOf(TankStateAppearing.End::class))
 
         clock.tick(TankStateAppearing.DEFAULT_ANIMATION_DURATION - 1)
         tank.update()
-        verify(appearingEndSubscriber, never()).notify(TankStateAppearing.End(tank))
+        verify(eventManager, never()).fireEvent(TankStateAppearing.End(tank))
 
-        eventManager.fireEvent(PauseManager.Start)
+        whenever(pauseManager.isPaused).thenReturn(true)
+        tank.update()
 
         clock.tick(100)
         tank.update()
-        verify(appearingEndSubscriber, never()).notify(TankStateAppearing.End(tank))
+        verify(eventManager, never()).fireEvent(TankStateAppearing.End(tank))
 
-        eventManager.fireEvent(PauseManager.End)
+        whenever(pauseManager.isPaused).thenReturn(false)
+        tank.update()
 
         tank.update()
-        verify(appearingEndSubscriber, never()).notify(TankStateAppearing.End(tank))
+        verify(eventManager, never()).fireEvent(TankStateAppearing.End(tank))
 
         clock.tick(1)
         tank.update()
-        verify(appearingEndSubscriber).notify(TankStateAppearing.End(tank))
+        verify(eventManager).fireEvent(TankStateAppearing.End(tank))
     }
 
     @Test

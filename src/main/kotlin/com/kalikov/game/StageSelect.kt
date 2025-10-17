@@ -1,12 +1,18 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.Keyboard
+import kotlin.reflect.KClass
+
 class StageSelect(
     private val eventManager: EventManager,
     private val stageManager: StageManager,
     private val scriptCallback: ScriptCallback,
 ) : ScriptNode, EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(Keyboard.KeyPressed::class)
+        private val subscriptions = arrayOf<KClass<out Event>>(Keyboard.KeyPressed::class)
     }
 
     override val isDisposable get() = false
@@ -19,6 +25,9 @@ class StageSelect(
             subscribed = true
         }
     }
+
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     override fun notify(event: Event) {
         if (event is Keyboard.KeyPressed) {

@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Pixel
+
 interface AITankHandle {
     val x: Pixel
     val y: Pixel

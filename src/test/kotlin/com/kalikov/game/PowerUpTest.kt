@@ -6,7 +6,7 @@ import org.mockito.kotlin.verify
 import kotlin.test.assertTrue
 
 class PowerUpTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var powerUp: PowerUp
 
     @BeforeEach

@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.EventSubscriber
 import kotlin.random.Random
 
 class AITankControllerContainer(
@@ -10,7 +13,7 @@ class AITankControllerContainer(
     private val params: AITankControllerParams = AITankControllerParams()
 ) : EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             Tank.Destroyed::class,
             EnemyFactory.EnemyCreated::class,
             PowerUpHandler.Freeze::class,
@@ -26,6 +29,8 @@ class AITankControllerContainer(
     private val controllers = LinkedHashMap<Tank, AITankController>()
 
     private val players = mutableSetOf<PlayerTankHandle>()
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     init {
         eventManager.addSubscriber(this, subscriptions)
@@ -63,7 +68,7 @@ class AITankControllerContainer(
     }
 
     private fun createController(tank: Tank): AITankController {
-        val controller = AITankController(eventManager, tank, base, players, random, params)
+        val controller = AITankController(pauseManager, tank, base, players, random, params)
         if (isFrozen) {
             tank.isIdle = true
         }

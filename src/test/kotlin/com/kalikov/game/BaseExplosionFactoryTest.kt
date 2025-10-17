@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.argumentCaptor
@@ -20,12 +22,12 @@ class BaseExplosionFactoryTest {
         val game = mockGame()
         eventManager = game.eventManager
         spriteContainer = mock()
-        factory = BaseExplosionFactory(game, spriteContainer)
+        factory = BaseExplosionFactory(game, mock(), spriteContainer)
     }
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(factory, setOf(Base.Hit::class))
+        verify(eventManager).addSubscriber(factory, arrayOf(Base.Hit::class))
     }
 
     @Test

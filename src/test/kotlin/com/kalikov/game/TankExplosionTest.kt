@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -15,7 +16,7 @@ class TankExplosionTest {
         eventManager = mock()
         val game = mockGame(eventManager = eventManager)
         tank = stubPlayerTank(game)
-        explosion = TankExplosion(game, tank)
+        explosion = TankExplosion(game, mock(), tank)
     }
 
     @Test

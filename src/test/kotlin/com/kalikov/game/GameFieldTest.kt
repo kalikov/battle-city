@@ -1,5 +1,12 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.Blending
+import com.kalikov.engine.DefaultEventManager
+import com.kalikov.engine.Screen
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -46,7 +53,7 @@ class GameFieldTest {
     @ParameterizedTest
     @MethodSource("stages")
     fun `should draw classic stages correctly`(index: Int, file: File) {
-        val eventManager = ConcurrentEventManager()
+        val eventManager = DefaultEventManager()
 
         val imageManager = TestImageManager(fonts)
 
@@ -59,6 +66,7 @@ class GameFieldTest {
         val game = mockGame(screen = screen, eventManager = eventManager, imageManager = imageManager)
         val field = GameField(
             game,
+            mock(),
             DefaultSpriteContainer(eventManager),
             DefaultSpriteContainer(eventManager),
             px(0),
@@ -84,7 +92,7 @@ class GameFieldTest {
         whenever(game.imageManager.getImage(any())).thenReturn(mock())
         whenever(game.imageManager.getImage("wall_brick")).thenReturn(mock())
 
-        val field = GameField(game, mock(), mock())
+        val field = GameField(game, mock(), mock(), mock())
         field.load(
             StageMapConfig(
                 base = TilePoint(t(12), t(24)),
@@ -118,7 +126,7 @@ class GameFieldTest {
         whenever(game.imageManager.getImage(any())).thenReturn(mock())
         whenever(game.imageManager.getImage("wall_brick")).thenReturn(mock())
 
-        val field = GameField(game, mock(), mock())
+        val field = GameField(game, mock(), mock(), mock())
         field.load(
             StageMapConfig(
                 base = TilePoint(t(12), t(24)),
@@ -158,7 +166,7 @@ class GameFieldTest {
         whenever(game.imageManager.getImage(any())).thenReturn(mock())
         whenever(game.imageManager.getImage("wall_brick")).thenReturn(mock())
 
-        val field = GameField(game, mock(), mock())
+        val field = GameField(game, mock(), mock(), mock())
         field.load(
             StageMapConfig(
                 base = TilePoint(),
@@ -183,7 +191,7 @@ class GameFieldTest {
 
         val mainContainer = mock<SpriteContainer>()
         val overlayContainer = mock<SpriteContainer>()
-        val field = GameField(game, mainContainer, overlayContainer)
+        val field = GameField(game, mock(), mainContainer, overlayContainer)
         field.load(
             StageMapConfig(
                 base = TilePoint(),
@@ -232,7 +240,7 @@ class GameFieldTest {
                 imageCaptor.capture(),
                 anyOrNull<Blending>()
             )
-        } catch (e: Error) {
+        } catch (_: Error) {
             verify(surfaceMock).draw(
                 px(anyInt()),
                 px(anyInt()),

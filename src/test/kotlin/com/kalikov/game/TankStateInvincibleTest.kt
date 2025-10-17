@@ -1,10 +1,13 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class TankStateInvincibleTest {
     private lateinit var eventManager: EventManager
@@ -20,7 +23,7 @@ class TankStateInvincibleTest {
         clock = TestClock()
         val game = mockGame(eventManager = eventManager, clock = clock)
         tank = stubPlayerTank(game, pauseManager)
-        state = TankStateInvincible(game, tank, 4)
+        state = TankStateInvincible(game, pauseManager, tank, 10)
         tank.state = state
     }
 
@@ -40,43 +43,35 @@ class TankStateInvincibleTest {
         tank.update()
         verify(eventManager, never()).fireEvent(TankStateInvincible.End(tank))
 
-        clock.tick(1)
+        clock.tick(7)
         tank.update()
         verify(eventManager).fireEvent(TankStateInvincible.End(tank))
     }
 
     @Test
     fun `should pause invincible state duration`() {
-        eventManager = ConcurrentEventManager()
-        val game = mockGame(eventManager = eventManager, clock = clock)
-        val pauseListener = PauseListener(game)
-        pauseManager = pauseListener
-        tank = stubPlayerTank(game, pauseManager)
-        state = TankStateInvincible(game, tank, 10)
-        tank.state = state
         tank.update()
-
-        val invincibleEndSubscriber: EventSubscriber = mock()
-        eventManager.addSubscriber(invincibleEndSubscriber, setOf(TankStateInvincible.End::class))
 
         clock.tick(5)
         tank.update()
-        verify(invincibleEndSubscriber, never()).notify(TankStateInvincible.End(tank))
+        verify(eventManager, never()).fireEvent(TankStateInvincible.End(tank))
 
-        eventManager.fireEvent(PauseManager.Start)
+        whenever(pauseManager.isPaused).thenReturn(true)
+        tank.update()
 
         clock.tick(100)
         tank.update()
-        verify(invincibleEndSubscriber, never()).notify(TankStateInvincible.End(tank))
+        verify(eventManager, never()).fireEvent(TankStateInvincible.End(tank))
 
-        eventManager.fireEvent(PauseManager.End)
+        whenever(pauseManager.isPaused).thenReturn(false)
+        tank.update()
 
         clock.tick(4)
         tank.update()
-        verify(invincibleEndSubscriber, never()).notify(TankStateInvincible.End(tank))
+        verify(eventManager, never()).fireEvent(TankStateInvincible.End(tank))
 
         clock.tick(1)
         state.update()
-        verify(invincibleEndSubscriber).notify(TankStateInvincible.End(tank))
+        verify(eventManager).fireEvent(TankStateInvincible.End(tank))
     }
 }

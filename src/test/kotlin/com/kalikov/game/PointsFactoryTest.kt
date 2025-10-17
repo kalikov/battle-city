@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.argumentCaptor
@@ -11,7 +12,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class PointsFactoryTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var factory: PointsFactory
 
@@ -19,12 +20,12 @@ class PointsFactoryTest {
     fun beforeEach() {
         game = mockGame()
         spriteContainer = mock()
-        factory = PointsFactory(game, spriteContainer)
+        factory = PointsFactory(game, mock(), spriteContainer)
     }
 
     @Test
     fun `should subscribe`() {
-        verify(game.eventManager).addSubscriber(factory, setOf(TankExplosion.Destroyed::class, PowerUp.Pick::class))
+        verify(game.eventManager).addSubscriber(factory, arrayOf(TankExplosion.Destroyed::class, PowerUp.Pick::class))
     }
 
     @Test

@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.times
 import kotlinx.serialization.Serializable
 
 @JvmInline

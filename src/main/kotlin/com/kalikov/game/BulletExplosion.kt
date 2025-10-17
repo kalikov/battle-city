@@ -1,11 +1,15 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Animation
+import com.kalikov.engine.frameSequenceOf
+
 class BulletExplosion(
-    private val game: Game,
+    private val game: BattleCityGame,
+    pauseManager: PauseManager,
     private val bullet: BulletHandle,
 ) : Explosion(
     game.eventManager,
-    Animation.pauseAware(game.eventManager, frameSequenceOf(*animationFrames), game.clock, ANIMATION_INTERVAL),
+    Animation.pauseAware(pauseManager, frameSequenceOf(*animationFrames), game.clock, ANIMATION_INTERVAL),
     SIZE,
     bullet.center - SIZE / 2,
     bullet.middle - SIZE / 2
@@ -14,6 +18,7 @@ class BulletExplosion(
         private val animationFrames = intArrayOf(1, 2, 3)
 
         const val ANIMATION_INTERVAL = 32
+        val ANIMATION_FRAMES = animationFrames.size
 
         val SIZE = t(2).toPixel()
     }

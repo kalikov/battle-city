@@ -1,5 +1,12 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Animation
+import com.kalikov.engine.EventRouter
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+import com.kalikov.engine.times
+
 abstract class Explosion(
     eventRouter: EventRouter,
     private val animation: Animation,
@@ -28,6 +35,6 @@ abstract class Explosion(
     }
 
     override fun dispose() {
-        animation.dispose()
+        animation.stop()
     }
 }

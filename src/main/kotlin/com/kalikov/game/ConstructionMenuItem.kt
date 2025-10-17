@@ -1,15 +1,12 @@
 package com.kalikov.game
 
+import com.kalikov.engine.MenuItem
+
 class ConstructionMenuItem(
-    private val game: Game,
-    private val stageManager: StageManager,
-) : MainMenuItem("CONSTRUCTION") {
+    private val game: BattleCityGame,
+    private val sceneProvider: SceneProvider,
+) : MenuItem("CONSTRUCTION") {
     override fun execute() {
-        game.eventManager.fireEvent(Scene.Start {
-            ConstructionScene(
-                game,
-                stageManager,
-            )
-        })
+        game.sceneManager.setNextScene(sceneProvider.constructionScene)
     }
 }

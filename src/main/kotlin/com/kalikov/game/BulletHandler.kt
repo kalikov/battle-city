@@ -1,11 +1,18 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import kotlin.reflect.KClass
+
 class BulletHandler(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val spriteContainer: SpriteContainer
 ) : EventSubscriber {
+    override val identity: Int
+        get() = TODO("Not yet implemented")
+
     private companion object {
-        private val subscriptions = setOf(Tank.Shoot::class)
+        private val subscriptions = arrayOf<KClass<out Event>>(Tank.Shoot::class)
     }
 
     init {

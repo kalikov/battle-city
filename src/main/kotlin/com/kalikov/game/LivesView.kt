@@ -1,9 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Blending
+import com.kalikov.engine.LazyImage
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
 import kotlin.math.max
 
 class LivesView(
-    private val imageManager: ImageManager,
+    game: BattleCityGame,
     private val players: List<Player>,
     private val x: Pixel,
     private val y: Pixel,
@@ -12,32 +17,56 @@ class LivesView(
         private val blending = Blending { dst, src, _, _ -> src.and(ARGB.BLACK).over(dst) }
     }
 
+    private val romanOne = LazyImage.Blender(
+        game.screen,
+        game.imageManager.getImage("roman_one"),
+        blending
+    )
+
+    private val romanTwo = LazyImage.Blender(
+        game.screen,
+        game.imageManager.getImage("roman_two"),
+        blending
+    )
+
+    private val lives = game.imageManager.getImage("lives")
+
+    private var lives0: Int = players[0].lives
+    private var lives0Text = formatLives(lives0)
+
+    private var lives1: Int = if (players.size > 1) players[1].lives else 0
+    private var lives1Text = formatLives(lives1)
+
     fun draw(surface: ScreenSurface) {
-        val romanOne = imageManager.getImage("roman_one")
-        surface.draw(x + t(1).toPixel() - romanOne.width - 2, y, romanOne, blending)
-        surface.fillText("P", x + t(1).toPixel() + 1, y + t(1).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+        val xMain = x + t(1).toPixel()
 
-        surface.fillLivesText(players[0].lives, x + t(1).toPixel() + 1, y + t(2).toPixel() - 1)
+        if (players[0].lives != lives0) {
+            lives0 = players[0].lives
+            lives0Text = formatLives(lives0)
+        }
 
-        surface.draw(x, y + t(1).toPixel(), imageManager.getImage("lives"))
+        surface.draw(xMain - romanOne.width - 2, y, romanOne.target)
+        surface.fillText("P", xMain + 1, y + t(1).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+        surface.fillText(lives0Text, xMain + 1, y + t(2).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+        surface.draw(x, y + t(1).toPixel(), lives)
 
         if (players.size > 1) {
-            val romanTwo = imageManager.getImage("roman_two")
-            surface.draw(x + t(1).toPixel() - romanTwo.width - 1, y + t(3).toPixel(), romanTwo, blending)
-            surface.fillText("P", x + t(1).toPixel() + 1, y + t(4).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+            if (players[1].lives != lives1) {
+                lives1 = players[1].lives
+                lives1Text = formatLives(lives1)
+            }
 
-            surface.fillLivesText(players[1].lives, x + t(1).toPixel() + 1, y + t(5).toPixel() - 1)
-            surface.draw(x, y + t(4).toPixel(), imageManager.getImage("lives"))
+            surface.draw(xMain - romanTwo.width - 1, y + t(3).toPixel(), romanTwo.target)
+            surface.fillText("P", xMain + 1, y + t(4).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+            surface.fillText(lives1Text, xMain + 1, y + t(5).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+            surface.draw(x, y + t(4).toPixel(), lives)
         }
     }
 
-    private fun ScreenSurface.fillLivesText(lives: Int, x: Pixel, y: Pixel) {
-        this.fillText(
-            max(0, lives - 1).toString(),
-            x,
-            y,
-            ARGB.BLACK,
-            Globals.FONT_REGULAR
-        )
+    private fun formatLives(lives: Int): String = max(0, lives - 1).toString()
+
+    fun dispose() {
+        romanOne.dispose()
+        romanTwo.dispose()
     }
 }

@@ -1,36 +1,33 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.BlinkTimer
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
 import java.time.Clock
 
 class PauseMessageView(
-    private val eventManager: EventManager,
+    private val pauseManager: PauseManager,
     private val x: Pixel,
     private val y: Pixel,
     clock: Clock
-) : EventSubscriber {
-    private companion object {
+) {
+    internal companion object {
+        internal const val INTERVAL = 300
+
         private const val MESSAGE = "PAUSE"
 
         private val DX = t(-MESSAGE.length).toPixel() / 2 + 1
-
-        private val subscriptions = setOf(PauseManager.Start::class, PauseManager.End::class)
     }
 
-    private val blinkTimer = BlinkTimer(clock, 300)
-
-    init {
-        eventManager.addSubscriber(this, subscriptions)
-    }
-
-    override fun notify(event: Event) {
-        if (event is PauseManager.Start) {
-            blinkTimer.restart()
-        } else if (event is PauseManager.End) {
-            blinkTimer.stop()
-        }
-    }
+    private val blinkTimer = BlinkTimer(clock, INTERVAL)
 
     fun update() {
+        if (pauseManager.isPaused && blinkTimer.isStopped) {
+            blinkTimer.restart()
+        } else if (!pauseManager.isPaused && !blinkTimer.isStopped) {
+            blinkTimer.stop()
+        }
         blinkTimer.update()
     }
 
@@ -39,9 +36,5 @@ class PauseMessageView(
             return
         }
         surface.fillText(MESSAGE, x + DX, y + t(1).toPixel(), ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
-    }
-
-    fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
     }
 }

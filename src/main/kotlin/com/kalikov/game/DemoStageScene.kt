@@ -1,15 +1,23 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.Keyboard
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Scene
+import com.kalikov.engine.ScreenSurface
 import java.util.EnumSet
 
-class DemoStageScene(
-    private val game: Game,
-    private val stageManager: StageManager,
-    private val mainMenuItem: Int,
-    demoStage: Stage,
+//object MainDemoStageScene : DemoStageScene(MainGame, MainMenuScene)
+
+open class DemoStageScene(
+    private val game: BattleCityGame,
+    private val exitScene: Scene,
+    private val nextScene: Scene,
 ) : Scene, EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             Keyboard.KeyPressed::class,
             BaseExplosion.Destroyed::class,
             Player.OutOfLives::class,
@@ -38,10 +46,6 @@ class DemoStageScene(
     init {
         LeaksDetector.add(this)
 
-        game.soundManager.enabled = false
-
-        game.eventManager.addSubscriber(this, subscriptions)
-
         players = List(2) { i ->
             Player(game, index = i)
         }
@@ -49,13 +53,13 @@ class DemoStageScene(
         mainContainer = DefaultSpriteContainer(game.eventManager)
         overlayContainer = DefaultSpriteContainer(game.eventManager)
 
-        val pauseManager = NoopPauseManager()
+        val demoStage = game.stageManager.demoStage
 
-        gameField = GameField(game, mainContainer, overlayContainer)
+        gameField = GameField(game, NoopPauseManager, mainContainer, overlayContainer)
         gameFieldController = GameFieldCommonController(
             game,
             gameField,
-            pauseManager,
+            NoopPauseManager,
             mainContainer,
             overlayContainer,
             demoStage.map.base
@@ -64,7 +68,7 @@ class DemoStageScene(
 
         enemyFactory = EnemyFactory(
             game,
-            pauseManager,
+            NoopPauseManager,
             mainContainer,
             demoStage.map.enemySpawnPoints.map {
                 it.toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y)
@@ -79,7 +83,7 @@ class DemoStageScene(
         playersTankFactories = players.mapIndexed { index, player ->
             val factory = PlayerTankFactory(
                 game,
-                pauseManager,
+                NoopPauseManager,
                 mainContainer,
                 demoStage.map.playerSpawnPoints[index].toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y),
                 player,
@@ -97,7 +101,7 @@ class DemoStageScene(
         )
 
         livesView = LivesView(
-            game.imageManager,
+            game,
             players,
             gameField.bounds.right + 1 + t(1).toPixel(),
             gameField.bounds.bottom + 1 - t(11).toPixel()
@@ -133,6 +137,9 @@ class DemoStageScene(
         stageNumberView.draw(surface)
     }
 
+    override val identity: Int
+        get() = TODO("Not yet implemented")
+
     override fun notify(event: Event) {
         when (event) {
             is Keyboard.KeyPressed -> if (event.playerIndex == 0) {
@@ -158,22 +165,38 @@ class DemoStageScene(
         }
     }
 
-    private fun stopDemo(arrived: Boolean) {
-        game.eventManager.fireEvent(Scene.Start {
-            val mainMenu = MainMenuScene(game, stageManager)
-            mainMenu.setMenuItem(mainMenuItem)
-            if (arrived) {
-                mainMenu.arrived()
-            }
-            mainMenu
-        })
+    private fun stopDemo(exit: Boolean) {
+        if (exit) {
+            game.sceneManager.setNextScene(exitScene)
+        } else {
+            game.sceneManager.setNextScene(nextScene)
+        }
+    }
+
+    override fun activate() {
+        game.soundManager.enabled = false
+
+        game.eventManager.addSubscriber(this, subscriptions)
+
+        players.forEach {
+            it.reset()
+            it.activate()
+        }
+    }
+
+    override fun deactivate() {
+        players.forEach { it.deactivate() }
+
+        game.eventManager.removeSubscriber(this, subscriptions)
+
+        game.soundManager.enabled = true
     }
 
     override fun destroy() {
+        livesView.dispose()
+
         playersTankFactories.forEach { it.dispose() }
         playersTankControllers.forEach { it.dispose() }
-
-        players.forEach { it.dispose() }
 
         enemyFactory.dispose()
 
@@ -182,10 +205,6 @@ class DemoStageScene(
 
         mainContainer.dispose()
         overlayContainer.dispose()
-
-        game.eventManager.removeSubscriber(this, subscriptions)
-
-        game.soundManager.enabled = true
 
         LeaksDetector.remove(this)
     }

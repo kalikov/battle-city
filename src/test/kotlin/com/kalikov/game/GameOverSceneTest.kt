@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.Screen
+import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyInt
@@ -9,7 +12,7 @@ import java.awt.image.BufferedImage
 
 class GameOverSceneTest {
     private lateinit var fonts: TestFonts
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
 
     @BeforeEach
     fun beforeEach() {

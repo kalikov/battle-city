@@ -1,5 +1,11 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.FontManager
+import com.kalikov.engine.Game
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Scene
+import com.kalikov.engine.ScreenSurface
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -11,11 +17,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 class LoadingScene(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val imageManager: LoadingImageManager,
     private val soundManager: LoadingSoundManager,
     private val fontManager: FontManager,
-    private val stageManager: StageManager,
+    private val sceneProvider: SceneProvider,
 ) : Scene {
     private val remainingJobs = AtomicInteger()
     private val failure = AtomicBoolean()
@@ -43,14 +49,12 @@ class LoadingScene(
         if (failure.get()) {
             executor.shutdown()
 
-            game.eventManager.fireEvent(BasicGame.Quit)
+            game.eventManager.fireEvent(Game.Quit)
         } else if (remainingJobs.get() == 0) {
             executor.shutdown()
 
-            stageManager.init(getStages(), requireNotNull(constructionMap), demoStage)
-            game.eventManager.fireEvent(Scene.Start {
-                MainMenuScene(game, stageManager)
-            })
+            game.stageManager.init(getStages(), requireNotNull(demoStage), requireNotNull(constructionMap))
+            game.sceneManager.setNextScene(sceneProvider.menuScene)
         }
     }
 
@@ -66,11 +70,16 @@ class LoadingScene(
         surface.clear(ARGB.BLACK)
     }
 
-    override fun destroy() {
+    override fun activate() {
+    }
+
+    override fun deactivate() {
         executor.shutdownNow()
 
         LeaksDetector.remove(this)
     }
+
+    override fun destroy() = Unit
 
     private fun loadMusic() {
         remainingJobs.incrementAndGet()

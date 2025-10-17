@@ -1,5 +1,11 @@
 package com.kalikov.game
 
+import com.kalikov.engine.BasicTimer
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.Keyboard
+import com.kalikov.engine.Pixel
 import java.time.Clock
 
 class CursorController(
@@ -9,7 +15,7 @@ class CursorController(
     clock: Clock
 ) : EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             Keyboard.KeyPressed::class,
             Keyboard.KeyReleased::class
         )
@@ -17,18 +23,16 @@ class CursorController(
         private const val SHORT_MOVE_INTERVAL = 120
     }
 
+    override val identity get() = Globals.IDENTITY_CONSTRUCTION_CONTROLLER
+
     private var prevBuildStart: PixelPoint? = null
+
     private var currBuildStart: PixelPoint? = null
 
     private var direction = Direction.RIGHT
 
     private val speed = t(2).toPixel()
-
     private val moveTimer = BasicTimer(clock, LONG_MOVE_INTERVAL, ::onMove)
-
-    init {
-        eventManager.addSubscriber(this, subscriptions)
-    }
 
     override fun notify(event: Event) {
         when (event) {
@@ -153,9 +157,18 @@ class CursorController(
         moveTimer.stop()
     }
 
-    fun dispose() {
-        moveTimer.dispose()
+    fun activate() {
+        cursor.setPosition(level.x, level.y)
+        cursor.reset()
+        prevBuildStart = null
+        currBuildStart = null
 
+        eventManager.addSubscriber(this, subscriptions)
+    }
+
+    fun deactivate() {
         eventManager.removeSubscriber(this, subscriptions)
+
+        moveTimer.stop()
     }
 }

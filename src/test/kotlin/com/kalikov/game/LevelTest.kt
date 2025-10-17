@@ -1,5 +1,10 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.Scene
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyInt
@@ -19,7 +24,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class LevelTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var eventManager: EventManager
     private lateinit var stageManager: StageManager
 
@@ -39,7 +44,7 @@ class LevelTest {
 
         eventManager = game.eventManager
 
-        stageManager = mock()
+        stageManager = game.stageManager
         val stage = Stage(
             StageMapConfig(
                 base = TilePoint(),
@@ -50,16 +55,18 @@ class LevelTest {
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1))
         )
         val player = Player(game)
-        whenever(stageManager.stage).thenReturn(stage)
+        whenever(stageManager.stageMap).thenReturn(stage.map)
+        whenever(stageManager.stageEnemies).thenReturn(stage.enemies)
+        whenever(stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
         whenever(stageManager.players).thenReturn(listOf(player))
 
-        level = Level(game, stageManager)
+        level = Level(game, mock())
     }
 
     @Test
     fun `should not game over when last enemy destroyed`() {
         var nextSceneCalled = false
-        whenever(eventManager.fireEvent(isA<Scene.Start>())).doAnswer { nextSceneCalled = true }
+        whenever(game.sceneManager.setNextScene(any())).doAnswer { nextSceneCalled = true }
 
         level.start()
         level.notify(EnemyFactory.LastEnemyDestroyed)
@@ -74,7 +81,7 @@ class LevelTest {
     @Test
     fun `should game over when base explodes`() {
         var nextSceneCalled = false
-        whenever(eventManager.fireEvent(isA<Scene.Start>())).doAnswer { nextSceneCalled = true }
+        whenever(game.sceneManager.setNextScene(any())).doAnswer { nextSceneCalled = true }
 
         level.start()
         level.notify(BaseExplosion.Destroyed(stubBaseExplosion()))
@@ -89,7 +96,7 @@ class LevelTest {
     @Test
     fun `should game over when base hit after win`() {
         var nextSceneCalled = false
-        whenever(eventManager.fireEvent(isA<Scene.Start>())).doAnswer { nextSceneCalled = true }
+        whenever(game.sceneManager.setNextScene(any())).doAnswer { nextSceneCalled = true }
 
         level.start()
         level.notify(EnemyFactory.LastEnemyDestroyed)
@@ -123,9 +130,11 @@ class LevelTest {
         playerTwo.notify(PlayerTank.PlayerDestroyed(stubPlayerTank(player = playerTwo)))
         verify(eventManager).fireEvent(Player.OutOfLives(playerTwo))
 
-        whenever(stageManager.stage).thenReturn(stage)
+        whenever(stageManager.stageMap).thenReturn(stage.map)
+        whenever(stageManager.stageEnemies).thenReturn(stage.enemies)
+        whenever(stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
-        level = Level(game, stageManager)
+        level = Level(game, mock())
 
         reset(eventManager)
         level.start()

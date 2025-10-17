@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyInt
@@ -16,7 +18,7 @@ class MovementControllerTest {
     private val updateInterval = 8L
 
     private lateinit var clock: TestClock
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var pauseManager: PauseManager
     private lateinit var mainContainer: SpriteContainer
     private lateinit var overlayContainer: SpriteContainer
@@ -37,7 +39,7 @@ class MovementControllerTest {
         overlayContainer = mock()
         val baseStub = Base(game.eventManager, game.imageManager, t(2).toPixel(), t(2).toPixel())
         val treesStub = Trees(game, px(0), px(0), emptySet())
-        val groundStub = Ground(game, px(0), px(0), GroundConfig())
+        val groundStub = Ground(game, pauseManager, px(0), px(0), GroundConfig())
         val wallsStub = Walls(game, px(0), px(0), WallsConfig())
         gameField = mock {
             on { bounds } doReturn PixelRect(px(0), px(0), Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT)
@@ -158,7 +160,7 @@ class MovementControllerTest {
         val enemyTank = stubEnemyTank(game, pauseManager)
 
         val playerTank = stubPlayerTank(game, pauseManager, t(2).toPixel(), px(0))
-        playerTank.state = TankStateInvincible(game, playerTank)
+        playerTank.state = TankStateInvincible(game, pauseManager, playerTank)
 
         val bullet = stubBullet(game, enemyTank, x = enemyTank.right, y = enemyTank.middle - Bullet.SIZE / 2)
 
@@ -178,7 +180,7 @@ class MovementControllerTest {
         val enemyTank = stubEnemyTank(game, pauseManager)
 
         val playerTank = stubPlayerTank(game, pauseManager, t(2).toPixel(), px(0))
-        playerTank.state = TankStateAppearing(game, playerTank)
+        playerTank.state = TankStateAppearing(game, pauseManager, playerTank)
 
         val bullet = stubBullet(game, enemyTank, x = enemyTank.right, y = enemyTank.middle - Bullet.SIZE / 2)
 
@@ -247,7 +249,7 @@ class MovementControllerTest {
         movementController.update()
 
         assertTrue(playerBullet.isDestroyed)
-        assertTrue(playerBullet.isDestroyed)
+        assertTrue(enemyBullet.isDestroyed)
         assertFalse(playerTank.isDestroyed)
         assertFalse(enemyTank.isDestroyed)
     }
@@ -265,7 +267,7 @@ class MovementControllerTest {
         movementController.notify(SpriteContainer.Added(playerBullet))
 
         assertTrue(playerBullet.isDestroyed)
-        assertTrue(playerBullet.isDestroyed)
+        assertTrue(enemyBullet.isDestroyed)
         assertFalse(playerTank.isDestroyed)
         assertFalse(enemyTank.isDestroyed)
     }

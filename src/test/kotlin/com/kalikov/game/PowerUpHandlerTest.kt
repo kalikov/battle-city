@@ -2,6 +2,7 @@ package com.kalikov.game
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -9,7 +10,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class PowerUpHandlerTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var powerUp: PowerUp
     private lateinit var handler: PowerUpHandler
     private lateinit var tank: PlayerTank
@@ -18,7 +19,7 @@ class PowerUpHandlerTest {
     fun beforeEach() {
         game = mockGame()
         powerUp = stubPowerUp(game)
-        handler = PowerUpHandler(game)
+        handler = PowerUpHandler(game, mock())
 
         tank = stubPlayerTank(game)
     }
@@ -27,7 +28,7 @@ class PowerUpHandlerTest {
     fun `should subscribe`() {
         verify(game.eventManager).addSubscriber(
             handler,
-            setOf(
+            arrayOf(
                 PowerUp.Pick::class,
                 EnemyFactory.EnemyCreated::class,
                 Tank.Destroyed::class
@@ -40,7 +41,7 @@ class PowerUpHandlerTest {
         handler.dispose()
         verify(game.eventManager).removeSubscriber(
             handler,
-            setOf(
+            arrayOf(
                 PowerUp.Pick::class,
                 EnemyFactory.EnemyCreated::class,
                 Tank.Destroyed::class
@@ -63,7 +64,7 @@ class PowerUpHandlerTest {
     @Test
     fun `should not explode appearing enemies with grenade`() {
         val enemy = stubEnemyTank(game)
-        enemy.state = TankStateAppearing(game, enemy)
+        enemy.state = TankStateAppearing(game, mock(), enemy)
         handler.notify(EnemyFactory.EnemyCreated(enemy, false))
 
         powerUp.type = PowerUp.Type.GRENADE

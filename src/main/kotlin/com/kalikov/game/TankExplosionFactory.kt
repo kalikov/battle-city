@@ -1,11 +1,20 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.LeaksDetector
+import kotlin.reflect.KClass
+
 class TankExplosionFactory(
-    private val game: Game,
+    private val game: BattleCityGame,
+    private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer
 ) : EventSubscriber {
+    override val identity: Int
+        get() = TODO("Not yet implemented")
+
     private companion object {
-        private val subscriptions = setOf(Tank.Destroyed::class)
+        private val subscriptions = arrayOf<KClass<out Event>>(Tank.Destroyed::class)
     }
 
     init {
@@ -21,7 +30,7 @@ class TankExplosionFactory(
     }
 
     private fun create(tank: Tank): TankExplosion {
-        val explosion = TankExplosion(game, tank)
+        val explosion = TankExplosion(game, pauseManager, tank)
         explosion.setPosition(tank.center - explosion.width / 2, tank.middle - explosion.height / 2)
 
         return explosion

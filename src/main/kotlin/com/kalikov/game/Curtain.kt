@@ -1,5 +1,9 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+
 class Curtain {
     var height = Globals.CANVAS_HEIGHT / 2
     var position = px(0)

@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.KInOrder
@@ -32,7 +33,7 @@ class BuilderTest {
 
     @Test
     fun `should build brick wall right`() {
-        cursor.setPosition(PixelPoint())
+        cursor.setPosition(px(0), px(0))
         builder.build(cursor)
         assertEquals(Builder.Structure.BRICK_WALL_RIGHT, builder.structure)
 
@@ -48,7 +49,7 @@ class BuilderTest {
     fun `should build brick wall bottom`() {
         cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.BRICK_WALL_BOTTOM.ordinal) {
+        repeat(Builder.Structure.BRICK_WALL_BOTTOM.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -64,9 +65,9 @@ class BuilderTest {
 
     @Test
     fun `should build brick wall left`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.BRICK_WALL_LEFT.ordinal) {
+        repeat(Builder.Structure.BRICK_WALL_LEFT.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -82,9 +83,9 @@ class BuilderTest {
 
     @Test
     fun `should build brick wall top`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.BRICK_WALL_TOP.ordinal) {
+        repeat(Builder.Structure.BRICK_WALL_TOP.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -100,9 +101,9 @@ class BuilderTest {
 
     @Test
     fun `should build brick wall full`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.BRICK_WALL_FULL.ordinal) {
+        repeat(Builder.Structure.BRICK_WALL_FULL.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -118,9 +119,9 @@ class BuilderTest {
 
     @Test
     fun `should build steel wall right`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.STEEL_WALL_RIGHT.ordinal) {
+        repeat(Builder.Structure.STEEL_WALL_RIGHT.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -136,9 +137,9 @@ class BuilderTest {
 
     @Test
     fun `should build steel wall bottom`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.STEEL_WALL_BOTTOM.ordinal) {
+        repeat(Builder.Structure.STEEL_WALL_BOTTOM.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -154,9 +155,9 @@ class BuilderTest {
 
     @Test
     fun `should build steel wall left`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.STEEL_WALL_LEFT.ordinal) {
+        repeat(Builder.Structure.STEEL_WALL_LEFT.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -172,9 +173,9 @@ class BuilderTest {
 
     @Test
     fun `should build steel wall top`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.STEEL_WALL_TOP.ordinal) {
+        repeat(Builder.Structure.STEEL_WALL_TOP.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -190,9 +191,9 @@ class BuilderTest {
 
     @Test
     fun `should build steel wall full`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.STEEL_WALL_FULL.ordinal) {
+        repeat(Builder.Structure.STEEL_WALL_FULL.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -208,9 +209,9 @@ class BuilderTest {
 
     @Test
     fun `should build water`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.WATER.ordinal) {
+        repeat(Builder.Structure.WATER.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -226,9 +227,9 @@ class BuilderTest {
 
     @Test
     fun `should build trees`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.TREES.ordinal) {
+        repeat(Builder.Structure.TREES.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -244,9 +245,9 @@ class BuilderTest {
 
     @Test
     fun `should build ice`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.ICE.ordinal) {
+        repeat(Builder.Structure.ICE.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)
@@ -262,9 +263,9 @@ class BuilderTest {
 
     @Test
     fun `should clear`() {
-        cursor.setPosition(PixelPoint(t(2).toPixel(), t(3).toPixel()))
+        cursor.setPosition(t(2).toPixel(), t(3).toPixel())
 
-        for (i in 0 until Builder.Structure.CLEAR.ordinal) {
+        repeat(Builder.Structure.CLEAR.ordinal) {
             builder.nextStructure()
         }
         builder.build(cursor)

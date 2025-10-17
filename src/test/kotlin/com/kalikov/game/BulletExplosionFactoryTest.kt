@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.argumentCaptor
@@ -9,7 +10,7 @@ import org.mockito.kotlin.verify
 import kotlin.test.assertEquals
 
 class BulletExplosionFactoryTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var explosionFactory: BulletExplosionFactory
     private lateinit var bullet: BulletHandle
@@ -18,7 +19,7 @@ class BulletExplosionFactoryTest {
     fun beforeEach() {
         game = mockGame()
         spriteContainer = mock()
-        explosionFactory = BulletExplosionFactory(game, spriteContainer)
+        explosionFactory = BulletExplosionFactory(game, mock(), spriteContainer)
 
         bullet = mock {
             on { center } doReturn px(0)
@@ -28,13 +29,13 @@ class BulletExplosionFactoryTest {
 
     @Test
     fun `should subscribe`() {
-        verify(game.eventManager).addSubscriber(explosionFactory, setOf(Bullet.Exploded::class))
+        verify(game.eventManager).addSubscriber(explosionFactory, arrayOf(Bullet.Exploded::class))
     }
 
     @Test
     fun `should unsubscribe`() {
         explosionFactory.dispose()
-        verify(game.eventManager).removeSubscriber(explosionFactory, setOf(Bullet.Exploded::class))
+        verify(game.eventManager).removeSubscriber(explosionFactory, arrayOf(Bullet.Exploded::class))
     }
 
     @Test

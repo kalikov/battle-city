@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.px
+import com.kalikov.engine.times
+
 object Globals {
     val TILE_SIZE = px(8)
 
@@ -16,4 +19,9 @@ object Globals {
     val FONT_BIG_SIZE = 4 * TILE_SIZE
 
     const val DATA_DIR = "data"
+
+    const val IDENTITY_GAME = 1
+    const val IDENTITY_MENU_SCENE = 2
+    const val IDENTITY_CONSTRUCTION_SCENE = 3
+    const val IDENTITY_CONSTRUCTION_CONTROLLER = 4
 }

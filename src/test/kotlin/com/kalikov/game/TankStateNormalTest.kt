@@ -1,12 +1,13 @@
 package com.kalikov.game
 
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import kotlin.test.assertTrue
 
 class TankStateNormalTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var pauseManager: PauseManager
     private lateinit var tank: Tank
     private lateinit var state: TankStateNormal

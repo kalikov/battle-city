@@ -1,9 +1,11 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
 import java.util.EnumSet
 
 class PlayerTankFactory(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
     val appearPosition: PixelPoint,
@@ -13,7 +15,7 @@ class PlayerTankFactory(
     data class PlayerTankCreated(val tank: PlayerTankHandle) : Event()
 
     private companion object {
-        private val subscriptions = setOf(TankExplosion.Destroyed::class, Player.OutOfLives::class)
+        private val subscriptions = arrayOf(TankExplosion.Destroyed::class, Player.OutOfLives::class)
     }
 
     private var outOfLives = true
@@ -29,15 +31,18 @@ class PlayerTankFactory(
         outOfLives = false
         check(playerTank == null)
         val tank = create()
-        for (i in 1..upgradeLevel) {
+        for (i in 1 .. upgradeLevel) {
             tank.upgrade()
         }
         playerTank = tank
     }
 
+    override val identity: Int
+        get() = TODO("Not yet implemented")
+
     override fun notify(event: Event) {
         if (playerTankExplosionDestroyed(event)) {
-            playerTank?.dispose()
+//            playerTank?.dispose()
             playerTank = null
             if (!outOfLives) {
                 val tank = create()
@@ -58,7 +63,7 @@ class PlayerTankFactory(
             options,
         )
         spriteContainer.addSprite(tank)
-        tank.state = TankStateAppearing(game, tank, 48)
+        tank.state = TankStateAppearing(game, pauseManager, tank, 48)
         game.eventManager.fireEvent(PlayerTankCreated(tank))
         return tank
     }
@@ -72,7 +77,8 @@ class PlayerTankFactory(
     }
 
     fun dispose() {
-        playerTank?.dispose()
+//        playerTank?.dispose()
+        playerTank = null
 
         game.eventManager.removeSubscriber(this, subscriptions)
     }

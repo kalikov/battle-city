@@ -1,14 +1,17 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import java.awt.image.BufferedImage
 
 class BaseExplosionTest {
     private lateinit var fonts: TestFonts
     private lateinit var clock: TestClock
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var explosion: BaseExplosion
 
     @BeforeEach
@@ -17,7 +20,7 @@ class BaseExplosionTest {
         fonts = TestFonts()
         game = mockGame(imageManager =  TestImageManager(fonts), clock = clock)
 
-        explosion = BaseExplosion(game)
+        explosion = BaseExplosion(game, mock())
     }
 
     @Test

@@ -1,14 +1,17 @@
 package com.kalikov.game
 
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class PointsTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var pauseManager: PauseManager
     private lateinit var clock: TestClock
 
@@ -39,9 +42,6 @@ class PointsTest {
 
     @Test
     fun `should respect pause in the points duration`() {
-        whenever(game.eventManager).thenReturn(ConcurrentEventManager())
-        val pauseListener = PauseListener(game)
-        pauseManager = pauseListener
         val points = createPoints(3)
         points.update()
 
@@ -49,15 +49,15 @@ class PointsTest {
         points.update()
         assertFalse(points.isDestroyed)
 
-        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
-        assertTrue(pauseManager.isPaused)
+        whenever(pauseManager.isPaused).doReturn(true)
+        points.update()
 
         clock.tick(100)
         points.update()
         assertFalse(points.isDestroyed)
 
-        pauseListener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
-        assertFalse(pauseManager.isPaused)
+        whenever(pauseManager.isPaused).doReturn(false)
+        points.update()
 
         clock.tick(1)
         points.update()
@@ -80,13 +80,9 @@ class PointsTest {
 
     @Test
     fun `should not destroy points when paused`() {
-        whenever(game.eventManager).thenReturn(ConcurrentEventManager())
-        pauseManager = PauseListener(game)
-
         val points = createPoints(1)
 
-        game.eventManager.fireEvent(Keyboard.KeyPressed(Keyboard.Key.START, 0))
-
+        whenever(pauseManager.isPaused).doReturn(true)
         points.update()
 
         clock.tick(1)
@@ -95,6 +91,6 @@ class PointsTest {
     }
 
     private fun createPoints(duration: Int): Points {
-        return Points(game, 100, px(0), px(0), duration = duration)
+        return Points(game, pauseManager, 100, px(0), px(0), duration = duration)
     }
 }

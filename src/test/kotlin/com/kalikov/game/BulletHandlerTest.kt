@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -18,7 +19,7 @@ class BulletHandlerTest {
         val eventManager: EventManager = mock()
 
         val factory = BulletHandler(mockGame(eventManager = eventManager), mock())
-        verify(eventManager).addSubscriber(factory, setOf(Tank.Shoot::class))
+        verify(eventManager).addSubscriber(factory, arrayOf(Tank.Shoot::class))
     }
 
     @Test
@@ -27,7 +28,7 @@ class BulletHandlerTest {
 
         val factory = BulletHandler(mockGame(eventManager = eventManager), mock())
         factory.dispose()
-        verify(eventManager).removeSubscriber(factory, setOf(Tank.Shoot::class))
+        verify(eventManager).removeSubscriber(factory, arrayOf(Tank.Shoot::class))
     }
 
     @Test

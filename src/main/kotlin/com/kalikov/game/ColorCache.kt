@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.util.IntMap
 import java.awt.Color
 
 class ColorCache {

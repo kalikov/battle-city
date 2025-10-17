@@ -1,15 +1,17 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
 import kotlin.random.Random
 
 class PowerUpFactory(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val spriteContainer: SpriteContainer,
     private val bounds: PixelRect,
     private val random: Random = Random.Default,
 ) : EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
+        private val subscriptions = arrayOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
 
         private val appearTable = arrayOf(
             PowerUp.Type.HELMET,
@@ -26,6 +28,8 @@ class PowerUpFactory(
     data class PowerUpCreated(val powerUp: PowerUp) : Event()
 
     private var powerUp: PowerUp? = null
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     init {
         game.eventManager.addSubscriber(this, subscriptions)

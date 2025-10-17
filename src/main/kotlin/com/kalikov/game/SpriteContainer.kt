@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
 import kotlin.Unit
 
 interface SpriteContainer {

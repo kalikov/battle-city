@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.util.IntSet
+import com.kalikov.util.isNotEmpty
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals

@@ -1,7 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+
 sealed class Tank(
-    protected val game: Game,
+    protected val game: BattleCityGame,
     protected val pauseManager: PauseManager,
     x: Pixel,
     y: Pixel
@@ -18,7 +25,7 @@ sealed class Tank(
 
         val SIZE = t(2).toPixel()
 
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             Reload::class,
             TankStateAppearing.End::class,
             TankStateInvincible.End::class,
@@ -112,8 +119,8 @@ sealed class Tank(
 
     var bulletType = Bullet.Type.REGULAR
 
-    private val longCooldownTimer = PauseAwareTimer(game.eventManager, game.clock, LONG_COOLDOWN_INTERVAL, ::resetLongCooldown)
-    private val shortCooldownTimer = PauseAwareTimer(game.eventManager, game.clock, SHORT_COOLDOWN_INTERVAL, ::resetShortCooldown)
+    private val longCooldownTimer = PauseAwareTimer(pauseManager, game.clock, LONG_COOLDOWN_INTERVAL, ::resetLongCooldown)
+    private val shortCooldownTimer = PauseAwareTimer(pauseManager, game.clock, SHORT_COOLDOWN_INTERVAL, ::resetShortCooldown)
 
     protected val turnRoundTo = Globals.TILE_SIZE
 
@@ -267,8 +274,8 @@ sealed class Tank(
     }
 
     override fun dispose() {
-        longCooldownTimer.dispose()
-        shortCooldownTimer.dispose()
+        longCooldownTimer.stop()
+        shortCooldownTimer.stop()
 
         state.dispose()
 

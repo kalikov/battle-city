@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.argumentCaptor
@@ -10,7 +11,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 class TankExplosionFactoryTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var factory: TankExplosionFactory
 
@@ -18,18 +19,18 @@ class TankExplosionFactoryTest {
     fun beforeEach() {
         game = mockGame()
         spriteContainer = mock()
-        factory = TankExplosionFactory(game, spriteContainer)
+        factory = TankExplosionFactory(game, mock(), spriteContainer)
     }
 
     @Test
     fun `should subscribe`() {
-        verify(game.eventManager).addSubscriber(factory, setOf(Tank.Destroyed::class))
+        verify(game.eventManager).addSubscriber(factory, arrayOf(Tank.Destroyed::class))
     }
 
     @Test
     fun `should unsubscribe`() {
         factory.dispose()
-        verify(game.eventManager).removeSubscriber(factory, setOf(Tank.Destroyed::class))
+        verify(game.eventManager).removeSubscriber(factory, arrayOf(Tank.Destroyed::class))
     }
 
     @Test

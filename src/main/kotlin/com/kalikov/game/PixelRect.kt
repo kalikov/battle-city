@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.px
+
 data class PixelRect(
     val x: Pixel = px(0),
     val y: Pixel = px(0),

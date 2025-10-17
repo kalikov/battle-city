@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.SoundManager
+
 val SoundManager.stageStart get() = this.music("stage_start")
 val SoundManager.playerMovement get() = this.music("movement_player")
 val SoundManager.enemyMovement get() = this.music("movement_enemy")

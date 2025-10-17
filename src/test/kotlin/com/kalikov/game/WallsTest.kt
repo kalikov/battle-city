@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyInt
@@ -10,7 +12,7 @@ import kotlin.test.assertTrue
 
 class WallsTest {
     private lateinit var fonts: TestFonts
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var walls: Walls
     private lateinit var bullet: Bullet
 

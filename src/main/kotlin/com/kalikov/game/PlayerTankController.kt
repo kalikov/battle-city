@@ -1,12 +1,18 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.Keyboard
+import com.kalikov.engine.LeaksDetector
+
 class PlayerTankController(
     private val eventManager: EventManager,
     private val pauseManager: PauseManager,
     val player: Player,
 ) : EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             PlayerTankFactory.PlayerTankCreated::class,
             BaseExplosion.Destroyed::class,
             Keyboard.KeyPressed::class,
@@ -29,6 +35,8 @@ class PlayerTankController(
     private var vertPressed: Int = 0
 
     private var targetDirection: Direction? = null
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     init {
         LeaksDetector.add(this)

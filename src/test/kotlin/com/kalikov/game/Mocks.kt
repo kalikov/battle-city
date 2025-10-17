@@ -1,5 +1,13 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.ManagedMusic
+import com.kalikov.engine.ManagedSound
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.SceneManager
+import com.kalikov.engine.Screen
+import com.kalikov.engine.SoundManager
+import com.kalikov.engine.px
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
@@ -26,14 +34,18 @@ fun mockGame(
     eventManager: EventManager = mock(),
     imageManager: ImageManager = mock(),
     soundManager: SoundManager = mockSoundManager(),
+    sceneManager: SceneManager = mock(),
+    stageManager: StageManager = mock(),
     config: GameConfig = GameConfig(),
     clock: Clock = mock(),
-): Game {
-    val game: Game = mock {
+): BattleCityGame {
+    val game: BattleCityGame = mock {
         on { this.screen } doReturn screen
         on { this.eventManager } doReturn eventManager
         on { this.imageManager } doReturn imageManager
         on { this.soundManager } doReturn soundManager
+        on { this.sceneManager } doReturn sceneManager
+        on { this.stageManager } doReturn stageManager
         on { this.config } doReturn config
         on { this.clock } doReturn clock
     }
@@ -41,7 +53,7 @@ fun mockGame(
 }
 
 fun stubEnemyTank(
-    game: Game = mockGame(),
+    game: BattleCityGame = mockGame(),
     pauseManager: PauseManager = mock(),
     x: Pixel = px(0),
     y: Pixel = px(0),
@@ -51,7 +63,7 @@ fun stubEnemyTank(
 }
 
 fun stubPlayerTank(
-    game: Game = mockGame(),
+    game: BattleCityGame = mockGame(),
     pauseManager: PauseManager = mock(),
     x: Pixel = px(0),
     y: Pixel = px(0),
@@ -61,7 +73,7 @@ fun stubPlayerTank(
 }
 
 fun stubBullet(
-    game: Game = mockGame(),
+    game: BattleCityGame = mockGame(),
     tank: Tank,
     x: Pixel = px(0),
     y: Pixel = px(0),
@@ -70,36 +82,39 @@ fun stubBullet(
 }
 
 fun stubTankExplosion(
-    game: Game = mockGame(),
+    game: BattleCityGame = mockGame(),
+    pauseManager: PauseManager = mock(),
     tank: Tank
 ): TankExplosion {
-    return TankExplosion(game, tank)
+    return TankExplosion(game, pauseManager, tank)
 }
 
 fun stubBaseExplosion(
-    game: Game = mockGame()
+    game: BattleCityGame = mockGame(),
+    pauseManager: PauseManager = mock(),
 ): BaseExplosion {
-    return BaseExplosion(game)
+    return BaseExplosion(game, pauseManager)
 }
 
 fun stubPoints(
-    game: Game = mockGame(),
+    game: BattleCityGame = mockGame(),
+    pauseManager: PauseManager = mock(),
     value: Int = 100,
     x: Pixel = px(0),
     y: Pixel = px(0),
 ): Points {
-    return Points(game, value, x, y, 200)
+    return Points(game, pauseManager, value, x, y, 200)
 }
 
 fun stubPowerUp(
-    game: Game = mockGame(),
+    game: BattleCityGame = mockGame(),
     position: PixelPoint = PixelPoint(),
 ): PowerUp {
     return PowerUp(game, position)
 }
 
 fun stubCursor(
-    game: Game = mockGame(),
+    game: BattleCityGame = mockGame(),
     builder: BuilderHandler = mock(),
 ): Cursor {
     return Cursor(game, builder)

@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ScreenSurface
+
 interface TankState {
     val canShoot: Boolean
     val canMove: Boolean

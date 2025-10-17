@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -33,7 +36,8 @@ class DemoStageSceneTest {
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 20))
         )
 
-        val scene = DemoStageScene(game, mock(), 0, stage)
+        whenever(game.stageManager.demoStage).thenReturn(stage)
+        val scene = DemoStageScene(game, mock(), mock())
 
 //        while (!scene.isReady) {
 //            clock.tick(1)

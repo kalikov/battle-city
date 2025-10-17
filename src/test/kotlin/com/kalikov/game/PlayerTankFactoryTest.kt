@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.argumentCaptor
@@ -17,7 +19,7 @@ import kotlin.test.assertSame
 
 class PlayerTankFactoryTest {
     private lateinit var eventManager: EventManager
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var factory: PlayerTankFactory
 
@@ -37,13 +39,13 @@ class PlayerTankFactoryTest {
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(factory, setOf(TankExplosion.Destroyed::class, Player.OutOfLives::class))
+        verify(eventManager).addSubscriber(factory, arrayOf(TankExplosion.Destroyed::class, Player.OutOfLives::class))
     }
 
     @Test
     fun `should unsubscribe`() {
         factory.dispose()
-        verify(eventManager).removeSubscriber(factory, setOf(TankExplosion.Destroyed::class, Player.OutOfLives::class))
+        verify(eventManager).removeSubscriber(factory, arrayOf(TankExplosion.Destroyed::class, Player.OutOfLives::class))
     }
 
     @Test

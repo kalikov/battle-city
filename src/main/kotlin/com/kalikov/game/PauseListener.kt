@@ -1,14 +1,22 @@
 package com.kalikov.game
 
-class PauseListener(private val game: Game) : EventSubscriber, PauseManager {
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.Keyboard
+import com.kalikov.engine.LeaksDetector
+import kotlin.reflect.KClass
+
+class PauseListener(private val game: BattleCityGame) : EventSubscriber, PauseManager {
     private companion object {
-        private val subscriptions = setOf(Keyboard.KeyPressed::class)
+        private val subscriptions = arrayOf<KClass<out Event>>(Keyboard.KeyPressed::class)
     }
 
     override var isPaused = false
         private set
 
     var isActive = true
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     init {
         LeaksDetector.add(this)

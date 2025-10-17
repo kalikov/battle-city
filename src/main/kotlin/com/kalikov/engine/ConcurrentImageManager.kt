@@ -1,0 +1,26 @@
+package com.kalikov.engine
+
+import com.kalikov.game.ImageNotFoundException
+import com.kalikov.game.LoadingImageManager
+import java.util.concurrent.ConcurrentHashMap
+
+class ConcurrentImageManager(private val screen: Screen) : LoadingImageManager {
+    private val images: MutableMap<String, ScreenSurface> = ConcurrentHashMap()
+
+    override fun load(name: String, path: String) {
+        images[name] = screen.createSurface(path)
+    }
+
+    override fun getImage(name: String): ScreenSurface {
+        return images[name] ?: throw ImageNotFoundException(name)
+    }
+
+    fun destroy() {
+        val iterator = images.iterator()
+        while (iterator.hasNext()) {
+            val entry = iterator.next()
+            iterator.remove()
+            entry.value.dispose()
+        }
+    }
+}

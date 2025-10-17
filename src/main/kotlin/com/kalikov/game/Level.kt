@@ -1,13 +1,20 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Scene
+import com.kalikov.engine.ScreenSurface
+
 class Level(
-    private val game: Game,
-    private val stageManager: StageManager,
+    private val game: BattleCityGame,
+    private val menuScene: Scene,
 ) : EventSubscriber {
     data object GameOver : Event()
 
     private companion object {
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             Base.Hit::class,
             BaseExplosion.Destroyed::class,
             Player.OutOfLives::class,
@@ -38,7 +45,7 @@ class Level(
 
     private val playerGameOverScripts: Map<Player, Script>
 
-    private val statistics = List(stageManager.players.size) { StageScore() }
+    private val statistics = List(game.stageManager.players.size) { StageScore() }
 
     private val mainContainer: SpriteContainer
     private val overlayContainer: SpriteContainer
@@ -58,27 +65,27 @@ class Level(
         mainContainer = DefaultSpriteContainer(game.eventManager)
         overlayContainer = DefaultSpriteContainer(game.eventManager)
 
-        val stage = stageManager.stage
+        val stageMap = game.stageManager.stageMap
 
-        gameField = GameField(game, mainContainer, overlayContainer)
+        gameField = GameField(game, pauseListener, mainContainer, overlayContainer)
         gameFieldController = GameFieldCommonController(
             game,
             gameField,
             pauseListener,
             mainContainer,
             overlayContainer,
-            stage.map.base,
+            stageMap.base,
         )
 
-        playersTankControllers = stageManager.players.map { player ->
+        playersTankControllers = game.stageManager.players.map { player ->
             PlayerTankController(game.eventManager, pauseListener, player)
         }
-        playersTankFactories = stageManager.players.mapIndexed { index, player ->
+        playersTankFactories = game.stageManager.players.mapIndexed { index, player ->
             PlayerTankFactory(
                 game,
                 pauseListener,
                 mainContainer,
-                stage.map.playerSpawnPoints[index].toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y),
+                stageMap.playerSpawnPoints[index].toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y),
                 player,
             )
         }
@@ -87,13 +94,13 @@ class Level(
             game,
             pauseListener,
             mainContainer,
-            stage.map.enemySpawnPoints.map {
+            stageMap.enemySpawnPoints.map {
                 it.toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y)
             },
-            stage.enemies,
-            stage.enemySpawnDelay
+            game.stageManager.stageEnemies,
+            game.stageManager.stageEnemySpawnDelay
         )
-        enemyFactory.enemyCountLimit = 2 * (stageManager.players.size + 1)
+        enemyFactory.enemyCountLimit = 2 * (game.stageManager.players.size + 1)
 
         enemyFactoryView = EnemyFactoryView(
             game.imageManager,
@@ -103,22 +110,22 @@ class Level(
         )
 
         pauseMessageView = PauseMessageView(
-            game.eventManager,
+            pauseListener,
             gameField.bounds.x + gameField.bounds.width / 2,
             gameField.bounds.y + gameField.bounds.height / 2,
             game.clock
         )
 
         livesView = LivesView(
-            game.imageManager,
-            stageManager.players,
+            game,
+            game.stageManager.players,
             gameField.bounds.right + 1 + t(1).toPixel(),
             gameField.bounds.bottom + 1 - t(11).toPixel()
         )
 
         stageNumberView = StageNumberView(
             game.imageManager,
-            stageManager.stageNumber,
+            game.stageManager.stageNumber,
             gameField.bounds.right + 1 + t(1).toPixel(),
             gameField.bounds.bottom + 1 - t(5).toPixel()
         )
@@ -126,7 +133,7 @@ class Level(
         gameOverMessage = GameOverMessage()
 
         var index = 0
-        playerGameOverScripts = stageManager.players.asSequence().take(2).associateWith {
+        playerGameOverScripts = game.stageManager.players.asSequence().take(2).associateWith {
             val appearPosition = playersTankFactories[index].appearPosition
             val script = Script()
             script.isActive = false
@@ -190,10 +197,10 @@ class Level(
         nextStageScript.enqueue(Delay(nextStageScript, 2500, game.clock))
         nextStageScript.enqueue(Execute {
             playersTankFactories.forEachIndexed { index, it ->
-                stageManager.players[index].upgradeLevel = 0
+                game.stageManager.players[index].upgradeLevel = 0
                 it.playerTank?.let { playerTank ->
                     playerTank.destroy()
-                    stageManager.players[index].upgradeLevel = playerTank.upgradeLevel
+                    game.stageManager.players[index].upgradeLevel = playerTank.upgradeLevel
                 }
             }
             gameOver = gameOver || playersTankFactories.all { it.playerTank == null }
@@ -204,12 +211,12 @@ class Level(
                 val image = game.screen.createSurface()
                 draw(image)
 
-                stageManager.curtainBackground = image
+                game.stageManager.curtainBackground = image
             }
             startStageScoreScene()
         })
 
-        gameField.load(stageManager.stage.map, stageManager.players.size)
+        gameField.load(stageMap, game.stageManager.players.size)
     }
 
     fun update() {
@@ -246,13 +253,16 @@ class Level(
 
     fun start() {
         playersTankFactories.forEachIndexed { index, it ->
-            val player = stageManager.players[index]
+            val player = game.stageManager.players[index]
             if (player.lives > 0) {
                 it.init(player.upgradeLevel)
             }
         }
         pauseListener.isActive = true
     }
+
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     override fun notify(event: Event) {
         when (event) {
@@ -266,7 +276,7 @@ class Level(
     }
 
     private fun onPlayerOutOfLives(player: Player) {
-        if (stageManager.players.none { it.lives > 0 }) {
+        if (game.stageManager.players.none { it.lives > 0 }) {
             runGameOverScript()
         } else {
             runPlayerGameOverScript(player)
@@ -295,20 +305,18 @@ class Level(
     }
 
     private fun startStageScoreScene() {
-        game.eventManager.fireEvent(
-            Scene.Start {
-                StageScoreScene(
-                    game,
-                    stageManager,
-                    statistics,
-                    gameOver,
-                )
-            }
+        game.sceneManager.setNextScene(
+            StageScoreScene(
+                game,
+                statistics,
+                gameOver,
+                menuScene,
+            )
         )
     }
 
     fun dispose() {
-        pauseMessageView.dispose()
+        livesView.dispose()
 
         enemyFactory.dispose()
 

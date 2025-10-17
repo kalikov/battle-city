@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.ScreenSurface
+
 class StageMessage(private val stageManager: StageManager) {
     var isVisible = false
 
@@ -12,5 +15,4 @@ class StageMessage(private val stageManager: StageManager) {
         val stage = stageManager.stageNumber
         surface.fillText("STAGE " + stage.toString().padStart(2, ' '), x, y, ARGB.BLACK, Globals.FONT_REGULAR)
     }
-
 }

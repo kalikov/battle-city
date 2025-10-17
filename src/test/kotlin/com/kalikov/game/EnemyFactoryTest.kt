@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -19,7 +22,7 @@ import kotlin.test.assertTrue
 class EnemyFactoryTest {
     private lateinit var clock: TestClock
     private lateinit var eventManager: EventManager
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var pauseManager: PauseManager
     private lateinit var spriteContainer: SpriteContainer
 
@@ -35,7 +38,7 @@ class EnemyFactoryTest {
     @Test
     fun `should subscribe`() {
         val factory = createFactory(emptyList(), emptyList())
-        verify(eventManager).addSubscriber(factory, setOf(TankExplosion.Destroyed::class, Tank.Hit::class))
+        verify(eventManager).addSubscriber(factory, arrayOf(TankExplosion.Destroyed::class, Tank.Hit::class))
     }
 
     @Test

@@ -1,7 +1,18 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Animation
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.frameLoopOf
+import com.kalikov.engine.max
+import com.kalikov.engine.min
+import com.kalikov.engine.px
+
 class Ground(
-    game: Game,
+    game: BattleCityGame,
+    pauseManager: PauseManager,
     private val x: Pixel,
     private val y: Pixel,
     config: GroundConfig,
@@ -21,7 +32,7 @@ class Ground(
     private val iceImage = game.imageManager.getImage("ice")
 
     private val waterImage = game.imageManager.getImage("water")
-    private val waterAnimation = Animation.pauseAware(game.eventManager, frameLoopOf(*waterFrames), game.clock, 500)
+    private val waterAnimation = Animation.pauseAware(pauseManager, frameLoopOf(*waterFrames), game.clock, 500)
     private val waterImageWidth = waterImage.height
 
     var isStatic: Boolean = false
@@ -114,7 +125,7 @@ class Ground(
     fun dispose() {
         masks.forEach { it.dispose() }
 
-        waterAnimation.dispose()
+        waterAnimation.stop()
 
         LeaksDetector.remove(this)
     }

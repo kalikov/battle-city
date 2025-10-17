@@ -1,7 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.BlinkTimer
+import com.kalikov.engine.Event
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+import com.kalikov.engine.times
+
 class PowerUp(
-    private val game: Game,
+    private val game: BattleCityGame,
     position: PixelPoint,
 ) : Sprite(game.eventManager, position.x, position.y, SIZE_IN_PIXELS, SIZE_IN_PIXELS) {
     companion object {

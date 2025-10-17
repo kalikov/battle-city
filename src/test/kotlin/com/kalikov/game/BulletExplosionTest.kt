@@ -1,5 +1,10 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.DefaultEventManager
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
@@ -11,6 +16,7 @@ import kotlin.test.assertTrue
 
 class BulletExplosionTest {
     private lateinit var eventManager: EventManager
+    private lateinit var pauseManager: PauseManager
     private lateinit var clock: TestClock
     private lateinit var fonts: TestFonts
     private lateinit var explosion: BulletExplosion
@@ -19,7 +25,8 @@ class BulletExplosionTest {
     fun beforeEach() {
         clock = TestClock()
         fonts = TestFonts()
-        eventManager = ConcurrentEventManager()
+        eventManager = DefaultEventManager()
+        pauseManager = mock()
         val bullet: BulletHandle = mock {
             on { center } doReturn px(0)
             on { middle } doReturn px(0)
@@ -29,7 +36,9 @@ class BulletExplosionTest {
                 eventManager = eventManager,
                 imageManager = TestImageManager(fonts),
                 clock = clock
-            ), bullet
+            ),
+            pauseManager,
+            bullet
         )
     }
 
@@ -51,9 +60,9 @@ class BulletExplosionTest {
 
     @Test
     fun `should not destroy explosion when paused`() {
-        eventManager.fireEvent(PauseManager.Start)
+        whenever(pauseManager.isPaused).doReturn(true)
 
-        for (i in 1..4) {
+        repeat(BulletExplosion.ANIMATION_FRAMES + 1) {
             clock.tick(BulletExplosion.ANIMATION_INTERVAL)
             explosion.update()
         }

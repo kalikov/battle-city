@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.px
 import kotlin.test.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

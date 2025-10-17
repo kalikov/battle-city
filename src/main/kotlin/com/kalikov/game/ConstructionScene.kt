@@ -1,14 +1,25 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.Keyboard
+import com.kalikov.engine.Scene
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+import kotlin.reflect.KClass
+
 class ConstructionScene(
-    private val game: Game,
-    private val stageManager: StageManager,
+    private val game: BattleCityGame,
+    private val menuScene: Scene,
 ) : Scene, EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf<KClass<out Event>>(
             Keyboard.KeyPressed::class
         )
     }
+
+    override val identity get() = Globals.IDENTITY_CONSTRUCTION_SCENE
 
     @Suppress("JoinDeclarationAndAssignment")
     private val mainContainer: SpriteContainer
@@ -20,16 +31,10 @@ class ConstructionScene(
     private val gameField: GameField
     private val cursorController: CursorController
 
-    private val basePosition: TilePoint
-    private val playerPositions: List<TilePoint>
-    private val enemyPositions: List<TilePoint>
-
     init {
         mainContainer = DefaultSpriteContainer(game.eventManager)
         overlayContainer = DefaultSpriteContainer(game.eventManager)
-        gameField = GameField(game, mainContainer, overlayContainer)
-
-        game.eventManager.addSubscriber(this, subscriptions)
+        gameField = GameField(game, NoopPauseManager, mainContainer, overlayContainer)
 
         cursor = Cursor(
             game,
@@ -37,16 +42,9 @@ class ConstructionScene(
             gameField.bounds.x,
             gameField.bounds.y,
         )
-        overlayContainer.addSprite(cursor)
+//        overlayContainer.addSprite(cursor)
 
         cursorController = CursorController(game.eventManager, cursor, gameField.bounds, game.clock)
-
-        val map = stageManager.constructionMap
-        basePosition = map.base
-        playerPositions = map.playerSpawnPoints
-        enemyPositions = map.enemySpawnPoints
-
-        gameField.load(map, 0)
     }
 
     override fun notify(event: Event) {
@@ -57,39 +55,39 @@ class ConstructionScene(
 
     private fun keyPressed(key: Keyboard.Key) {
         if (key == Keyboard.Key.START) {
-            cursor.destroy()
+//            cursor.destroy()
             val surface = game.screen.createSurface(game.screen.surface.width, game.screen.surface.height)
-            draw(surface)
+            drawScene(surface)
 
-            stageManager.constructionMap = createConstructionMapConfig()
-            stageManager.curtainBackground = surface
-            game.eventManager.fireEvent(Scene.Start {
-                val mainMenu = MainMenuScene(game, stageManager)
-                mainMenu.setMenuItem(2)
-                mainMenu.arrived()
-                mainMenu
-            })
+            game.stageManager.constructionMap = createConstructionMapConfig()
+            game.stageManager.curtainBackground = surface
+
+            game.sceneManager.setNextScene(menuScene)
         }
     }
 
     private fun createConstructionMapConfig(): StageMapConfig {
+        val map = game.stageManager.constructionMap
         return StageMapConfig(
             gameField.ground.config,
             gameField.walls.config,
             gameField.trees.config,
-            basePosition,
-            playerPositions,
-            enemyPositions
+            map.base,
+            map.playerSpawnPoints,
+            map.enemySpawnPoints,
         )
     }
 
     override fun update() {
         gameField.update()
+        cursor.update()
         cursorController.update()
     }
 
     override fun draw(surface: ScreenSurface) {
         drawScene(surface)
+
+        cursor.draw(surface)
     }
 
     private fun drawScene(surface: ScreenSurface) {
@@ -98,12 +96,24 @@ class ConstructionScene(
         gameField.draw(surface)
     }
 
-    override fun destroy() {
-        cursorController.dispose()
+    override fun activate() {
+        game.eventManager.addSubscriber(this, subscriptions)
+
+        cursorController.activate()
+
+        val map = game.stageManager.constructionMap
+        gameField.load(map, 0)
+    }
+
+    override fun deactivate() {
+        cursorController.deactivate()
 
         game.eventManager.removeSubscriber(this, subscriptions)
 
         gameField.dispose()
+    }
+
+    override fun destroy() {
         mainContainer.dispose()
         overlayContainer.dispose()
     }

@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Keyboard
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -167,6 +167,10 @@ class Builder(private val gameField: GameFieldHandle) : BuilderHandler {
         structure = Structure.entries[(structure.ordinal + 1) % Structure.entries.size]
     }
 
+    override fun reset() {
+        structure = Structure.BRICK_WALL_RIGHT
+    }
+
     fun prevStructure() {
         structure = Structure.entries[if (structure.ordinal == 0) Structure.entries.size - 1 else structure.ordinal - 1]
     }

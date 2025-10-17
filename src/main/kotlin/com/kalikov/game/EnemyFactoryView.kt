@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+
 class EnemyFactoryView(
     private val imageManager: ImageManager,
     private val enemyFactory: EnemyFactory,

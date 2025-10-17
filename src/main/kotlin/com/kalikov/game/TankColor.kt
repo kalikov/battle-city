@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.BasicTimer
 import java.time.Clock
 import kotlin.math.min
 

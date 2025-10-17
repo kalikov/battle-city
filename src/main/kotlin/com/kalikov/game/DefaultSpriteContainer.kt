@@ -1,11 +1,14 @@
 package com.kalikov.game
 
-import java.util.TreeSet
-import kotlin.Unit
+import com.kalikov.util.ArraySet
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.EventSubscriber
+import kotlin.reflect.KClass
 
 class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteContainer, EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(Sprite.Destroyed::class)
+        private val subscriptions = arrayOf<KClass<out Event>>(Sprite.Destroyed::class)
 
         private val ordering = Comparator<Sprite> { a, b ->
             val cmp = a.z - b.z
@@ -17,7 +20,7 @@ class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteCon
         }
     }
 
-    private var sprites = TreeSet(ordering)
+    private var sprites = ArraySet(ordering)
     private var copyOnWrite = false
 
     init {
@@ -27,32 +30,33 @@ class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteCon
     override val size get() = sprites.size
 
     override fun forEach(action: (Sprite) -> Unit) {
-        copyOnWrite = true
-        try {
+        read {
             sprites.forEach(action)
-        } finally {
-            copyOnWrite = false
         }
     }
 
     override fun iterateWhile(action: (Sprite) -> Boolean): Boolean {
-        copyOnWrite = true
-        try {
-            for (sprite in sprites) {
-                if (!action(sprite)) {
-                    return false
-                }
-            }
-        } finally {
-            copyOnWrite = false
+        return read {
+            sprites.iterateWhile(action)
         }
-        return true
+    }
+
+    private inline fun <T> read(action: () -> T): T {
+        return if (copyOnWrite) {
+            action()
+        } else {
+            copyOnWrite = true
+            return try {
+                action()
+            } finally {
+                copyOnWrite = false
+            }
+        }
     }
 
     override fun addSprite(sprite: Sprite) {
         if (copyOnWrite) {
-            sprites = TreeSet(sprites)
-            copyOnWrite = false
+            sprites = ArraySet(sprites)
         }
         if (sprites.add(sprite)) {
             eventManager.fireEvent(SpriteContainer.Added(sprite))
@@ -61,8 +65,7 @@ class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteCon
 
     override fun removeSprite(sprite: Sprite) {
         if (copyOnWrite) {
-            sprites = TreeSet(sprites)
-            copyOnWrite = false
+            sprites = ArraySet(sprites)
         }
         if (sprites.remove(sprite)) {
             eventManager.fireEvent(SpriteContainer.Removed(sprite))
@@ -72,6 +75,9 @@ class DefaultSpriteContainer(private val eventManager: EventManager) : SpriteCon
     override fun containsSprite(sprite: Sprite): Boolean {
         return sprites.contains(sprite)
     }
+
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     override fun notify(event: Event) {
         if (event is Sprite.Destroyed) {

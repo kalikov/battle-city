@@ -1,12 +1,17 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ScreenSurface
+
 interface StageManager {
     val players: List<Player>
 
-    val stage: Stage
     val stageNumber: Int
 
-    val demoStage: Stage?
+    val stageMap: StageMapConfig
+    val stageEnemySpawnDelay: Int
+    val stageEnemies: List<EnemyGroupConfig>
+
+    val demoStage: Stage
 
     var constructionMap: StageMapConfig
 
@@ -14,7 +19,7 @@ interface StageManager {
 
     val highScore: Int
 
-    fun init(stages: List<Stage>, defaultConstructionMap: StageMapConfig, demoStage: Stage?)
+    fun init(stages: List<Stage>, demoStage: Stage, defaultConstructionMap: StageMapConfig)
 
     fun setPlayersCount(playersCount: Int)
 

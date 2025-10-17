@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtFonts
 import java.awt.Font
 import java.io.File
 

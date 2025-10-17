@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Keyboard
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
@@ -16,7 +17,7 @@ class CursorControllerTest {
 
         verify(game.eventManager).addSubscriber(
             cursorController,
-            setOf(Keyboard.KeyPressed::class, Keyboard.KeyReleased::class)
+            arrayOf(Keyboard.KeyPressed::class, Keyboard.KeyReleased::class)
         )
     }
 

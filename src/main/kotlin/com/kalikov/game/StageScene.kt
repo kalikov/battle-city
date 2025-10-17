@@ -1,13 +1,19 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Scene
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+
 class StageScene(
-    private val game: Game,
-    private val stageManager: StageManager,
+    private val game: BattleCityGame,
+    private val menuScene: Scene,
 ) : Scene {
     private val curtain = Curtain()
     private val script = Script()
-    private val stageMessage = StageMessage(stageManager)
-    private val stageSelect = StageSelect(game.eventManager, stageManager, script)
+    private val stageMessage = StageMessage(game.stageManager)
+    private val stageSelect = StageSelect(game.eventManager, game.stageManager, script)
 
     private var level: Level? = null
 
@@ -17,7 +23,7 @@ class StageScene(
         LeaksDetector.add(this)
 
         // Player can't complete the first stage without scoring
-        val isFirstStage = stageManager.players[0].score == 0
+        val isFirstStage = game.stageManager.players[0].score == 0
         script.enqueue(CurtainFall(curtain, script, game.clock))
         script.enqueue(Execute {
             stageMessage.isVisible = true
@@ -27,13 +33,13 @@ class StageScene(
         }
         script.enqueue(Execute {
             game.soundManager.stageStart.play()
-            stageManager.curtainBackground = null
+            game.stageManager.curtainBackground = null
         })
         if (!isFirstStage) {
             script.enqueue(Delay(script, 1300, game.clock))
         }
         script.enqueue(Execute {
-            val level = Level(game, stageManager)
+            val level = Level(game, menuScene)
             this.level = level
             script.enqueue(Execute { level.start() })
             stageMessage.isVisible = false
@@ -55,10 +61,17 @@ class StageScene(
         if (level != null) {
             level?.draw(surface)
         } else {
-            stageManager.curtainBackground?.let { surface.draw(px(0), px(0), it) }
+            game.stageManager.curtainBackground?.let { surface.draw(px(0), px(0), it) }
         }
         curtain.draw(surface)
         stageMessage.draw(surface)
+    }
+
+    override fun activate() {
+    }
+
+    override fun deactivate() {
+        destroy()
     }
 
     override fun destroy() {

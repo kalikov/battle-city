@@ -1,25 +1,32 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.EventSubscriber
 import java.time.Clock
+import kotlin.reflect.KClass
 
 class FreezeHandler(
     private val eventManager: EventManager,
+    pauseManager: PauseManager,
     clock: Clock,
     duration: Int = 9000
 ) : EventSubscriber {
     data object Unfreeze : Event()
 
     private companion object {
-        private val subscriptions = setOf(PowerUpHandler.Freeze::class)
+        private val subscriptions = arrayOf<KClass<out Event>>(PowerUpHandler.Freeze::class)
     }
 
-    private val timer = PauseAwareTimer(eventManager, clock, duration, ::unfreeze)
+    private val timer = PauseAwareTimer(pauseManager, clock, duration, ::unfreeze)
 
     init {
         eventManager.addSubscriber(this, subscriptions)
     }
 
     val isActive get() = !timer.isStopped
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     override fun notify(event: Event) {
         if (event is PowerUpHandler.Freeze) {
@@ -43,6 +50,6 @@ class FreezeHandler(
     fun dispose() {
         eventManager.removeSubscriber(this, subscriptions)
 
-        timer.dispose()
+        timer.stop()
     }
 }

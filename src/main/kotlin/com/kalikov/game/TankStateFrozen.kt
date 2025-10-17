@@ -1,9 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.BlinkTimer
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.ScreenSurface
 import java.time.Clock
 
 class TankStateFrozen(
     private val eventManager: EventManager,
+    pauseManager: PauseManager,
     imageManager: ImageManager,
     private val tank: Tank,
     clock: Clock,
@@ -16,7 +21,7 @@ class TankStateFrozen(
     data class End(val tank: Tank) : Event()
 
     private val blinkTimer = BlinkTimer(clock, BLINK_INTERVAL)
-    private val timeoutTimer = PauseAwareTimer(eventManager, clock, 2 * BLINK_INTERVAL * BLINK_COUNT, ::onTimerEnd)
+    private val timeoutTimer = PauseAwareTimer(pauseManager, clock, 2 * BLINK_INTERVAL * BLINK_COUNT, ::onTimerEnd)
 
     override val canMove get() = false
 
@@ -52,6 +57,6 @@ class TankStateFrozen(
     override fun dispose() {
         super.dispose()
 
-        timeoutTimer.dispose()
+        timeoutTimer.stop()
     }
 }

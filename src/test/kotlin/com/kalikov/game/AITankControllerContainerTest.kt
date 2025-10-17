@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.argumentCaptor
@@ -15,7 +18,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class AITankControllerContainerTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var eventManager: EventManager
     private lateinit var container: AITankControllerContainer
     private lateinit var clock: TestClock
@@ -32,7 +35,7 @@ class AITankControllerContainerTest {
     fun `should subscribe`() {
         verify(eventManager).addSubscriber(
             container,
-            setOf(
+            arrayOf(
                 Tank.Destroyed::class,
                 EnemyFactory.EnemyCreated::class,
                 PowerUpHandler.Freeze::class,
@@ -234,7 +237,7 @@ class AITankControllerContainerTest {
 
         verify(eventManager).removeSubscriber(
             container,
-            setOf(
+            arrayOf(
                 Tank.Destroyed::class,
                 EnemyFactory.EnemyCreated::class,
                 PowerUpHandler.Freeze::class,

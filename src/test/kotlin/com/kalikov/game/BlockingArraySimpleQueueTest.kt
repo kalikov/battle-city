@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.util.BlockingArraySimpleQueue
+import com.kalikov.util.IntSet
 import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import java.util.concurrent.ConcurrentHashMap
@@ -178,7 +180,7 @@ class BlockingArraySimpleQueueTest {
 
         repeat(2) {
             futures.add(executor.submit {
-                for (i in 1 .. productionSize) {
+                repeat (productionSize) {
                     queue.add(100)
                 }
                 produced.incrementAndGet()

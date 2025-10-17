@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.times
+
 open class TankStateNormal(
     imageManager: ImageManager,
     private val tank: Tank

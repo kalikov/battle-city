@@ -1,7 +1,12 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+
 class Trees(
-    game: Game,
+    game: BattleCityGame,
     private val x: Pixel,
     private val y: Pixel,
     config: Set<TilePoint>,

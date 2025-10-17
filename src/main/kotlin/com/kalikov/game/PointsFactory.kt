@@ -1,11 +1,18 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+
 class PointsFactory(
-    private val game: Game,
+    private val game: BattleCityGame,
+    private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
 ) : EventSubscriber {
+    override val identity: Int
+        get() = TODO("Not yet implemented")
+
     private companion object {
-        private val subscriptions = setOf(TankExplosion.Destroyed::class, PowerUp.Pick::class)
+        private val subscriptions = arrayOf(TankExplosion.Destroyed::class, PowerUp.Pick::class)
     }
 
     init {
@@ -28,6 +35,7 @@ class PointsFactory(
     private fun create(parent: Sprite, value: Int, duration: Int): Points {
         return Points(
             game,
+            pauseManager,
             value,
             parent.center - Points.SIZE / 2,
             parent.middle - Points.SIZE / 2,

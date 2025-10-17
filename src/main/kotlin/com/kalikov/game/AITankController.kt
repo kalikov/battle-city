@@ -1,10 +1,11 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Pixel
 import kotlin.math.abs
 import kotlin.random.Random
 
 class AITankController(
-    eventManager: EventManager,
+    pauseManager: PauseManager,
     private val tank: AITankHandle,
     private val base: PixelPoint,
     private val players: Set<PlayerTankHandle>,
@@ -15,10 +16,10 @@ class AITankController(
         private const val STUCK_LIMIT = 4
     }
 
-    private val shootTimer = PauseAwareTimer(eventManager, params.clock, params.shootInterval, ::shoot)
+    private val shootTimer = PauseAwareTimer(pauseManager, params.clock, params.shootInterval, ::shoot)
     private val shootProbability = params.shootProbability
 
-    private var directionTimer = PauseAwareTimer(eventManager, params.clock, params.directionUpdateInterval, ::changeDirection)
+    private var directionTimer = PauseAwareTimer(pauseManager, params.clock, params.directionUpdateInterval, ::changeDirection)
     private val directionUpdateProbability = params.directionUpdateProbability
     private val directionRetreatProbability = params.directionRetreatProbability
 
@@ -146,7 +147,7 @@ class AITankController(
     }
 
     fun dispose() {
-        shootTimer.dispose()
-        directionTimer.dispose()
+        shootTimer.stop()
+        directionTimer.stop()
     }
 }

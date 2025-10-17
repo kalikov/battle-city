@@ -1,7 +1,12 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+
 class GameField(
-    private val game: Game,
+    private val game: BattleCityGame,
+    private val pauseManager: PauseManager,
     private val mainContainer: SpriteContainer,
     private val overlayContainer: SpriteContainer,
     x: Pixel = t(2).toPixel(),
@@ -49,7 +54,7 @@ class GameField(
 
         walls = Walls(game, bounds.x, bounds.y, map.walls)
 
-        ground = Ground(game, bounds.x, bounds.y, map.ground)
+        ground = Ground(game, pauseManager, bounds.x, bounds.y, map.ground)
         ground.isStatic = playersCount == 0
 
         if (playersCount > 0) {

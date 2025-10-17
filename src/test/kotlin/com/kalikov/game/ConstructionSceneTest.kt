@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.Keyboard
+import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyInt
@@ -7,12 +10,9 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.awt.image.BufferedImage
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class ConstructionSceneTest {
-    private lateinit var game: Game
-    private lateinit var stageManager: StageManager
+    private lateinit var game: BattleCityGame
 
     private lateinit var constructionScene: ConstructionScene
 
@@ -24,8 +24,7 @@ class ConstructionSceneTest {
             val image = BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
             AwtScreenSurface(fonts, image)
         }
-        stageManager = mock()
-        whenever(stageManager.constructionMap).thenReturn(
+        whenever(game.stageManager.constructionMap).thenReturn(
             StageMapConfig(
                 base = TilePoint(),
                 playerSpawnPoints = emptyList(),
@@ -33,14 +32,16 @@ class ConstructionSceneTest {
             ),
         )
 
-        constructionScene = ConstructionScene(game, stageManager)
+        constructionScene = ConstructionScene(game, mock())
     }
 
     @Test
-    fun `should subscribe`() {
+    fun `should subscribe on activate`() {
+        constructionScene.activate()
+
         verify(game.eventManager).addSubscriber(
             constructionScene,
-            setOf(Keyboard.KeyPressed::class)
+            arrayOf(Keyboard.KeyPressed::class)
         )
     }
 }

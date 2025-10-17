@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtFonts
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.ScreenSurface
 import java.io.File
 import java.io.FileInputStream
 

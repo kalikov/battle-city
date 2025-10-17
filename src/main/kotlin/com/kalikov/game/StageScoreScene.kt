@@ -1,10 +1,16 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Blending
+import com.kalikov.engine.Scene
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+
 class StageScoreScene(
-    private val game: Game,
-    private val stageManager: StageManager,
+    private val game: BattleCityGame,
     private val scores: List<StageScore>,
     private val gameOver: Boolean,
+    private val menuScene: Scene,
 ) : Scene {
     private companion object {
         const val BONUS_SCORE = 1000
@@ -46,7 +52,7 @@ class StageScoreScene(
                 script.enqueue(Delay(script, 320, game.clock))
                 script.enqueue(Execute {
                     drawBonusIndex = maxTanksIndex
-                    game.eventManager.fireEvent(Player.Score(stageManager.players[maxTanksIndex], BONUS_SCORE))
+                    game.eventManager.fireEvent(Player.Score(game.stageManager.players[maxTanksIndex], BONUS_SCORE))
                     game.soundManager.bonus.play()
                 })
             }
@@ -54,15 +60,15 @@ class StageScoreScene(
         script.enqueue(Delay(script, 2000, game.clock))
         script.enqueue(Execute {
             if (gameOver) {
-                game.eventManager.fireEvent(Scene.Start {
-                    GameOverScene(game, stageManager)
-                })
+                game.sceneManager.setNextScene(
+                    GameOverScene(game, menuScene)
+                )
             } else {
-                stageManager.next()
-                stageManager.resetConstruction()
-                game.eventManager.fireEvent(Scene.Start {
-                    StageScene(game, stageManager)
-                })
+                game.stageManager.next()
+                game.stageManager.resetConstruction()
+                game.sceneManager.setNextScene(
+                    StageScene(game, menuScene)
+                )
             }
         })
     }
@@ -77,7 +83,7 @@ class StageScoreScene(
         var y = t(4).toPixel()
         surface.fillText("HI-SCORE", px(65), y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
         surface.fillText(
-            "${stageManager.highScore}".padStart(7, ' '),
+            "${game.stageManager.highScore}".padStart(7, ' '),
             px(137),
             y - 1,
             ARGB.rgb(0xfeac4e),
@@ -85,26 +91,26 @@ class StageScoreScene(
         )
 
         y += t(2).toPixel()
-        val stage = "STAGE " + "${stageManager.stageNumber}".padStart(2, ' ')
+        val stage = "STAGE " + "${game.stageManager.stageNumber}".padStart(2, ' ')
         surface.fillText(stage, px(97), y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
 
         y += t(2).toPixel()
         surface.draw(px(26), y - Globals.TILE_SIZE, game.imageManager.getImage("roman_one"), blending)
-        if (stageManager.players.size > 1) {
+        if (game.stageManager.players.size > 1) {
             surface.draw(px(170), y - Globals.TILE_SIZE, game.imageManager.getImage("roman_two"), blending)
         }
         surface.fillText("-PLAYER", px(33), y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
-        if (stageManager.players.size > 1) {
+        if (game.stageManager.players.size > 1) {
             surface.fillText("-PLAYER", px(177), y - 1, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
 
         }
 
         y += t(2).toPixel()
-        val playerOneScore = "${stageManager.players[0].score}".padStart(7, ' ')
+        val playerOneScore = "${game.stageManager.players[0].score}".padStart(7, ' ')
         surface.fillText(playerOneScore, px(33), y - 1, ARGB.rgb(0xfeac4e), Globals.FONT_REGULAR)
 
-        if (stageManager.players.size > 1) {
-            val playerTwoScore = "${stageManager.players[1].score}".padStart(7, ' ')
+        if (game.stageManager.players.size > 1) {
+            val playerTwoScore = "${game.stageManager.players[1].score}".padStart(7, ' ')
             surface.fillText(playerTwoScore, px(177), y - 1, ARGB.rgb(0xfeac4e), Globals.FONT_REGULAR)
         }
 
@@ -147,6 +153,12 @@ class StageScoreScene(
             y += t(1).toPixel()
             surface.fillText("$BONUS_SCORE PTS", x, y - 1, ARGB.WHITE, Globals.FONT_REGULAR)
         }
+    }
+
+    override fun activate() {
+    }
+
+    override fun deactivate() {
     }
 
     override fun destroy() {

@@ -1,7 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+import com.kalikov.engine.times
+
 class Points(
-    game: Game,
+    game: BattleCityGame,
+    pauseManager: PauseManager,
     val value: Int,
     x: Pixel,
     y: Pixel,
@@ -11,7 +18,7 @@ class Points(
         val SIZE = t(2).toPixel()
     }
 
-    private val timer = PauseAwareTimer(game.eventManager, game.clock, duration, ::destroy)
+    private val timer = PauseAwareTimer(pauseManager, game.clock, duration, ::destroy)
     private val image = game.imageManager.getImage("points")
 
     init {
@@ -40,7 +47,7 @@ class Points(
     }
 
     override fun dispose() {
-        timer.dispose()
+        timer.stop()
 
         LeaksDetector.remove(this)
     }

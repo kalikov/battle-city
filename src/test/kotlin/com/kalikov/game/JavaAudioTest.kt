@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.JavaAudio
+import com.kalikov.engine.ManagedMusic
+import com.kalikov.engine.ManagedSound
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals

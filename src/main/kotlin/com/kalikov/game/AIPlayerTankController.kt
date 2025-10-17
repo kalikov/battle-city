@@ -1,15 +1,25 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.Keyboard
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.max
+import com.kalikov.engine.min
+import com.kalikov.engine.px
 import kotlin.math.abs
 
 class AIPlayerTankController(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val player: Player,
     private val gameField: GameField,
     params: AIPlayerTankControllerParams = AIPlayerTankControllerParams(),
 ) : EventSubscriber {
     private companion object {
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             PlayerTankFactory.PlayerTankCreated::class,
             PlayerTank.PlayerDestroyed::class,
             PlayerTank.PlayerMoved::class,
@@ -28,7 +38,7 @@ class AIPlayerTankController(
         private val CRITICAL_DISTANCE = Globals.TILE_SIZE.toInt() * 8
     }
 
-    private val strategyTimer = PauseAwareTimer(game.eventManager, game.clock, params.strategyUpdateInterval, ::updateStrategy)
+    private val strategyTimer = PauseAwareTimer(NoopPauseManager, game.clock, params.strategyUpdateInterval, ::updateStrategy)
 
     private var tank: PlayerTankHandle? = null
     private var prevX = px(0)
@@ -48,6 +58,8 @@ class AIPlayerTankController(
     private var partner: PlayerTankHandle? = null
 
     private var target: Sprite? = null
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     init {
         LeaksDetector.add(this)
@@ -171,7 +183,7 @@ class AIPlayerTankController(
     }
 
     private fun calculateUpFront(hitTop: Tile, hitLeft: Tile, hitRight: Tile): List<TileRect> {
-        val rects = mutableListOf<TileRect>()
+        val rectangles = mutableListOf<TileRect>()
         for (x in hitLeft.toInt() .. hitRight.toInt()) {
             var height = t(0)
             for (y in hitTop.toInt() - 1 downTo 0) {
@@ -181,18 +193,18 @@ class AIPlayerTankController(
                 }
                 height++
             }
-            if (rects.isEmpty() || rects.last().height != height) {
-                rects.add(TileRect(t(x), hitTop - height, t(1), height))
+            if (rectangles.isEmpty() || rectangles.last().height != height) {
+                rectangles.add(TileRect(t(x), hitTop - height, t(1), height))
             } else {
-                val last = rects.removeLast()
-                rects.add(TileRect(last.x, hitTop - height, last.width + 1, height))
+                val last = rectangles.removeLast()
+                rectangles.add(TileRect(last.x, hitTop - height, last.width + 1, height))
             }
         }
-        return rects
+        return rectangles
     }
 
     private fun calculateDownFront(hitLeft: Tile, hitRight: Tile, hitBottom: Tile): List<TileRect> {
-        val rects = mutableListOf<TileRect>()
+        val rectangles = mutableListOf<TileRect>()
         for (x in hitLeft.toInt() .. hitRight.toInt()) {
             var height = t(0)
             for (y in hitBottom.toInt() + 1 until GameField.SIZE_IN_TILES.toInt()) {
@@ -202,18 +214,18 @@ class AIPlayerTankController(
                 }
                 height++
             }
-            if (rects.isEmpty() || rects.last().height != height) {
-                rects.add(TileRect(t(x), hitBottom + 1, t(1), height))
+            if (rectangles.isEmpty() || rectangles.last().height != height) {
+                rectangles.add(TileRect(t(x), hitBottom + 1, t(1), height))
             } else {
-                val last = rects.removeLast()
-                rects.add(TileRect(last.x, hitBottom + 1, last.width + 1, height))
+                val last = rectangles.removeLast()
+                rectangles.add(TileRect(last.x, hitBottom + 1, last.width + 1, height))
             }
         }
-        return rects
+        return rectangles
     }
 
     private fun calculateLeftFront(hitTop: Tile, hitLeft: Tile, hitBottom: Tile): List<TileRect> {
-        val rects = mutableListOf<TileRect>()
+        val rectangles = mutableListOf<TileRect>()
         for (y in hitTop.toInt() .. hitBottom.toInt()) {
             var width = t(0)
             for (x in hitLeft.toInt() - 1 downTo 0) {
@@ -223,18 +235,18 @@ class AIPlayerTankController(
                 }
                 width++
             }
-            if (rects.isEmpty() || rects.last().width != width) {
-                rects.add(TileRect(hitLeft - width, t(y), width, t(1)))
+            if (rectangles.isEmpty() || rectangles.last().width != width) {
+                rectangles.add(TileRect(hitLeft - width, t(y), width, t(1)))
             } else {
-                val last = rects.removeLast()
-                rects.add(TileRect(hitLeft - width, last.y, width, last.height + 1))
+                val last = rectangles.removeLast()
+                rectangles.add(TileRect(hitLeft - width, last.y, width, last.height + 1))
             }
         }
-        return rects
+        return rectangles
     }
 
     private fun calculateRightFront(hitTop: Tile, hitRight: Tile, hitBottom: Tile): List<TileRect> {
-        val rects = mutableListOf<TileRect>()
+        val rectangles = mutableListOf<TileRect>()
         for (y in hitTop.toInt() .. hitBottom.toInt()) {
             var width = t(0)
             for (x in hitRight.toInt() + 1 until GameField.SIZE_IN_TILES.toInt()) {
@@ -244,14 +256,14 @@ class AIPlayerTankController(
                 }
                 width++
             }
-            if (rects.isEmpty() || rects.last().width != width) {
-                rects.add(TileRect(hitRight + 1, t(y), width, t(1)))
+            if (rectangles.isEmpty() || rectangles.last().width != width) {
+                rectangles.add(TileRect(hitRight + 1, t(y), width, t(1)))
             } else {
-                val last = rects.removeLast()
-                rects.add(TileRect(hitRight + 1, last.y, width, last.height + 1))
+                val last = rectangles.removeLast()
+                rectangles.add(TileRect(hitRight + 1, last.y, width, last.height + 1))
             }
         }
-        return rects
+        return rectangles
     }
 
     private fun updateTarget() {
@@ -431,7 +443,7 @@ class AIPlayerTankController(
     fun dispose() {
         tank = null
 
-        strategyTimer.dispose()
+        strategyTimer.stop()
 
         game.eventManager.removeSubscriber(this, subscriptions)
 

@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -16,11 +17,10 @@ class HighScoreSceneTest {
 
     @Test
     fun `should draw high score scene`() {
-        val stageManager: StageManager = mock()
         val game = mockGame(imageManager = TestImageManager(fonts))
-        val scene = HighScoreScene(game, stageManager, mock())
+        val scene = HighScoreScene(game, mock())
 
-        whenever(stageManager.highScore).thenReturn(29100)
+        whenever(game.stageManager.highScore).thenReturn(29100)
 
         val image = BufferedImage(
             Globals.CANVAS_WIDTH.toInt(),

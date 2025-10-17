@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.DefaultEventManager
+import com.kalikov.engine.px
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.isA
@@ -27,7 +29,7 @@ class EnemyTankTest : TankTest<EnemyTank>() {
 
     @Test
     fun `should face down direction when appearing state ends`() {
-        tank.state = TankStateAppearing(game, tank)
+        tank.state = TankStateAppearing(game, mock(), tank)
         tank.direction = Direction.UP
         tank.notify(TankStateAppearing.End(tank))
         assertEquals(Direction.DOWN, tank.direction)
@@ -35,7 +37,7 @@ class EnemyTankTest : TankTest<EnemyTank>() {
 
     @Test
     fun `enemy should be in normal state when appearing state ends`() {
-        tank.state = TankStateAppearing(game, tank)
+        tank.state = TankStateAppearing(game, mock(), tank)
         tank.notify(TankStateAppearing.End(tank))
         assertIs<TankStateNormal>(tank.state)
         assertIsNot<TankStateInvincible>(tank.state)
@@ -43,7 +45,7 @@ class EnemyTankTest : TankTest<EnemyTank>() {
 
     @Test
     fun `enemy should down direction when appearing state ends`() {
-        tank.state = TankStateAppearing(game, tank)
+        tank.state = TankStateAppearing(game, mock(), tank)
         tank.direction = Direction.UP
         tank.notify(TankStateAppearing.End(tank))
         assertEquals(Direction.DOWN, tank.direction)
@@ -100,11 +102,11 @@ class EnemyTankTest : TankTest<EnemyTank>() {
 
     @Test
     fun `should not pause flashing`() {
-        eventManager = ConcurrentEventManager()
+        eventManager = DefaultEventManager()
         game = mockGame(eventManager = eventManager, clock = clock)
         val pauseListener = PauseListener(game)
         tank = stubEnemyTank(game, pauseListener)
-        val state = TankStateInvincible(game, tank, 10)
+        val state = TankStateInvincible(game, pauseListener, tank, 10)
         tank.state = state
         tank.color.colors = arrayOf(EnemyFactory.FLASHING_COLORS)
         tank.update()

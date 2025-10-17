@@ -1,7 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Event
+import com.kalikov.engine.LeaksDetector
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.times
+
 class Walls(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val x: Pixel,
     private val y: Pixel,
     config: WallsConfig,

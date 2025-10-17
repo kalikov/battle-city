@@ -1,7 +1,10 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+
 class EnemyFactory(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val pauseManager: PauseManager,
     private val spriteContainer: SpriteContainer,
     private val positions: List<PixelPoint>,
@@ -15,7 +18,7 @@ class EnemyFactory(
     data object FlashingTankHit : Event()
 
     companion object {
-        private val subscriptions = setOf(TankExplosion.Destroyed::class, Tank.Hit::class)
+        private val subscriptions = arrayOf(TankExplosion.Destroyed::class, Tank.Hit::class)
 
         val FLASHING_COLORS = intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)
     }
@@ -39,7 +42,7 @@ class EnemyFactory(
     private var enemies = emptyArray<EnemyTank.EnemyType>()
     private var enemyIndex = 0
 
-    private val timer = PauseAwareTimer(game.eventManager, game.clock, interval, ::create)
+    private val timer = PauseAwareTimer(pauseManager, game.clock, interval, ::create)
 
     private val flashingTanks = HashSet<Tank>(flashingIndices.size)
 
@@ -105,7 +108,7 @@ class EnemyFactory(
 
     private fun createEnemy(type: EnemyTank.EnemyType, position: PixelPoint): EnemyTank {
         val tank = EnemyTank.create(game, pauseManager, position.x, position.y, type)
-        tank.state = TankStateAppearing(game, tank)
+        tank.state = TankStateAppearing(game, pauseManager, tank)
 
         when (type) {
             EnemyTank.EnemyType.BASIC -> {
@@ -139,6 +142,9 @@ class EnemyFactory(
         return type
     }
 
+    override val identity: Int
+        get() = TODO("Not yet implemented")
+
     override fun notify(event: Event) {
         if (event is TankExplosion.Destroyed) {
             if (event.explosion.tank is EnemyTank) {
@@ -155,8 +161,6 @@ class EnemyFactory(
     }
 
     fun dispose() {
-        timer.dispose()
-
         game.eventManager.removeSubscriber(this, subscriptions)
     }
 }

@@ -1,10 +1,9 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
 import org.junit.jupiter.api.Test
-import org.mockito.kotlin.UseConstructor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import kotlin.jvm.internal.DefaultConstructorMarker
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -15,7 +14,7 @@ class DefaultSpriteContainerTest {
         val eventManager: EventManager = mock()
 
         val spriteContainer = DefaultSpriteContainer(eventManager)
-        verify(eventManager).addSubscriber(spriteContainer, setOf(Sprite.Destroyed::class))
+        verify(eventManager).addSubscriber(spriteContainer, arrayOf(Sprite.Destroyed::class))
     }
 
     @Test
@@ -24,13 +23,13 @@ class DefaultSpriteContainerTest {
 
         val spriteContainer = DefaultSpriteContainer(eventManager)
         spriteContainer.dispose()
-        verify(eventManager).removeSubscriber(spriteContainer, setOf(Sprite.Destroyed::class))
+        verify(eventManager).removeSubscriber(spriteContainer, arrayOf(Sprite.Destroyed::class))
     }
 
     @Test
     fun `should remove sprite when it is destroyed`() {
         val eventManager: EventManager = mock()
-        val sprite = mockSprite(eventManager)
+        val sprite = mockSprite()
 
         val spriteContainer = DefaultSpriteContainer(eventManager)
         spriteContainer.addSprite(sprite)
@@ -43,7 +42,7 @@ class DefaultSpriteContainerTest {
     @Test
     fun `should add sprite when it is created`() {
         val eventManager: EventManager = mock()
-        val sprite = mockSprite(eventManager)
+        val sprite = mockSprite()
         val spriteContainer = DefaultSpriteContainer(eventManager)
 
         assertFalse(spriteContainer.containsSprite(sprite))
@@ -55,19 +54,19 @@ class DefaultSpriteContainerTest {
     fun `should sort sprites by their z-index`() {
         val eventManager: EventManager = mock()
 
-        val spriteOne = mockSprite(eventManager)
+        val spriteOne = mockSprite()
         spriteOne.z = 1
 
-        val spriteTwo = mockSprite(eventManager)
+        val spriteTwo = mockSprite()
         spriteTwo.z = 2
 
-        val spriteThree = mockSprite(eventManager)
+        val spriteThree = mockSprite()
         spriteThree.z = 3
 
-        val spriteFour = mockSprite(eventManager)
+        val spriteFour = mockSprite()
         spriteFour.z = 4
 
-        val spriteFive = mockSprite(eventManager)
+        val spriteFive = mockSprite()
         spriteFive.z = 5
 
         val spriteContainer = DefaultSpriteContainer(eventManager)
@@ -85,7 +84,7 @@ class DefaultSpriteContainerTest {
         )
     }
 
-    private fun mockSprite(eventManager: EventManager): Sprite {
+    private fun mockSprite(): Sprite {
         return mock()
     }
 }

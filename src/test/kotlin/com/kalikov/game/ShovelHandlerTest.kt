@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -9,8 +10,9 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 class ShovelHandlerTest {
-    private lateinit var game: Game
     private lateinit var clock: TestClock
+    private lateinit var game: BattleCityGame
+    private lateinit var pauseManager: PauseManager
     private lateinit var baseWallBuilder: ShovelWallBuilder
     private lateinit var handler: ShovelHandler
 
@@ -18,19 +20,20 @@ class ShovelHandlerTest {
     fun beforeEach() {
         clock = TestClock()
         game = mockGame(clock = clock)
+        pauseManager = mock()
         baseWallBuilder = mock()
-        handler = ShovelHandler(game, baseWallBuilder)
+        handler = ShovelHandler(game, pauseManager, baseWallBuilder)
     }
 
     @Test
     fun `should subscribe`() {
-        verify(game.eventManager).addSubscriber(handler, setOf(PowerUpHandler.ShovelStart::class))
+        verify(game.eventManager).addSubscriber(handler, arrayOf(PowerUpHandler.ShovelStart::class))
     }
 
     @Test
     fun `should unsubscribe`() {
         handler.dispose()
-        verify(game.eventManager).removeSubscriber(handler, setOf(PowerUpHandler.ShovelStart::class))
+        verify(game.eventManager).removeSubscriber(handler, arrayOf(PowerUpHandler.ShovelStart::class))
     }
 
     @Test
@@ -56,18 +59,18 @@ class ShovelHandlerTest {
 
     @Test
     fun `should not update when paused`() {
-        whenever(game.eventManager).thenReturn(ConcurrentEventManager())
-        handler = ShovelHandler(game, baseWallBuilder)
         handler.notify(PowerUpHandler.ShovelStart)
         reset(baseWallBuilder)
 
-        game.eventManager.fireEvent(PauseManager.Start)
+        whenever(pauseManager.isPaused).thenReturn(true)
+        handler.update()
 
         clock.tick(10 * ShovelHandler.SOLID_DURATION)
         handler.update()
         verify(baseWallBuilder, never()).buildBrickWall()
 
-        game.eventManager.fireEvent(PauseManager.End)
+        whenever(pauseManager.isPaused).thenReturn(false)
+        handler.update()
 
         clock.tick(ShovelHandler.SOLID_DURATION)
         handler.update()

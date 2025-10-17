@@ -1,5 +1,9 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.DefaultEventManager
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -16,7 +20,7 @@ class StageSceneTest {
     private lateinit var fonts: TestFonts
     private lateinit var clock: TestClock
 
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
 
     private lateinit var stageManager: StageManager
 
@@ -27,13 +31,13 @@ class StageSceneTest {
         fonts = TestFonts()
         clock = TestClock()
 
-        game = mockGame(eventManager = ConcurrentEventManager(), imageManager = TestImageManager(fonts), clock = clock)
+        game = mockGame(eventManager = DefaultEventManager(), imageManager = TestImageManager(fonts), clock = clock)
         whenever(game.screen.createSurface(px(anyInt()), px(anyInt()))).thenAnswer {
             val image = BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
             AwtScreenSurface(fonts, image)
         }
 
-        stageManager = mock()
+        stageManager = game.stageManager
 
         image = BufferedImage(Globals.CANVAS_WIDTH.toInt(), Globals.CANVAS_HEIGHT.toInt(), BufferedImage.TYPE_INT_ARGB)
     }
@@ -53,10 +57,12 @@ class StageSceneTest {
             1,
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 19))
         )
-        whenever(stageManager.stage).thenReturn(stage)
+        whenever(stageManager.stageMap).thenReturn(stage.map)
+        whenever(stageManager.stageEnemies).thenReturn(stage.enemies)
+        whenever(stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
         whenever(stageManager.stageNumber).thenReturn(1)
 
-        val scene = StageScene(game, stageManager)
+        val scene = StageScene(game, mock())
 
         while (!scene.isReady) {
             clock.tick(1)
@@ -84,10 +90,12 @@ class StageSceneTest {
             1,
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 19))
         )
-        whenever(stageManager.stage).thenReturn(stage)
+        whenever(stageManager.stageMap).thenReturn(stage.map)
+        whenever(stageManager.stageEnemies).thenReturn(stage.enemies)
+        whenever(stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
         whenever(stageManager.stageNumber).thenReturn(1)
 
-        val scene = StageScene(game, stageManager)
+        val scene = StageScene(game, mock())
 
         while (!scene.isReady) {
             clock.tick(1)
@@ -110,16 +118,18 @@ class StageSceneTest {
             enemySpawnPoints = emptyList(),
         )
         val stage = Stage(map, 1, emptyList())
-        whenever(stageManager.stage).thenReturn(stage)
+        whenever(stageManager.stageMap).thenReturn(stage.map)
+        whenever(stageManager.stageEnemies).thenReturn(stage.enemies)
+        whenever(stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
         whenever(stageManager.stageNumber).thenReturn(1)
 
-        val scene = StageScene(game, stageManager)
+        val scene = StageScene(game, mock())
 
         while (!scene.isReady) {
             clock.tick(1)
             scene.update()
         }
-        game.eventManager.fireEvent(BaseExplosion.Destroyed(BaseExplosion(game)))
+        game.eventManager.fireEvent(BaseExplosion.Destroyed(BaseExplosion(game, mock())))
         scene.update() // start initial delay
         clock.tick(1000)
         scene.update() // complete initial delay

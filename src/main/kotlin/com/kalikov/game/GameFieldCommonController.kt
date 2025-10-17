@@ -1,7 +1,7 @@
 package com.kalikov.game
 
 class GameFieldCommonController(
-    game: Game,
+    game: BattleCityGame,
     gameField: GameField,
     pauseManager: PauseManager,
     mainContainer: SpriteContainer,
@@ -36,17 +36,17 @@ class GameFieldCommonController(
         )
 
         powerUpFactory = PowerUpFactory(game, overlayContainer, gameField.bounds)
-        powerUpHandler = PowerUpHandler(game)
+        powerUpHandler = PowerUpHandler(game, pauseManager)
 
-        shovelHandler = ShovelHandler(game, gameField)
-        freezeHandler = FreezeHandler(game.eventManager, game.clock)
+        shovelHandler = ShovelHandler(game, pauseManager, gameField)
+        freezeHandler = FreezeHandler(game.eventManager, pauseManager, game.clock)
 
-        pointsFactory = PointsFactory(game, overlayContainer)
+        pointsFactory = PointsFactory(game, pauseManager, overlayContainer)
 
         bulletHandler = BulletHandler(game, mainContainer)
-        bulletExplosionFactory = BulletExplosionFactory(game, overlayContainer)
-        tankExplosionFactory = TankExplosionFactory(game, overlayContainer)
-        baseExplosionFactory = BaseExplosionFactory(game, overlayContainer)
+        bulletExplosionFactory = BulletExplosionFactory(game, pauseManager, overlayContainer)
+        tankExplosionFactory = TankExplosionFactory(game, pauseManager, overlayContainer)
+        baseExplosionFactory = BaseExplosionFactory(game, pauseManager, overlayContainer)
 
         val basePosition = base.toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y)
 

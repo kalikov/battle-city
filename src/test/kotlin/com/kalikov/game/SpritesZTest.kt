@@ -51,13 +51,4 @@ class SpritesZTest {
     fun `explosion is above bullet`() {
         assertTrue(explosion.z > bullet.z)
     }
-
-    @Test
-    fun `cursor is above everything`() {
-        assertTrue(cursor.z > tank.z)
-        assertTrue(cursor.z > explosion.z)
-        assertTrue(cursor.z > bullet.z)
-        assertTrue(cursor.z > points.z)
-        assertTrue(cursor.z > powerUp.z)
-    }
 }

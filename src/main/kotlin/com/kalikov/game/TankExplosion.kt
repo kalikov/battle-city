@@ -1,11 +1,16 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Animation
+import com.kalikov.engine.Event
+import com.kalikov.engine.frameSequenceOf
+
 class TankExplosion(
-    private val game: Game,
+    private val game: BattleCityGame,
+    pauseManager: PauseManager,
     val tank: Tank
 ) : Explosion(
     game.eventManager,
-    Animation.pauseAware(game.eventManager, frameSequenceOf(*animationFrames), game.clock, 96),
+    Animation.pauseAware(pauseManager, frameSequenceOf(*animationFrames), game.clock, 96),
     t(4).toPixel()
 ) {
     private companion object {

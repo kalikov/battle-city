@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyInt
@@ -10,7 +13,7 @@ import java.awt.image.BufferedImage
 class StageScoreSceneTest {
     private lateinit var fonts: TestFonts
     private lateinit var clock: TestClock
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var image: BufferedImage
 
     @BeforeEach
@@ -28,21 +31,20 @@ class StageScoreSceneTest {
 
     @Test
     fun `should draw scene correctly`() {
-        val stageManager: StageManager = mock()
-        whenever(stageManager.highScore).thenReturn(20000)
-        whenever(stageManager.stageNumber).thenReturn(7)
+        whenever(game.stageManager.highScore).thenReturn(20000)
+        whenever(game.stageManager.stageNumber).thenReturn(7)
 
         val score = StageScore()
         score.increment(createTank(EnemyTank.EnemyType.BASIC))
         score.increment(createTank(EnemyTank.EnemyType.FAST))
 
         val player = Player(game, initialScore = 25200)
-        whenever(stageManager.players).thenReturn(listOf(player))
+        whenever(game.stageManager.players).thenReturn(listOf(player))
         val scene = StageScoreScene(
             game,
-            stageManager,
             listOf(score),
             false,
+            mock(),
         )
 
         val stage = Stage(
@@ -59,7 +61,9 @@ class StageScoreSceneTest {
             emptyList()
         )
 
-        whenever(stageManager.stage).thenReturn(stage)
+        whenever(game.stageManager.stageMap).thenReturn(stage.map)
+        whenever(game.stageManager.stageEnemies).thenReturn(stage.enemies)
+        whenever(game.stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
 
         while (!scene.isComplete) {
             clock.tick(1)
@@ -73,9 +77,8 @@ class StageScoreSceneTest {
 
     @Test
     fun `should draw two players scene correctly`() {
-        val stageManager: StageManager = mock()
-        whenever(stageManager.highScore).thenReturn(20000)
-        whenever(stageManager.stageNumber).thenReturn(7)
+        whenever(game.stageManager.highScore).thenReturn(20000)
+        whenever(game.stageManager.stageNumber).thenReturn(7)
 
         val scoreOne = StageScore()
         scoreOne.increment(createTank(EnemyTank.EnemyType.BASIC))
@@ -90,12 +93,12 @@ class StageScoreSceneTest {
 
         val playerOne = Player(game, initialScore = 25200)
         val playerTwo = Player(game, initialScore = 5600)
-        whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
+        whenever(game.stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
             game,
-            stageManager,
             listOf(scoreOne, scoreTwo),
             false,
+            mock(),
         )
 
         val stage = Stage(
@@ -112,7 +115,9 @@ class StageScoreSceneTest {
             emptyList()
         )
 
-        whenever(stageManager.stage).thenReturn(stage)
+        whenever(game.stageManager.stageMap).thenReturn(stage.map)
+        whenever(game.stageManager.stageEnemies).thenReturn(stage.enemies)
+        whenever(game.stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
 
         while (!scene.isComplete) {
             clock.tick(1)
@@ -126,9 +131,8 @@ class StageScoreSceneTest {
 
     @Test
     fun `should not draw two players bonus`() {
-        val stageManager: StageManager = mock()
-        whenever(stageManager.highScore).thenReturn(20000)
-        whenever(stageManager.stageNumber).thenReturn(7)
+        whenever(game.stageManager.highScore).thenReturn(20000)
+        whenever(game.stageManager.stageNumber).thenReturn(7)
 
         val scoreOne = StageScore()
         scoreOne.increment(createTank(EnemyTank.EnemyType.BASIC))
@@ -146,12 +150,12 @@ class StageScoreSceneTest {
 
         val playerOne = Player(game, initialScore = 25200)
         val playerTwo = Player(game, initialScore = 5600)
-        whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
+        whenever(game.stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
             game,
-            stageManager,
             listOf(scoreOne, scoreTwo),
             false,
+            mock(),
         )
 
         val stage = Stage(
@@ -168,7 +172,9 @@ class StageScoreSceneTest {
             emptyList()
         )
 
-        whenever(stageManager.stage).thenReturn(stage)
+        whenever(game.stageManager.stageMap).thenReturn(stage.map)
+        whenever(game.stageManager.stageEnemies).thenReturn(stage.enemies)
+        whenever(game.stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
 
         while (!scene.isComplete) {
             clock.tick(1)

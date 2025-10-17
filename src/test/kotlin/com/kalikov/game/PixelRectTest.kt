@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.px
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -16,56 +17,56 @@ class PixelRectTest {
     }
 
     @Test
-    fun `should intersect equal rects`() {
+    fun `should intersect equal rectangles`() {
         val rect1 = PixelRect(px(0), px(0), px(1), px(1))
         val rect2 = PixelRect(px(0), px(0), px(1), px(1))
         assertTrue(rect1.intersects(rect2))
     }
 
     @Test
-    fun `should not intersect close rects when right is argument`() {
+    fun `should not intersect close rectangles when right is argument`() {
         val rect1 = PixelRect(px(0), px(0), px(1), px(1))
         val rect2 = PixelRect(px(1), px(0), px(1), px(1))
         assertFalse(rect1.intersects(rect2))
     }
 
     @Test
-    fun `should not intersect close rects when left is argument`() {
+    fun `should not intersect close rectangles when left is argument`() {
         val rect1 = PixelRect(px(2), px(0), px(1), px(1))
         val rect2 = PixelRect(px(0), px(0), px(2), px(2))
         assertFalse(rect1.intersects(rect2))
     }
 
     @Test
-    fun `should intersect overlapping rects`() {
+    fun `should intersect overlapping rectangles`() {
         val rect1 = PixelRect(px(1), px(0), px(1), px(1))
         val rect2 = PixelRect(px(0), px(0), px(2), px(2))
         assertTrue(rect1.intersects(rect2))
     }
 
     @Test
-    fun `should intersect intersecting rects when right is argument`() {
+    fun `should intersect intersecting rectangles when right is argument`() {
         val rect1 = PixelRect(px(0), px(0), px(4), px(4))
         val rect2 = PixelRect(px(2), px(2), px(4), px(4))
         assertTrue(rect1.intersects(rect2))
     }
 
     @Test
-    fun `should intersect intersecting rects when left is argument`() {
+    fun `should intersect intersecting rectangles when left is argument`() {
         val rect1 = PixelRect(px(0), px(0), px(4), px(4))
         val rect2 = PixelRect(px(-2), px(-2), px(4), px(4))
         assertTrue(rect1.intersects(rect2))
     }
 
     @Test
-    fun `should intersect intersecting rects when bottom-right is argument`() {
+    fun `should intersect intersecting rectangles when bottom-right is argument`() {
         val rect1 = PixelRect(px(0), px(0), px(4), px(4))
         val rect2 = PixelRect(px(2), px(-2), px(4), px(4))
         assertTrue(rect1.intersects(rect2))
     }
 
     @Test
-    fun `should intersect intersecting rects when top-left is argument`() {
+    fun `should intersect intersecting rectangles when top-left is argument`() {
         val rect1 = PixelRect(px(0), px(0), px(4), px(4))
         val rect2 = PixelRect(px(-2), px(2), px(4), px(4))
         assertTrue(rect1.intersects(rect2))

@@ -1,9 +1,11 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.Pixel
 import java.util.EnumSet
 
 class PlayerTank private constructor(
-    game: Game,
+    game: BattleCityGame,
     pauseManager: PauseManager,
     x: Pixel,
     y: Pixel,
@@ -17,7 +19,7 @@ class PlayerTank private constructor(
 ), PlayerTankHandle {
     companion object {
         fun create(
-            game: Game,
+            game: BattleCityGame,
             pauseManager: PauseManager,
             x: Pixel,
             y: Pixel,
@@ -86,7 +88,7 @@ class PlayerTank private constructor(
     }
 
     override fun stateAppearingEnd() {
-        state = TankStateInvincible(game, this)
+        state = TankStateInvincible(game, pauseManager, this)
         direction = Direction.UP
     }
 
@@ -111,7 +113,7 @@ class PlayerTank private constructor(
                 if (state is TankStateFrozen) {
                     (state as TankStateFrozen).restartTimer()
                 } else {
-                    state = TankStateFrozen(game.eventManager, game.imageManager, this, game.clock)
+                    state = TankStateFrozen(game.eventManager, pauseManager, game.imageManager, this, game.clock)
                     isIdle = true
                 }
             }
@@ -147,4 +149,7 @@ class PlayerTank private constructor(
             3 -> bulletType = Bullet.Type.ENHANCED
         }
     }
+
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 }

@@ -1,5 +1,11 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventRouter
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+
 class Base(
     private val eventRouter: EventRouter,
     imageManager: ImageManager,

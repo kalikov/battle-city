@@ -1,5 +1,6 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Keyboard
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
@@ -9,14 +10,14 @@ import org.mockito.kotlin.whenever
 import kotlin.test.assertSame
 
 class PlayerTankControllerTest {
-    private val controllerSubscriptions = setOf(
+    private val controllerSubscriptions = arrayOf(
         PlayerTankFactory.PlayerTankCreated::class,
         BaseExplosion.Destroyed::class,
         Keyboard.KeyPressed::class,
         Keyboard.KeyReleased::class
     )
 
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var tank: PlayerTankHandle
     private lateinit var controller: PlayerTankController
 

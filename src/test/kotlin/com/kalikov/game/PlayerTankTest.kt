@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.px
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -28,7 +30,7 @@ class PlayerTankTest : TankTest<PlayerTank>() {
 
     @Test
     fun `should be in invincible state when appearing state ends`() {
-        tank.state = TankStateAppearing(game, tank)
+        tank.state = TankStateAppearing(game, mock(), tank)
         tank.notify(TankStateAppearing.End(tank))
         assertIs<TankStateInvincible>(tank.state)
     }
@@ -86,7 +88,7 @@ class PlayerTankTest : TankTest<PlayerTank>() {
 
     @Test
     fun `should face up direction when appearing state ends`() {
-        tank.state = TankStateAppearing(game, tank)
+        tank.state = TankStateAppearing(game, mock(), tank)
         tank.direction = Direction.DOWN
         tank.notify(TankStateAppearing.End(tank))
         assertEquals(Direction.UP, tank.direction)
@@ -119,28 +121,28 @@ class PlayerTankTest : TankTest<PlayerTank>() {
     @Test
     @DisplayName("should draw tank in invincible state with right direction")
     fun shouldDrawInvincibleRight() {
-        tank.state = TankStateInvincible(game, tank)
+        tank.state = TankStateInvincible(game, mock(), tank)
         shouldDrawTank(Direction.RIGHT, "tank_player_right_c0_t1_i")
     }
 
     @Test
     @DisplayName("should draw tank in invincible state with up direction")
     fun shouldDrawInvincibleUp() {
-        tank.state = TankStateInvincible(game, tank)
+        tank.state = TankStateInvincible(game, mock(), tank)
         shouldDrawTank(Direction.UP, "tank_player_up_c0_t1_i")
     }
 
     @Test
     @DisplayName("should draw tank in invincible state with down direction")
     fun shouldDrawInvincibleDown() {
-        tank.state = TankStateInvincible(game, tank)
+        tank.state = TankStateInvincible(game, mock(), tank)
         shouldDrawTank(Direction.DOWN, "tank_player_down_c0_t1_i")
     }
 
     @Test
     @DisplayName("should draw tank in invincible state with left direction")
     fun shouldDrawInvincibleLeft() {
-        tank.state = TankStateInvincible(game, tank)
+        tank.state = TankStateInvincible(game, mock(), tank)
         shouldDrawTank(Direction.LEFT, "tank_player_left_c0_t1_i")
     }
 

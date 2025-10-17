@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Pixel
+
 interface GroundHandle {
     fun fillWaterTile(x: Tile, y: Tile)
 

@@ -11,7 +11,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class PowerUpFactoryTest {
-    private lateinit var game: Game
+    private lateinit var game: BattleCityGame
     private lateinit var spriteContainer: SpriteContainer
     private lateinit var factory: PowerUpFactory
 
@@ -26,7 +26,7 @@ class PowerUpFactoryTest {
     fun `should subscribe`() {
         verify(game.eventManager).addSubscriber(
             factory,
-            setOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
+            arrayOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
         )
     }
 
@@ -35,7 +35,7 @@ class PowerUpFactoryTest {
         factory.dispose()
         verify(game.eventManager).removeSubscriber(
             factory,
-            setOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
+            arrayOf(EnemyFactory.FlashingTankHit::class, EnemyFactory.EnemyCreated::class)
         )
     }
 

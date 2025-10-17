@@ -1,16 +1,22 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+
 class StageNumberView(
-    private val imageManager: ImageManager,
-    private val stageNumber: Int,
+    imageManager: ImageManager,
+    stageNumber: Int,
     private val x: Pixel,
-    private val y: Pixel
+    private val y: Pixel,
 ) {
+    private val stageNumberText = "$stageNumber".padStart(2, ' ')
+
+    private val flag = imageManager.getImage("flag")
+
     fun draw(surface: ScreenSurface) {
-        val flag = imageManager.getImage("flag")
         surface.draw(x, y, flag)
 
-        val stageNumber = "$stageNumber".padStart(2, ' ')
-        surface.fillText(stageNumber, x + 1, y + flag.height + Globals.TILE_SIZE - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+        surface.fillText(stageNumberText, x + 1, y + flag.height + Globals.TILE_SIZE - 1, ARGB.BLACK, Globals.FONT_REGULAR)
     }
 }

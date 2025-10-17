@@ -1,9 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.BasicTimer
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.Scene
+import com.kalikov.engine.ScreenSurface
+
 class HighScoreScene(
-    private val game: Game,
-    private val stageManager: StageManager,
-    private val nextSceneFactory: () -> Scene,
+    private val game: BattleCityGame,
+    private val menuScene: Scene,
 ) : Scene {
     companion object {
         const val BLINK_INTERVAL = 32
@@ -48,7 +53,7 @@ class HighScoreScene(
                 if (counter < 11) {
                     return ARGB.WHITE
                 }
-                if (counter == 41 || counter == 71 || counter == 101 || counter == 111 || counter == 141 || counter == 171 || counter == 191 || counter == 201 || counter in 207..229 || counter >= 233) {
+                if (counter == 41 || counter == 71 || counter == 101 || counter == 111 || counter == 141 || counter == 171 || counter == 191 || counter == 201 || counter in 207 .. 229 || counter >= 233) {
                     return BLUE
                 }
                 if (counter == 231) {
@@ -72,7 +77,7 @@ class HighScoreScene(
         counter++
         if (counter == BLINK_COUNT) {
             timer.stop()
-            game.eventManager.fireEvent(Scene.Start(nextSceneFactory))
+            game.sceneManager.setNextScene(menuScene)
         }
     }
 
@@ -84,7 +89,7 @@ class HighScoreScene(
         val interval = Globals.FONT_BIG_CORRECTION + t(3).toPixel()
         surface.fillText("HISCORE", x, y, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
         surface.fillText(
-            "${stageManager.highScore}".padStart(7, ' '),
+            "${game.stageManager.highScore}".padStart(7, ' '),
             x,
             y + interval,
             ARGB.WHITE,
@@ -93,7 +98,13 @@ class HighScoreScene(
         )
     }
 
+    override fun activate() {
+    }
+
+    override fun deactivate() {
+        timer.stop()
+    }
+
     override fun destroy() {
-        timer.dispose()
     }
 }

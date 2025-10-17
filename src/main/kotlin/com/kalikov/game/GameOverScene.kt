@@ -1,8 +1,15 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.LazyImage
+import com.kalikov.engine.Scene
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+import com.kalikov.engine.times
+
 class GameOverScene(
-    private val game: Game,
-    private val stageManager: StageManager,
+    private val game: BattleCityGame,
+    private val menuScene: Scene
 ) : Scene {
     private companion object {
         const val GAME = "GAME"
@@ -28,21 +35,12 @@ class GameOverScene(
         script.enqueue(Execute { game.soundManager.gameOver.play() })
         script.enqueue(Delay(script, 1800, game.clock))
         script.enqueue(Execute {
-            val highScore = stageManager.highScore
-            stageManager.reset()
-            val mainMenuFactory = {
-                val mainMenu = MainMenuScene(game, stageManager)
-                if (stageManager.players.size == 2) {
-                    mainMenu.setMenuItem(1)
-                }
-                mainMenu
-            }
-            if (highScore < stageManager.highScore) {
-                game.eventManager.fireEvent(Scene.Start {
-                    HighScoreScene(game, stageManager, mainMenuFactory)
-                })
+            val highScore = game.stageManager.highScore
+            game.stageManager.reset()
+            if (highScore < game.stageManager.highScore) {
+                game.sceneManager.setNextScene(HighScoreScene(game, menuScene))
             } else {
-                game.eventManager.fireEvent(Scene.Start(mainMenuFactory))
+                game.sceneManager.setNextScene(menuScene)
             }
         })
     }
@@ -58,6 +56,13 @@ class GameOverScene(
         val y = t(9).toPixel()
 
         surface.draw(x, y, messageLazyBlender.target)
+    }
+
+    override fun activate() {
+    }
+
+    override fun deactivate() {
+        destroy()
     }
 
     override fun destroy() {

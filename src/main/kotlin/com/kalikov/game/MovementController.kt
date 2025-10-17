@@ -1,10 +1,15 @@
 package com.kalikov.game
 
+import com.kalikov.engine.BasicTimer
+import com.kalikov.engine.Event
+import com.kalikov.engine.EventSubscriber
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.px
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 class MovementController(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val gameField: GameFieldHandle,
     private val pauseManager: PauseManager,
     private val mainContainer: SpriteContainer,
@@ -13,7 +18,7 @@ class MovementController(
     companion object {
         const val UPDATE_INTERVAL = 4
 
-        private val subscriptions = setOf(
+        private val subscriptions = arrayOf(
             EnemyFactory.EnemyCreated::class,
             EnemyFactory.LastEnemyDestroyed::class,
             SpriteContainer.Added::class,
@@ -39,7 +44,7 @@ class MovementController(
 
     private fun move(count: Int) {
         if (!pauseManager.isPaused) {
-            for (i in 0 until count) {
+            repeat(count) {
                 moveBullets()
                 moveTanks()
             }
@@ -276,6 +281,9 @@ class MovementController(
             true
         }
     }
+
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 
     override fun notify(event: Event) {
         when (event) {

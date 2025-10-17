@@ -1,5 +1,9 @@
 package com.kalikov.game
 
+import com.kalikov.engine.AwtScreenSurface
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.px
+import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -22,7 +26,7 @@ abstract class TankTest<T : Tank> {
     protected lateinit var eventManager: EventManager
     protected lateinit var imageManager: ImageManager
     protected lateinit var clock: TestClock
-    protected lateinit var game: Game
+    protected lateinit var game: BattleCityGame
 
     protected lateinit var tank: T
 
@@ -210,7 +214,7 @@ abstract class TankTest<T : Tank> {
 
     @Test
     fun `should be in normal state when invincible state ends`() {
-        tank.state = TankStateInvincible(game, tank)
+        tank.state = TankStateInvincible(game, mock(), tank)
         tank.notify(TankStateInvincible.End(tank))
         assertIs<TankStateNormal>(tank.state)
         assertIsNot<TankStateInvincible>(tank.state)
@@ -234,7 +238,7 @@ abstract class TankTest<T : Tank> {
     fun `should subscribe`() {
         verify(eventManager).addSubscriber(
             tank,
-            setOf(
+            arrayOf(
                 Tank.Reload::class,
                 TankStateAppearing.End::class,
                 TankStateInvincible.End::class,
@@ -396,7 +400,7 @@ abstract class TankTest<T : Tank> {
 
         tank.notify(Tank.Reload(tank))
 
-        for (i in 1 until Tank.LONG_COOLDOWN_INTERVAL) {
+        repeat(Tank.LONG_COOLDOWN_INTERVAL - 1) {
             clock.tick(1)
             tank.update()
             tank.shoot()
@@ -420,7 +424,7 @@ abstract class TankTest<T : Tank> {
 
         tank.notify(Tank.Reload(tank))
 
-        for (i in 1 until Tank.SHORT_COOLDOWN_INTERVAL) {
+        repeat (Tank.SHORT_COOLDOWN_INTERVAL - 1) {
             clock.tick(1)
             tank.update()
             tank.shoot()
@@ -440,7 +444,6 @@ abstract class TankTest<T : Tank> {
         tank.shoot()
 
         clock.tick(Tank.SHORT_COOLDOWN_INTERVAL)
-
         tank.update()
         tank.shoot()
 
@@ -450,7 +453,7 @@ abstract class TankTest<T : Tank> {
         tank.notify(Tank.Reload(tank))
         tank.notify(Tank.Reload(tank))
 
-        for (i in Tank.SHORT_COOLDOWN_INTERVAL + 1 until Tank.LONG_COOLDOWN_INTERVAL) {
+        repeat(Tank.LONG_COOLDOWN_INTERVAL - Tank.SHORT_COOLDOWN_INTERVAL - 1) {
             clock.tick(1)
             tank.update()
             tank.shoot()

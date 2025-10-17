@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.EventManager
+import com.kalikov.engine.Keyboard
+import com.kalikov.engine.SoundManager
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -22,7 +25,7 @@ class PauseListenerTest {
 
     @Test
     fun `should subscribe`() {
-        verify(eventManager).addSubscriber(listener, setOf(Keyboard.KeyPressed::class))
+        verify(eventManager).addSubscriber(listener, arrayOf(Keyboard.KeyPressed::class))
     }
 
     @Test
@@ -67,6 +70,6 @@ class PauseListenerTest {
     @Test
     fun `should dispose`() {
         listener.dispose()
-        verify(eventManager).removeSubscriber(listener, setOf(Keyboard.KeyPressed::class))
+        verify(eventManager).removeSubscriber(listener, arrayOf(Keyboard.KeyPressed::class))
     }
 }

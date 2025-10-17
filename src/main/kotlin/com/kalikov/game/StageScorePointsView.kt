@@ -1,9 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Pixel
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.px
+import com.kalikov.engine.times
 import kotlin.math.min
 
 class StageScorePointsView(
-    private val game: Game,
+    private val game: BattleCityGame,
     private val enemyType: EnemyTank.EnemyType,
     private val scores: List<StageScore>,
     private val listener: Script,

@@ -1,7 +1,14 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Animation
+import com.kalikov.engine.Event
+import com.kalikov.engine.ScreenSurface
+import com.kalikov.engine.frameSequenceOf
+import com.kalikov.engine.px
+
 class TankStateAppearing(
-    private val game: Game,
+    private val game: BattleCityGame,
+    pauseManager: PauseManager,
     private val tank: Tank,
     animationInterval: Int = DEFAULT_ANIMATION_INTERVAL
 ) : TankState {
@@ -22,7 +29,7 @@ class TankStateAppearing(
     override val isCollidable get() = false
 
     private val animation = Animation.pauseAware(
-        game.eventManager,
+        pauseManager,
         frameSequenceOf(*animationFrames),
         game.clock,
         animationInterval
@@ -44,6 +51,6 @@ class TankStateAppearing(
     }
 
     override fun dispose() {
-        animation.dispose()
+        animation.stop()
     }
 }

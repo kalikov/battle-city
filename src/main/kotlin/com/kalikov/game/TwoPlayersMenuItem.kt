@@ -1,15 +1,16 @@
 package com.kalikov.game
 
+import com.kalikov.engine.MenuItem
+import com.kalikov.engine.Scene
+
 class TwoPlayersMenuItem(
-    private val game: Game,
-    private val stageManager: StageManager,
-) : MainMenuItem("2 PLAYERS") {
+    private val game: BattleCityGame,
+    private val menuScene: Scene,
+) : MenuItem("2 PLAYERS") {
     override fun execute() {
-        stageManager.setPlayersCount(2)
-        game.eventManager.fireEvent(
-            Scene.Start {
-                StageScene(game, stageManager)
-            }
+        game.stageManager.setPlayersCount(2)
+        game.sceneManager.setNextScene(
+            StageScene(game, menuScene)
         )
     }
 }

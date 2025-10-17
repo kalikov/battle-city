@@ -1,5 +1,8 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ARGB
+import com.kalikov.engine.Blending
+import com.kalikov.engine.BlendingComposite
 import org.junit.jupiter.api.Test
 import java.awt.Color
 import java.awt.image.BufferedImage

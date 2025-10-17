@@ -1,7 +1,10 @@
 package com.kalikov.game
 
+import com.kalikov.engine.Event
+import com.kalikov.engine.Pixel
+
 class EnemyTank private constructor(
-    game: Game,
+    game: BattleCityGame,
     pauseManager: PauseManager,
     x: Pixel,
     y: Pixel,
@@ -14,7 +17,7 @@ class EnemyTank private constructor(
 ) {
     companion object {
         fun create(
-            game: Game,
+            game: BattleCityGame,
             pauseManager: PauseManager,
             x: Pixel,
             y: Pixel,
@@ -90,4 +93,7 @@ class EnemyTank private constructor(
     fun devalue() {
         isValued = false
     }
+
+    override val identity: Int
+        get() = TODO("Not yet implemented")
 }
