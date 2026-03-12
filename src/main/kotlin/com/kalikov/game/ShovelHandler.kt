@@ -16,22 +16,22 @@ class ShovelHandler(
         const val SOLID_DURATION = 18000
         const val BLINK_DURATION = 256
 
-        private val subscriptions = arrayOf<KClass<out Event>>(PowerUpHandler.ShovelStart::class)
+        private val subscriptions = arrayOf<KClass<out Event>>(PowerUpManager.ShovelStart::class)
     }
 
+    override val identity get() = Globals.IDENTITY_SHOVEL_HANDLER
+
     private val solidTimer = PauseAwareTimer(pauseManager, game.clock, solidDuration, ::end)
+
     private val blinkTimer = PauseAwareTimer(pauseManager, game.clock, blinkDuration, ::blink)
-
     private var blinkFrame = 0
-    override val identity: Int
-        get() = TODO("Not yet implemented")
 
-    init {
+    fun activate() {
         game.eventManager.addSubscriber(this, subscriptions)
     }
 
     override fun notify(event: Event) {
-        if (event is PowerUpHandler.ShovelStart) {
+        if (event is PowerUpManager.ShovelStart) {
             start()
         }
     }
@@ -67,7 +67,7 @@ class ShovelHandler(
         blinkTimer.update()
     }
 
-    fun dispose() {
+    fun deactivate() {
         solidTimer.stop()
         blinkTimer.stop()
         game.eventManager.removeSubscriber(this, subscriptions)

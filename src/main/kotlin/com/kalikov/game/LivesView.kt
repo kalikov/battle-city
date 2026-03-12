@@ -19,13 +19,13 @@ class LivesView(
 
     private val romanOne = LazyImage.Blender(
         game.screen,
-        game.imageManager.getImage("roman_one"),
+        game.imageManager.romanOne,
         blending
     )
 
     private val romanTwo = LazyImage.Blender(
         game.screen,
-        game.imageManager.getImage("roman_two"),
+        game.imageManager.romanTwo,
         blending
     )
 

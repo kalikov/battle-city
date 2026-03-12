@@ -4,21 +4,24 @@ import com.kalikov.engine.ScreenSurface
 import kotlin.math.max
 import kotlin.math.min
 
-open class GameStageManager(
+class GameStageManager(
     private val game: BattleCityGame
 ) : StageManager {
     private lateinit var stages: List<Stage>
     private lateinit var defaultConstructionMap: StageMapConfig
     private lateinit var currentConstructionMap: StageMapConfig
 
-    override lateinit var demoStage: Stage
+    private lateinit var demoStage: Stage
+    override var isDemo = false
 
-    override lateinit var players: List<Player>
+    override val players = mutableListOf(Player(game))
 
     private var index = 0
 
     override var highScore: Int = 20000
-        protected set
+        private set
+
+    override var isGameOver: Boolean = false
 
     override var constructionMap: StageMapConfig
         get() = currentConstructionMap
@@ -34,14 +37,17 @@ open class GameStageManager(
 
     override val stageMap: StageMapConfig
         get() {
+            if (isDemo) {
+                return demoStage.map
+            }
             if (currentConstructionMap !== defaultConstructionMap) {
                 return currentConstructionMap
             }
             return stages[index].map
         }
 
-    override val stageEnemySpawnDelay get() = stages[index].enemySpawnDelay
-    override val stageEnemies get() = stages[index].enemies
+    override val stageEnemySpawnDelay get() = if (isDemo) demoStage.enemySpawnDelay else stages[index].enemySpawnDelay
+    override val stageEnemies get() = if (isDemo) demoStage.enemies else stages[index].enemies
 
     override val stageNumber get() = index + 1
 
@@ -52,16 +58,18 @@ open class GameStageManager(
 
         this.defaultConstructionMap = defaultConstructionMap
         this.currentConstructionMap = defaultConstructionMap
-        players = listOf(Player(game))
-        players.forEach { it.activate() }
     }
 
     override fun setPlayersCount(playersCount: Int) {
         if (playersCount == players.size) {
             return
         }
-        players = List(playersCount) { i ->
-            if (i < players.size) players[i] else Player(game, index = i)
+        while (playersCount < players.size) {
+            players.removeLast()
+        }
+        while (playersCount > players.size) {
+            val player = Player(game, index = players.size)
+            players.add(player)
         }
     }
 
@@ -70,6 +78,7 @@ open class GameStageManager(
         currentConstructionMap = defaultConstructionMap
         highScore = max(highScore, players.maxOf { it.score })
         players.forEach { it.reset() }
+        isGameOver = false
     }
 
     override fun resetConstruction() {
@@ -93,7 +102,6 @@ open class GameStageManager(
     }
 
     override fun dispose() {
-        players.forEach { it.deactivate() }
         curtainBackground?.dispose()
     }
 }

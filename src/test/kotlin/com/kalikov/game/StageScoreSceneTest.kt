@@ -42,8 +42,6 @@ class StageScoreSceneTest {
         whenever(game.stageManager.players).thenReturn(listOf(player))
         val scene = StageScoreScene(
             game,
-            listOf(score),
-            false,
             mock(),
         )
 
@@ -96,8 +94,6 @@ class StageScoreSceneTest {
         whenever(game.stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
             game,
-            listOf(scoreOne, scoreTwo),
-            false,
             mock(),
         )
 
@@ -153,8 +149,6 @@ class StageScoreSceneTest {
         whenever(game.stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
             game,
-            listOf(scoreOne, scoreTwo),
-            false,
             mock(),
         )
 

@@ -15,11 +15,34 @@ class MainSceneProvider(
         createLoadingScene()
     }
 
-    override val menuScene: Scene by sceneFactory {
+    override val menuScene: MenuScene by sceneFactory {
         createMenuScene()
     }
+
+    override val resetMenuScene get() = menuScene.resetMenuScene
+
     override val constructionScene: Scene by sceneFactory {
         createConstructionScene()
+    }
+
+    override val demoStageScene: Scene by sceneFactory {
+        createDemoStageScene()
+    }
+
+    override val stageScene: Scene by sceneFactory {
+        createStageScene()
+    }
+
+    override val stageScoreScene: Scene by sceneFactory {
+        createStageScoreScene()
+    }
+
+    override val highScoreScene: Scene by sceneFactory {
+        createHighScoreScene()
+    }
+
+    override val gameOverScene: Scene by sceneFactory {
+        createGameOverScene()
     }
 
     override fun destroy() {
@@ -62,6 +85,42 @@ class MainSceneProvider(
         return ConstructionScene(
             game,
             menuScene,
+        )
+    }
+
+    private fun createDemoStageScene(): DemoStageScene {
+        return DemoStageScene(
+            game,
+            menuScene,
+            resetMenuScene,
+        )
+    }
+
+    private fun createStageScene(): StageScene {
+        return StageScene(
+            game,
+            this,
+        )
+    }
+
+    private fun createStageScoreScene(): StageScoreScene {
+        return StageScoreScene(
+            game,
+            this,
+        )
+    }
+
+    private fun createHighScoreScene(): HighScoreScene {
+        return HighScoreScene(
+            game,
+            resetMenuScene,
+        )
+    }
+
+    private fun createGameOverScene(): GameOverScene {
+        return GameOverScene(
+            game,
+            this,
         )
     }
 }

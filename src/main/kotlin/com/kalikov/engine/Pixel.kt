@@ -1,7 +1,5 @@
 package com.kalikov.engine
 
-import com.kalikov.game.Globals
-import com.kalikov.game.Tile
 import kotlinx.serialization.Serializable
 import kotlin.math.max
 import kotlin.math.min
@@ -73,8 +71,6 @@ value class Pixel(private val value: Int) {
 
     fun toDouble() = value.toDouble()
 
-    fun toTile() = Tile(value / Globals.TILE_SIZE.value)
-
     override fun toString(): String {
         return "${value}px"
     }
@@ -84,6 +80,9 @@ operator fun Int.times(p: Pixel): Pixel {
     return Pixel(this * p.toInt())
 }
 
+inline val Int.px get() = Pixel(this)
+
+@Deprecated("use Kotlin px syntax")
 fun px(value: Int) = Pixel(value)
 
 fun min(a: Pixel, b: Pixel): Pixel {

@@ -7,10 +7,10 @@ import com.kalikov.engine.ScreenSurface
 class GameField(
     private val game: BattleCityGame,
     private val pauseManager: PauseManager,
-    private val mainContainer: SpriteContainer,
-    private val overlayContainer: SpriteContainer,
-    x: Pixel = t(2).toPixel(),
-    y: Pixel = t(2).toPixel(),
+    private val content: Drawable,
+    private val overlay: Drawable,
+    x: Pixel = 2.tiles.toPixel(),
+    y: Pixel = 2.tiles.toPixel(),
 ) : GameFieldHandle, ShovelWallBuilder {
     companion object {
         val SIZE_IN_TILES = t(26)
@@ -33,7 +33,7 @@ class GameField(
 
     fun load(map: StageMapConfig, playersCount: Int) {
         val baseSizeInTiles = Base.SIZE.toTile()
-        for (dx in -1..baseSizeInTiles.toInt()) {
+        for (dx in -1 .. baseSizeInTiles.toInt()) {
             addBaseWallBuildTile(map.base.x + dx, map.base.y - 1)
             addBaseWallBuildTile(map.base.x + dx, map.base.y + baseSizeInTiles)
         }
@@ -41,11 +41,11 @@ class GameField(
             addBaseWallBuildTile(map.base.x - 1, map.base.y + dy)
             addBaseWallBuildTile(map.base.x + baseSizeInTiles, map.base.y + dy)
         }
-        for (dx in -2..baseSizeInTiles.toInt() + 1) {
+        for (dx in -2 .. baseSizeInTiles.toInt() + 1) {
             addBaseWallDestroyTile(map.base.x + dx, map.base.y - 2)
             addBaseWallDestroyTile(map.base.x + dx, map.base.y + baseSizeInTiles + 1)
         }
-        for (dy in -1..baseSizeInTiles.toInt()) {
+        for (dy in -1 .. baseSizeInTiles.toInt()) {
             addBaseWallDestroyTile(map.base.x - 2, map.base.y + dy)
             addBaseWallDestroyTile(map.base.x + baseSizeInTiles + 1, map.base.y + dy)
         }
@@ -117,9 +117,6 @@ class GameField(
 
     fun update() {
         ground.update()
-
-        mainContainer.forEach { it.update() }
-        overlayContainer.forEach { it.update() }
     }
 
     fun draw(surface: ScreenSurface) {
@@ -130,19 +127,11 @@ class GameField(
 
         base.draw(surface)
 
-        mainContainer.forEach {
-            if (!it.isDestroyed) {
-                it.draw(surface)
-            }
-        }
+        content.draw(surface)
 
         trees.draw(surface)
 
-        overlayContainer.forEach {
-            if (!it.isDestroyed) {
-                it.draw(surface)
-            }
-        }
+        overlay.draw(surface)
     }
 
     override fun buildBrickWall() {

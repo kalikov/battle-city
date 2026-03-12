@@ -10,9 +10,9 @@ import com.kalikov.engine.times
 class PowerUp(
     private val game: BattleCityGame,
     position: PixelPoint,
-) : Sprite(game.eventManager, position.x, position.y, SIZE_IN_PIXELS, SIZE_IN_PIXELS) {
+) : AbstractSprite(position.x, position.y, SIZE_IN_PIXELS, SIZE_IN_PIXELS) {
     companion object {
-        val SIZE_IN_TILES = t(2)
+        val SIZE_IN_TILES = 2.tiles
         val SIZE_IN_PIXELS = SIZE_IN_TILES.toPixel()
     }
 
@@ -35,8 +35,6 @@ class PowerUp(
 
     init {
         LeaksDetector.add(this)
-
-        z = 500
     }
 
     override fun draw(surface: ScreenSurface) {
@@ -55,7 +53,7 @@ class PowerUp(
     fun pick(tank: PlayerTank) {
         if (!isDestroyed) {
             game.eventManager.fireEvent(Pick(this, tank))
-            game.eventManager.fireEvent(Player.Score(tank.player, this.value))
+            tank.player.score(value)
             destroy()
         }
     }

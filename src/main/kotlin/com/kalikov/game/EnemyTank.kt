@@ -1,6 +1,5 @@
 package com.kalikov.game
 
-import com.kalikov.engine.Event
 import com.kalikov.engine.Pixel
 
 class EnemyTank private constructor(
@@ -9,6 +8,7 @@ class EnemyTank private constructor(
     x: Pixel,
     y: Pixel,
     val enemyType: EnemyType,
+    val isFlashing: Boolean = false,
 ) : Tank(
     game,
     pauseManager,
@@ -22,10 +22,17 @@ class EnemyTank private constructor(
             x: Pixel,
             y: Pixel,
             enemyType: EnemyType,
-        ) = init(EnemyTank(game, pauseManager, x, y, enemyType))
-    }
+            isFlashing: Boolean = false,
+        ) = init(EnemyTank(game, pauseManager, x, y, enemyType, isFlashing))
 
-    data class Score(val tank: EnemyTank, val player: Player) : Event()
+        private val FLASHING_COLORS = intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)
+        private val ARMOR_COLORS = arrayOf(intArrayOf(0, 2), intArrayOf(0, 3), intArrayOf(2, 3), intArrayOf(0))
+        private val FLASHING_ARMOR_COLORS = ARMOR_COLORS.copyOf()
+
+        init {
+            FLASHING_ARMOR_COLORS[0] = FLASHING_COLORS
+        }
+    }
 
     enum class EnemyType(val score: Int, val index: Int) {
         BASIC(100, 0),
@@ -41,19 +48,23 @@ class EnemyTank private constructor(
             return typeOffset + color.getColor()
         }
 
-    private var isValued = true
+    var isValued = true
+        private set
     val value: Int get() = if (isValued) this.enemyType.score else 0
 
-    var color = TankColor(game.clock)
-
     var hitLimit = 1
-    private var hit = 0
 
+    private var hit = 0
     val isHit get() = hit > 0
 
-    override fun stateAppearingEnd() {
-        state = TankStateNormal(game.imageManager, this)
-        direction = Direction.DOWN
+    private val color = TankColor(game.clock)
+
+    init {
+        if (enemyType == EnemyType.ARMOR) {
+            color.colors = if (isFlashing) FLASHING_ARMOR_COLORS else ARMOR_COLORS
+        } else if (isFlashing) {
+            color.colors[0] = FLASHING_COLORS
+        }
     }
 
     override fun updateHook() {
@@ -73,16 +84,9 @@ class EnemyTank private constructor(
             destroy()
             val bulletTank = bullet.tank
             if (bulletTank is PlayerTank) {
-                game.eventManager.fireEvent(Player.Score(bulletTank.player, this.value))
-                game.eventManager.fireEvent(Score(this, bulletTank.player))
+                bulletTank.player.score(value)
+                bulletTank.player.stageScore.increment(this)
             }
-        }
-    }
-
-    override fun destroyHook() {
-        super.destroyHook()
-        if (isValued) {
-            game.soundManager.enemyExplosion.play()
         }
     }
 
@@ -93,7 +97,4 @@ class EnemyTank private constructor(
     fun devalue() {
         isValued = false
     }
-
-    override val identity: Int
-        get() = TODO("Not yet implemented")
 }

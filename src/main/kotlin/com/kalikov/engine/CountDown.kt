@@ -1,4 +1,4 @@
-package com.kalikov.game
+package com.kalikov.engine
 
 open class CountDown(val value: Int, private val callback: Runnable? = null) {
     private var tick = 0

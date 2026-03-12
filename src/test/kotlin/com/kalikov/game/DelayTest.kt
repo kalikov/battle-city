@@ -1,5 +1,7 @@
 package com.kalikov.game
 
+import com.kalikov.engine.script.Delay
+import com.kalikov.engine.script.ScriptCallback
 import com.kalikov.util.TestClock
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock

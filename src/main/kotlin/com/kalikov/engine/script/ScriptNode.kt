@@ -1,4 +1,4 @@
-package com.kalikov.game
+package com.kalikov.engine.script
 
 interface ScriptNode {
     val isDisposable: Boolean

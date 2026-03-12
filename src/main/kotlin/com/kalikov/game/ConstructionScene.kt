@@ -6,7 +6,6 @@ import com.kalikov.engine.EventSubscriber
 import com.kalikov.engine.Keyboard
 import com.kalikov.engine.Scene
 import com.kalikov.engine.ScreenSurface
-import com.kalikov.engine.px
 import kotlin.reflect.KClass
 
 class ConstructionScene(
@@ -21,28 +20,24 @@ class ConstructionScene(
 
     override val identity get() = Globals.IDENTITY_CONSTRUCTION_SCENE
 
-    @Suppress("JoinDeclarationAndAssignment")
-    private val mainContainer: SpriteContainer
-
-    private val overlayContainer: SpriteContainer
-
     private val cursor: Cursor
 
-    private val gameField: GameField
+    private val gameField: GameField = GameField(
+        game,
+        NoopPauseManager,
+        NoopDrawable,
+        NoopDrawable,
+    )
+
     private val cursorController: CursorController
 
     init {
-        mainContainer = DefaultSpriteContainer(game.eventManager)
-        overlayContainer = DefaultSpriteContainer(game.eventManager)
-        gameField = GameField(game, NoopPauseManager, mainContainer, overlayContainer)
-
         cursor = Cursor(
             game,
             Builder(gameField),
             gameField.bounds.x,
             gameField.bounds.y,
         )
-//        overlayContainer.addSprite(cursor)
 
         cursorController = CursorController(game.eventManager, cursor, gameField.bounds, game.clock)
     }
@@ -114,7 +109,5 @@ class ConstructionScene(
     }
 
     override fun destroy() {
-        mainContainer.dispose()
-        overlayContainer.dispose()
     }
 }

@@ -6,22 +6,33 @@ abstract class LazyImage(
     val height: Pixel,
 ) {
     private var image: ScreenSurface? = null
+    private var redraw = false
 
     val target: ScreenSurface
         get() {
-            return image ?: run {
-                draw()
-                image!!
-            }
+            return draw()
         }
 
-    fun draw() {
-        if (image == null) {
+    private fun draw(): ScreenSurface {
+        return image?.let {
+            if (redraw) {
+                it.clear(ARGB.TRANSPARENT)
+                draw(it)
+                redraw = false
+            }
+            it
+        } ?: run {
             val surface = screen.createSurface(width, height)
             surface.clear(ARGB.TRANSPARENT)
             draw(surface)
             image = surface
+            redraw = false
+            surface
         }
+    }
+
+    fun redraw() {
+        redraw = true
     }
 
     protected abstract fun draw(target: ScreenSurface)
@@ -37,7 +48,7 @@ abstract class LazyImage(
         val blending: Blending,
     ) : LazyImage(screen, source.width, source.height) {
         override fun draw(target: ScreenSurface) {
-            target.draw(px(0), px(0), source, blending)
+            target.draw(0.px, 0.px, source, blending)
         }
     }
 

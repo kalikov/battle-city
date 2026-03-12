@@ -1,8 +1,11 @@
 package com.kalikov.game
 
+import com.kalikov.engine.CountDown
 import com.kalikov.engine.Event
 import com.kalikov.engine.Pixel
 import java.util.EnumSet
+import kotlin.math.max
+import kotlin.math.min
 
 class PlayerTank private constructor(
     game: BattleCityGame,
@@ -28,11 +31,13 @@ class PlayerTank private constructor(
         ) = init(PlayerTank(game, pauseManager, x, y, player, options))
     }
 
-    data class PlayerDestroyed(val tank: PlayerTank) : Event()
-    data class PlayerMoved(val tank: PlayerTank) : Event()
-
     var upgradeLevel = 0
-        private set
+        set(value) {
+            bulletSpeed = if (value >= 1) Bullet.Speed.FAST else Bullet.Speed.NORMAL
+            bulletsLimit = if (value >= 2) 2 else 1
+            bulletType = if (value >= 3) Bullet.Type.ENHANCED else Bullet.Type.REGULAR
+            field = max(0, min(3, value))
+        }
 
     val isSlipping get() = !slipCountDown.isStopped
 
@@ -87,24 +92,11 @@ class PlayerTank private constructor(
         }
     }
 
-    override fun stateAppearingEnd() {
-        state = TankStateInvincible(game, pauseManager, this)
-        direction = Direction.UP
-    }
-
     override fun updateHook() {
         super.updateHook()
         if (shooting) {
             shoot()
         }
-    }
-
-    override fun destroyHook() {
-        super.destroyHook()
-
-        game.eventManager.fireEvent(PlayerDestroyed(this))
-
-        game.soundManager.playerExplosion.play()
     }
 
     override fun hitHook(bullet: BulletHandle) {
@@ -122,12 +114,6 @@ class PlayerTank private constructor(
         }
     }
 
-    override fun hitRectHook() {
-        super.hitRectHook()
-
-        game.eventManager.fireEvent(PlayerMoved(this))
-    }
-
     override fun startShooting() {
         shooting = true
         shoot()
@@ -142,14 +128,5 @@ class PlayerTank private constructor(
             return
         }
         upgradeLevel++
-
-        when (upgradeLevel) {
-            1 -> bulletSpeed = Bullet.Speed.FAST
-            2 -> bulletsLimit = 2
-            3 -> bulletType = Bullet.Type.ENHANCED
-        }
     }
-
-    override val identity: Int
-        get() = TODO("Not yet implemented")
 }

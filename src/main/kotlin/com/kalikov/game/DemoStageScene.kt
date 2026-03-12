@@ -9,9 +9,7 @@ import com.kalikov.engine.Scene
 import com.kalikov.engine.ScreenSurface
 import java.util.EnumSet
 
-//object MainDemoStageScene : DemoStageScene(MainGame, MainMenuScene)
-
-open class DemoStageScene(
+class DemoStageScene(
     private val game: BattleCityGame,
     private val exitScene: Scene,
     private val nextScene: Scene,
@@ -21,17 +19,16 @@ open class DemoStageScene(
             Keyboard.KeyPressed::class,
             BaseExplosion.Destroyed::class,
             Player.OutOfLives::class,
-            EnemyFactory.LastEnemyDestroyed::class,
+            GameEnemyTanksManager.LastEnemyDestroyed::class,
         )
     }
 
-    private val mainContainer: SpriteContainer
-    private val overlayContainer: SpriteContainer
+    override val identity get() = Globals.IDENTITY_DEMO_SCENE
 
     private val gameField: GameField
     private val gameFieldController: GameFieldCommonController
 
-    private val enemyFactory: EnemyFactory
+    private val enemyTanksManager: GameEnemyTanksManager
 
     private val enemyFactoryView: EnemyFactoryView
 
@@ -41,7 +38,15 @@ open class DemoStageScene(
 
     private val players: List<Player>
     private val playersTankControllers: List<AIPlayerTankController>
-    private val playersTankFactories: List<PlayerTankFactory>
+    private val playerTanksManager: GamePlayerTanksManager
+
+    private val content = object : Drawable {
+        override fun draw(surface: ScreenSurface) = drawContent(surface)
+    }
+
+    private val overlay = object : Drawable {
+        override fun draw(surface: ScreenSurface) = drawOverlay(surface)
+    }
 
     init {
         LeaksDetector.add(this)
@@ -50,54 +55,44 @@ open class DemoStageScene(
             Player(game, index = i)
         }
 
-        mainContainer = DefaultSpriteContainer(game.eventManager)
-        overlayContainer = DefaultSpriteContainer(game.eventManager)
+        gameField = GameField(
+            game,
+            NoopPauseManager,
+            content,
+            overlay,
+        )
 
-        val demoStage = game.stageManager.demoStage
+        enemyTanksManager = GameEnemyTanksManager(
+            game,
+            NoopPauseManager,
+            gameField.bounds,
+        )
 
-        gameField = GameField(game, NoopPauseManager, mainContainer, overlayContainer)
+        playerTanksManager = GamePlayerTanksManager(
+            game,
+            NoopPauseManager,
+            players,
+            gameField.bounds,
+            EnumSet.of(PlayerTankOption.FRIENDLY_FIRE_INVINCIBLE),
+        )
+
+        playersTankControllers = players.map { player ->
+            AIPlayerTankController(game, player, gameField, playerTanksManager, enemyTanksManager)
+        }
+
         gameFieldController = GameFieldCommonController(
             game,
             gameField,
             NoopPauseManager,
-            mainContainer,
-            overlayContainer,
-            demoStage.map.base
+            playerTanksManager,
+            enemyTanksManager,
         )
-        gameField.load(demoStage.map, players.size)
-
-        enemyFactory = EnemyFactory(
-            game,
-            NoopPauseManager,
-            mainContainer,
-            demoStage.map.enemySpawnPoints.map {
-                it.toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y)
-            },
-            demoStage.enemies,
-            demoStage.enemySpawnDelay
-        )
-
-        playersTankControllers = players.map { player ->
-            AIPlayerTankController(game, player, gameField)
-        }
-        playersTankFactories = players.mapIndexed { index, player ->
-            val factory = PlayerTankFactory(
-                game,
-                NoopPauseManager,
-                mainContainer,
-                demoStage.map.playerSpawnPoints[index].toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y),
-                player,
-                EnumSet.of(PlayerTankOption.FRIENDLY_FIRE_INVINCIBLE)
-            )
-            factory.init(player.upgradeLevel)
-            factory
-        }
 
         enemyFactoryView = EnemyFactoryView(
             game.imageManager,
-            enemyFactory,
+            enemyTanksManager,
             gameField.bounds.right + 1 + Globals.TILE_SIZE,
-            gameField.bounds.y + Globals.TILE_SIZE
+            gameField.bounds.y + Globals.TILE_SIZE,
         )
 
         livesView = LivesView(
@@ -115,13 +110,55 @@ open class DemoStageScene(
         )
     }
 
+    override fun activate() {
+        game.stageManager.isDemo = true
+
+        game.soundManager.enabled = false
+
+        gameField.load(game.stageManager.stageMap, players.size)
+
+        game.eventManager.addSubscriber(this, subscriptions)
+
+        players.forEach {
+            it.reset()
+        }
+
+        playerTanksManager.activate()
+        playersTankControllers.forEach {
+            it.activate()
+        }
+
+        enemyTanksManager.activate()
+
+        gameFieldController.activate()
+    }
+
+    override fun deactivate() {
+        gameFieldController.deactivate()
+
+        enemyTanksManager.deactivate()
+
+        playersTankControllers.forEach {
+            it.deactivate()
+        }
+        playerTanksManager.deactivate()
+
+        gameField.dispose()
+
+        game.eventManager.removeSubscriber(this, subscriptions)
+
+        game.stageManager.isDemo = false
+        game.soundManager.enabled = true
+    }
+
     override fun update() {
         playersTankControllers.forEach { it.update() }
 
         gameField.update()
-        gameFieldController.update()
+        playerTanksManager.update()
+        enemyTanksManager.update()
 
-        enemyFactory.update()
+        gameFieldController.update()
     }
 
     override fun draw(surface: ScreenSurface) {
@@ -137,8 +174,16 @@ open class DemoStageScene(
         stageNumberView.draw(surface)
     }
 
-    override val identity: Int
-        get() = TODO("Not yet implemented")
+    private fun drawContent(surface: ScreenSurface) {
+        enemyTanksManager.draw(surface)
+        playerTanksManager.draw(surface)
+
+        gameFieldController.drawContent(surface)
+    }
+
+    private fun drawOverlay(surface: ScreenSurface) {
+        gameFieldController.drawOverlay(surface)
+    }
 
     override fun notify(event: Event) {
         when (event) {
@@ -148,7 +193,7 @@ open class DemoStageScene(
 
             is Player.OutOfLives -> onPlayerOutOfLives()
             is BaseExplosion.Destroyed -> stopDemo(false)
-            is EnemyFactory.LastEnemyDestroyed -> stopDemo(false)
+            is GameEnemyTanksManager.LastEnemyDestroyed -> stopDemo(false)
             else -> Unit
         }
     }
@@ -173,38 +218,15 @@ open class DemoStageScene(
         }
     }
 
-    override fun activate() {
-        game.soundManager.enabled = false
-
-        game.eventManager.addSubscriber(this, subscriptions)
-
-        players.forEach {
-            it.reset()
-            it.activate()
-        }
-    }
-
-    override fun deactivate() {
-        players.forEach { it.deactivate() }
-
-        game.eventManager.removeSubscriber(this, subscriptions)
-
-        game.soundManager.enabled = true
-    }
-
     override fun destroy() {
         livesView.dispose()
 
-        playersTankFactories.forEach { it.dispose() }
+        playerTanksManager.dispose()
         playersTankControllers.forEach { it.dispose() }
 
-        enemyFactory.dispose()
+        enemyTanksManager.dispose()
 
         gameFieldController.dispose()
-        gameField.dispose()
-
-        mainContainer.dispose()
-        overlayContainer.dispose()
 
         LeaksDetector.remove(this)
     }

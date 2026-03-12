@@ -2,8 +2,8 @@ package com.kalikov.game
 
 import com.kalikov.engine.Animation
 import com.kalikov.engine.Event
+import com.kalikov.engine.FrameSequence
 import com.kalikov.engine.ScreenSurface
-import com.kalikov.engine.frameSequenceOf
 import com.kalikov.engine.px
 
 class TankStateAppearing(
@@ -30,11 +30,11 @@ class TankStateAppearing(
 
     private val animation = Animation.pauseAware(
         pauseManager,
-        frameSequenceOf(*animationFrames),
+        FrameSequence(animationFrames),
         game.clock,
         animationInterval
     )
-    private val image = game.imageManager.getImage("appear")
+    private val image = game.imageManager.appearing
 
     override fun update() {
         if (!animation.isRunning) {
@@ -47,7 +47,7 @@ class TankStateAppearing(
     }
 
     override fun draw(surface: ScreenSurface) {
-        surface.draw(tank.x, tank.y, image, tank.width * (animation.frame - 1), px(0), tank.width, tank.height)
+        surface.draw(tank.x, tank.y, image, tank.width * (animation.frame - 1), 0.px, tank.width, tank.height)
     }
 
     override fun dispose() {

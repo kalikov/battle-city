@@ -12,26 +12,32 @@ class MovementController(
     private val game: BattleCityGame,
     private val gameField: GameFieldHandle,
     private val pauseManager: PauseManager,
-    private val mainContainer: SpriteContainer,
-    private val overlayContainer: SpriteContainer,
+    private val bulletsManager: BulletsManager,
+    private val playerTanksManager: PlayerTanksManager,
+    private val enemyTanksManager: EnemyTanksManager,
+    private val powerUpManager: PowerUpManager,
 ) : EventSubscriber {
     companion object {
         const val UPDATE_INTERVAL = 4
 
         private val subscriptions = arrayOf(
-            EnemyFactory.EnemyCreated::class,
-            EnemyFactory.LastEnemyDestroyed::class,
-            SpriteContainer.Added::class,
+            GameEnemyTanksManager.EnemyCreated::class,
+            GameEnemyTanksManager.LastEnemyDestroyed::class,
+            GamePlayerTanksManager.PlayerTankCreated::class,
+            PowerUpManager.PowerUpCreated::class,
+            Tank.Shoot::class,
             Level.GameOver::class,
         )
     }
+
+    override val identity get() = Globals.IDENTITY_MOVEMENT_CONTROLLER
 
     private val timer = BasicTimer(game.clock, UPDATE_INTERVAL, ::move)
 
     private var gameOver = false
     private var isEnemyMovement = false
 
-    init {
+    fun activate() {
         game.eventManager.addSubscriber(this, subscriptions)
     }
 
@@ -52,11 +58,9 @@ class MovementController(
     }
 
     private fun moveBullets() {
-        mainContainer.forEach { sprite ->
-            if (sprite is Bullet && !sprite.isDestroyed) {
-                if (sprite.move()) {
-                    detectCollisionsForBullet(sprite)
-                }
+        bulletsManager.forEach { bullet ->
+            if (!bullet.isDestroyed && bullet.move()) {
+                detectCollisionsForBullet(bullet)
             }
         }
     }
@@ -67,40 +71,43 @@ class MovementController(
             return
         }
         var explode: Boolean? = null
-        var tankHit = false
-        if (gameField.walls.hit(bullet)) {
-            explode = true
-        }
-        if (gameField.base.bounds.intersects(bullet.bounds)) {
-            if (!gameField.base.isHit) {
-                gameField.base.hit()
-                explode = true
+        bulletsManager.iterateWhile { sprite ->
+            if (bullet !== sprite && !sprite.isDestroyed && bulletIntersects(bullet, sprite)) {
+                sprite.hit(false)
+                explode = false
             }
+            explode == null
         }
-        mainContainer.forEach { sprite ->
-            if (bullet !== sprite && !sprite.isDestroyed) {
-                if (sprite is Tank && bullet.bounds.intersects(sprite.hitRect) && !tankHit) {
-                    if (isBulletCollidable(bullet, sprite)) {
-                        explode = if (sprite.canBeDestroyed) {
-                            sprite.hit(bullet)
-                            tankHit = true
-                            true
-                        } else {
-                            explode == true
-                        }
-                    }
-                } else if (sprite is Bullet && bulletIntersects(bullet, sprite)) {
-                    sprite.hit(false)
-                    explode = explode == true
+
+        fun detectCollisionForTank(tank: Tank) {
+            if (!tank.isDestroyed && tank.isCollidable && bullet.tank !== tank && bullet.bounds.intersects(tank.hitRect)) {
+                explode = if (tank.canBeDestroyed) {
+                    tank.hit(bullet)
+                    true
+                } else {
+                    explode == true
                 }
             }
         }
-        explode?.let { bullet.hit(it) }
-    }
 
-    private fun isBulletCollidable(bullet: Bullet, tank: Tank): Boolean {
-        val bulletTank = bullet.tank
-        return bulletTank !== tank && (tank !is EnemyTank || bulletTank !is EnemyTank) && tank.isCollidable
+        if (explode == null && bullet.tank !is EnemyTank) {
+            enemyTanksManager.iterateWhile { tank ->
+                detectCollisionForTank(tank)
+                explode == null
+            }
+        }
+        if (explode == null) {
+            playerTanksManager.iterateWhile { tank ->
+                detectCollisionForTank(tank)
+                explode == null
+            }
+        }
+        if (explode == null && !gameField.base.isHit && gameField.base.bounds.intersects(bullet.bounds)) {
+            gameField.base.hit()
+            explode = true
+        }
+        explode = if (gameField.walls.hit(bullet)) true else explode
+        explode?.let { bullet.hit(it) }
     }
 
     private fun bulletIntersects(bullet1: Bullet, bullet2: Bullet): Boolean {
@@ -113,12 +120,15 @@ class MovementController(
 
     private fun moveTanks() {
         var isPlayerMovement = false
-        mainContainer.forEach { sprite ->
-            if (sprite is Tank && !sprite.isDestroyed) {
-                move(sprite)
-                if (sprite.canMove && !sprite.isIdle && sprite is PlayerTank) {
-                    isPlayerMovement = true
-                }
+        playerTanksManager.forEach { tank ->
+            if (!tank.isDestroyed && tank.canMove) {
+                isPlayerMovement = isPlayerMovement || !tank.isIdle
+                move(tank)
+            }
+        }
+        enemyTanksManager.forEach { tank ->
+            if (!tank.isDestroyed && tank.canMove) {
+                move(tank)
             }
         }
         if (isPlayerMovement && !gameOver) {
@@ -138,53 +148,42 @@ class MovementController(
         }
     }
 
-    private fun move(tank: Tank) {
-        if (!tank.canMove) {
-            return
+    private fun move(tank: PlayerTank) {
+        val isSlippingMove = tank.isSlipping
+        if ((!tank.isIdle || isSlippingMove) && tank.move { !hasCollisionForTank(tank) }) {
+            detectPowerUpCollisionForTank(tank)
+            detectBulletCollisionForTank(tank)
+            if (isTankOnIce(tank)) {
+                if (!isSlippingMove) {
+                    tank.startSlipping()
+                }
+            } else {
+                tank.stopSlipping()
+            }
         }
-        when (tank) {
-            is EnemyTank -> {
-                if (!tank.isIdle && tank.move { !hasCollisionForTank(tank) }) {
-                    detectBulletCollisionForTank(tank)
-                }
-            }
+    }
 
-            is PlayerTank -> {
-                val isSlippingMove = tank.isSlipping
-                if ((!tank.isIdle || isSlippingMove) && tank.move { !hasCollisionForTank(tank) }) {
-                    detectPowerUpCollisionForTank(tank)
-                    detectBulletCollisionForTank(tank)
-                    if (isTankOnIce(tank)) {
-                        if (!isSlippingMove) {
-                            tank.startSlipping()
-                        }
-                    } else {
-                        tank.stopSlipping()
-                    }
-                }
-            }
+    private fun move(tank: EnemyTank) {
+        if (!tank.isIdle && tank.move { !hasCollisionForTank(tank) }) {
+            detectBulletCollisionForTank(tank)
         }
     }
 
     private fun detectPowerUpCollisionForTank(tank: PlayerTank) {
-        overlayContainer.iterateWhile { sprite ->
-            if (sprite is PowerUp) {
-                if (sprite.bounds.intersects(tank.hitRect)) {
-                    sprite.pick(tank)
-                }
-                return@iterateWhile false
+        powerUpManager.powerUp?.let { sprite ->
+            if (sprite.bounds.intersects(tank.hitRect)) {
+                sprite.pick(tank)
             }
-            true
         }
     }
 
     private fun detectBulletCollisionForTank(tank: Tank) {
-        mainContainer.iterateWhile { sprite ->
-            if (sprite is Bullet && isBulletCollision(sprite, tank) && tank.hitRect.intersects(sprite.bounds)) {
+        bulletsManager.iterateWhile { bullet ->
+            if (isBulletCollision(bullet, tank) && tank.hitRect.intersects(bullet.bounds)) {
                 if (tank.canBeDestroyed) {
-                    tank.hit(sprite)
+                    tank.hit(bullet)
                 }
-                sprite.hit(tank.canBeDestroyed)
+                bullet.hit(tank.canBeDestroyed)
                 if (tank.isDestroyed) {
                     return@iterateWhile false
                 }
@@ -236,7 +235,8 @@ class MovementController(
         ) {
             return true
         }
-        return !mainContainer.iterateWhile { sprite ->
+
+        fun detectCollisionForTank(sprite: Tank): Boolean {
             if (tank !== sprite && !sprite.isDestroyed) {
                 if (tank.direction == Direction.DOWN && sprite.bottom > tank.bottom ||
                     tank.direction == Direction.UP && sprite.top < tank.top ||
@@ -244,11 +244,17 @@ class MovementController(
                     tank.direction == Direction.RIGHT && sprite.right > tank.right
                 ) {
                     if (isTankCollision(sprite) && intersects(tank.bounds, sprite.hitRect, dx, dy)) {
-                        return@iterateWhile false
+                        return true
                     }
                 }
             }
-            true
+            return false
+        }
+
+        return !playerTanksManager.iterateWhile { sprite ->
+            !detectCollisionForTank(sprite)
+        } || !enemyTanksManager.iterateWhile { sprite ->
+            !detectCollisionForTank(sprite)
         }
     }
 
@@ -258,7 +264,7 @@ class MovementController(
     }
 
     @OptIn(ExperimentalContracts::class)
-    private fun isTankCollision(target: Sprite): Boolean {
+    private fun isTankCollision(target: AbstractSprite): Boolean {
         contract {
             returns(true) implies (target is Tank)
         }
@@ -271,34 +277,29 @@ class MovementController(
     }
 
     private fun detectCollisionsForPowerUp(powerUp: PowerUp) {
-        mainContainer.iterateWhile { sprite ->
-            if (powerUp !== sprite) {
-                if (sprite is PlayerTank && powerUp.bounds.intersects(sprite.bounds)) {
-                    powerUp.pick(sprite)
-                    return@iterateWhile false
-                }
+        playerTanksManager.iterateWhile { sprite ->
+            if (!powerUp.bounds.intersects(sprite.bounds)) {
+                true
+            } else {
+                powerUp.pick(sprite)
+                false
             }
-            true
         }
     }
 
-    override val identity: Int
-        get() = TODO("Not yet implemented")
-
     override fun notify(event: Event) {
         when (event) {
-            is SpriteContainer.Added -> {
-                when (event.sprite) {
-                    is Bullet -> detectCollisionsForBullet(event.sprite)
-                    is Tank -> {
-                        if (event.sprite is PlayerTank) {
-                            detectPowerUpCollisionForTank(event.sprite)
-                        }
-                        detectBulletCollisionForTank(event.sprite)
-                    }
+            is GamePlayerTanksManager.PlayerTankCreated -> {
+                detectPowerUpCollisionForTank(event.tank)
+                detectBulletCollisionForTank(event.tank)
+            }
 
-                    is PowerUp -> detectCollisionsForPowerUp(event.sprite)
-                }
+            is Tank.Shoot -> {
+                detectCollisionsForBullet(event.bullet)
+            }
+
+            is PowerUpManager.PowerUpCreated -> {
+                detectCollisionsForPowerUp(event.powerUp)
             }
 
             is Level.GameOver -> {
@@ -306,11 +307,12 @@ class MovementController(
                 stopMovementSound()
             }
 
-            is EnemyFactory.EnemyCreated -> {
+            is GameEnemyTanksManager.EnemyCreated -> {
                 isEnemyMovement = true
+                detectBulletCollisionForTank(event.enemy)
             }
 
-            is EnemyFactory.LastEnemyDestroyed -> {
+            is GameEnemyTanksManager.LastEnemyDestroyed -> {
                 isEnemyMovement = false
             }
 
@@ -323,7 +325,7 @@ class MovementController(
         game.soundManager.enemyMovement.stop()
     }
 
-    fun dispose() {
+    fun deactivate() {
         timer.stop()
 
         stopMovementSound()

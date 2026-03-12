@@ -1,6 +1,7 @@
 package com.kalikov.game
 
 import com.kalikov.engine.ARGB
+import com.kalikov.engine.script.Moveable
 import com.kalikov.engine.Pixel
 import com.kalikov.engine.ScreenSurface
 import com.kalikov.engine.px

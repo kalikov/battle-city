@@ -1,4 +1,4 @@
-package com.kalikov.game
+package com.kalikov.engine.script
 
 import com.kalikov.engine.px
 import org.junit.jupiter.api.BeforeEach
@@ -8,25 +8,25 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 
-class MoveHorzTest {
+class MoveVertTest {
     private lateinit var moveable: Moveable
-    private lateinit var move: MoveHorz
+    private lateinit var move: MoveVert
 
     @BeforeEach
     fun beforeEach() {
         moveable = mock()
-        move = MoveHorz(moveable)
+        move = MoveVert(moveable)
     }
 
     @Test
-    fun `should get moveable x property`() {
-        whenever(moveable.x).thenReturn(px(10))
+    fun `should get moveable y property`() {
+        whenever(moveable.y).thenReturn(px(10))
         assertEquals(10, move.value)
     }
 
     @Test
-    fun `should set moveable x property`() {
+    fun `should set moveable y property`() {
         move.value = 10
-        verify(moveable).x = px(10)
+        verify(moveable).y = px(10)
     }
 }

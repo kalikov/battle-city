@@ -1,8 +1,6 @@
 package com.kalikov.engine
 
-import com.kalikov.engine.BlendingComposite
 import com.kalikov.game.ColorCache
-import com.kalikov.engine.LeaksDetector
 import java.awt.AlphaComposite
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
@@ -26,8 +24,8 @@ class AwtScreenSurface(
         )
     }
 
-    override val width = px(image.width)
-    override val height = px(image.height)
+    override val width = image.width.px
+    override val height = image.height.px
 
     private val gfx: Graphics2D = image.createGraphics()
 
@@ -42,7 +40,7 @@ class AwtScreenSurface(
             : this(fonts, ImageIO.read(stream))
 
     override fun clear(color: ARGB) {
-        clear(px(0), px(0), width, height, color)
+        clear(0.px, 0.px, width, height, color)
     }
 
     override fun clear(x: Pixel, y: Pixel, width: Pixel, height: Pixel, color: ARGB) {
@@ -59,8 +57,8 @@ class AwtScreenSurface(
         if (x + surfaceWidth <= 0 || y + surfaceHeight <= 0) {
             return
         }
-        val dx = if (x >= 0) px(0) else -x
-        val dy = if (y >= 0) px(0) else -y
+        val dx = if (x >= 0) 0.px else -x
+        val dy = if (y >= 0) 0.px else -y
         val w = min(surfaceWidth - dx, width - (x + dx))
         val h = min(surfaceHeight - dy, height - (y + dy))
         require(surface is AwtScreenSurface)

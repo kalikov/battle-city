@@ -6,7 +6,7 @@ import kotlin.math.max
 private const val INITIAL_CAPACITY = 16
 
 class ArraySet<T : Any>(
-    private val comparator: Comparator<T>,
+    private val comparator: Comparator<in T>,
     initialCapacity: Int = INITIAL_CAPACITY,
 ) {
     private var elements: Array<T?>
@@ -18,7 +18,7 @@ class ArraySet<T : Any>(
         size = set.size
     }
 
-    constructor(comparator: Comparator<T>, vararg elements: T) : this(comparator, max(INITIAL_CAPACITY, elements.size)) {
+    constructor(comparator: Comparator<in T>, vararg elements: T) : this(comparator, max(INITIAL_CAPACITY, elements.size)) {
         for (element in elements) {
             add(element)
         }
@@ -56,10 +56,14 @@ class ArraySet<T : Any>(
             return false
         }
 
+        removeAt(index)
+        return true
+    }
+
+    private fun removeAt(index: Int) {
         System.arraycopy(elements, index + 1, elements, index, size - index - 1)
         size--
         elements[size] = null
-        return true
     }
 
     fun isEmpty(): Boolean {
@@ -72,13 +76,32 @@ class ArraySet<T : Any>(
         }
     }
 
-    fun iterateWhile(action: (T) -> Boolean): Boolean {
+    fun removeIf(predicate: (T) -> Boolean) {
+        var i = 0
+        while (i < size) {
+            val element = requireNotNull(elements[i])
+            if (predicate(element)) {
+                removeAt(i)
+            } else {
+                i++
+            }
+        }
+    }
+
+    fun iterateWhile(predicate: (T) -> Boolean): Boolean {
         for (i in 0 until size) {
-            if (!action(requireNotNull(elements[i]))) {
+            if (!predicate(requireNotNull(elements[i]))) {
                 return false
             }
         }
         return true
+    }
+
+    fun clear() {
+        while (size > 0) {
+            size--
+            elements[size] = null
+        }
     }
 
     private fun ensureCapacity() {

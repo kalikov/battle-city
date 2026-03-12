@@ -5,7 +5,7 @@ import com.kalikov.engine.ScreenSurface
 
 class EnemyFactoryView(
     private val imageManager: ImageManager,
-    private val enemyFactory: EnemyFactory,
+    private val enemyFactory: GameEnemyTanksManager,
     private val x: Pixel,
     private val y: Pixel
 ) {

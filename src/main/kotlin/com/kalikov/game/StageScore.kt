@@ -20,4 +20,11 @@ class StageScore {
     fun getTanks(type: EnemyTank.EnemyType): Int {
         return tanks[type.ordinal]
     }
+
+    fun reset() {
+        tanksCount = 0
+        for (i in 0 until tanks.size) {
+            tanks[i] = 0
+        }
+    }
 }

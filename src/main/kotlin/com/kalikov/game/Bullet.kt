@@ -1,6 +1,7 @@
 package com.kalikov.game
 
 import com.kalikov.engine.ARGB
+import com.kalikov.engine.CountDown
 import com.kalikov.engine.Event
 import com.kalikov.engine.Pixel
 import com.kalikov.engine.ScreenSurface
@@ -13,14 +14,16 @@ class Bullet(
     val speed: Speed = Speed.NORMAL,
     var type: Type = Type.REGULAR,
     var direction: Direction = Direction.RIGHT,
-    x: Pixel = px(0),
-    y: Pixel = px(0),
-) : BulletHandle, Sprite(game.eventManager, x, y, SIZE, SIZE) {
+    x: Pixel = 0.px,
+    y: Pixel = 0.px,
+) : BulletHandle, AbstractSprite(x, y, SIZE, SIZE) {
     companion object {
-        val SIZE = t(1).toPixel() / 2
+        val SIZE = 1.tiles.toPixel() / 2
     }
 
     data class Exploded(val bullet: BulletHandle) : Event()
+
+    val explodedEvent = Exploded(this)
 
     enum class Speed(val value: Int, val frequency: Int) {
         NORMAL(1, 2),
@@ -40,8 +43,6 @@ class Bullet(
     private val image = game.imageManager.getImage("bullet")
 
     init {
-        z = 2
-
         moveCountDown.restart()
     }
 
@@ -65,19 +66,11 @@ class Bullet(
         return false
     }
 
-    override fun destroyHook() {
-        if (shouldExplode) {
-            game.eventManager.fireEvent(Exploded(this))
-        } else {
-            game.eventManager.fireEvent(Tank.Reload(tank))
-        }
-    }
-
     override fun dispose() {
     }
 
     override fun draw(surface: ScreenSurface) {
-        surface.draw(x, y, image, direction.index * width, px(0), width, height)
+        surface.draw(x, y, image, direction.index * width, 0.px, width, height)
         if (game.config.debug) {
             surface.drawRect(bounds.x, bounds.y, bounds.width, bounds.height, ARGB(0x6600FF00))
         }

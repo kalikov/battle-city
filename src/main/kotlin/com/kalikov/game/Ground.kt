@@ -2,6 +2,7 @@ package com.kalikov.game
 
 import com.kalikov.engine.ARGB
 import com.kalikov.engine.Animation
+import com.kalikov.engine.FrameSequence
 import com.kalikov.engine.LeaksDetector
 import com.kalikov.engine.Pixel
 import com.kalikov.engine.ScreenSurface
@@ -29,10 +30,10 @@ class Ground(
         Array<ScreenSurface?>(GameField.SIZE_IN_TILES.toInt()) { null }
     }
 
-    private val iceImage = game.imageManager.getImage("ice")
+    private val iceImage = game.imageManager.ice
 
-    private val waterImage = game.imageManager.getImage("water")
-    private val waterAnimation = Animation.pauseAware(pauseManager, frameLoopOf(*waterFrames), game.clock, 500)
+    private val waterImage = game.imageManager.water
+    private val waterAnimation = Animation.pauseAware(pauseManager, FrameSequence(waterFrames, true), game.clock, 500)
     private val waterImageWidth = waterImage.height
 
     var isStatic: Boolean = false

@@ -1,4 +1,4 @@
-package com.kalikov.game
+package com.kalikov.engine.script
 
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -7,11 +7,13 @@ import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class ScriptTest {
     open class MockAction(private val script: ScriptCallback, private var numUpdates: Int) : ScriptNode {
-        override val isDisposable: Boolean get() = false
+        override val isDisposable get() = false
 
         override fun update() {
             numUpdates--
@@ -19,6 +21,25 @@ class ScriptTest {
                 script.actionCompleted()
             }
         }
+    }
+
+    @Test
+    fun `default script is done`() {
+        val script = Script()
+        assertTrue(script.isDone)
+        assertEquals(0, script.size)
+    }
+
+    @Test
+    fun `script is not done after enqueue`() {
+        val script = Script()
+        script.enqueue(Execute {})
+        assertFalse(script.isDone)
+        assertEquals(1, script.size)
+
+        script.update()
+        assertTrue(script.isDone)
+        assertEquals(0, script.size)
     }
 
     @Test
@@ -59,6 +80,6 @@ class ScriptTest {
         verify(actionTwo).update()
 
         script.update()
-        assertTrue(script.isEmpty)
+        assertTrue(script.isDone)
     }
 }

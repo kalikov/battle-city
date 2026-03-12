@@ -1,4 +1,4 @@
-package com.kalikov.game
+package com.kalikov.engine.script
 
 import com.kalikov.engine.BasicTimer
 import java.time.Clock

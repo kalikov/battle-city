@@ -2,8 +2,8 @@ package com.kalikov.game
 
 import com.kalikov.engine.Animation
 import com.kalikov.engine.Event
+import com.kalikov.engine.FrameSequence
 import com.kalikov.engine.ScreenSurface
-import com.kalikov.engine.frameLoopOf
 import com.kalikov.engine.px
 
 class TankStateInvincible(
@@ -20,7 +20,7 @@ class TankStateInvincible(
 
     override val canBeDestroyed get() = false
 
-    private val shieldAnimation = Animation.pauseAware(pauseManager, frameLoopOf(*animationFrames), game.clock, 32)
+    private val shieldAnimation = Animation.pauseAware(pauseManager, FrameSequence(animationFrames, true), game.clock, 32)
 
     private val shieldTimer = PauseAwareTimer(pauseManager, game.clock, shieldDuration, ::end)
 
@@ -42,9 +42,9 @@ class TankStateInvincible(
         surface.draw(
             tank.x,
             tank.y,
-            game.imageManager.getImage("shield"),
+            game.imageManager.shield,
             tank.width * (shieldAnimation.frame - 1),
-            px(0),
+            0.px,
             tank.width,
             tank.height
         )

@@ -4,24 +4,33 @@ import com.kalikov.engine.ARGB
 import com.kalikov.engine.Pixel
 import com.kalikov.engine.ScreenSurface
 import com.kalikov.engine.px
+import com.kalikov.engine.script.Delay
+import com.kalikov.engine.script.Execute
+import com.kalikov.engine.script.Script
+import com.kalikov.engine.script.ScriptNode
 import com.kalikov.engine.times
 import kotlin.math.min
 
 class StageScorePointsView(
     private val game: BattleCityGame,
     private val enemyType: EnemyTank.EnemyType,
-    private val scores: List<StageScore>,
     private val listener: Script,
 ) : ScriptNode {
-    private val counterBound = scores.asSequence().take(2).map { it.getTanks(enemyType) }.max()
-    private var counter = if (counterBound > 0) 1 else 0
-    private var isScoreVisible = false
     private val script = Script()
+    private var counterBound = 0
+    private var counter = 0
+    private var isScoreVisible = false
 
     private val enemyImage = game.imageManager.getImage("tank_enemy")
     private val arrowImage = game.imageManager.getImage("arrows")
 
-    init {
+    fun reset() {
+        isScoreVisible = false
+
+        counterBound = game.stageManager.players.maxOf { it.stageScore.getTanks(enemyType) }
+        counter = if (counterBound > 0) 1 else 0
+
+        script.clear()
         script.enqueue(Execute { isScoreVisible = true })
         if (counterBound > 0) {
             script.enqueue(Execute {
@@ -29,7 +38,7 @@ class StageScorePointsView(
             })
             script.enqueue(Delay(script, 160, game.clock))
         }
-        for (i in 1 until counterBound) {
+        repeat(counterBound - 1) {
             script.enqueue(Execute {
                 counter++
                 game.soundManager.statistics.play()
@@ -48,17 +57,17 @@ class StageScorePointsView(
 
     fun draw(surface: ScreenSurface, x: Pixel, y: Pixel) {
         surface.fillText("PTS", x + 6 * Globals.TILE_SIZE, y, ARGB.WHITE, Globals.FONT_REGULAR)
-        if (scores.size > 1) {
+        if (game.stageManager.players.size > 1) {
             surface.fillText("PTS", x + 24 * Globals.TILE_SIZE, y, ARGB.WHITE, Globals.FONT_REGULAR)
         }
         if (isScoreVisible) {
-            val countOne = min(counter, scores[0].getTanks(enemyType))
+            val countOne = min(counter, game.stageManager.players[0].stageScore.getTanks(enemyType))
             val scoreOneString = "${countOne * enemyType.score}".padStart(5, ' ')
             val countOneString = "$countOne".padStart(2, ' ')
             surface.fillText(scoreOneString, x, y, ARGB.WHITE, Globals.FONT_REGULAR)
             surface.fillText(countOneString, x + 10 * Globals.TILE_SIZE, y, ARGB.WHITE, Globals.FONT_REGULAR)
-            if (scores.size > 1) {
-                val countTwo = min(counter, scores[1].getTanks(enemyType))
+            if (game.stageManager.players.size > 1) {
+                val countTwo = min(counter, game.stageManager.players[1].stageScore.getTanks(enemyType))
                 val scoreTwoString = "${countTwo * enemyType.score}".padStart(5, ' ')
                 val countTwoString = "$countTwo".padStart(2, ' ')
                 surface.fillText(scoreTwoString, x + 18 * Globals.TILE_SIZE, y, ARGB.WHITE, Globals.FONT_REGULAR)
@@ -69,14 +78,14 @@ class StageScorePointsView(
             x + 104,
             y - 10,
             enemyImage,
-            px(0),
+            0.px,
             2 * enemyType.index * Tank.SIZE,
             Tank.SIZE,
             Tank.SIZE
         )
-        surface.draw(x + 96, y - 7, arrowImage, px(0), px(0), px(7), px(7))
-        if (scores.size > 1) {
-            surface.draw(x + 120, y - 7, arrowImage, px(7), px(0), px(7), px(7))
+        surface.draw(x + 96, y - 7, arrowImage, 0.px, 0.px, 7.px, 7.px)
+        if (game.stageManager.players.size > 1) {
+            surface.draw(x + 120, y - 7, arrowImage, 7.px, 0.px, 7.px, 7.px)
         }
     }
 }

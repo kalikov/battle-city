@@ -11,13 +11,16 @@ interface StageManager {
     val stageEnemySpawnDelay: Int
     val stageEnemies: List<EnemyGroupConfig>
 
-    val demoStage: Stage
+//    val demoStage: Stage
 
     var constructionMap: StageMapConfig
 
     var curtainBackground: ScreenSurface?
 
     val highScore: Int
+    var isGameOver: Boolean
+
+    var isDemo: Boolean
 
     fun init(stages: List<Stage>, demoStage: Stage, defaultConstructionMap: StageMapConfig)
 

@@ -1,4 +1,4 @@
-package com.kalikov.game
+package com.kalikov.engine.script
 
 import com.kalikov.engine.px
 
@@ -6,6 +6,6 @@ class MoveVert(private val moveable: Moveable) : MoveProperty {
     override var value: Int
         get() = moveable.y.toInt()
         set(value) {
-            moveable.y = px(value)
+            moveable.y = value.px
         }
 }

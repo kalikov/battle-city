@@ -6,10 +6,15 @@ import com.kalikov.engine.px
 
 class Curtain {
     var height = Globals.CANVAS_HEIGHT / 2
-    var position = px(0)
+    var position = 0.px
 
     val isFallen get() = position >= height
     val isRisen get() = position <= 0
+
+    fun reset() {
+        height = Globals.CANVAS_HEIGHT / 2
+        position = 0.px
+    }
 
     fun fall() {
         if (isFallen) {
@@ -31,12 +36,12 @@ class Curtain {
         position--
 
         if (isRisen) {
-            position = px(0)
+            position = 0.px
         }
     }
 
     fun draw(surface: ScreenSurface) {
-        surface.fillRect(px(0), px(0), surface.width, position, ARGB.rgb(0x808080))
-        surface.fillRect(px(0), surface.height - position, surface.width, surface.height, ARGB.rgb(0x808080))
+        surface.fillRect(0.px, 0.px, surface.width, position, ARGB.rgb(0x808080))
+        surface.fillRect(0.px, surface.height - position, surface.width, surface.height, ARGB.rgb(0x808080))
     }
 }

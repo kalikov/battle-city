@@ -1,6 +1,8 @@
 package com.kalikov.game
 
 import com.kalikov.engine.BasicTimer
+import com.kalikov.engine.script.ScriptCallback
+import com.kalikov.engine.script.ScriptNode
 import java.time.Clock
 
 class CurtainFall(
@@ -12,6 +14,10 @@ class CurtainFall(
 
     override val isDisposable get() = false
 
+    fun reset() {
+        timer.stop()
+    }
+
     override fun update() {
         if (timer.isStopped) {
             timer.restart()
@@ -20,10 +26,10 @@ class CurtainFall(
     }
 
     private fun fall(count: Int) {
-        for (i in 1..count) {
+        repeat(count) {
             curtain.fall()
             if (curtain.isFallen) {
-                break
+                return@repeat
             }
         }
         if (curtain.isFallen) {

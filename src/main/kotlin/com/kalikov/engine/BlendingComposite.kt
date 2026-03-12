@@ -66,8 +66,8 @@ internal class BlendingComposite private constructor(private val blending: Blend
                     val dstOutRgb = blending.blend(
                         ARGB(dstInRgb),
                         ARGB(srcRgb),
-                        px(x - dstIn.sampleModelTranslateX),
-                        px(y - dstIn.sampleModelTranslateY),
+                        (x - dstIn.sampleModelTranslateX).px,
+                        (y - dstIn.sampleModelTranslateY).px,
                     ).value
                     dstData = dstColorModel.getDataElements(dstOutRgb, dstData)
                     dstOut.setDataElements(x + dstOutX, y + dstOutY, dstData)
@@ -95,8 +95,8 @@ internal class BlendingComposite private constructor(private val blending: Blend
                 dstData[i] = blending.blend(
                     ARGB(dstData[i]),
                     ARGB(srcData[i]),
-                    px(x - dstIn.sampleModelTranslateX),
-                    px(y - dstIn.sampleModelTranslateY),
+                    (x - dstIn.sampleModelTranslateX).px,
+                    (y - dstIn.sampleModelTranslateY).px,
                 ).value
                 x++
                 if (x >= w) {

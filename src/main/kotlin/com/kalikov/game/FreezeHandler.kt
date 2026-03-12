@@ -15,21 +15,27 @@ class FreezeHandler(
     data object Unfreeze : Event()
 
     private companion object {
-        private val subscriptions = arrayOf<KClass<out Event>>(PowerUpHandler.Freeze::class)
+        private val subscriptions = arrayOf<KClass<out Event>>(PowerUpManager.Freeze::class)
     }
+
+    override val identity get() = Globals.IDENTITY_FREEZE_HANDLER
 
     private val timer = PauseAwareTimer(pauseManager, clock, duration, ::unfreeze)
 
-    init {
+    val isActive get() = !timer.isStopped
+
+    fun activate() {
         eventManager.addSubscriber(this, subscriptions)
     }
 
-    val isActive get() = !timer.isStopped
-    override val identity: Int
-        get() = TODO("Not yet implemented")
+    fun deactivate() {
+        eventManager.removeSubscriber(this, subscriptions)
+
+        timer.stop()
+    }
 
     override fun notify(event: Event) {
-        if (event is PowerUpHandler.Freeze) {
+        if (event is PowerUpManager.Freeze) {
             restart()
         }
     }
@@ -45,11 +51,5 @@ class FreezeHandler(
 
     fun update() {
         timer.update()
-    }
-
-    fun dispose() {
-        eventManager.removeSubscriber(this, subscriptions)
-
-        timer.stop()
     }
 }

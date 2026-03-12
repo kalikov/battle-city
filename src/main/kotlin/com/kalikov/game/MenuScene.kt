@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
 
 class MenuScene(
     private val game: BattleCityGame,
-    sceneProvider: SceneProvider,
+    private val sceneProvider: SceneProvider,
     menu: Menu? = null,
 ) : Scene, EventSubscriber {
     internal companion object {
@@ -39,7 +39,7 @@ class MenuScene(
 
     var isActive = false
 
-    private val resetWrapper: Scene = object : Scene by this {
+    val resetMenuScene: Scene = object : Scene by this {
         override fun activate() {
             reset()
             this@MenuScene.activate()
@@ -47,8 +47,8 @@ class MenuScene(
     }
 
     private val menu = menu ?: Menu(
-        OnePlayerMenuItem(game, resetWrapper),
-        TwoPlayersMenuItem(game, resetWrapper),
+        OnePlayerMenuItem(game, sceneProvider),
+        TwoPlayersMenuItem(game, sceneProvider),
         ConstructionMenuItem(game, sceneProvider),
     )
     private val menuView: MenuView
@@ -59,7 +59,7 @@ class MenuScene(
 
     private val demoTimer = BasicTimer(game.clock, DEMO_INTERVAL, ::startDemo)
 
-    private val brickBlending = object : TextureBlending(game.imageManager.getImage("wall_brick")) {
+    private val brickBlending = object : TextureBlending(game.imageManager.brickWall) {
         override fun blend(dst: ARGB, src: ARGB, x: Pixel, y: Pixel): ARGB {
             val pixel = super.blend(dst, src, x, y)
             if (pixel == ARGB.rgb(0x636363)) {
@@ -73,7 +73,7 @@ class MenuScene(
         ARGB.rgb(0xB53121).and(src).over(dst)
     }
 
-    private val mainMenuLazyImage = LazyImage.Custom(game.screen, t(27).toPixel(), t(26).toPixel(), ::drawCache)
+    private val mainMenuLazyImage = LazyImage.Custom(game.screen, 27.tiles.toPixel(), 26.tiles.toPixel(), ::drawCache)
 
     init {
         LeaksDetector.add(this)
@@ -83,7 +83,7 @@ class MenuScene(
     }
 
     private fun updatePosition(count: Int) {
-        if (top == px(0)) {
+        if (top == 0.px) {
             return
         }
         top -= count
@@ -93,7 +93,7 @@ class MenuScene(
     }
 
     fun arrive() {
-        top = px(0)
+        top = 0.px
         cursorView.visible = true
         arriveTimer.stop()
     }
@@ -107,7 +107,7 @@ class MenuScene(
         arriveTimer.update()
         demoTimer.update()
         cursorView.update()
-        if (top == px(0)) {
+        if (top == 0.px) {
             isActive = true
         }
     }
@@ -115,7 +115,7 @@ class MenuScene(
     override fun draw(surface: ScreenSurface) {
         clearCanvas(surface)
 
-        surface.draw(t(2).toPixel(), top + t(2).toPixel(), mainMenuLazyImage.target, Blending.Src)
+        surface.draw(2.tiles.toPixel(), top + 2.tiles.toPixel(), mainMenuLazyImage.target, Blending.Src)
 
         menuView.draw(surface, top)
     }
@@ -123,10 +123,10 @@ class MenuScene(
     private fun drawCache(surface: ScreenSurface) {
         clearCanvas(surface)
 
-        val nameTop = t(4).toPixel()
+        val nameTop = 4.tiles.toPixel()
         surface.fillText(
             BATTLE,
-            t(1).toPixel() + t(1).toPixel() / 2,
+            1.tiles.toPixel() + 1.tiles.toPixel() / 2,
             nameTop + Globals.FONT_BIG_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_BIG,
@@ -134,35 +134,35 @@ class MenuScene(
         )
         surface.fillText(
             CITY,
-            t(6).toPixel(),
+            6.tiles.toPixel(),
             nameTop + 2 * Globals.FONT_BIG_CORRECTION + t(3).toPixel() / 2,
             ARGB.WHITE,
             Globals.FONT_BIG,
             brickBlending
         )
 
-        surface.draw(px(2), t(1).toPixel(), game.imageManager.getImage("roman_one"))
+        surface.draw(2.px, t(1).toPixel(), game.imageManager.romanOne)
         surface.fillRect(t(1).toPixel() + 1, t(1).toPixel() + 3, px(6), px(2), ARGB.WHITE)
 
         surface.fillText(
             formatScore(game.stageManager.players[0].previousScore),
-            t(1).toPixel() + 1,
-            t(1).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            1.tiles.toPixel() + 1,
+            1.tiles.toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
 
         if (game.stageManager.players.size > 1) {
             surface.draw(
-                t(19).toPixel() + 2,
-                t(1).toPixel(),
-                game.imageManager.getImage("roman_two")
+                19.tiles.toPixel() + 2,
+                1.tiles.toPixel(),
+                game.imageManager.romanTwo
             )
-            surface.fillRect(t(20).toPixel() + 1, t(1).toPixel() + 3, px(6), px(2), ARGB.WHITE)
+            surface.fillRect(20.tiles.toPixel() + 1, 1.tiles.toPixel() + 3, 6.px, 2.px, ARGB.WHITE)
             surface.fillText(
                 formatScore(game.stageManager.players[1].previousScore),
-                t(20).toPixel() + 1,
-                t(1).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+                20.tiles.toPixel() + 1,
+                1.tiles.toPixel() + Globals.FONT_REGULAR_CORRECTION,
                 ARGB.WHITE,
                 Globals.FONT_REGULAR
             )
@@ -170,16 +170,16 @@ class MenuScene(
 
         surface.fillText(
             "HI" + formatScore(game.stageManager.highScore),
-            t(9).toPixel() + 1,
-            t(1).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            9.tiles.toPixel() + 1,
+            1.tiles.toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
         surface.fillRect(t(11).toPixel() + 1, t(1).toPixel() + 3, px(6), px(2), ARGB.WHITE)
 
-        surface.draw(t(9).toPixel(), t(21).toPixel(), game.imageManager.getImage("namco"), namcoBlending)
+        surface.draw(t(9).toPixel(), t(21).toPixel(), game.imageManager.namco, namcoBlending)
 
-        surface.draw(t(2).toPixel(), t(23).toPixel(), game.imageManager.getImage("copyright"))
+        surface.draw(t(2).toPixel(), t(23).toPixel(), game.imageManager.copyright)
         surface.fillText(
             NAMCO_LTD,
             t(4).toPixel() + 1,
@@ -234,12 +234,13 @@ class MenuScene(
     }
 
     private fun startDemo() {
-        game.sceneManager.setNextScene(DemoStageScene(game, this, resetWrapper))
+        game.sceneManager.setNextScene(sceneProvider.demoStageScene)
     }
 
     override fun activate() {
         game.eventManager.addSubscriber(this, subscriptions)
 
+        mainMenuLazyImage.redraw()
         if (top > 0) {
             if (arriveTimer.isStopped) {
                 arriveTimer.restart()

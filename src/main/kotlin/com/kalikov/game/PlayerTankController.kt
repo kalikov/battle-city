@@ -9,11 +9,11 @@ import com.kalikov.engine.LeaksDetector
 class PlayerTankController(
     private val eventManager: EventManager,
     private val pauseManager: PauseManager,
+    private val playerTanksManager: PlayerTanksManager,
     val player: Player,
 ) : EventSubscriber {
     private companion object {
         private val subscriptions = arrayOf(
-            PlayerTankFactory.PlayerTankCreated::class,
             BaseExplosion.Destroyed::class,
             Keyboard.KeyPressed::class,
             Keyboard.KeyReleased::class,
@@ -26,50 +26,50 @@ class PlayerTankController(
         private const val FLAG_BOTH = 3
     }
 
-    var tank: PlayerTankHandle? = null
-        private set
+    override val identity get() = Globals.IDENTITY_PLAYER_CONTROLLER + player.index
 
     private var isActive = true
-
     private var horzPressed: Int = 0
+
     private var vertPressed: Int = 0
-
     private var targetDirection: Direction? = null
-    override val identity: Int
-        get() = TODO("Not yet implemented")
 
-    init {
+    fun activate() {
         LeaksDetector.add(this)
+
+        isActive = true
+        horzPressed = 0
+        vertPressed = 0
+        targetDirection = null
 
         eventManager.addSubscriber(this, subscriptions)
     }
 
+    fun deactivate() {
+        playerTanksManager.getTank(player)?.let {
+            it.isIdle = true
+            it.stopShooting()
+        }
+
+        eventManager.removeSubscriber(this, subscriptions)
+    }
+
     override fun notify(event: Event) {
         when (event) {
-            is PlayerTankFactory.PlayerTankCreated -> {
-                if (event.tank.player === player) {
-                    tank = event.tank
-                }
-            }
-
             is Keyboard.KeyPressed -> {
-                tank?.let {
-                    if (event.playerIndex == it.player.index) {
-                        keyPressed(it, event.key)
-                    }
+                if (event.playerIndex == player.index) {
+                    keyPressed(event.key)
                 }
             }
 
             is Keyboard.KeyReleased -> {
-                tank?.let {
-                    if (event.playerIndex == it.player.index) {
-                        keyReleased(it, event.key)
-                    }
+                if (event.playerIndex == player.index) {
+                    keyReleased(event.key)
                 }
             }
 
             is BaseExplosion.Destroyed -> {
-                tank?.let {
+                playerTanksManager.getTank(player)?.let {
                     it.isIdle = true
                     it.stopShooting()
                 }
@@ -82,10 +82,10 @@ class PlayerTankController(
     }
 
     fun update() {
-        tank?.let {
+        playerTanksManager.getTank(player)?.let {
             if (isActive) {
                 targetDirection?.let { direction ->
-                    if (it.canMove) {
+                    if (it.canMove && it.direction != direction) {
                         setDirection(it, direction)
                     }
                 }
@@ -96,7 +96,7 @@ class PlayerTankController(
         }
     }
 
-    private fun keyPressed(target: PlayerTankHandle, key: Keyboard.Key) {
+    private fun keyPressed(key: Keyboard.Key) {
         if (!isActive || pauseManager.isPaused) {
             return
         }
@@ -104,126 +104,121 @@ class PlayerTankController(
             Keyboard.Key.LEFT -> {
                 horzPressed = horzPressed or FLAG_LEFT
                 if (horzPressed == FLAG_BOTH) {
-                    updateStateOnVert(target)
+                    updateStateOnVert()
                 } else {
-                    updateDirection(target, Direction.LEFT)
+                    updateDirection(Direction.LEFT)
                 }
             }
 
             Keyboard.Key.RIGHT -> {
                 horzPressed = horzPressed or FLAG_RIGHT
                 if (horzPressed == FLAG_BOTH) {
-                    updateStateOnVert(target)
+                    updateStateOnVert()
                 } else {
-                    updateDirection(target, Direction.RIGHT)
+                    updateDirection(Direction.RIGHT)
                 }
             }
 
             Keyboard.Key.UP -> {
                 vertPressed = vertPressed or FLAG_UP
                 if (vertPressed == FLAG_BOTH) {
-                    updateStateOnHorz(target)
+                    updateStateOnHorz()
                 } else {
-                    updateDirection(target, Direction.UP)
+                    updateDirection(Direction.UP)
                 }
             }
 
             Keyboard.Key.DOWN -> {
                 vertPressed = vertPressed or FLAG_DOWN
                 if (vertPressed == FLAG_BOTH) {
-                    updateStateOnHorz(target)
+                    updateStateOnHorz()
                 } else {
-                    updateDirection(target, Direction.DOWN)
+                    updateDirection(Direction.DOWN)
                 }
             }
 
             Keyboard.Key.ACTION -> {
-                target.startShooting()
+                playerTanksManager.getTank(player)?.startShooting()
             }
 
             else -> Unit
         }
     }
 
-    private fun updateStateOnHorz(target: PlayerTankHandle) {
+    private fun updateStateOnHorz() {
         if (horzPressed != 0 && horzPressed != FLAG_BOTH) {
-            updateDirection(target, if (horzPressed == FLAG_LEFT) Direction.LEFT else Direction.RIGHT)
+            updateDirection(if (horzPressed == FLAG_LEFT) Direction.LEFT else Direction.RIGHT)
         } else {
-            target.isIdle = true
+            playerTanksManager.getTank(player)?.isIdle = true
             targetDirection = null
         }
     }
 
-    private fun updateStateOnVert(target: PlayerTankHandle) {
+    private fun updateStateOnVert() {
         if (vertPressed != 0 && vertPressed != FLAG_BOTH) {
-            updateDirection(target, if (vertPressed == FLAG_UP) Direction.UP else Direction.DOWN)
+            updateDirection(if (vertPressed == FLAG_UP) Direction.UP else Direction.DOWN)
         } else {
-            target.isIdle = true
+            playerTanksManager.getTank(player)?.isIdle = true
             targetDirection = null
         }
     }
 
-    private fun updateDirection(target: PlayerTankHandle, direction: Direction) {
-        if (target.canMove) {
+    private fun updateDirection(direction: Direction) {
+        val target = playerTanksManager.getTank(player)
+        if (target != null && target.canMove) {
             setDirection(target, direction)
             target.isIdle = false
         } else {
-            target.isIdle = true
+            target?.isIdle = true
             targetDirection = direction
         }
     }
 
     private fun setDirection(target: PlayerTankHandle, direction: Direction) {
         target.direction = direction
-        targetDirection = if (target.direction == direction) {
-            null
-        } else {
-            direction
-        }
+        targetDirection = direction
     }
 
-    private fun keyReleased(target: PlayerTankHandle, key: Keyboard.Key) {
+    private fun keyReleased(key: Keyboard.Key) {
         if (key == Keyboard.Key.LEFT) {
             horzPressed = horzPressed and FLAG_LEFT.inv()
             if (horzPressed == 0) {
-                updateStateOnVert(target)
+                updateStateOnVert()
             } else {
-                updateStateOnHorz(target)
+                updateStateOnHorz()
             }
         }
         if (key == Keyboard.Key.RIGHT) {
             horzPressed = horzPressed and FLAG_RIGHT.inv()
             if (horzPressed == 0) {
-                updateStateOnVert(target)
+                updateStateOnVert()
             } else {
-                updateStateOnHorz(target)
+                updateStateOnHorz()
             }
         }
         if (key == Keyboard.Key.UP) {
             vertPressed = vertPressed and FLAG_UP.inv()
             if (vertPressed == 0) {
-                updateStateOnHorz(target)
+                updateStateOnHorz()
             } else {
-                updateStateOnVert(target)
+                updateStateOnVert()
             }
         }
         if (key == Keyboard.Key.DOWN) {
             vertPressed = vertPressed and FLAG_DOWN.inv()
             if (vertPressed == 0) {
-                updateStateOnHorz(target)
+                updateStateOnHorz()
             } else {
-                updateStateOnVert(target)
+                updateStateOnVert()
             }
         }
         if (key == Keyboard.Key.ACTION) {
-            target.stopShooting()
+            playerTanksManager.getTank(player)?.stopShooting()
         }
     }
 
     fun dispose() {
-        tank = null
-
-        eventManager.removeSubscriber(this, subscriptions)
+//        tank = null
 
         LeaksDetector.remove(this)
     }

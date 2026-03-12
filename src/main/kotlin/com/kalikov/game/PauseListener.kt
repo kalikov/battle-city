@@ -11,17 +11,23 @@ class PauseListener(private val game: BattleCityGame) : EventSubscriber, PauseMa
         private val subscriptions = arrayOf<KClass<out Event>>(Keyboard.KeyPressed::class)
     }
 
+    override val identity get() = Globals.IDENTITY_PAUSE_MANAGER
+
     override var isPaused = false
         private set
 
-    var isActive = true
-    override val identity: Int
-        get() = TODO("Not yet implemented")
+    var isEnabled = true
 
-    init {
+    fun activate() {
         LeaksDetector.add(this)
 
         game.eventManager.addSubscriber(this, subscriptions)
+    }
+
+    fun deactivate() {
+        game.eventManager.removeSubscriber(this, subscriptions)
+
+        LeaksDetector.remove(this)
     }
 
     override fun notify(event: Event) {
@@ -31,26 +37,18 @@ class PauseListener(private val game: BattleCityGame) : EventSubscriber, PauseMa
     }
 
     private fun keyPressed(key: Keyboard.Key) {
-        if (!isActive) {
+        if (!isEnabled) {
             return
         }
         if (key == Keyboard.Key.START) {
             isPaused = !isPaused
 
             if (isPaused) {
-                game.eventManager.fireEvent(PauseManager.Start)
                 game.soundManager.pause()
                 game.soundManager.pause.play()
             } else {
-                game.eventManager.fireEvent(PauseManager.End)
                 game.soundManager.resume()
             }
         }
-    }
-
-    fun dispose() {
-        game.eventManager.removeSubscriber(this, subscriptions)
-
-        LeaksDetector.remove(this)
     }
 }

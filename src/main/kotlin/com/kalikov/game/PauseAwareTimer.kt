@@ -31,6 +31,13 @@ class PauseAwareTimer private constructor(
         }
     }
 
+    fun restart(interval: Int) {
+        timer.restart(interval)
+        if (pauseManager.isPaused) {
+            timer.pause()
+        }
+    }
+
     override fun stop() = timer.stop()
 
     override fun update() {

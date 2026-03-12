@@ -13,7 +13,7 @@ class Points(
     x: Pixel,
     y: Pixel,
     duration: Int
-) : Sprite(game.eventManager, x, y, SIZE, SIZE) {
+) : AbstractSprite(x, y, SIZE, SIZE) {
     companion object {
         val SIZE = t(2).toPixel()
     }
@@ -23,8 +23,6 @@ class Points(
 
     init {
         LeaksDetector.add(this)
-
-        z = 1000
     }
 
     override fun updateHook() {
@@ -40,10 +38,6 @@ class Points(
 
     override fun draw(surface: ScreenSurface) {
         surface.draw(x, y, image, (value / 100 - 1) * width, px(0), width, height)
-    }
-
-    override fun destroyHook() {
-        timer.stop()
     }
 
     override fun dispose() {

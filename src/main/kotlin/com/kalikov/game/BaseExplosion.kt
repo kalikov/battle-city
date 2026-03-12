@@ -2,24 +2,23 @@ package com.kalikov.game
 
 import com.kalikov.engine.Animation
 import com.kalikov.engine.Event
+import com.kalikov.engine.FrameSequence
 import com.kalikov.engine.Pixel
-import com.kalikov.engine.frameSequenceOf
 import com.kalikov.engine.px
 
 class BaseExplosion(
-    private val game: BattleCityGame,
+    game: BattleCityGame,
     pauseManager: PauseManager,
-    x: Pixel = px(0),
-    y: Pixel = px(0),
+    x: Pixel = 0.px,
+    y: Pixel = 0.px,
 ) : Explosion(
-    game.eventManager,
-    Animation.pauseAware(pauseManager, frameSequenceOf(*animationFrames), game.clock, ANIMATION_INTERVAL),
+    Animation.pauseAware(pauseManager, FrameSequence(animationFrames), game.clock, ANIMATION_INTERVAL),
     SIZE,
     x,
     y,
 ) {
     companion object {
-        val SIZE = t(4).toPixel()
+        val SIZE = 4.tiles.toPixel()
 
         const val ANIMATION_INTERVAL = 96
 
@@ -28,9 +27,5 @@ class BaseExplosion(
 
     data class Destroyed(val explosion: BaseExplosion) : Event()
 
-    override val image = game.imageManager.getImage("big_explosion")
-
-    override fun destroyHook() {
-        game.eventManager.fireEvent(Destroyed(this))
-    }
+    override val image = game.imageManager.bigExplosion
 }

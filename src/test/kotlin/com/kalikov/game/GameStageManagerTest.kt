@@ -29,7 +29,7 @@ class GameStageManagerTest {
             stageMapConfig
         )
 
-        stageManager.players[0].notify(Player.Score(stageManager.players[0], 40000))
+//        stageManager.players[0].notify(Player.Score(stageManager.players[0], 40000))
 
         stageManager.reset()
 

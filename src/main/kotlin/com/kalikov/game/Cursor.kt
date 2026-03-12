@@ -15,7 +15,7 @@ class Cursor(
 
     private val blinkTimer = BlinkTimer(game.clock, 320)
 
-    private val image = game.imageManager.getImage("tank_player1")
+    private val image = game.imageManager.playerOneTank
 
     val width get() = Tank.SIZE
     val height get() = Tank.SIZE

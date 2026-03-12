@@ -3,7 +3,7 @@ package com.kalikov.game
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TilePoint(val x: Tile = t(0), val y: Tile = t(0)) {
+data class TilePoint(val x: Tile = 0.tiles, val y: Tile = 0.tiles) {
     fun toPixelPoint(): PixelPoint {
         return PixelPoint(x * Globals.TILE_SIZE, y * Globals.TILE_SIZE)
     }

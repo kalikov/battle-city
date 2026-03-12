@@ -1,54 +1,55 @@
 package com.kalikov.game
 
 import com.kalikov.engine.Event
-import com.kalikov.engine.EventManager
 import com.kalikov.engine.EventSubscriber
 import kotlin.random.Random
 
 class AITankControllerContainer(
-    private val eventManager: EventManager,
+    private val game: BattleCityGame,
     private val pauseManager: PauseManager,
-    private val base: PixelPoint,
+    private val playerTanksManager: PlayerTanksManager,
+    private val gameFieldBounds: PixelRect,
     private val random: Random = Random.Default,
     private val params: AITankControllerParams = AITankControllerParams()
 ) : EventSubscriber {
     private companion object {
         private val subscriptions = arrayOf(
             Tank.Destroyed::class,
-            EnemyFactory.EnemyCreated::class,
-            PowerUpHandler.Freeze::class,
+            GameEnemyTanksManager.EnemyCreated::class,
+            PowerUpManager.Freeze::class,
             FreezeHandler.Unfreeze::class,
-            PlayerTankFactory.PlayerTankCreated::class,
-            PlayerTank.PlayerDestroyed::class,
         )
     }
+
+    override val identity get() = Globals.IDENTITY_AI_ENEMY_CONTROLLER
 
     var isFrozen = false
         private set
 
     private val controllers = LinkedHashMap<Tank, AITankController>()
 
-    private val players = mutableSetOf<PlayerTankHandle>()
-    override val identity: Int
-        get() = TODO("Not yet implemented")
+    fun activate() {
+        game.eventManager.addSubscriber(this, subscriptions)
+    }
 
-    init {
-        eventManager.addSubscriber(this, subscriptions)
+    fun deactivate() {
+        game.eventManager.removeSubscriber(this, subscriptions)
+
+        isFrozen = false
+
+        controllers.values.forEach { it.dispose() }
+        controllers.clear()
     }
 
     override fun notify(event: Event) {
         when (event) {
-            is EnemyFactory.EnemyCreated -> controllers[event.enemy] = createController(event.enemy)
+            is GameEnemyTanksManager.EnemyCreated -> controllers[event.enemy] = createController(event.enemy)
 
-            is PowerUpHandler.Freeze -> freeze()
+            is PowerUpManager.Freeze -> freeze()
 
             is FreezeHandler.Unfreeze -> unfreeze()
 
             is Tank.Destroyed -> controllers.remove(event.tank)?.dispose()
-
-            is PlayerTankFactory.PlayerTankCreated -> players.add(event.tank)
-
-            is PlayerTank.PlayerDestroyed -> players.remove(event.tank)
 
             else -> Unit
         }
@@ -68,7 +69,15 @@ class AITankControllerContainer(
     }
 
     private fun createController(tank: Tank): AITankController {
-        val controller = AITankController(pauseManager, tank, base, players, random, params)
+        val base = game.stageManager.stageMap.base
+        val controller = AITankController(
+            pauseManager,
+            playerTanksManager,
+            tank,
+            base.toPixelPoint().translate(gameFieldBounds.x, gameFieldBounds.y),
+            random,
+            params,
+        )
         if (isFrozen) {
             tank.isIdle = true
         }
@@ -92,7 +101,5 @@ class AITankControllerContainer(
     fun dispose() {
         controllers.values.forEach { it.dispose() }
         controllers.clear()
-
-        eventManager.removeSubscriber(this, subscriptions)
     }
 }

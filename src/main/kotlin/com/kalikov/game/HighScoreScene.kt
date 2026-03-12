@@ -37,7 +37,12 @@ class HighScoreScene(
     // 253 - blue
     // 259 - stop
 
-    private val brickBlending = object : TextureBlending(game.imageManager.getImage("wall_brick")) {
+    override fun activate() {
+        counter = 0
+        timer.stop()
+    }
+
+    private val brickBlending = object : TextureBlending(game.imageManager.brickWall) {
         override fun blend(dst: ARGB, src: ARGB, x: Pixel, y: Pixel): ARGB {
             val pixel = super.blend(dst, src, x, y)
             if (pixel == ARGB.rgb(0x9c4A00)) {
@@ -84,9 +89,9 @@ class HighScoreScene(
     override fun draw(surface: ScreenSurface) {
         surface.clear(ARGB.BLACK)
 
-        val x = t(2).toPixel() + t(1).toPixel() / 2
-        val y = t(6).toPixel() + t(1).toPixel() / 2 + Globals.FONT_BIG_CORRECTION
-        val interval = Globals.FONT_BIG_CORRECTION + t(3).toPixel()
+        val x = 2.tiles.toPixel() + 1.tiles.toPixel() / 2
+        val y = 6.tiles.toPixel() + 1.tiles.toPixel() / 2 + Globals.FONT_BIG_CORRECTION
+        val interval = Globals.FONT_BIG_CORRECTION + 3.tiles.toPixel()
         surface.fillText("HISCORE", x, y, ARGB.WHITE, Globals.FONT_BIG, brickBlending)
         surface.fillText(
             "${game.stageManager.highScore}".padStart(7, ' '),
@@ -96,9 +101,6 @@ class HighScoreScene(
             Globals.FONT_BIG,
             brickBlending
         )
-    }
-
-    override fun activate() {
     }
 
     override fun deactivate() {

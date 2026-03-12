@@ -1,6 +1,8 @@
 package com.kalikov.game
 
 import com.kalikov.engine.BasicTimer
+import com.kalikov.engine.script.ScriptCallback
+import com.kalikov.engine.script.ScriptNode
 import java.time.Clock
 
 class CurtainRise(
@@ -11,6 +13,10 @@ class CurtainRise(
     private val timer = BasicTimer(clock, 2, this::rise)
 
     override val isDisposable get() = false
+
+    fun reset() {
+        timer.stop()
+    }
 
     override fun update() {
         if (timer.isStopped) {

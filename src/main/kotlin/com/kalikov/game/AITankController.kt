@@ -6,9 +6,9 @@ import kotlin.random.Random
 
 class AITankController(
     pauseManager: PauseManager,
+    private val playerTanksManager: PlayerTanksManager,
     private val tank: AITankHandle,
     private val base: PixelPoint,
-    private val players: Set<PlayerTankHandle>,
     private val random: Random,
     params: AITankControllerParams = AITankControllerParams(),
 ) {
@@ -74,7 +74,15 @@ class AITankController(
     private fun calculateDirectionToClosestTarget(): Direction {
         val n = random.nextDouble()
 
-        val closestPlayer = players.minByOrNull { distanceToMe(it.x, it.y) }
+        var closestPlayer: PlayerTank? = null
+        var closestDistance = 0
+        playerTanksManager.forEach {
+            val distance = distanceToMe(it.x, it.y)
+            if (distance < closestDistance || closestPlayer == null) {
+                closestDistance = distance
+                closestPlayer = it
+            }
+        }
         val targetTop: Pixel
         val targetLeft: Pixel
         val targetRight: Pixel
@@ -113,7 +121,8 @@ class AITankController(
                 direction = randomOf(Direction.UP, Direction.LEFT, Direction.DOWN)
             }
         } else {
-            direction = if (tank.hitRect.left - targetLeft >= targetRight - tank.hitRect.right) Direction.LEFT else Direction.RIGHT
+            direction =
+                if (tank.hitRect.left - targetLeft >= targetRight - tank.hitRect.right) Direction.LEFT else Direction.RIGHT
         }
         return direction
     }

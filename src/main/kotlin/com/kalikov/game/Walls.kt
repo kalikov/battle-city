@@ -1,7 +1,6 @@
 package com.kalikov.game
 
 import com.kalikov.engine.ARGB
-import com.kalikov.engine.Event
 import com.kalikov.engine.LeaksDetector
 import com.kalikov.engine.Pixel
 import com.kalikov.engine.ScreenSurface
@@ -20,15 +19,13 @@ class Walls(
         private val SIZE_IN_BRICKS = GameField.SIZE_IN_TILES.bricksCount()
     }
 
-    data object Hit : Event()
-
     private val collisionMatrix = Array(SIZE_IN_TILES.toInt()) { Array(SIZE_IN_TILES.toInt()) { false } }
     private val brickMatrix = Array(SIZE_IN_BRICKS) { Array<ScreenSurface?>(SIZE_IN_BRICKS) { null } }
 
     private val mask = game.screen.createSurface(GameField.SIZE_IN_PIXELS, GameField.SIZE_IN_PIXELS)
 
-    private val steelImage = game.imageManager.getImage("wall_steel")
-    private val brickImage = game.imageManager.getImage("wall_brick")
+    private val steelImage = game.imageManager.steelWall
+    private val brickImage = game.imageManager.brickWall
 
     override val config: WallsConfig
         get() {
@@ -37,7 +34,7 @@ class Walls(
             for (x in brickMatrix.indices step 2) {
                 for (y in brickMatrix[x].indices step 2) {
                     if (brickMatrix[x][y] === steelImage) {
-                        steel.add(TilePoint(t(x / 2), t(y / 2)))
+                        steel.add(TilePoint((x / 2).tiles, (y / 2).tiles))
                     } else {
                         var integrity = 0
                         if (brickMatrix[x][y] === brickImage) {
@@ -53,7 +50,7 @@ class Walls(
                             integrity = integrity or 0x2
                         }
                         if (integrity != 0) {
-                            bricks.add(BrickTile(t(x / 2), t(y / 2), integrity))
+                            bricks.add(BrickTile((x / 2).tiles, (y / 2).tiles, integrity))
                         }
                     }
                 }
@@ -134,8 +131,8 @@ class Walls(
         var intersectsSteel = false
         for (bricksX in bricksLeft..bricksRight) {
             for (bricksY in bricksTop..bricksBottom) {
-                val tileX = t(bricksX / 2)
-                val tileY = t(bricksY / 2)
+                val tileX = (bricksX / 2).tiles
+                val tileY = (bricksY / 2).tiles
                 if (brickMatrix[bricksX][bricksY] === steelImage) {
                     intersectsSteel = true
                     if (bullet.type == Bullet.Type.ENHANCED) {
@@ -179,7 +176,6 @@ class Walls(
                     game.soundManager.bulletHitBrick.play()
                 }
             }
-            game.eventManager.fireEvent(Hit)
             return true
         }
         return false

@@ -13,7 +13,7 @@ class Trees(
 ) : TreesHandle {
     private val mask = game.screen.createSurface(GameField.SIZE_IN_PIXELS, GameField.SIZE_IN_PIXELS)
 
-    private val image = game.imageManager.getImage("trees")
+    private val image = game.imageManager.trees
 
     private val tiles = HashSet<TilePoint>(config.size)
 

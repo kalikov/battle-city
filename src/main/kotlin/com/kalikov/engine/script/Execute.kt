@@ -1,6 +1,4 @@
-package com.kalikov.game
-
-import kotlin.Unit
+package com.kalikov.engine.script
 
 class Execute(private val action: () -> Unit) : ScriptNode {
     override val isDisposable get() = true

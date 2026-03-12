@@ -273,6 +273,6 @@ class AITankControllerTest {
     }
 
     private fun createController(params: AITankControllerParams = AITankControllerParams()): AITankController {
-        return AITankController(mock(), tank, PixelPoint(), emptySet(), random, params)
+        return AITankController(mock(), mock(), tank, PixelPoint(), random, params)
     }
 }

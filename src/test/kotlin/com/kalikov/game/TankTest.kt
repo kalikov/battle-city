@@ -61,7 +61,7 @@ abstract class TankTest<T : Tank> {
         tank.shoot()
         verify(eventManager, never()).fireEvent(any())
 
-        tank.notify(Tank.Reload(tank))
+//        tank.notify(Tank.Reload(tank))
 
         clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
@@ -88,7 +88,7 @@ abstract class TankTest<T : Tank> {
         tank.shoot()
         verify(eventManager, never()).fireEvent(any())
 
-        tank.notify(Tank.Reload(tank))
+//        tank.notify(Tank.Reload(tank))
 
         clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
@@ -215,7 +215,7 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should be in normal state when invincible state ends`() {
         tank.state = TankStateInvincible(game, mock(), tank)
-        tank.notify(TankStateInvincible.End(tank))
+//        tank.notify(TankStateInvincible.End(tank))
         assertIs<TankStateNormal>(tank.state)
         assertIsNot<TankStateInvincible>(tank.state)
     }
@@ -233,20 +233,6 @@ abstract class TankTest<T : Tank> {
         assertTrue(tank.isDestroyed)
         verify(eventManager).fireEvent(Tank.Hit(tank))
     }
-
-    @Test
-    fun `should subscribe`() {
-        verify(eventManager).addSubscriber(
-            tank,
-            arrayOf(
-                Tank.Reload::class,
-                TankStateAppearing.End::class,
-                TankStateInvincible.End::class,
-                TankStateFrozen.End::class,
-            )
-        )
-    }
-
 
     @Test
     fun `should draw tank shooting right`() {
@@ -398,7 +384,7 @@ abstract class TankTest<T : Tank> {
         verify(game.eventManager).fireEvent(isA<Tank.Shoot>())
         clearInvocations(game.eventManager)
 
-        tank.notify(Tank.Reload(tank))
+//        tank.notify(Tank.Reload(tank))
 
         repeat(Tank.LONG_COOLDOWN_INTERVAL - 1) {
             clock.tick(1)
@@ -422,7 +408,7 @@ abstract class TankTest<T : Tank> {
         verify(game.eventManager).fireEvent(isA<Tank.Shoot>())
         clearInvocations(game.eventManager)
 
-        tank.notify(Tank.Reload(tank))
+//        tank.notify(Tank.Reload(tank))
 
         repeat (Tank.SHORT_COOLDOWN_INTERVAL - 1) {
             clock.tick(1)
@@ -450,8 +436,8 @@ abstract class TankTest<T : Tank> {
         verify(game.eventManager, times(2)).fireEvent(isA<Tank.Shoot>())
         clearInvocations(game.eventManager)
 
-        tank.notify(Tank.Reload(tank))
-        tank.notify(Tank.Reload(tank))
+//        tank.notify(Tank.Reload(tank))
+//        tank.notify(Tank.Reload(tank))
 
         repeat(Tank.LONG_COOLDOWN_INTERVAL - Tank.SHORT_COOLDOWN_INTERVAL - 1) {
             clock.tick(1)

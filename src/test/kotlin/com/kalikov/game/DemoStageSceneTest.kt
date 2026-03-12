@@ -36,7 +36,7 @@ class DemoStageSceneTest {
             listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 20))
         )
 
-        whenever(game.stageManager.demoStage).thenReturn(stage)
+//        whenever(game.stageManager.demoStage).thenReturn(stage)
         val scene = DemoStageScene(game, mock(), mock())
 
 //        while (!scene.isReady) {

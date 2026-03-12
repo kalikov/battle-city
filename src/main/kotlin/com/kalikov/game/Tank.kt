@@ -1,8 +1,8 @@
 package com.kalikov.game
 
 import com.kalikov.engine.ARGB
+import com.kalikov.engine.CountDown
 import com.kalikov.engine.Event
-import com.kalikov.engine.EventSubscriber
 import com.kalikov.engine.LeaksDetector
 import com.kalikov.engine.Pixel
 import com.kalikov.engine.ScreenSurface
@@ -12,32 +12,23 @@ sealed class Tank(
     protected val pauseManager: PauseManager,
     x: Pixel,
     y: Pixel
-) : Sprite(
-    game.eventManager,
+) : AbstractSprite(
     x,
     y,
     SIZE,
     SIZE,
-), AITankHandle, EventSubscriber {
+), AITankHandle {
     companion object {
         const val LONG_COOLDOWN_INTERVAL = 200
         const val SHORT_COOLDOWN_INTERVAL = 64
 
-        val SIZE = t(2).toPixel()
-
-        private val subscriptions = arrayOf(
-            Reload::class,
-            TankStateAppearing.End::class,
-            TankStateInvincible.End::class,
-            TankStateFrozen.End::class
-        )
+        val SIZE = 2.tiles.toPixel()
 
         @JvmStatic
         protected fun <T : Tank> init(tank: T): T {
             LeaksDetector.add(tank)
 
             tank.internalState = TankStateNormal(tank.game.imageManager, tank)
-            tank.game.eventManager.addSubscriber(tank, subscriptions)
             return tank
         }
 
@@ -67,7 +58,6 @@ sealed class Tank(
     }
 
     data class Shoot(val bullet: Bullet) : Event()
-    data class Reload(val tank: Tank) : Event()
     data class Destroyed(val tank: Tank) : Event()
     data class Hit(val tank: Tank) : Event()
 
@@ -132,8 +122,14 @@ sealed class Tank(
     var moveDistance = 0
         private set
 
-    init {
-        z = 1
+    fun reset() {
+        isIdle = true
+        bullets = 0
+        totalBulletsFired = 0
+        longCooldownTimer.stop()
+        shortCooldownTimer.stop()
+        moveCountDown.stop()
+        moveDistance = 0
     }
 
     private fun updateHitRect() {
@@ -169,7 +165,7 @@ sealed class Tank(
     protected open fun moveHook(moved: Boolean) = Unit
 
     protected open fun canChangeDirection(target: Direction): Boolean {
-       return true
+        return true
     }
 
     private fun createBullet(): Bullet {
@@ -245,19 +241,10 @@ sealed class Tank(
         updateHitRect()
     }
 
-    override fun notify(event: Event) {
-        if (event is Reload && event.tank === this) {
-            bullets--
-        } else if (event is TankStateAppearing.End && event.tank === this) {
-            stateAppearingEnd()
-        } else if (event is TankStateInvincible.End && event.tank === this) {
-            state = TankStateNormal(game.imageManager, this)
-        } else if (event is TankStateFrozen.End && event.tank === this) {
-            state = TankStateNormal(game.imageManager, this)
-        }
+    fun reload() {
+        check(bullets > 0)
+        bullets--
     }
-
-    abstract fun stateAppearingEnd()
 
     fun hit(bullet: BulletHandle) {
         if (isDestroyed) {
@@ -269,17 +256,11 @@ sealed class Tank(
 
     abstract fun hitHook(bullet: BulletHandle)
 
-    override fun destroyHook() {
-        game.eventManager.fireEvent(Destroyed(this))
-    }
-
     override fun dispose() {
         longCooldownTimer.stop()
         shortCooldownTimer.stop()
 
         state.dispose()
-
-        game.eventManager.removeSubscriber(this, subscriptions)
 
         LeaksDetector.remove(this)
     }

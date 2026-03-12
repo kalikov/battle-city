@@ -1,0 +1,16 @@
+package com.kalikov.game
+
+inline val ImageManager.namco get() = this.getImage("namco")
+inline val ImageManager.copyright get() = this.getImage("copyright")
+inline val ImageManager.romanOne get() = this.getImage("roman_one")
+inline val ImageManager.romanTwo get() = this.getImage("roman_two")
+inline val ImageManager.brickWall get() = this.getImage("wall_brick")
+inline val ImageManager.steelWall get() = this.getImage("wall_steel")
+inline val ImageManager.ice get() = this.getImage("ice")
+inline val ImageManager.water get() = this.getImage("water")
+inline val ImageManager.trees get() = this.getImage("trees")
+inline val ImageManager.appearing get() = this.getImage("appear")
+inline val ImageManager.shield get() = this.getImage("shield")
+inline val ImageManager.bigExplosion get() = this.getImage("big_explosion")
+inline val ImageManager.bulletExplosion get() = this.getImage("bullet_explosion")
+inline val ImageManager.playerOneTank get() = this.getImage("tank_player1")

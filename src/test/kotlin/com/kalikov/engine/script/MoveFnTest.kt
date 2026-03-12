@@ -1,4 +1,4 @@
-package com.kalikov.game
+package com.kalikov.engine.script
 
 import com.kalikov.util.TestClock
 import org.junit.jupiter.api.BeforeEach

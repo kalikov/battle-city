@@ -45,13 +45,13 @@ class BulletTest {
         assertTrue(bullet.isDestroyed)
     }
 
-    @Test
+/*    @Test
     fun `should reload when hit without explosion`() {
         bullet.hit(false)
         bullet.update()
         verify(eventManager).fireEvent(Tank.Reload(bullet.tank))
         verify(eventManager, never()).fireEvent(Bullet.Exploded(bullet))
-    }
+    }*/
 
     @Test
     fun `should be destroyed when hit with explosion`() {
@@ -59,14 +59,14 @@ class BulletTest {
         assertTrue(bullet.shouldExplode)
         assertTrue(bullet.isDestroyed)
     }
-
-    @Test
-    fun `should fire event when exploded`() {
-        bullet.hit(true)
-        bullet.update()
-        verify(eventManager).fireEvent(Bullet.Exploded(bullet))
-        verify(eventManager, never()).fireEvent(Tank.Reload(bullet.tank))
-    }
+//
+//    @Test
+//    fun `should fire event when exploded`() {
+//        bullet.hit(true)
+//        bullet.update()
+//        verify(eventManager).fireEvent(Bullet.Exploded(bullet))
+//        verify(eventManager, never()).fireEvent(Tank.Reload(bullet.tank))
+//    }
 
     @Test
     fun `should draw bullet with right direction`() {

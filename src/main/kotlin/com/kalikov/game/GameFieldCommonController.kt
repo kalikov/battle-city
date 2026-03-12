@@ -1,63 +1,88 @@
 package com.kalikov.game
 
+import com.kalikov.engine.ScreenSurface
+
 class GameFieldCommonController(
     game: BattleCityGame,
     gameField: GameField,
     pauseManager: PauseManager,
-    mainContainer: SpriteContainer,
-    overlayContainer: SpriteContainer,
-    base: TilePoint,
+    playerTanksManager: PlayerTanksManager,
+    enemyTanksManager: EnemyTanksManager,
 ) {
     @Suppress("JoinDeclarationAndAssignment")
-    private val movementController: MovementController
+    private val powerUpManager: GamePowerUpManager
 
-    private val powerUpFactory: PowerUpFactory
-    private val powerUpHandler: PowerUpHandler
+    private val movementController: MovementController
 
     private val shovelHandler: ShovelHandler
     private val freezeHandler: FreezeHandler
 
-    private val pointsFactory: PointsFactory
+    private val pointsManager: GamePointsManager
 
-    private val bulletHandler: BulletHandler
-    private val bulletExplosionFactory: BulletExplosionFactory
-    private val tankExplosionFactory: TankExplosionFactory
-    private val baseExplosionFactory: BaseExplosionFactory
+    private val bulletsManager: GameBulletsManager
+    private val explosionsManager: GameExplosionsManager
 
     private val aiControllersContainer: AITankControllerContainer
 
     init {
-        movementController = MovementController(
-            game,
-            gameField,
-            pauseManager,
-            mainContainer,
-            overlayContainer,
-        )
-
-        powerUpFactory = PowerUpFactory(game, overlayContainer, gameField.bounds)
-        powerUpHandler = PowerUpHandler(game, pauseManager)
+        powerUpManager = GamePowerUpManager(game, pauseManager, enemyTanksManager, gameField.bounds)
 
         shovelHandler = ShovelHandler(game, pauseManager, gameField)
         freezeHandler = FreezeHandler(game.eventManager, pauseManager, game.clock)
 
-        pointsFactory = PointsFactory(game, pauseManager, overlayContainer)
+        pointsManager = GamePointsManager(game, pauseManager)
 
-        bulletHandler = BulletHandler(game, mainContainer)
-        bulletExplosionFactory = BulletExplosionFactory(game, pauseManager, overlayContainer)
-        tankExplosionFactory = TankExplosionFactory(game, pauseManager, overlayContainer)
-        baseExplosionFactory = BaseExplosionFactory(game, pauseManager, overlayContainer)
+        bulletsManager = GameBulletsManager(game)
+        explosionsManager = GameExplosionsManager(game, pauseManager)
 
-        val basePosition = base.toPixelPoint().translate(gameField.bounds.x, gameField.bounds.y)
+        movementController = MovementController(
+            game,
+            gameField,
+            pauseManager,
+            bulletsManager,
+            playerTanksManager,
+            enemyTanksManager,
+            powerUpManager,
+        )
 
         aiControllersContainer = AITankControllerContainer(
-            game.eventManager,
+            game,
             pauseManager,
-            basePosition,
+            playerTanksManager,
+            gameField.bounds,
         )
     }
 
+    fun activate() {
+        powerUpManager.activate()
+        shovelHandler.activate()
+        freezeHandler.activate()
+        pointsManager.activate()
+        bulletsManager.activate()
+        explosionsManager.activate()
+        movementController.activate()
+
+        aiControllersContainer.activate()
+    }
+
+    fun deactivate() {
+        aiControllersContainer.deactivate()
+
+        movementController.deactivate()
+        explosionsManager.deactivate()
+        bulletsManager.deactivate()
+        pointsManager.deactivate()
+        freezeHandler.deactivate()
+        shovelHandler.deactivate()
+        powerUpManager.deactivate()
+    }
+
     fun update() {
+        bulletsManager.update()
+        explosionsManager.update()
+        powerUpManager.update()
+        pointsManager.update()
+
         movementController.update()
 
         aiControllersContainer.update()
@@ -66,22 +91,24 @@ class GameFieldCommonController(
         freezeHandler.update()
     }
 
+    fun drawContent(surface: ScreenSurface) {
+        bulletsManager.draw(surface)
+    }
+
+    fun drawOverlay(surface: ScreenSurface) {
+        explosionsManager.draw(surface)
+        powerUpManager.draw(surface)
+        pointsManager.draw(surface)
+    }
+
     fun dispose() {
         aiControllersContainer.dispose()
 
-        baseExplosionFactory.dispose()
-        tankExplosionFactory.dispose()
-        bulletExplosionFactory.dispose()
-        bulletHandler.dispose()
+        explosionsManager.dispose()
+        bulletsManager.dispose()
 
-        pointsFactory.dispose()
+        pointsManager.dispose()
 
-        freezeHandler.dispose()
-        shovelHandler.dispose()
-
-        powerUpHandler.dispose()
-        powerUpFactory.dispose()
-
-        movementController.dispose()
+        powerUpManager.dispose()
     }
 }
