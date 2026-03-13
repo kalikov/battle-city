@@ -9,39 +9,39 @@ class PixelPointTest {
     @Test
     fun `should create using no-arg constructor`() {
         val point = PixelPoint()
-        assertEquals(px(0), point.x)
-        assertEquals(px(0), point.y)
+        assertEquals(0.px, point.x)
+        assertEquals(0.px, point.y)
         assertEquals(PixelPoint(), point)
     }
 
     @Test
     fun `should create using coordinates as arguments`() {
-        val point = PixelPoint(px(1), px(2))
-        assertEquals(px(1), point.x)
-        assertEquals(px(2), point.y)
+        val point = PixelPoint(1.px, 2.px)
+        assertEquals(1.px, point.x)
+        assertEquals(2.px, point.y)
     }
 
     @Test
     fun `should translate`() {
-        val point = PixelPoint(px(10), px(100))
-        val result = point.translate(px(-10), px(-100))
+        val point = PixelPoint(10.px, 100.px)
+        val result = point.translate(-10.px, -100.px)
         assertEquals(PixelPoint(), result)
         assertNotEquals(point, result)
     }
 
     @Test
     fun `should multiply`() {
-        val point = PixelPoint(px(1), px(10))
+        val point = PixelPoint(1.px, 10.px)
         val result = point.multiply(10)
-        assertEquals(PixelPoint(px(10), px(100)), result)
+        assertEquals(PixelPoint(10.px, 100.px), result)
         assertNotEquals(point, result)
     }
 
     @Test
     fun `should multiply by coordinate`() {
-        val point = PixelPoint(px(1), px(10))
+        val point = PixelPoint(1.px, 10.px)
         val result = point.multiply(10, 2)
-        assertEquals(PixelPoint(px(10), px(20)), result)
+        assertEquals(PixelPoint(10.px, 20.px), result)
         assertNotEquals(point, result)
     }
 }

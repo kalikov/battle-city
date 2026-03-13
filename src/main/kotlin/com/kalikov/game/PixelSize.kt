@@ -5,4 +5,4 @@ import com.kalikov.engine.px
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PixelSize(val width: Pixel = px(0), val height: Pixel = px(0))
+data class PixelSize(val width: Pixel = 0.px, val height: Pixel = 0.px)

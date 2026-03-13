@@ -14,7 +14,7 @@ class EnemyFactoryView(
         for (i in 0 until enemyFactory.enemiesToCreateCount) {
             val col = i % 2
             val row = i / 2
-            surface.draw(x + t(col).toPixel(), y + t(row).toPixel(), image)
+            surface.draw(x + col.tiles.toPixel(), y + row.tiles.toPixel(), image)
         }
     }
 }

@@ -65,6 +65,3 @@ value class Tile(private val value: Int) {
 inline val Int.tiles get() = Tile(this)
 
 fun Pixel.toTile() = Tile(toInt() / Globals.TILE_SIZE.toInt())
-
-@Deprecated("use Kotlin style syntax")
-fun t(value: Int) = Tile(value)

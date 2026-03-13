@@ -15,7 +15,7 @@ class Points(
     duration: Int
 ) : AbstractSprite(x, y, SIZE, SIZE) {
     companion object {
-        val SIZE = t(2).toPixel()
+        val SIZE = 2.tiles.toPixel()
     }
 
     private val timer = PauseAwareTimer(pauseManager, game.clock, duration, ::destroy)
@@ -37,7 +37,7 @@ class Points(
     }
 
     override fun draw(surface: ScreenSurface) {
-        surface.draw(x, y, image, (value / 100 - 1) * width, px(0), width, height)
+        surface.draw(x, y, image, (value / 100 - 1) * width, 0.px, width, height)
     }
 
     override fun dispose() {

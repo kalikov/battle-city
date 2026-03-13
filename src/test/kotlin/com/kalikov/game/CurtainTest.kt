@@ -15,30 +15,30 @@ class CurtainTest {
 
     @Test
     fun `should fall`() {
-        curtain.height = px(3)
-        assertEquals(px(0), curtain.position)
+        curtain.height = 3.px
+        assertEquals(0.px, curtain.position)
         curtain.fall()
-        assertEquals(px(1), curtain.position)
+        assertEquals(1.px, curtain.position)
         curtain.fall()
-        assertEquals(px(2), curtain.position)
+        assertEquals(2.px, curtain.position)
         curtain.fall()
-        assertEquals(px(3), curtain.position)
+        assertEquals(3.px, curtain.position)
         curtain.fall()
-        assertEquals(px(3), curtain.position)
+        assertEquals(3.px, curtain.position)
     }
 
     @Test
     fun `should rise`() {
-        curtain.height = px(3)
-        curtain.position = px(3)
-        assertEquals(px(3), curtain.position)
+        curtain.height = 3.px
+        curtain.position = 3.px
+        assertEquals(3.px, curtain.position)
         curtain.rise()
-        assertEquals(px(2), curtain.position)
+        assertEquals(2.px, curtain.position)
         curtain.rise()
-        assertEquals(px(1), curtain.position)
+        assertEquals(1.px, curtain.position)
         curtain.rise()
-        assertEquals(px(0), curtain.position)
+        assertEquals(0.px, curtain.position)
         curtain.rise()
-        assertEquals(px(0), curtain.position)
+        assertEquals(0.px, curtain.position)
     }
 }

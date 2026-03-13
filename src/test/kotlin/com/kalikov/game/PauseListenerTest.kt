@@ -25,6 +25,7 @@ class PauseListenerTest {
 
     @Test
     fun `should subscribe`() {
+        listener.activate()
         verify(eventManager).addSubscriber(listener, arrayOf(Keyboard.KeyPressed::class))
     }
 
@@ -52,14 +53,16 @@ class PauseListenerTest {
         assertTrue(listener.isPaused)
     }
 
-//    @Test
-//    fun `should fire events on pause state change`() {
-//        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
-//        verify(eventManager).fireEvent(PauseManager.Start)
-//
-//        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
-//        verify(eventManager).fireEvent(PauseManager.End)
-//    }
+    @Test
+    fun `should fire events on pause state change`() {
+        assertFalse(listener.isPaused)
+
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
+        assertTrue(listener.isPaused)
+
+        listener.notify(Keyboard.KeyPressed(Keyboard.Key.START, 0))
+        assertFalse(listener.isPaused)
+    }
 
     @Test
     fun `should play sound on pause start`() {
@@ -67,9 +70,9 @@ class PauseListenerTest {
         verify(soundManager.pause).play()
     }
 
-//    @Test
-//    fun `should dispose`() {
-//        listener.dispose()
-//        verify(eventManager).removeSubscriber(listener, arrayOf(Keyboard.KeyPressed::class))
-//    }
+    @Test
+    fun `should unsubscribe`() {
+        listener.deactivate()
+        verify(eventManager).removeSubscriber(listener, arrayOf(Keyboard.KeyPressed::class))
+    }
 }

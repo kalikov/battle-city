@@ -11,7 +11,7 @@ class TankExplosion(
     val tank: Tank
 ) : Explosion(
     Animation.pauseAware(pauseManager, FrameSequence(animationFrames), game.clock, 96),
-    t(4).toPixel()
+    4.tiles.toPixel()
 ) {
     private companion object {
         private val animationFrames = intArrayOf(1, 2, 3, 4, 5, 3)

@@ -17,7 +17,7 @@ class PauseMessageView(
 
         private const val MESSAGE = "PAUSE"
 
-        private val DX = t(-MESSAGE.length).toPixel() / 2 + 1
+        private val DX = (-MESSAGE.length).tiles.toPixel() / 2 + 1
     }
 
     private val blinkTimer = BlinkTimer(clock, INTERVAL)
@@ -35,6 +35,6 @@ class PauseMessageView(
         if (blinkTimer.isStopped || !blinkTimer.isOpaque) {
             return
         }
-        surface.fillText(MESSAGE, x + DX, y + t(1).toPixel(), ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
+        surface.fillText(MESSAGE, x + DX, y + 1.tiles.toPixel(), ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
     }
 }

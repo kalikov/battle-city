@@ -11,7 +11,6 @@ import kotlin.test.assertSame
 
 class PlayerTankControllerTest {
     private val controllerSubscriptions = arrayOf(
-        GamePlayerTanksManager.PlayerTankCreated::class,
         BaseExplosion.Destroyed::class,
         Keyboard.KeyPressed::class,
         Keyboard.KeyReleased::class
@@ -32,6 +31,7 @@ class PlayerTankControllerTest {
 
     @Test
     fun `should subscribe`() {
+        controller.activate()
         verify(game.eventManager).addSubscriber(controller, controllerSubscriptions)
     }
 

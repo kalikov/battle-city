@@ -19,7 +19,7 @@ class GameOverSceneTest {
         fonts = TestFonts()
 
         val screen: Screen = mock {
-            on { createSurface(px(anyInt()), px(anyInt())) } doAnswer {
+            on { createSurface(anyInt().px, anyInt().px) } doAnswer {
                 val image = BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
                 AwtScreenSurface(fonts, image)
             }

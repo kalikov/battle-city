@@ -21,7 +21,7 @@ class DemoStageSceneTest {
         val fonts = TestFonts()
         val clock = TestClock()
         val game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
-        whenever(game.screen.createSurface(px(anyInt()), px(anyInt()))).thenAnswer {
+        whenever(game.screen.createSurface(anyInt().px, anyInt().px)).thenAnswer {
             val image = BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
             AwtScreenSurface(fonts, image)
         }
@@ -30,19 +30,14 @@ class DemoStageSceneTest {
         val map: StageMapConfig = FileInputStream(File("data/demo.json")).use {
             json.decodeFromStream(it)
         }
-        val stage = Stage(
-            map,
-            3000,
-            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 20))
-        )
+        val enemies = listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 20))
 
-//        whenever(game.stageManager.demoStage).thenReturn(stage)
+        whenever(game.stageManager.stageMap).thenReturn(map)
+        whenever(game.stageManager.stageEnemies).thenReturn(enemies)
         val scene = DemoStageScene(game, mock(), mock())
+        scene.activate()
 
-//        while (!scene.isReady) {
-//            clock.tick(1)
         scene.update()
-//        }
 
         val image = BufferedImage(
             Globals.CANVAS_WIDTH.toInt(),

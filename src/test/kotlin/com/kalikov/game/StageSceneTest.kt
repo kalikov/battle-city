@@ -32,7 +32,7 @@ class StageSceneTest {
         clock = TestClock()
 
         game = mockGame(eventManager = DefaultEventManager(), imageManager = TestImageManager(fonts), clock = clock)
-        whenever(game.screen.createSurface(px(anyInt()), px(anyInt()))).thenAnswer {
+        whenever(game.screen.createSurface(anyInt().px, anyInt().px)).thenAnswer {
             val image = BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
             AwtScreenSurface(fonts, image)
         }
@@ -63,6 +63,7 @@ class StageSceneTest {
         whenever(stageManager.stageNumber).thenReturn(1)
 
         val scene = StageScene(game, mock())
+        scene.activate()
 
         while (!scene.isReady) {
             clock.tick(1)
@@ -77,8 +78,8 @@ class StageSceneTest {
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun `should draw two players scene correctly`() {
-        val playerOne = Player(game, initialScore = 100)
-        val playerTwo = Player(game, initialScore = 6000)
+        val playerOne = Player(game, initialScore = 100, index = 0)
+        val playerTwo = Player(game, initialScore = 6000, index = 1)
         whenever(stageManager.players).thenReturn(listOf(playerOne, playerTwo))
 
         val json = Json { ignoreUnknownKeys = true }
@@ -96,6 +97,7 @@ class StageSceneTest {
         whenever(stageManager.stageNumber).thenReturn(1)
 
         val scene = StageScene(game, mock())
+        scene.activate()
 
         while (!scene.isReady) {
             clock.tick(1)
@@ -113,8 +115,8 @@ class StageSceneTest {
         whenever(stageManager.players).thenReturn(listOf(player))
 
         val map = StageMapConfig(
-            base = TilePoint(t(12), t(24)),
-            playerSpawnPoints = listOf(TilePoint(t(8), t(24))),
+            base = TilePoint(12.tiles, 24.tiles),
+            playerSpawnPoints = listOf(TilePoint(8.tiles, 24.tiles)),
             enemySpawnPoints = emptyList(),
         )
         val stage = Stage(map, 1, emptyList())
@@ -124,6 +126,7 @@ class StageSceneTest {
         whenever(stageManager.stageNumber).thenReturn(1)
 
         val scene = StageScene(game, mock())
+        scene.activate()
 
         while (!scene.isReady) {
             clock.tick(1)

@@ -14,6 +14,7 @@ class CursorControllerTest {
         val cursor = stubCursor(game)
 
         val cursorController = CursorController(game.eventManager, cursor, PixelRect(), mock())
+        cursorController.activate()
 
         verify(game.eventManager).addSubscriber(
             cursorController,

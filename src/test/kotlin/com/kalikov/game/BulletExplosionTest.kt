@@ -28,8 +28,8 @@ class BulletExplosionTest {
         eventManager = DefaultEventManager()
         pauseManager = mock()
         val bullet: BulletHandle = mock {
-            on { center } doReturn px(0)
-            on { middle } doReturn px(0)
+            on { center } doReturn 0.px
+            on { middle } doReturn 0.px
         }
         explosion = BulletExplosion(
             mockGame(
@@ -71,8 +71,8 @@ class BulletExplosionTest {
 
     @Test
     fun `should draw explosion frame 1`() {
-        val image = BufferedImage(t(4).toPixel().toInt(), t(4).toPixel().toInt(), BufferedImage.TYPE_INT_ARGB)
-        explosion.setPosition(t(2).toPixel() - explosion.width / 2, t(2).toPixel() - explosion.height / 2)
+        val image = BufferedImage(4.tiles.toPixel().toInt(), 4.tiles.toPixel().toInt(), BufferedImage.TYPE_INT_ARGB)
+        explosion.setPosition(2.tiles.toPixel() - explosion.width / 2, 2.tiles.toPixel() - explosion.height / 2)
         explosion.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("bullet_explosion1.png", image)
@@ -80,8 +80,8 @@ class BulletExplosionTest {
 
     @Test
     fun `should draw explosion frame 2`() {
-        val image = BufferedImage(t(4).toPixel().toInt(), t(4).toPixel().toInt(), BufferedImage.TYPE_INT_ARGB)
-        explosion.setPosition(t(2).toPixel() - explosion.width / 2, t(2).toPixel() - explosion.height / 2)
+        val image = BufferedImage(4.tiles.toPixel().toInt(), 4.tiles.toPixel().toInt(), BufferedImage.TYPE_INT_ARGB)
+        explosion.setPosition(2.tiles.toPixel() - explosion.width / 2, 2.tiles.toPixel() - explosion.height / 2)
         explosion.update()
 
         clock.tick(BulletExplosion.ANIMATION_INTERVAL)
@@ -93,8 +93,8 @@ class BulletExplosionTest {
 
     @Test
     fun `should draw explosion frame 3`() {
-        val image = BufferedImage(t(4).toPixel().toInt(), t(4).toPixel().toInt(), BufferedImage.TYPE_INT_ARGB)
-        explosion.setPosition(t(2).toPixel() - explosion.width / 2, t(2).toPixel() - explosion.height / 2)
+        val image = BufferedImage(4.tiles.toPixel().toInt(), 4.tiles.toPixel().toInt(), BufferedImage.TYPE_INT_ARGB)
+        explosion.setPosition(2.tiles.toPixel() - explosion.width / 2, 2.tiles.toPixel() - explosion.height / 2)
         explosion.update()
 
         clock.tick(2 * BulletExplosion.ANIMATION_INTERVAL)

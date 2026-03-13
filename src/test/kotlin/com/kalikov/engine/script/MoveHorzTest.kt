@@ -20,13 +20,13 @@ class MoveHorzTest {
 
     @Test
     fun `should get moveable x property`() {
-        whenever(moveable.x).thenReturn(px(10))
+        whenever(moveable.x).thenReturn(10.px)
         assertEquals(10, move.value)
     }
 
     @Test
     fun `should set moveable x property`() {
         move.value = 10
-        verify(moveable).x = px(10)
+        verify(moveable).x = 10.px
     }
 }

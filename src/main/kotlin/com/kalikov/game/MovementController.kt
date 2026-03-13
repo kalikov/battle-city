@@ -198,28 +198,28 @@ class MovementController(
                 if (tank.y - 1 < gameField.bounds.top) {
                     return true
                 }
-                return isCollisionForTank(tank, px(0), px(-1))
+                return isCollisionForTank(tank, 0.px, -1.px)
             }
 
             Direction.LEFT -> {
                 if (tank.x - 1 < gameField.bounds.left) {
                     return true
                 }
-                return isCollisionForTank(tank, px(-1), px(0))
+                return isCollisionForTank(tank, -1.px, 0.px)
             }
 
             Direction.DOWN -> {
                 if (tank.bottom + 1 > gameField.bounds.bottom) {
                     return true
                 }
-                return isCollisionForTank(tank, px(0), px(1))
+                return isCollisionForTank(tank, 0.px, 1.px)
             }
 
             Direction.RIGHT -> {
                 if (tank.right + 1 > gameField.bounds.right) {
                     return true
                 }
-                return isCollisionForTank(tank, px(1), px(0))
+                return isCollisionForTank(tank, 1.px, 0.px)
             }
         }
     }

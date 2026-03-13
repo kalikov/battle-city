@@ -24,7 +24,6 @@
 //    private lateinit var eventManager: EventManager
 //    private lateinit var game: BattleCityGame
 //    private lateinit var pauseManager: PauseManager
-//    private lateinit var spriteContainer: SpriteContainer
 //
 //    @BeforeEach
 //    fun beforeEach() {
@@ -32,7 +31,6 @@
 //        eventManager = mock()
 //        game = mockGame(eventManager = eventManager, clock = clock)
 //        pauseManager = mock()
-//        spriteContainer = mock()
 //    }
 //
 //    @Test
@@ -43,24 +41,24 @@
 //
 //    @Test
 //    fun `should iterate over positions in a loop`() {
-//        val position1 = PixelPoint(px(0), px(0))
-//        val position2 = PixelPoint(px(10), px(20))
-//        val position3 = PixelPoint(px(40), px(100))
+//        val position1 = PixelPoint(0.px, 0.px)
+//        val position2 = PixelPoint(10.px, 20.px)
+//        val position3 = PixelPoint(40.px, 100.px)
 //        val factory = createFactory(
 //            listOf(position1, position2, position3),
 //            emptyList()
 //        )
-//        assertEquals(position1, factory.nextPosition())
-//        assertEquals(position2, factory.nextPosition())
-//        assertEquals(position3, factory.nextPosition())
-//        assertEquals(position1, factory.nextPosition())
+////        assertEquals(position1, factory.nextPosition())
+////        assertEquals(position2, factory.nextPosition())
+////        assertEquals(position3, factory.nextPosition())
+////        assertEquals(position1, factory.nextPosition())
 //    }
 //
 //    @Test
 //    fun `should iterate over enemies in a loop`() {
-//        val group1 = EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 1)
-//        val group2 = EnemyGroupConfig(GameEnemyTank.EnemyType.FAST, 2)
-//        val group3 = EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 1)
+//        val group1 = EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1)
+//        val group2 = EnemyGroupConfig(EnemyTank.EnemyType.FAST, 2)
+//        val group3 = EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1)
 //        val factory = createFactory(
 //            emptyList(),
 //            listOf(group1, group2, group3)
@@ -76,7 +74,7 @@
 //    fun `should spawn no more than limit respecting interval`() {
 //        val factory = createFactory(
 //            listOf(PixelPoint()),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 4)),
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 4)),
 //            4,
 //        )
 //        factory.enemyCountLimit = 2
@@ -132,7 +130,7 @@
 //
 //        val factory = createFactory(
 //            listOf(PixelPoint()),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 4)),
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 4)),
 //            1
 //        )
 //
@@ -150,10 +148,10 @@
 //
 //    @Test
 //    fun `should stop creation when no more enemies left`() {
-//        val positions = listOf(PixelPoint(px(0), px(0)), PixelPoint(px(10), px(20)), PixelPoint(px(40), px(100)))
-//        val group1 = EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 1)
-//        val group2 = EnemyGroupConfig(GameEnemyTank.EnemyType.FAST, 2)
-//        val group3 = EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 1)
+//        val positions = listOf(PixelPoint(0.px, 0.px), PixelPoint(10.px, 20.px), PixelPoint(40.px, 100.px))
+//        val group1 = EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1)
+//        val group2 = EnemyGroupConfig(EnemyTank.EnemyType.FAST, 2)
+//        val group3 = EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1)
 //        val factory = createFactory(
 //            positions,
 //            listOf(group1, group2, group3),
@@ -187,16 +185,16 @@
 //
 //    @Test
 //    fun `should create enemy`() {
-//        val position = PixelPoint(px(1), px(2))
+//        val position = PixelPoint(1.px, 2.px)
 //        val factory = createFactory(
 //            listOf(position),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 4))
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 4))
 //        )
 //
 //        assertEquals(0, factory.enemyCount)
 //
 //        factory.update()
-//        verifyEnemyCreated(GameEnemyTank.EnemyType.BASIC, position)
+//        verifyEnemyCreated(EnemyTank.EnemyType.BASIC, position)
 //
 //        assertEquals(1, factory.enemyCount)
 //    }
@@ -206,51 +204,51 @@
 //        val position = PixelPoint()
 //        val factory = createFactory(
 //            listOf(position),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 7)),
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 7)),
 //            1
 //        )
 //        factory.flashingIndices = setOf(3, 5, 6)
 //        factory.enemyCountLimit = 7
 //
 //        factory.update()
-//        verifyEnemyCreated(GameEnemyTank.EnemyType.BASIC, position)
+//        verifyEnemyCreated(EnemyTank.EnemyType.BASIC, position)
 //        reset(eventManager)
 //
 //        clock.tick(1)
 //        factory.update()
-//        verifyEnemyCreated(GameEnemyTank.EnemyType.BASIC, position)
+//        verifyEnemyCreated(EnemyTank.EnemyType.BASIC, position)
 //        reset(eventManager)
 //
 //        clock.tick(1)
 //        factory.update()
-//        verifyEnemyCreated(GameEnemyTank.EnemyType.BASIC, position, true)
+//        verifyEnemyCreated(EnemyTank.EnemyType.BASIC, position, true)
 //        reset(eventManager)
 //
 //        clock.tick(1)
 //        factory.update()
-//        verifyEnemyCreated(GameEnemyTank.EnemyType.BASIC, position)
+//        verifyEnemyCreated(EnemyTank.EnemyType.BASIC, position)
 //        reset(eventManager)
 //
 //        clock.tick(1)
 //        factory.update()
-//        verifyEnemyCreated(GameEnemyTank.EnemyType.BASIC, position, true)
+//        verifyEnemyCreated(EnemyTank.EnemyType.BASIC, position, true)
 //        reset(eventManager)
 //
 //        clock.tick(1)
 //        factory.update()
-//        verifyEnemyCreated(GameEnemyTank.EnemyType.BASIC, position, true)
+//        verifyEnemyCreated(EnemyTank.EnemyType.BASIC, position, true)
 //        reset(eventManager)
 //
 //        clock.tick(1)
 //        factory.update()
-//        verifyEnemyCreated(GameEnemyTank.EnemyType.BASIC, position)
+//        verifyEnemyCreated(EnemyTank.EnemyType.BASIC, position)
 //    }
 //
 //    @Test
 //    fun `should track destroyed enemies`() {
 //        val factory = createFactory(
-//            listOf(PixelPoint(px(1), px(2))),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 1))
+//            listOf(PixelPoint(1.px, 2.px)),
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1))
 //        )
 //
 //        factory.update()
@@ -268,7 +266,7 @@
 //    fun `should notify when last enemy is destroyed`() {
 //        val factory = createFactory(
 //            listOf(PixelPoint()),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 1))
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 1))
 //        )
 //
 //        factory.update()
@@ -278,14 +276,14 @@
 //        val explosion = stubTankExplosion(game, tank = tank)
 //        factory.notify(TankExplosion.Destroyed(explosion))
 //
-//        verify(eventManager).fireEvent(GameEnemyTanksManager.LastEnemyDestroyed)
+//        verify(eventManager).fireEvent(EnemyTanksManager.LastEnemyDestroyed)
 //    }
 //
 //    @Test
 //    fun `should not notify when destroyed enemy is not the last due to more to create`() {
 //        val factory = createFactory(
 //            listOf(PixelPoint()),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 2))
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 2))
 //        )
 //
 //        factory.update()
@@ -294,14 +292,14 @@
 //        val explosion = stubTankExplosion(game, tank = tank)
 //        factory.notify(TankExplosion.Destroyed(explosion))
 //
-//        verify(eventManager, never()).fireEvent(GameEnemyTanksManager.LastEnemyDestroyed)
+//        verify(eventManager, never()).fireEvent(EnemyTanksManager.LastEnemyDestroyed)
 //    }
 //
 //    @Test
 //    fun `should not notify when destroyed enemy is not the last due to left on the field`() {
 //        val factory = createFactory(
 //            listOf(PixelPoint()),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 2)),
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 2)),
 //            1
 //        )
 //
@@ -316,14 +314,14 @@
 //        val explosion = stubTankExplosion(game, tank = tank)
 //        factory.notify(TankExplosion.Destroyed(explosion))
 //
-//        verify(eventManager, never()).fireEvent(GameEnemyTanksManager.LastEnemyDestroyed)
+//        verify(eventManager, never()).fireEvent(EnemyTanksManager.LastEnemyDestroyed)
 //    }
 //
 //    @Test
 //    fun `should return enemiesToCreateCount correctly`() {
 //        val factory = createFactory(
 //            listOf(PixelPoint()),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 3)),
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 3)),
 //            1
 //        )
 //
@@ -345,7 +343,7 @@
 //    fun `should spawn new tank immediately after tank is destroyed`() {
 //        val factory = createFactory(
 //            listOf(PixelPoint()),
-//            listOf(EnemyGroupConfig(GameEnemyTank.EnemyType.BASIC, 3)),
+//            listOf(EnemyGroupConfig(EnemyTank.EnemyType.BASIC, 3)),
 //            10000
 //        )
 //        factory.enemyCountLimit = 1
@@ -356,7 +354,7 @@
 //
 //        clock.tick(10000)
 //        factory.update()
-//        verify(eventManager, never()).fireEvent(isA<GameEnemyTanksManager.EnemyCreated>())
+//        verify(eventManager, never()).fireEvent(isA<EnemyTanksManager.EnemyCreated>())
 //
 //        clock.tick(5000)
 //        factory.update()
@@ -369,7 +367,7 @@
 //    }
 //
 //    private fun verifyEnemyCreated(
-//        type: GameEnemyTank.EnemyType,
+//        type: EnemyTank.EnemyType,
 //        position: PixelPoint,
 //        flashing: Boolean = false
 //    ): Tank {
@@ -388,7 +386,7 @@
 //    }
 //
 //    private fun captureEnemyCreated(): GameEnemyTanksManager.EnemyCreated {
-//        val captor = argumentCaptor<GameEnemyTanksManager.EnemyCreated>()
+//        val captor = argumentCaptor<EnemyTanksManager.EnemyCreated>()
 //        verify(eventManager).fireEvent(captor.capture())
 //
 //        return captor.firstValue
@@ -398,14 +396,14 @@
 //        positions: List<PixelPoint>,
 //        enemies: List<EnemyGroupConfig>,
 //        interval: Int = 3000
-//    ): GameEnemyTanksManager {
+//    ): EnemyTanksManager {
 //        return GameEnemyTanksManager(
 //            game,
 //            pauseManager,
-//            spriteContainer,
-//            positions,
-//            enemies,
-//            interval
+////            spriteContainer,
+////            positions,
+////            enemies,
+////            interval
 //        )
 //    }
 //}

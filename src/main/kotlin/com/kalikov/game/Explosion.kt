@@ -9,8 +9,8 @@ import com.kalikov.engine.times
 abstract class Explosion(
     private val animation: Animation,
     explosionSize: Pixel,
-    x: Pixel = px(0),
-    y: Pixel = px(0),
+    x: Pixel = 0.px,
+    y: Pixel = 0.px,
 ) : AbstractSprite(x, y, explosionSize, explosionSize) {
     protected abstract val image: ScreenSurface
 
@@ -25,7 +25,7 @@ abstract class Explosion(
     }
 
     override fun draw(surface: ScreenSurface) {
-        surface.draw(x, y, image, (animation.frame - 1) * width, px(0), width, height)
+        surface.draw(x, y, image, (animation.frame - 1) * width, 0.px, width, height)
     }
 
     override fun dispose() {

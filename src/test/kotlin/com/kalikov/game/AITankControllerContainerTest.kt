@@ -160,7 +160,7 @@
 //        container = AITankControllerContainer(
 //            eventManager,
 //            mock(),
-//            PixelPoint(px(0), Tank.SIZE),
+//            PixelPoint(0.px, Tank.SIZE),
 //            mock(),
 //            AITankControllerParams(
 //                clock = clock,

@@ -98,15 +98,15 @@ class DemoStageScene(
         livesView = LivesView(
             game,
             players,
-            gameField.bounds.right + 1 + t(1).toPixel(),
-            gameField.bounds.bottom + 1 - t(11).toPixel()
+            gameField.bounds.right + 1 + 1.tiles.toPixel(),
+            gameField.bounds.bottom + 1 - 11.tiles.toPixel()
         )
 
         stageNumberView = StageNumberView(
             game.imageManager,
             30,
-            gameField.bounds.right + 1 + t(1).toPixel(),
-            gameField.bounds.bottom + 1 - t(5).toPixel()
+            gameField.bounds.right + 1 + 1.tiles.toPixel(),
+            gameField.bounds.bottom + 1 - 5.tiles.toPixel()
         )
     }
 

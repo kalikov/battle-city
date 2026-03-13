@@ -22,7 +22,7 @@ class StageScoreSceneTest {
         clock = TestClock()
 
         game = mockGame(imageManager = TestImageManager(fonts), clock = clock)
-        whenever(game.screen.createSurface(px(anyInt()), px(anyInt()))).thenAnswer {
+        whenever(game.screen.createSurface(anyInt().px, anyInt().px)).thenAnswer {
             BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
         }
 
@@ -34,34 +34,15 @@ class StageScoreSceneTest {
         whenever(game.stageManager.highScore).thenReturn(20000)
         whenever(game.stageManager.stageNumber).thenReturn(7)
 
-        val score = StageScore()
-        score.increment(createTank(EnemyTank.EnemyType.BASIC))
-        score.increment(createTank(EnemyTank.EnemyType.FAST))
-
         val player = Player(game, initialScore = 25200)
         whenever(game.stageManager.players).thenReturn(listOf(player))
+        player.stageScore.increment(stubEnemyTank(game, enemyType = EnemyTank.EnemyType.BASIC))
+        player.stageScore.increment(stubEnemyTank(game, enemyType = EnemyTank.EnemyType.FAST))
         val scene = StageScoreScene(
             game,
             mock(),
         )
-
-        val stage = Stage(
-            StageMapConfig(
-                base = TilePoint(),
-                playerSpawnPoints = emptyList(),
-                enemySpawnPoints = listOf(
-                    TilePoint(t(12), t(0)),
-                    TilePoint(t(24), t(0)),
-                    TilePoint(t(0), t(0))
-                ),
-            ),
-            1,
-            emptyList()
-        )
-
-        whenever(game.stageManager.stageMap).thenReturn(stage.map)
-        whenever(game.stageManager.stageEnemies).thenReturn(stage.enemies)
-        whenever(game.stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
+        scene.activate()
 
         while (!scene.isComplete) {
             clock.tick(1)
@@ -78,42 +59,23 @@ class StageScoreSceneTest {
         whenever(game.stageManager.highScore).thenReturn(20000)
         whenever(game.stageManager.stageNumber).thenReturn(7)
 
-        val scoreOne = StageScore()
-        scoreOne.increment(createTank(EnemyTank.EnemyType.BASIC))
-        scoreOne.increment(createTank(EnemyTank.EnemyType.FAST))
+        val playerOne = Player(game, initialScore = 25200, index = 0)
+        playerOne.stageScore.increment(createTank(EnemyTank.EnemyType.BASIC))
+        playerOne.stageScore.increment(createTank(EnemyTank.EnemyType.FAST))
 
-        val scoreTwo = StageScore()
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.BASIC))
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.BASIC))
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.BASIC))
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
+        val playerTwo = Player(game, initialScore = 4600, index = 1)
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.BASIC))
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.BASIC))
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.BASIC))
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.FAST))
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.FAST))
 
-        val playerOne = Player(game, initialScore = 25200)
-        val playerTwo = Player(game, initialScore = 5600)
         whenever(game.stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
             game,
             mock(),
         )
-
-        val stage = Stage(
-            StageMapConfig(
-                base = TilePoint(),
-                playerSpawnPoints = emptyList(),
-                enemySpawnPoints = listOf(
-                    TilePoint(t(12), t(0)),
-                    TilePoint(t(24), t(0)),
-                    TilePoint(t(0), t(0))
-                ),
-            ),
-            1,
-            emptyList()
-        )
-
-        whenever(game.stageManager.stageMap).thenReturn(stage.map)
-        whenever(game.stageManager.stageEnemies).thenReturn(stage.enemies)
-        whenever(game.stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
+        scene.activate()
 
         while (!scene.isComplete) {
             clock.tick(1)
@@ -130,45 +92,26 @@ class StageScoreSceneTest {
         whenever(game.stageManager.highScore).thenReturn(20000)
         whenever(game.stageManager.stageNumber).thenReturn(7)
 
-        val scoreOne = StageScore()
-        scoreOne.increment(createTank(EnemyTank.EnemyType.BASIC))
-        scoreOne.increment(createTank(EnemyTank.EnemyType.FAST))
-        scoreOne.increment(createTank(EnemyTank.EnemyType.POWER))
-        scoreOne.increment(createTank(EnemyTank.EnemyType.POWER))
-        scoreOne.increment(createTank(EnemyTank.EnemyType.ARMOR))
+        val playerOne = Player(game, initialScore = 25200, index = 0)
+        playerOne.stageScore.increment(createTank(EnemyTank.EnemyType.BASIC))
+        playerOne.stageScore.increment(createTank(EnemyTank.EnemyType.FAST))
+        playerOne.stageScore.increment(createTank(EnemyTank.EnemyType.POWER))
+        playerOne.stageScore.increment(createTank(EnemyTank.EnemyType.POWER))
+        playerOne.stageScore.increment(createTank(EnemyTank.EnemyType.ARMOR))
 
-        val scoreTwo = StageScore()
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.BASIC))
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.BASIC))
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.BASIC))
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
-        scoreTwo.increment(createTank(EnemyTank.EnemyType.FAST))
+        val playerTwo = Player(game, initialScore = 5600, index = 1)
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.BASIC))
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.BASIC))
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.BASIC))
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.FAST))
+        playerTwo.stageScore.increment(createTank(EnemyTank.EnemyType.FAST))
 
-        val playerOne = Player(game, initialScore = 25200)
-        val playerTwo = Player(game, initialScore = 5600)
         whenever(game.stageManager.players).thenReturn(listOf(playerOne, playerTwo))
         val scene = StageScoreScene(
             game,
             mock(),
         )
-
-        val stage = Stage(
-            StageMapConfig(
-                base = TilePoint(),
-                playerSpawnPoints = emptyList(),
-                enemySpawnPoints = listOf(
-                    TilePoint(t(12), t(0)),
-                    TilePoint(t(24), t(0)),
-                    TilePoint(t(0), t(0))
-                )
-            ),
-            1,
-            emptyList()
-        )
-
-        whenever(game.stageManager.stageMap).thenReturn(stage.map)
-        whenever(game.stageManager.stageEnemies).thenReturn(stage.enemies)
-        whenever(game.stageManager.stageEnemySpawnDelay).thenReturn(stage.enemySpawnDelay)
+        scene.activate()
 
         while (!scene.isComplete) {
             clock.tick(1)

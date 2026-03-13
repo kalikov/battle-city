@@ -55,8 +55,8 @@ fun mockGame(
 fun stubEnemyTank(
     game: BattleCityGame = mockGame(),
     pauseManager: PauseManager = mock(),
-    x: Pixel = px(0),
-    y: Pixel = px(0),
+    x: Pixel = 0.px,
+    y: Pixel = 0.px,
     enemyType: EnemyTank.EnemyType = EnemyTank.EnemyType.BASIC,
 ): EnemyTank {
     return EnemyTank.create(game, pauseManager, x, y, enemyType)
@@ -65,8 +65,8 @@ fun stubEnemyTank(
 fun stubPlayerTank(
     game: BattleCityGame = mockGame(),
     pauseManager: PauseManager = mock(),
-    x: Pixel = px(0),
-    y: Pixel = px(0),
+    x: Pixel = 0.px,
+    y: Pixel = 0.px,
     player: Player = Player(game),
 ): PlayerTank {
     return PlayerTank.create(game, pauseManager, x, y, player)
@@ -75,8 +75,8 @@ fun stubPlayerTank(
 fun stubBullet(
     game: BattleCityGame = mockGame(),
     tank: Tank,
-    x: Pixel = px(0),
-    y: Pixel = px(0),
+    x: Pixel = 0.px,
+    y: Pixel = 0.px,
 ): Bullet {
     return Bullet(game, tank, speed = tank.bulletSpeed, x = x, y = y)
 }
@@ -100,8 +100,8 @@ fun stubPoints(
     game: BattleCityGame = mockGame(),
     pauseManager: PauseManager = mock(),
     value: Int = 100,
-    x: Pixel = px(0),
-    y: Pixel = px(0),
+    x: Pixel = 0.px,
+    y: Pixel = 0.px,
 ): Points {
     return Points(game, pauseManager, value, x, y, 200)
 }

@@ -7,15 +7,15 @@ import com.kalikov.engine.ScreenSurface
 import com.kalikov.engine.px
 
 class GameOverMessage(
-    override var x: Pixel = px(0),
-    override var y: Pixel = px(0),
+    override var x: Pixel = 0.px,
+    override var y: Pixel = 0.px,
 ) : Moveable {
     var isVisible: Boolean = false
 
     fun draw(surface: ScreenSurface) {
         if (isVisible) {
             surface.fillText("GAME", x, y, ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
-            surface.fillText("OVER", x, y + t(1).toPixel(), ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
+            surface.fillText("OVER", x, y + 1.tiles.toPixel(), ARGB.rgb(0xe44437), Globals.FONT_REGULAR)
         }
     }
 }

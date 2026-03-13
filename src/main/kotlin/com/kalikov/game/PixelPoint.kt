@@ -5,7 +5,7 @@ import com.kalikov.engine.px
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PixelPoint(val x: Pixel = px(0), val y: Pixel = px(0)) {
+data class PixelPoint(val x: Pixel = 0.px, val y: Pixel = 0.px) {
     fun translate(dx: Pixel, dy: Pixel) = PixelPoint(x + dx, y + dy)
 
     fun multiply(scale: Int) = multiply(scale, scale)

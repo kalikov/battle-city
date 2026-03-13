@@ -20,7 +20,7 @@ class ConstructionSceneTest {
     fun beforeEach() {
         val fonts = TestFonts()
         game = mockGame(imageManager = TestImageManager(fonts))
-        whenever(game.screen.createSurface(px(anyInt()), px(anyInt()))).thenAnswer {
+        whenever(game.screen.createSurface(anyInt().px, anyInt().px)).thenAnswer {
             val image = BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
             AwtScreenSurface(fonts, image)
         }

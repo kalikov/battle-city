@@ -69,8 +69,8 @@
 //            mock(),
 //            DefaultSpriteContainer(eventManager),
 //            DefaultSpriteContainer(eventManager),
-//            px(0),
-//            px(0),
+//            0.px,
+//            0.px,
 //        )
 //
 //        val json = Json
@@ -95,7 +95,7 @@
 //        val field = GameField(game, mock(), mock(), mock())
 //        field.load(
 //            StageMapConfig(
-//                base = TilePoint(t(12), t(24)),
+//                base = TilePoint(12.tiles, 24.tiles),
 //                playerSpawnPoints = emptyList(),
 //                enemySpawnPoints = emptyList(),
 //            ),
@@ -106,14 +106,14 @@
 //
 //        assertEquals(
 //            setOf(
-//                BrickTile(t(11), t(23)),
-//                BrickTile(t(11), t(24)),
-//                BrickTile(t(11), t(25)),
-//                BrickTile(t(12), t(23)),
-//                BrickTile(t(13), t(23)),
-//                BrickTile(t(14), t(23)),
-//                BrickTile(t(14), t(24)),
-//                BrickTile(t(14), t(25)),
+//                BrickTile(11.tiles, 23.tiles),
+//                BrickTile(11.tiles, 24.tiles),
+//                BrickTile(11.tiles, 25.tiles),
+//                BrickTile(12.tiles, 23.tiles),
+//                BrickTile(13.tiles, 23.tiles),
+//                BrickTile(14.tiles, 23.tiles),
+//                BrickTile(14.tiles, 24.tiles),
+//                BrickTile(14.tiles, 25.tiles),
 //            ),
 //            field.walls.config.bricks
 //        )
@@ -129,7 +129,7 @@
 //        val field = GameField(game, mock(), mock(), mock())
 //        field.load(
 //            StageMapConfig(
-//                base = TilePoint(t(12), t(24)),
+//                base = TilePoint(12.tiles, 24.tiles),
 //                playerSpawnPoints = emptyList(),
 //                enemySpawnPoints = emptyList(),
 //            ),
@@ -137,18 +137,18 @@
 //        )
 //
 //        val destroy = setOf(
-//            TilePoint(t(10), t(25)),
-//            TilePoint(t(10), t(24)),
-//            TilePoint(t(10), t(23)),
-//            TilePoint(t(10), t(22)),
-//            TilePoint(t(11), t(22)),
-//            TilePoint(t(12), t(22)),
-//            TilePoint(t(13), t(22)),
-//            TilePoint(t(14), t(22)),
-//            TilePoint(t(15), t(22)),
-//            TilePoint(t(15), t(23)),
-//            TilePoint(t(15), t(24)),
-//            TilePoint(t(15), t(25)),
+//            TilePoint(10.tiles, 25.tiles),
+//            TilePoint(10.tiles, 24.tiles),
+//            TilePoint(10.tiles, 23.tiles),
+//            TilePoint(10.tiles, 22.tiles),
+//            TilePoint(11.tiles, 22.tiles),
+//            TilePoint(12.tiles, 22.tiles),
+//            TilePoint(13.tiles, 22.tiles),
+//            TilePoint(14.tiles, 22.tiles),
+//            TilePoint(15.tiles, 22.tiles),
+//            TilePoint(15.tiles, 23.tiles),
+//            TilePoint(15.tiles, 24.tiles),
+//            TilePoint(15.tiles, 25.tiles),
 //        )
 //        destroy.forEach { field.walls.fillBrickTile(it.x, it.y) }
 //
@@ -176,7 +176,7 @@
 //            0
 //        )
 //
-//        field.walls.fillBrickTile(t(0), t(0))
+//        field.walls.fillBrickTile(0.tiles, 0.tiles)
 //
 //        field.buildBrickWall()
 //

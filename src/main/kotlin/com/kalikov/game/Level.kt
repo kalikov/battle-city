@@ -116,15 +116,15 @@ class Level(
         livesView = LivesView(
             game,
             game.stageManager.players,
-            gameField.bounds.right + 1 + t(1).toPixel(),
-            gameField.bounds.bottom + 1 - t(11).toPixel()
+            gameField.bounds.right + 1 + 1.tiles.toPixel(),
+            gameField.bounds.bottom + 1 - 11.tiles.toPixel()
         )
 
         stageNumberView = StageNumberView(
             game.imageManager,
             game.stageManager.stageNumber,
-            gameField.bounds.right + 1 + t(1).toPixel(),
-            gameField.bounds.bottom + 1 - t(5).toPixel()
+            gameField.bounds.right + 1 + 1.tiles.toPixel(),
+            gameField.bounds.bottom + 1 - 5.tiles.toPixel()
         )
 
         gameOverMessage = GameOverMessage()
@@ -197,7 +197,7 @@ class Level(
                 it.isActive = false
             }
             gameOverMessage.x = gameField.bounds.x + gameField.bounds.width / 2 - Globals.TILE_SIZE * 2 + 1
-            gameOverMessage.y = Globals.CANVAS_HEIGHT + t(2).toPixel()
+            gameOverMessage.y = Globals.CANVAS_HEIGHT + 2.tiles.toPixel()
             gameOverMessage.isVisible = true
         })
         gameOverScript.enqueue(

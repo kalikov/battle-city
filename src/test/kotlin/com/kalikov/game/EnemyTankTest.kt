@@ -20,8 +20,8 @@ class EnemyTankTest : TankTest<EnemyTank>() {
         return EnemyTank.create(
             game,
             mock(),
-            px(0),
-            px(0),
+            0.px,
+            0.px,
             EnemyTank.EnemyType.BASIC
         )
     }

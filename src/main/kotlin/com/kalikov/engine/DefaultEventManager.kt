@@ -6,18 +6,10 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 open class DefaultEventManager(private val out: PrintStream = System.out) : EventManager {
-    private val comparator = object : Comparator<EventSubscriber> {
-//        private val map = WeakIdentityToIntMap<EventSubscriber>()
-
-//        private var counter = 0
-
-        override fun compare(o1: EventSubscriber, o2: EventSubscriber): Int {
-//            val id1 = map.computeIfAbsent(o1) { ++counter }
-//            val id2 = map.computeIfAbsent(o2) { ++counter }
-            val id1 = o1.identity
-            val id2 = o2.identity
-            return id1 - id2
-        }
+    private val comparator = Comparator<EventSubscriber> { o1, o2 ->
+        val id1 = o1.identity
+        val id2 = o2.identity
+        id1 - id2
     }
 
     private val subscriptions: MutableMap<KClass<out Event>, Entry> = ConcurrentHashMap()

@@ -135,14 +135,14 @@ class MenuScene(
         surface.fillText(
             CITY,
             6.tiles.toPixel(),
-            nameTop + 2 * Globals.FONT_BIG_CORRECTION + t(3).toPixel() / 2,
+            nameTop + 2 * Globals.FONT_BIG_CORRECTION + 3.tiles.toPixel() / 2,
             ARGB.WHITE,
             Globals.FONT_BIG,
             brickBlending
         )
 
-        surface.draw(2.px, t(1).toPixel(), game.imageManager.romanOne)
-        surface.fillRect(t(1).toPixel() + 1, t(1).toPixel() + 3, px(6), px(2), ARGB.WHITE)
+        surface.draw(2.px, 1.tiles.toPixel(), game.imageManager.romanOne)
+        surface.fillRect(1.tiles.toPixel() + 1, 1.tiles.toPixel() + 3, 6.px, 2.px, ARGB.WHITE)
 
         surface.fillText(
             formatScore(game.stageManager.players[0].previousScore),
@@ -175,29 +175,29 @@ class MenuScene(
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
-        surface.fillRect(t(11).toPixel() + 1, t(1).toPixel() + 3, px(6), px(2), ARGB.WHITE)
+        surface.fillRect(11.tiles.toPixel() + 1, 1.tiles.toPixel() + 3, 6.px, 2.px, ARGB.WHITE)
 
-        surface.draw(t(9).toPixel(), t(21).toPixel(), game.imageManager.namco, namcoBlending)
+        surface.draw(9.tiles.toPixel(), 21.tiles.toPixel(), game.imageManager.namco, namcoBlending)
 
-        surface.draw(t(2).toPixel(), t(23).toPixel(), game.imageManager.copyright)
+        surface.draw(2.tiles.toPixel(), 23.tiles.toPixel(), game.imageManager.copyright)
         surface.fillText(
             NAMCO_LTD,
-            t(4).toPixel() + 1,
-            t(23).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            4.tiles.toPixel() + 1,
+            23.tiles.toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
         surface.fillText(
             ".",
-            t(4).toPixel() + 1 + NAMCO_LTD.length * Globals.FONT_REGULAR_SIZE - 1,
-            t(23).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            4.tiles.toPixel() + 1 + NAMCO_LTD.length * Globals.FONT_REGULAR_SIZE - 1,
+            23.tiles.toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )
         surface.fillText(
             "ALL RIGHTS RESERVED",
-            t(4).toPixel() + 1,
-            t(25).toPixel() + Globals.FONT_REGULAR_CORRECTION,
+            4.tiles.toPixel() + 1,
+            25.tiles.toPixel() + Globals.FONT_REGULAR_CORRECTION,
             ARGB.WHITE,
             Globals.FONT_REGULAR
         )

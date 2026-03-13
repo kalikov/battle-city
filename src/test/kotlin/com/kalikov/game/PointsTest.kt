@@ -91,6 +91,6 @@ class PointsTest {
     }
 
     private fun createPoints(duration: Int): Points {
-        return Points(game, pauseManager, 100, px(0), px(0), duration = duration)
+        return Points(game, pauseManager, 100, 0.px, 0.px, duration = duration)
     }
 }

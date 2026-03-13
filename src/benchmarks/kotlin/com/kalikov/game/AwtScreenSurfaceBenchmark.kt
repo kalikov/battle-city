@@ -33,7 +33,7 @@
 //        val image = BufferedImage(width.toInt(), Globals.FONT_BIG_CORRECTION.toInt(), BufferedImage.TYPE_INT_ARGB)
 //        val surface = AwtScreenSurface(fonts, image)
 //        surface.clear(ARGB.TRANSPARENT)
-//        surface.fillText(FILL_TEXT, px(0), Globals.FONT_BIG_CORRECTION, ARGB.rgb(0x888888), Globals.FONT_BIG, blending)
+//        surface.fillText(FILL_TEXT, 0.px, Globals.FONT_BIG_CORRECTION, ARGB.rgb(0x888888), Globals.FONT_BIG, blending)
 //        surface
 //    }
 //
@@ -78,35 +78,35 @@
 //
 //    @Benchmark
 //    fun benchmarkClearRect() {
-//        targetSurface.clear(px(10), px(10), px(TARGET_WIDTH - 10), px(TARGET_HEIGHT - 10), ARGB(0x66FF0000))
+//        targetSurface.clear(10.px, 10.px, px(TARGET_WIDTH - 10), px(TARGET_HEIGHT - 10), ARGB(0x66FF0000))
 //    }
 //
 //    @Benchmark
 //    fun benchmarkDrawRect() {
-//        targetSurface.drawRect(px(10), px(10), px(TARGET_WIDTH - 10), px(TARGET_HEIGHT - 10), ARGB(0x66FF0000))
+//        targetSurface.drawRect(10.px, 10.px, px(TARGET_WIDTH - 10), px(TARGET_HEIGHT - 10), ARGB(0x66FF0000))
 //    }
 //
 //    @Benchmark
 //    fun benchmarkFillRect() {
-//        targetSurface.fillRect(px(10), px(10), px(TARGET_WIDTH - 10), px(TARGET_HEIGHT - 10), ARGB(0x66FF0000))
+//        targetSurface.fillRect(10.px, 10.px, px(TARGET_WIDTH - 10), px(TARGET_HEIGHT - 10), ARGB(0x66FF0000))
 //    }
 //
 //    @Benchmark
 //    fun benchmarkDrawLine() {
-//        targetSurface.drawLine(px(10), px(10), px(TARGET_WIDTH - 10), px(TARGET_HEIGHT - 10), ARGB(0x66FF0000))
+//        targetSurface.drawLine(10.px, 10.px, px(TARGET_WIDTH - 10), px(TARGET_HEIGHT - 10), ARGB(0x66FF0000))
 //    }
 //
 //    @Benchmark
 //    fun benchmarkFillText() {
-//        targetSurface.fillText(FILL_TEXT, px(10), px(10) + Globals.FONT_BIG_CORRECTION, ARGB.rgb(0x888888), Globals.FONT_BIG)
+//        targetSurface.fillText(FILL_TEXT, 10.px, 10.px + Globals.FONT_BIG_CORRECTION, ARGB.rgb(0x888888), Globals.FONT_BIG)
 //    }
 //
 //    @Benchmark
 //    fun benchmarkFillTextBlended() {
 //        targetSurface.fillText(
 //            FILL_TEXT,
-//            px(10),
-//            px(10) + Globals.FONT_BIG_CORRECTION,
+//            10.px,
+//            10.px + Globals.FONT_BIG_CORRECTION,
 //            ARGB.rgb(0x888888),
 //            Globals.FONT_BIG,
 //            blending
@@ -115,27 +115,27 @@
 //
 //    @Benchmark
 //    fun benchmarkFillTextBlendedOptimised() {
-//        targetSurface.draw(px(10), px(10), fillTextSurface)
+//        targetSurface.draw(10.px, 10.px, fillTextSurface)
 //    }
 //
 //    @Benchmark
 //    fun benchmarkDrawImage() {
-//        targetSurface.draw(px(10), px(10), sourceSurface)
+//        targetSurface.draw(10.px, 10.px, sourceSurface)
 //    }
 //
 //    @Benchmark
 //    fun benchmarkDrawSubImage() {
-//        targetSurface.draw(px(10), px(10), sourceSurface, px(0), px(0), px(20), px(20))
+//        targetSurface.draw(10.px, 10.px, sourceSurface, 0.px, 0.px, 20.px, 20.px)
 //    }
 //
 //    @Benchmark
 //    fun benchmarkDrawImageBlended() {
-//        targetSurface.draw(px(10), px(10), sourceSurface, blending)
+//        targetSurface.draw(10.px, 10.px, sourceSurface, blending)
 //    }
 //
 //    @Benchmark
 //    fun benchmarkDrawImageBlendedOptimised() {
-//        targetSurface.draw(px(10), px(10), sourceLazyBlender.target)
+//        targetSurface.draw(10.px, 10.px, sourceLazyBlender.target)
 //    }
 //
 //    @TearDown(Level.Iteration)

@@ -13,7 +13,7 @@ class AwtScreenSurfaceTest {
         val image = BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB)
         val surface = AwtScreenSurface(fonts, image)
 
-        surface.fillText("test", px(0), px(50), ARGB.RED, Globals.FONT_BIG) { _, _, _, _ ->
+        surface.fillText("test", 0.px, 50.px, ARGB.RED, Globals.FONT_BIG) { _, _, _, _ ->
             ARGB.WHITE
         }
     }

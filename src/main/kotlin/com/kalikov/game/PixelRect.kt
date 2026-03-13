@@ -4,10 +4,10 @@ import com.kalikov.engine.Pixel
 import com.kalikov.engine.px
 
 data class PixelRect(
-    val x: Pixel = px(0),
-    val y: Pixel = px(0),
-    val width: Pixel = px(0),
-    val height: Pixel = px(0),
+    val x: Pixel = 0.px,
+    val y: Pixel = 0.px,
+    val width: Pixel = 0.px,
+    val height: Pixel = 0.px,
 ) {
     constructor(x: Pixel, y: Pixel, size: PixelSize) : this(x, y, size.width, size.height)
 

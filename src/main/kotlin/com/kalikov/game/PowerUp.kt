@@ -39,7 +39,7 @@ class PowerUp(
 
     override fun draw(surface: ScreenSurface) {
         if (blinkTimer.isOpaque) {
-            surface.draw(x, y, image, type.index * width, px(0), width, height)
+            surface.draw(x, y, image, type.index * width, 0.px, width, height)
         }
     }
 

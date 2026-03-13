@@ -61,7 +61,7 @@ abstract class TankTest<T : Tank> {
         tank.shoot()
         verify(eventManager, never()).fireEvent(any())
 
-//        tank.notify(Tank.Reload(tank))
+        tank.reload()
 
         clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
@@ -88,7 +88,7 @@ abstract class TankTest<T : Tank> {
         tank.shoot()
         verify(eventManager, never()).fireEvent(any())
 
-//        tank.notify(Tank.Reload(tank))
+        tank.reload()
 
         clock.tick(Tank.LONG_COOLDOWN_INTERVAL)
         tank.update()
@@ -116,100 +116,100 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should smooth turn right-up rounding using direction`() {
         tank.direction = Direction.RIGHT
-        tank.setPosition(PixelPoint(px(12), px(7)))
+        tank.setPosition(PixelPoint(12.px, 7.px))
         tank.direction = Direction.UP
-        assertEquals(px(16), tank.x)
-        assertEquals(px(7), tank.y)
+        assertEquals(16.px, tank.x)
+        assertEquals(7.px, tank.y)
     }
 
     @Test
     fun `should smooth turn left-up rounding using direction`() {
         tank.direction = Direction.LEFT
-        tank.setPosition(PixelPoint(px(12), px(7)))
+        tank.setPosition(PixelPoint(12.px, 7.px))
         tank.direction = Direction.UP
-        assertEquals(px(8), tank.x)
-        assertEquals(px(7), tank.y)
+        assertEquals(8.px, tank.x)
+        assertEquals(7.px, tank.y)
     }
 
     @Test
     fun `should smooth turn right-up`() {
         tank.direction = Direction.RIGHT
-        tank.setPosition(PixelPoint(px(6), px(7)))
+        tank.setPosition(PixelPoint(6.px, 7.px))
         tank.direction = Direction.UP
-        assertEquals(px(8), tank.x)
-        assertEquals(px(7), tank.y)
+        assertEquals(8.px, tank.x)
+        assertEquals(7.px, tank.y)
     }
 
     @Test
     fun `should smooth turn right-down`() {
         tank.direction = Direction.RIGHT
-        tank.setPosition(PixelPoint(px(5), px(0)))
+        tank.setPosition(PixelPoint(5.px, 0.px))
         tank.direction = Direction.DOWN
-        assertEquals(px(8), tank.x)
-        assertEquals(px(0), tank.y)
+        assertEquals(8.px, tank.x)
+        assertEquals(0.px, tank.y)
     }
 
     @Test
     fun `should smooth turn left-down`() {
         tank.direction = Direction.LEFT
-        tank.setPosition(PixelPoint(px(3), px(1)))
+        tank.setPosition(PixelPoint(3.px, 1.px))
         tank.direction = Direction.DOWN
-        assertEquals(px(0), tank.x)
-        assertEquals(px(1), tank.y)
+        assertEquals(0.px, tank.x)
+        assertEquals(1.px, tank.y)
     }
 
     @Test
     fun `should smooth turn left-up`() {
         tank.direction = Direction.LEFT
-        tank.setPosition(PixelPoint(px(6), px(2)))
+        tank.setPosition(PixelPoint(6.px, 2.px))
         tank.direction = Direction.UP
-        assertEquals(px(8), tank.x)
-        assertEquals(px(2), tank.y)
+        assertEquals(8.px, tank.x)
+        assertEquals(2.px, tank.y)
     }
 
     @Test
     fun `should smooth turn down-right`() {
         tank.direction = Direction.DOWN
-        tank.setPosition(PixelPoint(px(0), px(3)))
+        tank.setPosition(PixelPoint(0.px, 3.px))
         tank.direction = Direction.RIGHT
-        assertEquals(px(0), tank.x)
-        assertEquals(px(0), tank.y)
+        assertEquals(0.px, tank.x)
+        assertEquals(0.px, tank.y)
     }
 
     @Test
     fun `should smooth turn down-left`() {
         tank.direction = Direction.DOWN
-        tank.setPosition(PixelPoint(px(0), px(3)))
+        tank.setPosition(PixelPoint(0.px, 3.px))
         tank.direction = Direction.LEFT
-        assertEquals(px(0), tank.x)
-        assertEquals(px(0), tank.y)
+        assertEquals(0.px, tank.x)
+        assertEquals(0.px, tank.y)
     }
 
     @Test
     fun `should smooth turn up-left`() {
         tank.direction = Direction.UP
-        tank.setPosition(PixelPoint(px(3), px(3)))
+        tank.setPosition(PixelPoint(3.px, 3.px))
         tank.direction = Direction.LEFT
-        assertEquals(px(3), tank.x)
-        assertEquals(px(0), tank.y)
+        assertEquals(3.px, tank.x)
+        assertEquals(0.px, tank.y)
     }
 
     @Test
     fun `should smooth turn up-right`() {
         tank.direction = Direction.UP
-        tank.setPosition(PixelPoint(px(3), px(3)))
+        tank.setPosition(PixelPoint(3.px, 3.px))
         tank.direction = Direction.RIGHT
-        assertEquals(px(3), tank.x)
-        assertEquals(px(0), tank.y)
+        assertEquals(3.px, tank.x)
+        assertEquals(0.px, tank.y)
     }
 
     @Test
     fun `should smooth turn left-right`() {
         tank.direction = Direction.LEFT
-        tank.setPosition(PixelPoint(px(3), px(3)))
+        tank.setPosition(PixelPoint(3.px, 3.px))
         tank.direction = Direction.RIGHT
-        assertEquals(px(3), tank.x)
-        assertEquals(px(3), tank.y)
+        assertEquals(3.px, tank.x)
+        assertEquals(3.px, tank.y)
     }
 
     @Test
@@ -239,7 +239,7 @@ abstract class TankTest<T : Tank> {
         shouldDrawShootingTank(
             PixelPoint(),
             Direction.RIGHT,
-            PixelSize(t(3).toPixel(), t(2).toPixel()),
+            PixelSize(3.tiles.toPixel(), 2.tiles.toPixel()),
             "tank_shooting_right.png"
         )
     }
@@ -247,9 +247,9 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should draw tank shooting left`() {
         shouldDrawShootingTank(
-            PixelPoint(t(1).toPixel(), px(0)),
+            PixelPoint(1.tiles.toPixel(), 0.px),
             Direction.LEFT,
-            PixelSize(t(3).toPixel(), t(2).toPixel()),
+            PixelSize(3.tiles.toPixel(), 2.tiles.toPixel()),
             "tank_shooting_left.png"
         )
     }
@@ -257,9 +257,9 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should draw tank shooting up`() {
         shouldDrawShootingTank(
-            PixelPoint(px(0), t(1).toPixel()),
+            PixelPoint(0.px, 1.tiles.toPixel()),
             Direction.UP,
-            PixelSize(t(2).toPixel(), t(3).toPixel()),
+            PixelSize(2.tiles.toPixel(), 3.tiles.toPixel()),
             "tank_shooting_up.png"
         )
     }
@@ -269,7 +269,7 @@ abstract class TankTest<T : Tank> {
         shouldDrawShootingTank(
             PixelPoint(),
             Direction.DOWN,
-            PixelSize(t(2).toPixel(), t(3).toPixel()),
+            PixelSize(2.tiles.toPixel(), 3.tiles.toPixel()),
             "tank_shooting_down.png"
         )
     }
@@ -305,20 +305,20 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should create bullet facing right direction`() {
         shouldCreateBulletWithCorrectDirection(
-            PixelPoint(px(0), px(0)),
+            PixelPoint(0.px, 0.px),
             Direction.RIGHT,
-            PixelPoint(t(2).toPixel(), t(1).toPixel() - Bullet.SIZE / 2)
+            PixelPoint(2.tiles.toPixel(), 1.tiles.toPixel() - Bullet.SIZE / 2)
         )
     }
 
     @Test
     fun `should create bullet facing left direction`() {
         shouldCreateBulletWithCorrectDirection(
-            PixelPoint(t(2).toPixel(), px(0)),
+            PixelPoint(2.tiles.toPixel(), 0.px),
             Direction.LEFT,
             PixelPoint(
-                t(2).toPixel() - Bullet.SIZE,
-                t(1).toPixel() - Bullet.SIZE / 2
+                2.tiles.toPixel() - Bullet.SIZE,
+                1.tiles.toPixel() - Bullet.SIZE / 2
             )
         )
     }
@@ -326,11 +326,11 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should create bullet facing up direction`() {
         shouldCreateBulletWithCorrectDirection(
-            PixelPoint(px(0), t(2).toPixel()),
+            PixelPoint(0.px, 2.tiles.toPixel()),
             Direction.UP,
             PixelPoint(
-                t(1).toPixel() - Bullet.SIZE / 2,
-                t(2).toPixel() - Bullet.SIZE
+                1.tiles.toPixel() - Bullet.SIZE / 2,
+                2.tiles.toPixel() - Bullet.SIZE
             )
         )
     }
@@ -338,9 +338,9 @@ abstract class TankTest<T : Tank> {
     @Test
     fun `should create bullet facing down direction`() {
         shouldCreateBulletWithCorrectDirection(
-            PixelPoint(px(0), px(0)),
+            PixelPoint(0.px, 0.px),
             Direction.DOWN,
-            PixelPoint(t(1).toPixel() - Bullet.SIZE / 2, t(2).toPixel())
+            PixelPoint(1.tiles.toPixel() - Bullet.SIZE / 2, 2.tiles.toPixel())
         )
     }
 
@@ -384,7 +384,7 @@ abstract class TankTest<T : Tank> {
         verify(game.eventManager).fireEvent(isA<Tank.Shoot>())
         clearInvocations(game.eventManager)
 
-//        tank.notify(Tank.Reload(tank))
+        tank.reload()
 
         repeat(Tank.LONG_COOLDOWN_INTERVAL - 1) {
             clock.tick(1)
@@ -408,7 +408,7 @@ abstract class TankTest<T : Tank> {
         verify(game.eventManager).fireEvent(isA<Tank.Shoot>())
         clearInvocations(game.eventManager)
 
-//        tank.notify(Tank.Reload(tank))
+        tank.reload()
 
         repeat (Tank.SHORT_COOLDOWN_INTERVAL - 1) {
             clock.tick(1)
@@ -436,8 +436,8 @@ abstract class TankTest<T : Tank> {
         verify(game.eventManager, times(2)).fireEvent(isA<Tank.Shoot>())
         clearInvocations(game.eventManager)
 
-//        tank.notify(Tank.Reload(tank))
-//        tank.notify(Tank.Reload(tank))
+        tank.reload()
+        tank.reload()
 
         repeat(Tank.LONG_COOLDOWN_INTERVAL - Tank.SHORT_COOLDOWN_INTERVAL - 1) {
             clock.tick(1)

@@ -39,7 +39,7 @@ class MenuSceneTest {
         clock = TestClock()
         eventManager = mock()
         val screen: Screen = mock {
-            on { createSurface(px(anyInt()), px(anyInt())) } doAnswer {
+            on { createSurface(anyInt().px, anyInt().px) } doAnswer {
                 val image = BufferedImage(it.getArgument(0), it.getArgument(1), BufferedImage.TYPE_INT_ARGB)
                 AwtScreenSurface(fonts, image)
             }
@@ -74,8 +74,8 @@ class MenuSceneTest {
     @Test
     fun `should draw main menu scene with two players`() {
         scene.arrive()
-        val player1 = Player(game)
-        val player2 = Player(game)
+        val player1 = Player(game, index = 0)
+        val player2 = Player(game, index = 1)
         whenever(stageManager.players).thenReturn(listOf(player1, player2))
         whenever(stageManager.highScore).thenReturn(20000)
         scene = MenuScene(game, mock())
@@ -115,31 +115,31 @@ class MenuSceneTest {
 
     private fun shouldArriveOnKey(key: Keyboard.Key) {
         scene.notify(Keyboard.KeyPressed(key, 0))
-        assertEquals(px(0), scene.top)
+        assertEquals(0.px, scene.top)
     }
 
     @Test
     fun `should update position when interval elapsed`() {
-        scene.top = px(2)
+        scene.top = 2.px
         scene.activate()
         scene.update()
-        assertEquals(px(2), scene.top)
+        assertEquals(2.px, scene.top)
 
         clock.tick(MenuScene.MOVE_INTERVAL)
         scene.update()
-        assertEquals(px(1), scene.top)
+        assertEquals(1.px, scene.top)
     }
 
     @Test
     fun `should update position when multiple intervals elapsed`() {
-        scene.top = px(4)
+        scene.top = 4.px
         scene.activate()
         scene.update()
-        assertEquals(px(4), scene.top)
+        assertEquals(4.px, scene.top)
 
         clock.tick(3L * MenuScene.MOVE_INTERVAL)
         scene.update()
-        assertEquals(px(1), scene.top)
+        assertEquals(1.px, scene.top)
     }
 
     @Test
@@ -157,7 +157,7 @@ class MenuSceneTest {
         scene.activate()
         scene.arrive()
 
-        assertEquals(px(0), scene.top)
+        assertEquals(0.px, scene.top)
     }
 
 

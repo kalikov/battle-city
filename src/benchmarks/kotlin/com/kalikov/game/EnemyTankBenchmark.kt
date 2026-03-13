@@ -45,7 +45,7 @@
 //            override val imageManager = TestImageManager(fonts)
 //            override val soundManager: SoundManager get() = TODO("Not yet implemented")
 //        }
-//        tank = EnemyTank.create(game, pauseManager, px(0), px(0), EnemyTank.EnemyType.BASIC)
+//        tank = EnemyTank.create(game, pauseManager, 0.px, 0.px, EnemyTank.EnemyType.BASIC)
 //    }
 //
 //    @Benchmark

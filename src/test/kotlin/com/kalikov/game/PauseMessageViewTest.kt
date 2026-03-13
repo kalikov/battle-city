@@ -24,7 +24,7 @@ class PauseMessageViewTest {
     fun beforeEach() {
         clock = TestClock()
         pauseManager = mock()
-        pauseMessageView = PauseMessageView(pauseManager, px(0), px(0), clock)
+        pauseMessageView = PauseMessageView(pauseManager, 0.px, 0.px, clock)
     }
 
     @Test
@@ -41,7 +41,7 @@ class PauseMessageViewTest {
         val surface: ScreenSurface = mock()
         pauseMessageView.update()
         pauseMessageView.draw(surface)
-        verify(surface).fillText(anyString(), px(anyInt()), px(anyInt()), ARGB(anyInt()), anyString(), anyOrNull())
+        verify(surface).fillText(anyString(), anyInt().px, anyInt().px, ARGB(anyInt()), anyString(), anyOrNull())
     }
 
     @Test
@@ -63,6 +63,6 @@ class PauseMessageViewTest {
         clock.tick(1)
         pauseMessageView.update()
         pauseMessageView.draw(surface)
-        verify(surface).fillText(anyString(), px(anyInt()), px(anyInt()), ARGB(anyInt()), anyString(), anyOrNull())
+        verify(surface).fillText(anyString(), anyInt().px, anyInt().px, ARGB(anyInt()), anyString(), anyOrNull())
     }
 }

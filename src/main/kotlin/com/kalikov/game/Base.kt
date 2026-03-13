@@ -9,11 +9,11 @@ import com.kalikov.engine.px
 class Base(
     private val eventRouter: EventRouter,
     imageManager: ImageManager,
-    override val x: Pixel = px(0),
-    override val y: Pixel = px(0),
+    override val x: Pixel = 0.px,
+    override val y: Pixel = 0.px,
 ) : BaseHandle {
     companion object {
-        val SIZE = t(2).toPixel()
+        val SIZE = 2.tiles.toPixel()
     }
 
     val width = SIZE
@@ -33,7 +33,7 @@ class Base(
 
     fun draw(surface: ScreenSurface) {
         if (!isHidden) {
-            surface.draw(x, y, image, if (isHit) width else px(0), px(0), width, height)
+            surface.draw(x, y, image, if (isHit) width else 0.px, 0.px, width, height)
         }
     }
 

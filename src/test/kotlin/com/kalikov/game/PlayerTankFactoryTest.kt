@@ -32,7 +32,7 @@
 //            game,
 //            mock(),
 //            spriteContainer,
-//            PixelPoint(px(10), px(100)),
+//            PixelPoint(10.px, 100.px),
 //            Player(game)
 //        )
 //    }
@@ -53,8 +53,8 @@
 //        factory.init(0)
 //        val tank = factory.playerTank
 //        assertNotNull(tank)
-//        assertEquals(px(10), tank.x)
-//        assertEquals(px(100), tank.y)
+//        assertEquals(10.px, tank.x)
+//        assertEquals(100.px, tank.y)
 //        assertIs<TankStateAppearing>(tank.state)
 //        verify(eventManager).fireEvent(GamePlayerTanksManager.PlayerTankCreated(tank))
 //    }
@@ -89,8 +89,8 @@
 //        assertSame(eventTank, factoryTank)
 //
 //        verify(spriteContainer).addSprite(factoryTank)
-//        assertEquals(px(10), factoryTank.x)
-//        assertEquals(px(100), factoryTank.y)
+//        assertEquals(10.px, factoryTank.x)
+//        assertEquals(100.px, factoryTank.y)
 //        assertIs<TankStateAppearing>(factoryTank.state)
 //    }
 //

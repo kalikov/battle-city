@@ -37,12 +37,12 @@
 //        pauseManager = mock()
 //        mainContainer = mock()
 //        overlayContainer = mock()
-//        val baseStub = Base(game.eventManager, game.imageManager, t(2).toPixel(), t(2).toPixel())
-//        val treesStub = Trees(game, px(0), px(0), emptySet())
-//        val groundStub = Ground(game, pauseManager, px(0), px(0), GroundConfig())
-//        val wallsStub = Walls(game, px(0), px(0), WallsConfig())
+//        val baseStub = Base(game.eventManager, game.imageManager, 2.tiles.toPixel(), 2.tiles.toPixel())
+//        val treesStub = Trees(game, 0.px, 0.px, emptySet())
+//        val groundStub = Ground(game, pauseManager, 0.px, 0.px, GroundConfig())
+//        val wallsStub = Walls(game, 0.px, 0.px, WallsConfig())
 //        gameField = mock {
-//            on { bounds } doReturn PixelRect(px(0), px(0), Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT)
+//            on { bounds } doReturn PixelRect(0.px, 0.px, Globals.CANVAS_WIDTH, Globals.CANVAS_HEIGHT)
 //            on { base } doReturn baseStub
 //            on { trees } doReturn treesStub
 //            on { ground } doReturn groundStub
@@ -59,7 +59,7 @@
 //
 //    @Test
 //    fun `bullet should hit base on bullet movement`() {
-//        val tank = stubPlayerTank(game, pauseManager, px(0), t(2).toPixel())
+//        val tank = stubPlayerTank(game, pauseManager, 0.px, 2.tiles.toPixel())
 //        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 //
 //        mockMainSprites(listOf(tank, bullet))
@@ -77,9 +77,9 @@
 //        val tank = stubPlayerTank(game, pauseManager)
 //        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 //
-//        gameField.walls.fillBrickTile(t(2), t(0))
-//        gameField.walls.fillBrickTile(t(2), t(1))
-//        gameField.walls.fillBrickTile(t(2), t(2))
+//        gameField.walls.fillBrickTile(2.tiles, 0.tiles)
+//        gameField.walls.fillBrickTile(2.tiles, 1.tiles)
+//        gameField.walls.fillBrickTile(2.tiles, 2.tiles)
 //
 //        mockMainSprites(listOf(tank, bullet))
 //
@@ -89,9 +89,9 @@
 //
 //        assertEquals(
 //            setOf(
-//                BrickTile(t(2), t(0), 0b0110),
-//                BrickTile(t(2), t(1), 0b0110),
-//                BrickTile(t(2), t(2), 0b1111),
+//                BrickTile(2.tiles, 0.tiles, 0b0110),
+//                BrickTile(2.tiles, 1.tiles, 0b0110),
+//                BrickTile(2.tiles, 2.tiles, 0b1111),
 //            ),
 //            gameField.walls.config.bricks
 //        )
@@ -101,7 +101,7 @@
 //    @Test
 //    fun `bullet should hit enemy tank on bullet movement`() {
 //        val tank = stubPlayerTank(game, pauseManager)
-//        val enemyTank = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
+//        val enemyTank = stubEnemyTank(game, pauseManager, 2.tiles.toPixel(), 0.px)
 //
 //        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 //
@@ -119,9 +119,9 @@
 //    fun `bullet should hit only one enemy tank on bullet movement`() {
 //        val tank = stubPlayerTank(game, pauseManager)
 //
-//        val enemyTank1 = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
-//        val enemyTank2 = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
-//        val enemyTank3 = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
+//        val enemyTank1 = stubEnemyTank(game, pauseManager, 2.tiles.toPixel(), 0.px)
+//        val enemyTank2 = stubEnemyTank(game, pauseManager, 2.tiles.toPixel(), 0.px)
+//        val enemyTank3 = stubEnemyTank(game, pauseManager, 2.tiles.toPixel(), 0.px)
 //
 //        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 //
@@ -140,7 +140,7 @@
 //    @Test
 //    fun `enemy bullet should go through enemy tank on bullet movement`() {
 //        val tank1 = stubEnemyTank(game, pauseManager)
-//        val tank2 = stubEnemyTank(game, pauseManager, t(2).toPixel(), px(0))
+//        val tank2 = stubEnemyTank(game, pauseManager, 2.tiles.toPixel(), 0.px)
 //
 //        val bullet = stubBullet(game, tank1, x = tank1.right, y = tank1.middle - Bullet.SIZE / 2)
 //
@@ -159,7 +159,7 @@
 //    fun `bullet should not hit invincible tank on bullet movement`() {
 //        val enemyTank = stubEnemyTank(game, pauseManager)
 //
-//        val playerTank = stubPlayerTank(game, pauseManager, t(2).toPixel(), px(0))
+//        val playerTank = stubPlayerTank(game, pauseManager, 2.tiles.toPixel(), 0.px)
 //        playerTank.state = TankStateInvincible(game, pauseManager, playerTank)
 //
 //        val bullet = stubBullet(game, enemyTank, x = enemyTank.right, y = enemyTank.middle - Bullet.SIZE / 2)
@@ -179,7 +179,7 @@
 //    fun `bullet should go through appearing tank on bullet movement`() {
 //        val enemyTank = stubEnemyTank(game, pauseManager)
 //
-//        val playerTank = stubPlayerTank(game, pauseManager, t(2).toPixel(), px(0))
+//        val playerTank = stubPlayerTank(game, pauseManager, 2.tiles.toPixel(), 0.px)
 //        playerTank.state = TankStateAppearing(game, pauseManager, playerTank)
 //
 //        val bullet = stubBullet(game, enemyTank, x = enemyTank.right, y = enemyTank.middle - Bullet.SIZE / 2)
@@ -198,8 +198,8 @@
 //    fun `bullet should hit only one player tank on bullet movement`() {
 //        val enemyTank = stubEnemyTank(game, pauseManager)
 //
-//        val playerTank = stubPlayerTank(game, pauseManager, t(2).toPixel(), px(0))
-//        val playerTank = stubPlayerTank(game, pauseManager, t(2).toPixel(), px(0))
+//        val playerTank = stubPlayerTank(game, pauseManager, 2.tiles.toPixel(), 0.px)
+//        val playerTank = stubPlayerTank(game, pauseManager, 2.tiles.toPixel(), 0.px)
 //
 //        val bullet = stubBullet(game, enemyTank, x = enemyTank.right, y = enemyTank.middle - Bullet.SIZE / 2)
 //
@@ -219,7 +219,7 @@
 //
 //        val bullet = stubBullet(game, tank, x = tank.right, y = tank.middle - Bullet.SIZE / 2)
 //
-//        val otherTank = stubEnemyTank(game, pauseManager, t(2).toPixel() + Bullet.SIZE, px(0))
+//        val otherTank = stubEnemyTank(game, pauseManager, 2.tiles.toPixel() + Bullet.SIZE, 0.px)
 //
 //        val otherBullet = stubBullet(game, otherTank, x = bullet.x, y = bullet.y)
 //
@@ -240,7 +240,7 @@
 //        val playerTank = stubPlayerTank(game, pauseManager)
 //        val playerBullet = stubBullet(game, playerTank, x = playerTank.right, y = playerTank.middle - Bullet.SIZE / 2)
 //
-//        val enemyTank = stubEnemyTank(game, pauseManager, t(2).toPixel() + Bullet.SIZE, px(0))
+//        val enemyTank = stubEnemyTank(game, pauseManager, 2.tiles.toPixel() + Bullet.SIZE, 0.px)
 //        val enemyBullet = stubBullet(game, enemyTank, x = playerBullet.x, y = playerBullet.y)
 //        val enemyBullet = stubBullet(game, enemyTank, x = playerBullet.x, y = playerBullet.y)
 //        val enemyBullet = stubBullet(game, enemyTank, x = playerBullet.x, y = playerBullet.y)
@@ -262,7 +262,7 @@
 //        val playerTank = stubPlayerTank(game, pauseManager)
 //        val playerBullet = stubBullet(game, playerTank, x = playerTank.right, y = playerTank.middle - Bullet.SIZE / 2)
 //
-//        val enemyTank = stubEnemyTank(game, pauseManager, t(2).toPixel() + Bullet.SIZE, px(0))
+//        val enemyTank = stubEnemyTank(game, pauseManager, 2.tiles.toPixel() + Bullet.SIZE, 0.px)
 //        val enemyBullet = stubBullet(game, enemyTank, x = playerBullet.x, y = playerBullet.y)
 //
 //        mockMainSprites(listOf(playerTank, enemyTank, playerBullet, enemyBullet))
@@ -329,12 +329,12 @@
 //
 //    @Test
 //    fun `tank should collide wall on tank movement left`() {
-//        val tank = stubPlayerTank(game, pauseManager, t(1).toPixel() - 2, px(0))
+//        val tank = stubPlayerTank(game, pauseManager, 1.tiles.toPixel() - 2, 0.px)
 //        tank.moveFrequency = 1
 //        tank.direction = Direction.LEFT
 //        tank.isIdle = false
 //
-//        gameField.walls.fillBrickTile(t(0), t(0))
+//        gameField.walls.fillBrickTile(0.tiles, 0.tiles)
 //
 //        mockMainSprites(listOf(tank))
 //
@@ -342,7 +342,7 @@
 //        clock.tick(updateInterval)
 //        movementController.update()
 //
-//        assertEquals(PixelPoint(t(1).toPixel() - 2, px(0)), PixelPoint(tank.x, tank.y))
+//        assertEquals(PixelPoint(1.tiles.toPixel() - 2, 0.px), PixelPoint(tank.x, tank.y))
 //    }
 //
 //    @Test
@@ -364,7 +364,7 @@
 //
 //    @Test
 //    fun `tanks should overlap when one is out of bounds`() {
-//        val tank1 = stubPlayerTank(game, pauseManager, px(0), t(-1).toPixel())
+//        val tank1 = stubPlayerTank(game, pauseManager, 0.px, t(-1).toPixel())
 //        tank1.direction = Direction.DOWN
 //        tank1.isIdle = false
 //        val tank2 = stubPlayerTank(game, pauseManager)
@@ -375,10 +375,10 @@
 //        clock.tick(updateInterval)
 //        movementController.update()
 //
-//        assertEquals(px(0), tank1.x)
+//        assertEquals(0.px, tank1.x)
 //        assertEquals(t(-1).toPixel(), tank1.y)
-//        assertEquals(px(0), tank2.x)
-//        assertEquals(px(0), tank2.y)
+//        assertEquals(0.px, tank2.x)
+//        assertEquals(0.px, tank2.y)
 //    }
 //
 //    private fun mockMainSprites(sprites: List<AbstractSprite>) {

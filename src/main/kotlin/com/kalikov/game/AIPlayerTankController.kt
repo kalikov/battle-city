@@ -38,8 +38,8 @@ class AIPlayerTankController(
 
     private val strategyTimer = PauseAwareTimer(NoopPauseManager, game.clock, params.strategyUpdateInterval, ::updateStrategy)
 
-    private var prevX = px(0)
-    private var prevY = px(0)
+    private var prevX = 0.px
+    private var prevY = 0.px
 
     private var isActive = true
 
@@ -158,9 +158,9 @@ class AIPlayerTankController(
     private fun calculateUpFront(hitTop: Tile, hitLeft: Tile, hitRight: Tile) {
         var i = 0
         for (x in hitLeft.toInt() .. hitRight.toInt()) {
-            var height = t(0)
+            var height = 0.tiles
             for (y in hitTop.toInt() - 1 downTo 0) {
-                if (gameField.walls.occupied(t(x), t(y))) {
+                if (gameField.walls.occupied(x.tiles, y.tiles)) {
                     height++
                     break
                 }
@@ -174,9 +174,9 @@ class AIPlayerTankController(
     private fun calculateDownFront(hitLeft: Tile, hitRight: Tile, hitBottom: Tile) {
         var i = 0
         for (x in hitLeft.toInt() .. hitRight.toInt()) {
-            var height = t(0)
+            var height = 0.tiles
             for (y in hitBottom.toInt() + 1 until GameField.SIZE_IN_TILES.toInt()) {
-                if (gameField.walls.occupied(t(x), t(y))) {
+                if (gameField.walls.occupied(x.tiles, y.tiles)) {
                     height++
                     break
                 }
@@ -190,9 +190,9 @@ class AIPlayerTankController(
     private fun calculateLeftFront(hitTop: Tile, hitLeft: Tile, hitBottom: Tile) {
         var i = 0
         for (y in hitTop.toInt() .. hitBottom.toInt()) {
-            var width = t(0)
+            var width = 0.tiles
             for (x in hitLeft.toInt() - 1 downTo 0) {
-                if (gameField.walls.occupied(t(x), t(y))) {
+                if (gameField.walls.occupied(x.tiles, y.tiles)) {
                     width++
                     break
                 }
@@ -206,9 +206,9 @@ class AIPlayerTankController(
     private fun calculateRightFront(hitTop: Tile, hitRight: Tile, hitBottom: Tile) {
         var i = 0
         for (y in hitTop.toInt() .. hitBottom.toInt()) {
-            var width = t(0)
+            var width = 0.tiles
             for (x in hitRight.toInt() + 1 until GameField.SIZE_IN_TILES.toInt()) {
-                if (gameField.walls.occupied(t(x), t(y))) {
+                if (gameField.walls.occupied(x.tiles, y.tiles)) {
                     width++
                     break
                 }
@@ -293,9 +293,9 @@ class AIPlayerTankController(
                 lineOfSight.distances.forEachIndexed { index, distance ->
                     if (tank.direction == Direction.UP) {
                         surface.drawRect(
-                            tank.hitRect.x + t(index).toPixel(),
+                            tank.hitRect.x + index.tiles.toPixel(),
                             tank.hitRect.y - distance.toPixel(),
-                            t(1).toPixel(),
+                            1.tiles.toPixel(),
                             distance.toPixel(),
                             ARGB(0x66FF0000)
                         )
@@ -418,7 +418,7 @@ class AIPlayerTankController(
     }
 
     private class LineOfSight(
-        val distances: Array<Tile> = Array(Tank.SIZE.toTile().toInt()) { t(0) }
+        val distances: Array<Tile> = Array(Tank.SIZE.toTile().toInt()) { 0.tiles }
     ) {
         fun intersects(rect: TileRect): Boolean {
             return false

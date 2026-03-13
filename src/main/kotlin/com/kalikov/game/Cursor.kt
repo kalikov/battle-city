@@ -9,8 +9,8 @@ import com.kalikov.engine.times
 class Cursor(
     game: BattleCityGame,
     private val builder: BuilderHandler,
-    x: Pixel = px(0),
-    y: Pixel = px(0)
+    x: Pixel = 0.px,
+    y: Pixel = 0.px
 ) /*: Sprite(game.eventManager, x, y, Tank.SIZE, Tank.SIZE)*/ {
 
     private val blinkTimer = BlinkTimer(game.clock, 320)
@@ -28,17 +28,13 @@ class Cursor(
     var y: Pixel = y
         private set
 
-//    init {
-//        z = 10000
-//    }
-
-    /*override*/ fun draw(surface: ScreenSurface) {
+    fun draw(surface: ScreenSurface) {
         if (blinkTimer.isOpaque) {
-            surface.draw(x, y, image, Direction.UP.index * width, px(0), width, height)
+            surface.draw(x, y, image, Direction.UP.index * width, 0.px, width, height)
         }
     }
 
-    /*override*/ fun update() {
+    fun update() {
         if (blinkTimer.isStopped) {
             blinkTimer.restart()
         }

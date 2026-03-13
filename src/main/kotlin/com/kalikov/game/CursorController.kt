@@ -31,7 +31,7 @@ class CursorController(
 
     private var direction = Direction.RIGHT
 
-    private val speed = t(2).toPixel()
+    private val speed = 2.tiles.toPixel()
     private val moveTimer = BasicTimer(clock, LONG_MOVE_INTERVAL, ::onMove)
 
     override fun notify(event: Event) {

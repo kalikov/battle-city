@@ -13,7 +13,7 @@ class GameField(
     y: Pixel = 2.tiles.toPixel(),
 ) : GameFieldHandle, ShovelWallBuilder {
     companion object {
-        val SIZE_IN_TILES = t(26)
+        val SIZE_IN_TILES = 26.tiles
         val SIZE_IN_PIXELS = SIZE_IN_TILES.toPixel()
     }
 
@@ -85,9 +85,9 @@ class GameField(
         if (playersCount == 0) {
             val baseTiles = setOf(
                 map.base,
-                map.base.translate(t(1), t(0)),
-                map.base.translate(t(0), t(1)),
-                map.base.translate(t(1), t(1))
+                map.base.translate(1.tiles, 0.tiles),
+                map.base.translate(0.tiles, 1.tiles),
+                map.base.translate(1.tiles, 1.tiles)
             )
             if (baseTiles.any { map.trees.contains(it) || map.ground.ice.contains(it) || map.ground.water.contains(it) } ||
                 baseTiles.any { map.walls.steel.contains(it) } ||

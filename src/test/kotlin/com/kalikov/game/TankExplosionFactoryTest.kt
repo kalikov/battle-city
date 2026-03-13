@@ -43,7 +43,7 @@
 //
 //    @Test
 //    fun `should correctly place created explosion`() {
-//        val tank = stubPlayerTank(game, x = px(5), y = px(6))
+//        val tank = stubPlayerTank(game, x = 5.px, y = 6.px)
 //        factory.notify(Tank.Destroyed(tank))
 //
 //        val captor = argumentCaptor<TankExplosion>()
@@ -52,10 +52,10 @@
 //        val explosion = captor.firstValue
 //        assertEquals(
 //            PixelRect(
-//                px(5) - t(1).toPixel(),
-//                px(6) - t(1).toPixel(),
-//                t(4).toPixel(),
-//                t(4).toPixel(),
+//                5.px - 1.tiles.toPixel(),
+//                6.px - 1.tiles.toPixel(),
+//                4.tiles.toPixel(),
+//                4.tiles.toPixel(),
 //            ),
 //            explosion.bounds
 //        )

@@ -38,7 +38,7 @@ class LivesView(
     private var lives1Text = formatLives(lives1)
 
     fun draw(surface: ScreenSurface) {
-        val xMain = x + t(1).toPixel()
+        val xMain = x + 1.tiles.toPixel()
 
         if (players[0].lives != lives0) {
             lives0 = players[0].lives
@@ -46,9 +46,9 @@ class LivesView(
         }
 
         surface.draw(xMain - romanOne.width - 2, y, romanOne.target)
-        surface.fillText("P", xMain + 1, y + t(1).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
-        surface.fillText(lives0Text, xMain + 1, y + t(2).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
-        surface.draw(x, y + t(1).toPixel(), lives)
+        surface.fillText("P", xMain + 1, y + 1.tiles.toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+        surface.fillText(lives0Text, xMain + 1, y + 2.tiles.toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+        surface.draw(x, y + 1.tiles.toPixel(), lives)
 
         if (players.size > 1) {
             if (players[1].lives != lives1) {
@@ -56,10 +56,10 @@ class LivesView(
                 lives1Text = formatLives(lives1)
             }
 
-            surface.draw(xMain - romanTwo.width - 1, y + t(3).toPixel(), romanTwo.target)
-            surface.fillText("P", xMain + 1, y + t(4).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
-            surface.fillText(lives1Text, xMain + 1, y + t(5).toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
-            surface.draw(x, y + t(4).toPixel(), lives)
+            surface.draw(xMain - romanTwo.width - 1, y + 3.tiles.toPixel(), romanTwo.target)
+            surface.fillText("P", xMain + 1, y + 4.tiles.toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+            surface.fillText(lives1Text, xMain + 1, y + 5.tiles.toPixel() - 1, ARGB.BLACK, Globals.FONT_REGULAR)
+            surface.draw(x, y + 4.tiles.toPixel(), lives)
         }
     }
 

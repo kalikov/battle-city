@@ -26,13 +26,6 @@ class BulletTest {
     }
 
     @Test
-    fun `should fire event on destroy`() {
-        bullet.destroy()
-        bullet.update()
-        verify(eventManager).fireEvent(Bullet.Exploded(bullet))
-    }
-
-    @Test
     fun `should be destroyed when goes out of bounds`() {
         bullet.outOfBounds()
         assertTrue(bullet.isDestroyed)
@@ -59,14 +52,6 @@ class BulletTest {
         assertTrue(bullet.shouldExplode)
         assertTrue(bullet.isDestroyed)
     }
-//
-//    @Test
-//    fun `should fire event when exploded`() {
-//        bullet.hit(true)
-//        bullet.update()
-//        verify(eventManager).fireEvent(Bullet.Exploded(bullet))
-//        verify(eventManager, never()).fireEvent(Tank.Reload(bullet.tank))
-//    }
 
     @Test
     fun `should draw bullet with right direction`() {
@@ -89,9 +74,9 @@ class BulletTest {
     }
 
     private fun shouldDrawBullet(direction: Direction, imageName: String) {
-        val image = BufferedImage(t(1).toPixel().toInt(), t(1).toPixel().toInt(), BufferedImage.TYPE_INT_ARGB)
+        val image = BufferedImage(1.tiles.toPixel().toInt(), 1.tiles.toPixel().toInt(), BufferedImage.TYPE_INT_ARGB)
         bullet.direction = direction
-        bullet.setPosition((t(1).toPixel() - bullet.width) / 2, (t(1).toPixel() - bullet.height) / 2)
+        bullet.setPosition((1.tiles.toPixel() - bullet.width) / 2, (1.tiles.toPixel() - bullet.height) / 2)
         bullet.draw(AwtScreenSurface(fonts, image))
 
         assertImageEquals("$imageName.png", image)

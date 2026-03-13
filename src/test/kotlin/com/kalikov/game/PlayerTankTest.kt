@@ -15,8 +15,8 @@ class PlayerTankTest : TankTest<PlayerTank>() {
         return PlayerTank.create(
             game,
             mock(),
-            px(0),
-            px(0),
+            0.px,
+            0.px,
             Player(game)
         )
     }

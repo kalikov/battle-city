@@ -6,7 +6,6 @@ import com.kalikov.engine.FrameSequence
 import com.kalikov.engine.LeaksDetector
 import com.kalikov.engine.Pixel
 import com.kalikov.engine.ScreenSurface
-import com.kalikov.engine.frameLoopOf
 import com.kalikov.engine.max
 import com.kalikov.engine.min
 import com.kalikov.engine.px
@@ -46,11 +45,11 @@ class Ground(
                 for (y in matrix[x].indices) {
                     when {
                         matrix[x][y] === iceImage -> {
-                            ice.add(TilePoint(t(x), t(y)))
+                            ice.add(TilePoint(x.tiles, y.tiles))
                         }
 
                         matrix[x][y] === waterImage -> {
-                            water.add(TilePoint(t(x), t(y)))
+                            water.add(TilePoint(x.tiles, y.tiles))
                         }
                     }
                 }
@@ -92,10 +91,10 @@ class Ground(
         for (column in left..right) {
             for (row in top..bottom) {
                 if (matrix[column][row] === iceImage) {
-                    val tileLeft = x + t(column).toPixel()
-                    val tileRight = x + t(column + 1).toPixel() - 1
-                    val tileTop = y + t(row).toPixel()
-                    val tileBottom = y + t(row + 1).toPixel() - 1
+                    val tileLeft = x + column.tiles.toPixel()
+                    val tileRight = x + (column + 1).tiles.toPixel() - 1
+                    val tileTop = y + row.tiles.toPixel()
+                    val tileBottom = y + (row + 1).tiles.toPixel() - 1
                     val intersects = tileLeft <= tank.hitRect.right && tileRight >= tank.hitRect.left &&
                             tileTop <= tank.hitRect.bottom && tileBottom >= tank.hitRect.top
                     if (intersects) {
@@ -145,7 +144,7 @@ class Ground(
             matrix[x.toInt()][y.toInt()] = waterImage
             masks.forEachIndexed { index, mask ->
                 val srcX = waterImageWidth * index
-                mask.draw(x.toPixel(), y.toPixel(), waterImage, srcX, px(0), waterImageWidth, waterImage.height)
+                mask.draw(x.toPixel(), y.toPixel(), waterImage, srcX, 0.px, waterImageWidth, waterImage.height)
             }
         }
     }

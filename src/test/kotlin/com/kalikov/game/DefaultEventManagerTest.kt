@@ -7,6 +7,8 @@ import com.kalikov.engine.Keyboard
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.any
+import org.mockito.kotlin.atLeastOnce
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
@@ -28,8 +30,12 @@ class DefaultEventManagerTest {
 
         val eventManager = DefaultEventManager()
 
-        val subscriber1: EventSubscriber = mock()
-        val subscriber2: EventSubscriber = mock()
+        val subscriber1: EventSubscriber = mock {
+            on { identity } doReturn 1
+        }
+        val subscriber2: EventSubscriber = mock {
+            on { identity } doReturn 2
+        }
 
         eventManager.addSubscriber(subscriber1, arrayOf(Keyboard.KeyPressed::class))
         eventManager.addSubscriber(subscriber2, arrayOf(Keyboard.KeyPressed::class, Keyboard.KeyReleased::class))
@@ -50,8 +56,12 @@ class DefaultEventManagerTest {
 
         val eventManager = DefaultEventManager()
 
-        val subscriber1: EventSubscriber = mock()
-        val subscriber2: EventSubscriber = mock()
+        val subscriber1: EventSubscriber = mock {
+            on { identity } doReturn 1
+        }
+        val subscriber2: EventSubscriber = mock {
+            on { identity } doReturn 2
+        }
 
         eventManager.addSubscriber(subscriber1, arrayOf(Keyboard.KeyPressed::class))
         eventManager.addSubscriber(subscriber2, arrayOf(Keyboard.KeyPressed::class, Keyboard.KeyReleased::class))
@@ -92,6 +102,7 @@ class DefaultEventManagerTest {
         manager.fireEvent(EventA)
         manager.fireEvent(EventB)
 
+        verify(subscriber, times(2)).identity
         verify(subscriber).notify(EventB)
         verifyNoMoreInteractions(subscriber)
     }
@@ -106,8 +117,12 @@ class DefaultEventManagerTest {
     @Test
     fun `should allow multiple subscribers for the same event`() {
         val manager = DefaultEventManager()
-        val subscriber1: EventSubscriber = mock()
-        val subscriber2: EventSubscriber = mock()
+        val subscriber1: EventSubscriber = mock {
+            on { identity } doReturn 1
+        }
+        val subscriber2: EventSubscriber = mock {
+            on { identity } doReturn 2
+        }
 
         manager.addSubscriber(subscriber1, arrayOf(EventA::class))
         manager.addSubscriber(subscriber2, arrayOf(EventA::class))
@@ -115,7 +130,9 @@ class DefaultEventManagerTest {
         manager.fireEvent(EventA)
 
         verify(subscriber1).notify(EventA)
+        verify(subscriber1, atLeastOnce()).identity
         verify(subscriber2).notify(EventA)
+        verify(subscriber2, atLeastOnce()).identity
         verifyNoMoreInteractions(subscriber1, subscriber2)
     }
 
@@ -123,8 +140,12 @@ class DefaultEventManagerTest {
     fun `should clear dangling subscriptions on destroy`() {
         val out: PrintStream = mock()
         val manager = DefaultEventManager(out)
-        val subscriber1: EventSubscriber = mock()
-        val subscriber2: EventSubscriber = mock()
+        val subscriber1: EventSubscriber = mock {
+            on { identity } doReturn 1
+        }
+        val subscriber2: EventSubscriber = mock {
+            on { identity } doReturn 2
+        }
 
         manager.addSubscriber(subscriber1, arrayOf(EventA::class))
         manager.addSubscriber(subscriber2, arrayOf(EventB::class))
@@ -142,13 +163,19 @@ class DefaultEventManagerTest {
     @Test
     fun `should add subscribers during event processing`() {
         val manager = DefaultEventManager()
-        val subscribers: Array<EventSubscriber> = Array(10) { mock() }
+        val subscribers: Array<EventSubscriber> = Array(10) { i ->
+            mock {
+                on { identity } doReturn i
+            }
+        }
 
         for (subscriber in subscribers) {
             manager.addSubscriber(subscriber, arrayOf(EventA::class))
         }
 
-        val newSubscriber: EventSubscriber = mock()
+        val newSubscriber: EventSubscriber = mock {
+            on { identity } doReturn subscribers.size
+        }
         whenever(subscribers[5].notify(EventA)).thenAnswer {
             manager.addSubscriber(newSubscriber, arrayOf(EventA::class))
             manager.addSubscriber(newSubscriber, arrayOf(EventB::class))
@@ -177,7 +204,11 @@ class DefaultEventManagerTest {
     @Test
     fun `should remove subscribers during event processing`() {
         val manager = DefaultEventManager()
-        val subscribers: Array<EventSubscriber> = Array(10) { mock() }
+        val subscribers: Array<EventSubscriber> = Array(10) { i ->
+            mock {
+                on { identity } doReturn i
+            }
+        }
 
         for (subscriber in subscribers) {
             manager.addSubscriber(subscriber, arrayOf(EventA::class))
@@ -191,6 +222,7 @@ class DefaultEventManagerTest {
 
         for (subscriber in subscribers) {
             verify(subscriber).notify(EventA)
+            verify(subscriber, atLeastOnce()).identity
             verifyNoMoreInteractions(subscriber)
         }
         reset(*subscribers)

@@ -22,8 +22,8 @@
 //        explosionFactory = BulletExplosionFactory(game, mock(), spriteContainer)
 //
 //        bullet = mock {
-//            on { center } doReturn px(0)
-//            on { middle } doReturn px(0)
+//            on { center } doReturn 0.px
+//            on { middle } doReturn 0.px
 //        }
 //    }
 //

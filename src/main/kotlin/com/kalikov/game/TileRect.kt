@@ -1,10 +1,10 @@
 package com.kalikov.game
 
 data class TileRect(
-    val x: Tile = t(0),
-    val y: Tile = t(0),
-    val width: Tile = t(0),
-    val height: Tile = t(0),
+    val x: Tile = 0.tiles,
+    val y: Tile = 0.tiles,
+    val width: Tile = 0.tiles,
+    val height: Tile = 0.tiles,
 ) {
     constructor(position: TilePoint, width: Tile, height: Tile) : this(position.x, position.y, width, height)
 

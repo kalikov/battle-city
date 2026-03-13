@@ -68,7 +68,7 @@
 //
 //    @Test
 //    fun `should create points when power up is picked`() {
-//        val powerUp = stubPowerUp(game, PixelPoint(px(1), px(2)))
+//        val powerUp = stubPowerUp(game, PixelPoint(1.px, 2.px))
 //        powerUp.value = 200
 //
 //        val tank = stubPlayerTank(game)

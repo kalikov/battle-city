@@ -42,8 +42,8 @@
 //    @Test
 //    fun `should position explosion at the base center`() {
 //        val base = mock<BaseHandle> {
-//            on { x } doReturn px(10)
-//            on { y } doReturn px(100)
+//            on { x } doReturn 10.px
+//            on { y } doReturn 100.px
 //        }
 //
 //        factory.notify(Base.Hit(base))

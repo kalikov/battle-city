@@ -23,7 +23,7 @@ class AITankControllerTest {
         tank = mock()
         whenever(tank.y).thenReturn(-Tank.SIZE)
         whenever(tank.moveFrequency).thenReturn(8)
-        whenever(tank.hitRect).thenReturn(PixelRect(px(0), -Tank.SIZE, Tank.SIZE, Tank.SIZE))
+        whenever(tank.hitRect).thenReturn(PixelRect(0.px, -Tank.SIZE, Tank.SIZE, Tank.SIZE))
         random = mock()
     }
 

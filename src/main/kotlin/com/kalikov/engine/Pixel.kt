@@ -82,9 +82,6 @@ operator fun Int.times(p: Pixel): Pixel {
 
 inline val Int.px get() = Pixel(this)
 
-@Deprecated("use Kotlin px syntax")
-fun px(value: Int) = Pixel(value)
-
 fun min(a: Pixel, b: Pixel): Pixel {
     return Pixel(min(a.toInt(), b.toInt()))
 }

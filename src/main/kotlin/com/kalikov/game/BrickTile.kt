@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BrickTile(
-    val x: Tile = t(0),
-    val y: Tile = t(0),
+    val x: Tile = 0.tiles,
+    val y: Tile = 0.tiles,
     val integrity: Int = 0b1111
 ) {
     override fun toString(): String {

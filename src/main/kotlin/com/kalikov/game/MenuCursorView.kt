@@ -37,7 +37,7 @@ class MenuCursorView(
             y,
             image,
             Tank.SIZE * (5 + trackAnimation.frame),
-            px(0),
+            0.px,
             SIZE,
             SIZE
         )
